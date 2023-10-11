@@ -23,7 +23,7 @@ public class EmailService : IEmailService
     {
         var user = await _userManager.FindByEmailAsync(toEmail);
 
-        if (user == null)
+        if (user == null || user.EmailConfirmed)
         {
             return false;
         }
@@ -53,7 +53,7 @@ public class EmailService : IEmailService
     {
         var user = await _userManager.FindByEmailAsync(email);
         
-        if (user == null)
+        if (user == null || user.EmailConfirmed)
         {
             return false;
         }

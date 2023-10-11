@@ -14,35 +14,36 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DriveSalez.WebApi.StartupExtensions
+namespace DriveSalez.WebApi.StartupExtensions;
+
+public static class ConfigureServiceExtensions
 {
-    public static class ConfigureServiceExtensions
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
-        public static IServiceCollection AddSwagger(this IServiceCollection services)
+        services.AddSwaggerGen(setup =>
         {
-            services.AddSwaggerGen(setup =>
-            {
-                setup.SwaggerDoc("v1",
-                    new OpenApiInfo
-                    {
-                        Title = "DriveSaleZ",
-                        Version = "v2"
-                    }
-                    );
-
-                //setup.IncludeXmlComments(@"obj\Debug\net6.0\ToDo WEB API.xml");
-
-                setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            setup.SwaggerDoc("v1",
+                new OpenApiInfo
                 {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer\""
-                });
+                    Title = "DriveSaleZ",
+                    Version = "v2"
+                }
+            );
 
-                setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+            //setup.IncludeXmlComments(@"obj\Debug\net6.0\ToDo WEB API.xml");
+
+            setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description =
+                    "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer\""
+            });
+
+            setup.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -52,84 +53,82 @@ namespace DriveSalez.WebApi.StartupExtensions
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
                         }
-                    }, new string[]{ }
+                    },
+                    new string[] { }
                 }
             });
-            });
-            return services;
-        }
+        });
+        return services;
+    }
 
-        public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<IAnnouncementService, AnnouncementService>();
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAnnoucementRepository, AnnouncementRepository>();
+        services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IOtpService, OtpService>();
+        services.AddScoped<IEmailService, EmailService>();
+
+        services.AddMemoryCache();
+
+        services.AddCors(options =>
         {
-            services.AddScoped<IAnnouncementService, AnnouncementService>();
-            services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IAnnoucementRepository, AnnouncementRepository>();
-            services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IAdminRepository, AdminRepository>();
-            services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<IOtpService, OtpService>();
-            services.AddScoped<IEmailService, EmailService>();
-
-            services.AddMemoryCache();
-            
-            services.AddCors(options =>
+            options.AddPolicy("DriveSalezCorsPolicy", builder =>
             {
-                options.AddPolicy("DriveSalezCorsPolicy", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                });
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             });
-            
-            services.AddDbContext<ApplicationDbContext>(
-                options =>
-                {
-                    options.UseSqlServer(configuration.GetConnectionString("MacConnection"));
-                }
-            );
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-                {
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = true;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireLowercase = true;
-                    options.Password.RequireDigit = true;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
-                .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
-                .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
-
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidIssuer = configuration["JWT:Issuer"],
-                ValidAudience = configuration["JWT:Audience"],
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
-            };
         });
 
+        services.AddDbContext<ApplicationDbContext>(
+            options => { options.UseSqlServer(configuration.GetConnectionString("MacConnection")); }
+        );
 
-            services.AddAuthorization(options =>
+        services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireDigit = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders()
+            .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
+            .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = configuration["JWT:Issuer"],
+                    ValidAudience = configuration["JWT:Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                };
             });
 
-            return services;
-        }
+
+        services.AddAuthorization(options =>
+        {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
+
+        return services;
     }
 }

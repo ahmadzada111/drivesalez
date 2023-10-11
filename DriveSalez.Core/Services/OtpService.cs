@@ -25,6 +25,11 @@ public class OtpService : IOtpService
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         
+        if (user == null || user.EmailConfirmed)
+        {
+            return false;
+        }
+        
         if (cache.TryGetValue(request.Email, out string cachedOtp))
         {
             if (request.Otp == cachedOtp)
