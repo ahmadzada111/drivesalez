@@ -1,0 +1,33 @@
+name: .NET 6 Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET 6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Debug Environment Variables
+      run: |
+        echo "MAC_CONNECTION: ${{ secrets.MAC_CONNECTION }}"
+        
+    - name: Use the secret in your code
+      env:
+        MAC_CONNECTION: ${{ secrets.MAC_CONNECTION }}
+      run: |
+        cd DriveSalez.WebApi
+
+        dotnet build
+        dotnet publish
+        dotnet run

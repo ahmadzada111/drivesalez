@@ -1,0 +1,9 @@
+DriveSalez.Core/bin/
+DriveSalez.Core/obj/
+DriveSalez.Infrastructure/obj/
+DriveSalez.Infrastructure/bin/
+DriveSalez.WebApi/obj/
+DriveSalez.WebApi/bin/
+DriveSalez.WebApi/appsettings.Secrets.json
+.DS_Store
+.idea/
