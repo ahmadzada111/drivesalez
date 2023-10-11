@@ -20,23 +20,19 @@ public class AccountRepository : IAccountRepository
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IJwtService _jwtService;
     private readonly IOtpService _otpService;
-    private readonly IEmailService _emailService;
 
     public AccountRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IOtpService otpService, IEmailService emailService)
+        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IOtpService otpService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _jwtService = jwtService;
         _otpService = otpService;
-        _emailService = emailService;
     }
     
     public async Task<AuthenticationResponseDto> SendRegistrationDataToDb(ApplicationUser user, string password)
     {
-        user.EmailConfirmed = false;
-        
         IdentityResult result = await _userManager.CreateAsync(user, password);
 
         if (result.Succeeded)
