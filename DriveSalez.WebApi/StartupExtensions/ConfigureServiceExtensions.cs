@@ -61,7 +61,6 @@ namespace DriveSalez.WebApi.StartupExtensions
 
         public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IMemoryCache, MemoryCache>();
             services.AddScoped<IAnnouncementService, AnnouncementService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IAnnoucementRepository, AnnouncementRepository>();
@@ -71,6 +70,8 @@ namespace DriveSalez.WebApi.StartupExtensions
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IEmailService, EmailService>();
+
+            services.AddMemoryCache();
             
             services.AddCors(options =>
             {
