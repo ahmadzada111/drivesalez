@@ -67,11 +67,6 @@ public class EmailController : Controller
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
     {
-        if (!_cache.TryGetValue(request.Email, out string cachedOtp))
-        {
-            return BadRequest("OTP validation is required before resetting the password.");
-        }
-        
         var result = await _emailService.ResetPassword(request);
         return result ? Ok("Password successfully changed") : BadRequest("Error");
     }

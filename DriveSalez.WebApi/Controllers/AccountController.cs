@@ -4,8 +4,6 @@ using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace DriveSalez.WebApi.Controllers
 {

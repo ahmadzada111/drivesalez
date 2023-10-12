@@ -62,8 +62,15 @@ public class EmailService : IEmailService
         }
         
         user.EmailConfirmed = true;
-        await _userManager.UpdateAsync(user);
-        return true;
+        
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> ResetPassword(ResetPasswordDto request)
@@ -75,8 +82,14 @@ public class EmailService : IEmailService
             return false;
         }
         
-        user.PasswordHash = request.NewPassword;
-        await _userManager.UpdateAsync(user);
-        return true;
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
