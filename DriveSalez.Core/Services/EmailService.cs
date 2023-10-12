@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mail;
+using DriveSalez.Core.DTO;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
@@ -10,11 +11,13 @@ namespace DriveSalez.Core.Services;
 
 public class EmailService : IEmailService
 {
+    private readonly IOtpService _otpService;
     private readonly IConfiguration _emailConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public EmailService(IConfiguration emailConfig, UserManager<ApplicationUser> userManager)
+    public EmailService(IConfiguration emailConfig, UserManager<ApplicationUser> userManager, IOtpService otpService)
     {
+        _otpService = otpService;
         _emailConfig = emailConfig;
         _userManager = userManager;
     }
@@ -22,8 +25,8 @@ public class EmailService : IEmailService
     public async Task<bool> SendOtpByEmail(string toEmail, string otp)
     {
         var user = await _userManager.FindByEmailAsync(toEmail);
-
-        if (user == null || user.EmailConfirmed)
+        
+        if (user == null)
         {
             return false;
         }
@@ -53,12 +56,26 @@ public class EmailService : IEmailService
     {
         var user = await _userManager.FindByEmailAsync(email);
         
-        if (user == null || user.EmailConfirmed)
+        if (user == null)
         {
             return false;
         }
         
         user.EmailConfirmed = true;
+        await _userManager.UpdateAsync(user);
+        return true;
+    }
+
+    public async Task<bool> ResetPassword(ResetPasswordDto request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        
+        if (user == null)
+        {
+            return false;
+        }
+        
+        user.PasswordHash = request.NewPassword;
         await _userManager.UpdateAsync(user);
         return true;
     }

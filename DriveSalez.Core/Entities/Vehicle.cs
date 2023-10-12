@@ -16,8 +16,6 @@ namespace DriveSalez.Core.Entities
 
         public Model? Model { get; set; }
 
-        public List<VehicleImageUrl>? ImageUrls { get; set; }
-
         [Required(ErrorMessage = "Please enter Fuel Type")]
         [StringLength(15, MinimumLength = 3, ErrorMessage = "Fuel Type can't be longer than 15 characters or less than 3.")]
         public VehicleFuelType? FuelType { get; set; }

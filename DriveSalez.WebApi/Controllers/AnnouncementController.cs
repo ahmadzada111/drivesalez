@@ -20,28 +20,28 @@ public class AnnouncementController : Controller
         _announcementService = announcementService;
     }
 
-    [HttpPost("CreateAnnouncement")]
+    [HttpPost("create-announcement")]
     public async Task<IActionResult> CreateAnnouncement([FromBody] AnnouncementDto announcement)
     {
         var response = await _announcementService.AddAnnouncement(announcement);
         return response != null ? Ok(response) : BadRequest(response);
     }
 
-    [HttpPatch("UpdateAnnouncement/{announcementId}")]
+    [HttpPatch("update-announcement/{announcementId}")]
     public async Task<IActionResult> UpdateAnnouncement([FromBody] AnnouncementDto announcement, [FromRoute] int announcementId)
     {
         var response = await _announcementService.UpdateAnnouncement(announcementId, announcement);
         return response != null ? Ok(response) : BadRequest(response);
     }
 
-    [HttpGet("GetAnnouncementById/{announcementId}")]
+    [HttpGet("get-announcement-by-id/{announcementId}")]
     public async Task<IActionResult> GetAnnouncementById([FromRoute] int announcementId)
     {
         var response = await _announcementService.GetAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest(response);
     }
 
-    [HttpDelete("DeleteAnnouncement/{announcementId}")]
+    [HttpDelete("delete-announcement/{announcementId}")]
     public async Task<IActionResult> DeleteAnnouncement([FromRoute] int announcementId)
     {
         var response = await _announcementService.DeleteDeactivateAnnouncement(announcementId);
@@ -49,7 +49,7 @@ public class AnnouncementController : Controller
     }
 
     [AllowAnonymous]
-    [HttpGet("GetAnnouncements")]
+    [HttpGet("get-announcement")]
     public ActionResult<IEnumerable<Announcement>> GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
     {
         var response = _announcementService.GetAnnouncements(parameters, announcementState);

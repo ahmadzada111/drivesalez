@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ModeratorController : Controller
     {
         private readonly IAnnouncementService _announcementService;
@@ -14,7 +16,7 @@ namespace DriveSalez.WebApi.Controllers
             _announcementService = announcementService;
         }
 
-        [HttpPatch("ConfirmAnnouncement/{announcementId}")]
+        [HttpPatch("confirm-announcement/{announcementId}")]
         public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] int announcementId)
         {
             var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);

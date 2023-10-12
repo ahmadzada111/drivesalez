@@ -23,6 +23,8 @@ namespace DriveSalez.Core.Entities
 
         public AnnouncementState AnnoucementState { get; set; } = AnnouncementState.Waiting;
 
+        public List<ImageUrl>? ImageUrls { get; set; }
+        
         public Country Country { get; set; }
 
         public City City { get; set; }

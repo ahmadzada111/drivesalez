@@ -4,13 +4,11 @@ namespace DriveSalez.Core.Entities
 {
     public class CarDealer : ApplicationUser
     {
-        public string ProfilePhotoUrl { get; set; }
-
-        public string BackgroundPhotoUrl { get; set; }
+        public ImageUrl BackgroundPhotoUrl { get; set; }
 
         public List<CarDealerPhoneNumbers> PhoneNumbers { get; set; }
 
-        public string? Adress { get; set; }
+        public string? Address { get; set; }
 
         public string? Description { get; set; }
 

@@ -23,7 +23,7 @@ namespace DriveSalez.WebApi.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<ActionResult<ApplicationUser>> Register([FromBody] RegisterDto request)
         {
             if (!ModelState.IsValid)
@@ -42,7 +42,7 @@ namespace DriveSalez.WebApi.Controllers
             return Ok(response);
         }
         
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<ActionResult<ApplicationUser>> Login([FromBody] LoginDto request)
         {
             if (!ModelState.IsValid)
@@ -61,14 +61,14 @@ namespace DriveSalez.WebApi.Controllers
             return Ok(responce);
         }
 
-        [HttpGet("LogOut")]
+        [HttpGet("logout")]
         public async Task<ActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return NoContent();
         }
         
-        [HttpPost("Refresh")]
+        [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshJwtDto request)
         {
             if (request == null)

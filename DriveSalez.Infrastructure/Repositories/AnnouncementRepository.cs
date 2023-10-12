@@ -23,9 +23,9 @@ namespace DriveSalez.Infrastructure.Repositories
             return _dbContext.Announcements.
                 Include(x => x.Owner).
                 Include(x => x.Vehicle).
+                Include(x => x.ImageUrls).
                 Include(x => x.Vehicle.Make).
                 Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.ImageUrls).
                 Include(x => x.Vehicle.FuelType).
                 Include(x => x.Vehicle.VehicleDetails).
                 Include(x => x.Vehicle.VehicleDetails.BodyType).

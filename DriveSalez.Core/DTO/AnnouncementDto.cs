@@ -47,9 +47,8 @@ namespace DriveSalez.Core.DTO
 
         public int? EngineVolume { get; set; }
 
-
-
-
+        public List<ImageUrl>? ImageUrls { get; set; }
+        
         // -----------------------------------------------------------------------
 
 

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities
 {
-    public class VehicleImageUrl
+    public class ImageUrl
     {
         public int Id { get; set; }
 
         public string Url { get; set; }
-
-        public Vehicle Vehicle { get; set; }    
     }
 }

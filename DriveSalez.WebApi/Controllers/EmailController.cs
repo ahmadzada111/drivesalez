@@ -5,6 +5,8 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DriveSalez.WebApi.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class EmailController : Controller
 {
     private readonly IEmailService _emailService;
@@ -18,7 +20,7 @@ public class EmailController : Controller
         _cache = cache;
     }
     
-    [HttpPost("GetOtp")]
+    [HttpPost("otp/send")]
     public async Task<ActionResult> SendOtpByEmail([FromBody] string email)
     {
         if (_cache.TryGetValue(email, out string cachedOtp))
@@ -42,7 +44,7 @@ public class EmailController : Controller
         return BadRequest("Cannot send OTP");
     }
 
-    [HttpPost("ValidateOtp")]
+    [HttpPost("otp/validate")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
         var response =  await _otpService.ValidateOtp(_cache, request);
@@ -60,5 +62,17 @@ public class EmailController : Controller
         }
 
         return BadRequest("Cannot validate OTP");
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
+    {
+        if (!_cache.TryGetValue(request.Email, out string cachedOtp))
+        {
+            return BadRequest("OTP validation is required before resetting the password.");
+        }
+        
+        var result = await _emailService.ResetPassword(request);
+        return result ? Ok("Password successfully changed") : BadRequest("Error");
     }
 }
