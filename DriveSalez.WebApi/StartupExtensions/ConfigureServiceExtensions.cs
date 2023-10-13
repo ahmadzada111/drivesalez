@@ -70,7 +70,6 @@ public static class ConfigureServiceExtensions
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<IEmailService, EmailService>();
 

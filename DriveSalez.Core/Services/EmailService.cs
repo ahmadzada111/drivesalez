@@ -3,6 +3,7 @@ using System.Net.Mail;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -72,7 +73,7 @@ public class EmailService : IEmailService
 
         return false;
     }
-
+    
     public async Task<bool> ResetPassword(ResetPasswordDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
