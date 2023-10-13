@@ -52,7 +52,5 @@ namespace DriveSalez.Core.RepositoryContracts
         IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptionsFromDb();
 
         IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id);
-
-        Task<ApplicationUser> CreateModeratorInDb(RegisterDto request);
     }
 }

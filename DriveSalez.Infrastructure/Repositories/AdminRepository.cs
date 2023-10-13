@@ -1,27 +1,18 @@
-﻿using DriveSalez.Core.DTO;
-using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
+﻿using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
-using Microsoft.AspNetCore.Identity;
-
 
 namespace DriveSalez.Infrastructure.Repositories
 {
     public class AdminRepository : IAdminRepository
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminRepository(ApplicationDbContext dbContext, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
+        public AdminRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _roleManager = roleManager;
-            _userManager = userManager;
         }
 
         public VehicleColor SendNewColorToDb(string color)
@@ -198,42 +189,6 @@ namespace DriveSalez.Infrastructure.Repositories
         public IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptionsFromDb()
         {
             return _dbContext.VehicleDetailsOptions.ToList();
-        }
-
-        public async Task<ApplicationUser> CreateModeratorInDb(RegisterDto request)
-        {
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = request.Email,
-                PhoneNumber = request.Phone,
-                UserName = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName
-            };
-
-            IdentityResult result = await _userManager.CreateAsync(user, request.Password);
-
-            if (result.Succeeded)
-            {
-                if (await _roleManager.FindByNameAsync(UserType.Moderator.ToString()) == null)
-                {
-                    ApplicationRole applicationRole = new ApplicationRole()
-                    {
-                        Name = UserType.Moderator.ToString()
-                    };
-
-                    await _roleManager.CreateAsync(applicationRole);
-                    await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
-                }
-
-                return user;
-            }
-
-            return null;
         }
     }
 }

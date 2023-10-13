@@ -2,7 +2,6 @@ using System.Security.Claims;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
 

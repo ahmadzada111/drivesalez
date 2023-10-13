@@ -12,13 +12,11 @@ namespace DriveSalez.Core.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IOtpService _otpService;
     private readonly IConfiguration _emailConfig;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public EmailService(IConfiguration emailConfig, UserManager<ApplicationUser> userManager, IOtpService otpService)
+    public EmailService(IConfiguration emailConfig, UserManager<ApplicationUser> userManager)
     {
-        _otpService = otpService;
         _emailConfig = emailConfig;
         _userManager = userManager;
     }
