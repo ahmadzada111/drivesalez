@@ -46,14 +46,14 @@ namespace DriveSalez.WebApi.Controllers
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
+                return Unauthorized(errorMessage);
             }
 
             var responce = await _accountService.Login(request);
 
             if (responce == null)
             {
-                return BadRequest("Email or password is invalid");
+                return Unauthorized("Email or password is invalid");
             }
 
             return Ok(responce);
@@ -71,17 +71,29 @@ namespace DriveSalez.WebApi.Controllers
         {
             if (request == null)
             {
-                return BadRequest("Invalid request");
+                return Unauthorized("Invalid request");
             }
 
             var response = await _accountService.Refresh(request);
 
             if (response.Error != null)
             {
-                return BadRequest(response.Error);
+                return Unauthorized(response.Error);
             }
 
             return Ok(response);
+        }
+
+        [HttpDelete("delete-user")]
+        public async Task<ActionResult<ApplicationUser>> DeleteUser([FromBody] LoginDto request)
+        {
+            if (request == null)
+            {
+                return Unauthorized("Email or password is invalid");
+            }
+
+            var response = await _accountService.DeleteUser(request);
+            return response != null ? Ok() : BadRequest();
         }
     }
 }

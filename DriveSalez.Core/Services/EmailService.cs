@@ -80,13 +80,17 @@ public class EmailService : IEmailService
         {
             return false;
         }
-        
-        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);
-        var result = await _userManager.UpdateAsync(user);
 
-        if (result.Succeeded)
+        var changeResult = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        
+        if (changeResult.Succeeded)
         {
-            return true;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
         }
 
         return false;

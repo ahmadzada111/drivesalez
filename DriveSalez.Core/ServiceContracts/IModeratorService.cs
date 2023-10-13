@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.ServiceContracts
 {
-    internal interface IModeratorService
+    public interface IModeratorService
     {
     }
 }

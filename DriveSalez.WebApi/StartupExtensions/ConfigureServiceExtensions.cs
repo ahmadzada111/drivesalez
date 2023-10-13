@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 

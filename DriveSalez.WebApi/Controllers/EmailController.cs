@@ -1,5 +1,6 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -7,6 +8,7 @@ namespace DriveSalez.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class EmailController : Controller
 {
     private readonly IEmailService _emailService;
@@ -63,7 +65,7 @@ public class EmailController : Controller
 
         return BadRequest("Cannot validate OTP");
     }
-
+    
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
     {

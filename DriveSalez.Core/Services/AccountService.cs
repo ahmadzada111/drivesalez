@@ -115,4 +115,24 @@ public class AccountService : IAccountService
 
         return response;
     }
+
+    public async Task<ApplicationUser> DeleteUser(LoginDto request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        var result = await _userManager.CheckPasswordAsync(user, request.Password);
+
+        if (result)
+        {
+            var deleteResult = await _userManager.DeleteAsync(user);
+
+            if (deleteResult.Succeeded)
+            {
+                return user;
+            }
+
+            return null;
+        }
+
+        return null;
+    }
 }
