@@ -83,16 +83,16 @@ namespace DriveSalez.WebApi.Controllers
 
             return Ok(response);
         }
-
+        
         [HttpDelete("delete-user")]
-        public async Task<ActionResult<ApplicationUser>> DeleteUser([FromBody] LoginDto request)
+        public async Task<ActionResult<ApplicationUser>> DeleteUser([FromBody] string password)
         {
-            if (request == null)
+            if (string.IsNullOrEmpty(password))
             {
-                return Unauthorized("Email or password is invalid");
+                return Unauthorized("Password is invalid");
             }
 
-            var response = await _accountService.DeleteUser(request);
+            var response = await _accountService.DeleteUser(password);
             return response != null ? Ok() : BadRequest();
         }
     }

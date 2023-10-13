@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities.VehicleParts
 {
-    public class VehicleDriveTrainType
+    public class VehicleDrivetrainType
     {
         public int Id { get; set; }
 

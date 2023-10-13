@@ -39,14 +39,14 @@ namespace DriveSalez.Infrastructure.Repositories
             return responce;
         }
 
-        public VehicleDriveTrainType SendNewVehicleDriveTrainTypeToDb(string driveTrainType)
+        public VehicleDrivetrainType SendNewVehicleDrivetrainTypeToDb(string driveTrainType)
         {
             if (string.IsNullOrEmpty(driveTrainType))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDriveTrainTypes.Add(new VehicleDriveTrainType() { Name = driveTrainType }).Entity;
+            var response = _dbContext.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { Name = driveTrainType }).Entity;
             _dbContext.SaveChanges();
             return response;
         }
@@ -105,14 +105,14 @@ namespace DriveSalez.Infrastructure.Repositories
             return response;
         }
 
-        public VehicleDetailsCondition SendNewVehicleDetailsConditionToDb(string condition)
+        public VehicleCondition SendNewVehicleDetailsConditionToDb(string condition)
         {
             if (string.IsNullOrEmpty(condition))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDetailsConditions.Add(new VehicleDetailsCondition() { Condition = condition }).Entity;
+            var response = _dbContext.VehicleDetailsConditions.Add(new VehicleCondition() { Condition = condition }).Entity;
             _dbContext.SaveChanges();
             return response;
         }
@@ -129,66 +129,356 @@ namespace DriveSalez.Infrastructure.Repositories
             return response;
         }
 
-        public VehicleDetailsOptions SendNewVehicleDetailsOptionsToDb(string option)
+        public VehicleOption SendNewVehicleDetailsOptionsToDb(string option)
         {
             if (string.IsNullOrEmpty(option))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDetailsOptions.Add(new VehicleDetailsOptions() { Option = option }).Entity;
+            var response = _dbContext.VehicleDetailsOptions.Add(new VehicleOption() { Option = option }).Entity;
             _dbContext.SaveChanges();
             return response;
         }
 
-        public IEnumerable<VehicleColor> GetAllColorsFromDb()
+        public async Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor)
         {
-            return _dbContext.VehicleColors.ToList();
+            if (colorId == null || string.IsNullOrEmpty(newColor))
+            {
+                return null;
+            }
+
+            var color = await _dbContext.FindAsync<VehicleColor>(colorId);
+            color.Name = newColor;
+            _dbContext.Update(color);
+            await _dbContext.SaveChangesAsync();
+
+            return color;
+        }
+        
+        public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDb(int bodyTypeId, string newBodyType)
+        {
+            if (bodyTypeId == null || string.IsNullOrEmpty(newBodyType))
+            {
+                return null;
+            }
+
+            var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
+            bodyType.Name = newBodyType;
+            _dbContext.Update(bodyType);
+            await _dbContext.SaveChangesAsync();
+
+            return bodyType;
+        }
+        
+        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDb(int driveTrainId, string newDrivetrain)
+        {
+            if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
+            {
+                return null;
+            }
+
+            var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
+            drivetrain.Name = newDrivetrain;
+            _dbContext.Update(drivetrain);
+            await _dbContext.SaveChangesAsync();
+
+            return drivetrain;
+        }
+        
+        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDb(int gearboxId, string newGearbox)
+        {
+            if (gearboxId == null || string.IsNullOrEmpty(newGearbox))
+            {
+                return null;
+            }
+
+            var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
+            gearbox.Name = newGearbox;
+            _dbContext.Update(gearbox);
+            await _dbContext.SaveChangesAsync();
+
+            return gearbox;
+        }
+        
+        public async Task<Make> UpdateMakeInDb(int makeId, string newMake)
+        {
+            if (makeId == null || string.IsNullOrEmpty(newMake))
+            {
+                return null;
+            }
+
+            var make = await _dbContext.FindAsync<Make>(makeId);
+            make.Name = newMake;
+            _dbContext.Update(make);
+            await _dbContext.SaveChangesAsync();
+
+            return make;
+        }
+        
+        public async Task<Model> UpdateModelInDb(int modelId, string newModel)
+        {
+            if (modelId == null || string.IsNullOrEmpty(newModel))
+            {
+                return null;
+            }
+
+            var model = await _dbContext.FindAsync<Model>(modelId);
+            model.Name = newModel;
+            _dbContext.Update(model);
+            await _dbContext.SaveChangesAsync();
+
+            return model;
+        }
+        
+        public async Task<VehicleFuelType> UpdateFuelTypeInDb(int fuelTypeId, string newFuelType)
+        {
+            if (fuelTypeId == null || string.IsNullOrEmpty(newFuelType))
+            {
+                return null;
+            }
+
+            var fuelType = await _dbContext.FindAsync<VehicleFuelType>(fuelTypeId);
+            fuelType.FuelType = newFuelType;
+            _dbContext.Update(fuelType);
+            await _dbContext.SaveChangesAsync();
+
+            return fuelType;
+        }
+        
+        public async Task<VehicleCondition> UpdateVehicleConditionInDb(int vehicleConditionId, string newVehicleCondition)
+        {
+            if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition))
+            {
+                return null;
+            }
+
+            var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
+            vehicleCondition.Condition = newVehicleCondition;
+            _dbContext.Update(vehicleCondition);
+            await _dbContext.SaveChangesAsync();
+
+            return vehicleCondition;
+        }
+        
+        public async Task<VehicleOption> UpdateVehicleOptionInDb(int vehicleOptionId, string newVehicleOption)
+        {
+            if (vehicleOptionId == null || string.IsNullOrEmpty(newVehicleOption))
+            {
+                return null;
+            }
+
+            var vehicleOption = await _dbContext.FindAsync<VehicleOption>(vehicleOptionId);
+            vehicleOption.Option = newVehicleOption;
+            _dbContext.Update(vehicleOption);
+            await _dbContext.SaveChangesAsync();
+
+            return vehicleOption;
+        }
+        
+        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDb(int marketVersionId, string newMarketVersion)
+        {
+            if (marketVersionId == null || string.IsNullOrEmpty(newMarketVersion))
+            {
+                return null;
+            }
+
+            var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
+            marketVersion.Name = newMarketVersion;
+            _dbContext.Update(marketVersion);
+            await _dbContext.SaveChangesAsync();
+
+            return marketVersion;
         }
 
-        public IEnumerable<VehicleBodyType> GetAllVehicleBodyTypesFromDb()
+        public async Task<VehicleColor> DeleteVehicleColorFromDb(int colorId)
         {
-            return _dbContext.VehicleBodyTypes.ToList();
+            if (colorId == null)
+            {
+                return null;
+            }
+
+            var color = await _dbContext.FindAsync<VehicleColor>(colorId);
+            
+            if (color != null)
+            {
+                _dbContext.Remove(color);
+                await _dbContext.SaveChangesAsync();
+                return color;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleDriveTrainType> GetAllVehicleDriveTrainsFromDb()
+        public async Task<VehicleBodyType> DeleteVehicleBodyTypeFromDb(int bodyTypeId)
         {
-            return _dbContext.VehicleDriveTrainTypes.ToList();
+            if (bodyTypeId == null)
+            {
+                return null;
+            }
+
+            var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
+            
+            if (bodyType != null)
+            {
+                _dbContext.Remove(bodyType);
+                await _dbContext.SaveChangesAsync();
+                return bodyType;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypesFromDb()
+        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDb(int driveTrainId)
         {
-            return _dbContext.VehicleGearboxTypes.ToList();
+            if (driveTrainId == null)
+            {
+                return null;
+            }
+
+            var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
+            
+            if (drivetrain != null)
+            {
+                _dbContext.Remove(drivetrain);
+                await _dbContext.SaveChangesAsync();
+                return drivetrain;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<Make> GetAllMakesFromDb()
+        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDb(int gearboxId)
         {
-            return _dbContext.Makes.ToList();
+            if (gearboxId == null)
+            {
+                return null;
+            }
+
+            var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
+            
+            if (gearbox != null)
+            {
+                _dbContext.Remove(gearbox);
+                await _dbContext.SaveChangesAsync();
+                return gearbox;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id)
+        public async Task<Make> DeleteMakeFromDb(int makeId)
         {
-            return _dbContext.Models.Where(e => e.Make.Id == id).ToList();
+            if (makeId == null)
+            {
+                return null;
+            }
+
+            var make = await _dbContext.FindAsync<Make>(makeId);
+            
+            if (make != null)
+            {
+                _dbContext.Remove(make);
+                await _dbContext.SaveChangesAsync();
+                return make;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleFuelType> GetAllVehicleFuelTypesFromDb()
+        public async Task<Model> DeleteModelFromDb(int modelId)
         {
-            return _dbContext.VehicleFuelTypes.ToList();
+            if (modelId == null)
+            {
+                return null;
+            }
+
+            var model = await _dbContext.FindAsync<Model>(modelId);
+            
+            if (model != null)
+            {
+                _dbContext.Remove(model);
+                await _dbContext.SaveChangesAsync();
+                return model;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleDetailsCondition> GetAllVehicleDetailsConditionsFromDb()
+        public async Task<VehicleFuelType> DeleteFuelTypeFromDb(int fuelTypeId)
         {
-            return _dbContext.VehicleDetailsConditions.ToList();
+            if (fuelTypeId == null)
+            {
+                return null;
+            }
+
+            var fuelType = await _dbContext.FindAsync<VehicleFuelType>(fuelTypeId);
+            
+            if (fuelType != null)
+            {
+                _dbContext.Remove(fuelType);
+                await _dbContext.SaveChangesAsync();
+                return fuelType;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersionsFromDb()
+        public async Task<VehicleCondition> DeleteVehicleConditionFromDb(int vehicleConditionId)
         {
-            return _dbContext.VehicleMarketVersions.ToList();
+            if (vehicleConditionId == null)
+            {
+                return null;
+            }
+
+            var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
+            
+            if (vehicleCondition != null)
+            {
+                _dbContext.Remove(vehicleCondition);
+                await _dbContext.SaveChangesAsync();
+                return vehicleCondition;
+            }
+            
+            return null;
         }
 
-        public IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptionsFromDb()
+        public async Task<VehicleOption> DeleteVehicleOptionFromDb(int vehicleOptionId)
         {
-            return _dbContext.VehicleDetailsOptions.ToList();
+            if (vehicleOptionId == null)
+            {
+                return null;
+            }
+
+            var vehicleOption = await _dbContext.FindAsync<VehicleOption>(vehicleOptionId);
+            
+            if (vehicleOption != null)
+            {
+                _dbContext.Remove(vehicleOption);
+                await _dbContext.SaveChangesAsync();
+                return vehicleOption;
+            }
+            
+            return null;
+        }
+
+        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDb(int marketVersionId)
+        {
+            if (marketVersionId == null)
+            {
+                return null;
+            }
+
+            var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
+            
+            if (marketVersion != null)
+            {
+                _dbContext.Remove(marketVersion);
+                await _dbContext.SaveChangesAsync();
+                return marketVersion;
+            }
+            
+            return null;
         }
     }
 }

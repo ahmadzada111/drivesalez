@@ -57,21 +57,21 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public VehicleDetailsCondition AddVehicleDetailsCondition(string condition)
+        public VehicleCondition AddVehicleCondition(string condition)
         {
             var response = _adminRepository.SendNewVehicleDetailsConditionToDb(condition);
             return response;
         }
 
-        public VehicleDetailsOptions AddVehicleDetailsOption(string option)
+        public VehicleOption AddVehicleOption(string option)
         {
             var response = _adminRepository.SendNewVehicleDetailsOptionsToDb(option);
             return response;
         }
 
-        public VehicleDriveTrainType AddVehicleDriveTrainType(string driveTrainType)
+        public VehicleDrivetrainType AddVehicleDrivetrainType(string driveTrainType)
         {
-            var response = _adminRepository.SendNewVehicleDriveTrainTypeToDb(driveTrainType);
+            var response = _adminRepository.SendNewVehicleDrivetrainTypeToDb(driveTrainType);
             return response;
         }
 
@@ -93,63 +93,123 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public IEnumerable<VehicleColor> GetAllColors()
+        public async Task<VehicleColor> UpdateVehicleColor(int colorId, string newColor)
         {
-            var response = _adminRepository.GetAllColorsFromDb();
-            return response;
-        }
-
-        public IEnumerable<VehicleBodyType> GetAllVehicleBodyTypes()
-        {
-            var response = _adminRepository.GetAllVehicleBodyTypesFromDb();
-            return response;
-        }
-
-        public IEnumerable<VehicleDriveTrainType> GetAllVehicleDriveTrains()
-        {
-            var response = _adminRepository.GetAllVehicleDriveTrainsFromDb();
-            return response;
-        }
-
-        public IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypes()
-        {
-            var response = _adminRepository.GetAllVehicleGearboxTypesFromDb();
-            return response;
-        }
-
-        public IEnumerable<Make> GetAllMakes()
-        {
-            var response = _adminRepository.GetAllMakesFromDb();
+            var response = await _adminRepository.UpdateVehicleColorInDb(colorId, newColor);
             return response;
         }
         
-        public IEnumerable<VehicleFuelType> GetAllVehicleFuelTypes()
+        public async Task<VehicleBodyType> UpdateVehicleBodyType(int bodyTypeId, string newBodyType)
         {
-            var response = _adminRepository.GetAllVehicleFuelTypesFromDb();
+            var response = await _adminRepository.UpdateVehicleBodyTypeInDb(bodyTypeId, newBodyType);
+            return response;
+        }
+        
+        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainType(int drivetrainId, string newDrivetrain)
+        {
+            var response = await _adminRepository.UpdateVehicleDrivetrainTypeInDb(drivetrainId, newDrivetrain);
+            return response;
+        }
+        
+        public async Task<VehicleGearboxType> UpdateVehicleGearboxType(int gearboxId, string newGearbox)
+        {
+            var response = await _adminRepository.UpdateVehicleGearboxTypeInDb(gearboxId, newGearbox);
             return response;
         }
 
-        public IEnumerable<VehicleDetailsCondition> GetAllVehicleDetailsConditions()
+        public async Task<Make> UpdateMake(int makeId, string newMake)
         {
-            var response = _adminRepository.GetAllVehicleDetailsConditionsFromDb();
+            var response = await _adminRepository.UpdateMakeInDb(makeId, newMake);
+            return response;
+        }
+        
+        public async Task<Model> UpdateModel(int modelId, string newModel)
+        {
+            var response = await _adminRepository.UpdateModelInDb(modelId, newModel);
+            return response;
+        }
+        
+        public async Task<VehicleFuelType> UpdateFuelType(int fuelTypeId, string newFuelType)
+        {
+            var response = await _adminRepository.UpdateFuelTypeInDb(fuelTypeId, newFuelType);
+            return response;
+        }
+        
+        public async Task<VehicleCondition> UpdateVehicleCondition(int vehicleConditionId, string newVehicleCondition)
+        {
+            var response = await _adminRepository.UpdateVehicleConditionInDb(vehicleConditionId, newVehicleCondition);
+            return response;
+        }
+        
+        public async Task<VehicleOption> UpdateVehicleOption(int vehicleOptionId, string newVehicleOption)
+        {
+            var response = await _adminRepository.UpdateVehicleOptionInDb(vehicleOptionId, newVehicleOption);
+            return response;
+        }
+        
+        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersion(int marketVersionId, string newMarketVersion)
+        {
+            var response = await _adminRepository.UpdateVehicleMarketVersionInDb(marketVersionId, newMarketVersion);
             return response;
         }
 
-        public IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersions()
+        public async Task<VehicleColor> DeleteVehicleColor(int colorId)
         {
-            var response = _adminRepository.GetAllVehicleMarketVersionsFromDb();
+            var response = await _adminRepository.DeleteVehicleColorFromDb(colorId);
             return response;
         }
 
-        public IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptions()
+        public async Task<VehicleBodyType> DeleteVehicleBodyType(int bodyTypeId)
         {
-            var response = _adminRepository.GetAllVehicleDetailsOptionsFromDb();
+            var response = await _adminRepository.DeleteVehicleBodyTypeFromDb(bodyTypeId);
             return response;
         }
 
-        public IEnumerable<Model> GetAllModelsByMakeId(int id)
+        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainType(int drivetrainId)
         {
-            var response = _adminRepository.GetAllModelsByMakeIdFromDb(id);
+            var response = await _adminRepository.DeleteVehicleDrivetrainTypeFromDb(drivetrainId);
+            return response;
+        }
+
+        public async Task<VehicleGearboxType> DeleteVehicleGearboxType(int gearboxId)
+        {
+            var response = await _adminRepository.DeleteVehicleGearboxTypeFromDb(gearboxId);
+            return response;
+        }
+
+        public async Task<Make> DeleteMake(int makeId)
+        {
+            var response = await _adminRepository.DeleteMakeFromDb(makeId);
+            return response;
+        }
+
+        public async Task<Model> DeleteModel(int modelId)
+        {
+            var response = await _adminRepository.DeleteModelFromDb(modelId);
+            return response;
+        }
+
+        public async Task<VehicleFuelType> DeleteFuelType(int fuelTypeId)
+        {
+            var response = await _adminRepository.DeleteFuelTypeFromDb(fuelTypeId);
+            return response;
+        }
+
+        public async Task<VehicleCondition> DeleteVehicleCondition(int vehicleConditionId)
+        {
+            var response = await _adminRepository.DeleteVehicleConditionFromDb(vehicleConditionId);
+            return response;
+        }
+
+        public async Task<VehicleOption> DeleteVehicleOption(int vehicleOptionId)
+        {
+            var response = await _adminRepository.DeleteVehicleOptionFromDb(vehicleOptionId);
+            return response;
+        }
+
+        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersion(int marketVersionId)
+        {
+            var response = await _adminRepository.DeleteVehicleMarketVersionFromDb(marketVersionId);
             return response;
         }
 

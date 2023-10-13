@@ -12,7 +12,7 @@ namespace DriveSalez.Core.ServiceContracts
 
         VehicleBodyType AddBodyType(string bodyType);
 
-        VehicleDriveTrainType AddVehicleDriveTrainType(string driveTrainType);
+        VehicleDrivetrainType AddVehicleDrivetrainType(string driveTrainType);
 
         VehicleGearboxType AddVehicleGearboxType(string gearboxType);
 
@@ -22,32 +22,52 @@ namespace DriveSalez.Core.ServiceContracts
 
         VehicleFuelType AddVehicleFuelType(string fuelType);
 
-        VehicleDetailsCondition AddVehicleDetailsCondition(string condition);
+        VehicleCondition AddVehicleCondition(string condition);
 
         VehicleMarketVersion AddVehicleMarketVersion(string marketVersion);
 
-        VehicleDetailsOptions AddVehicleDetailsOption(string option);
+        VehicleOption AddVehicleOption(string option);
 
-        IEnumerable<VehicleColor> GetAllColors();
+        Task<VehicleColor> UpdateVehicleColor(int colorId, string newColor);
 
-        IEnumerable<VehicleBodyType> GetAllVehicleBodyTypes();
+        Task<VehicleBodyType> UpdateVehicleBodyType(int bodyTypeId, string newBodyType);
 
-        IEnumerable<VehicleDriveTrainType> GetAllVehicleDriveTrains();
+        Task<VehicleDrivetrainType> UpdateVehicleDrivetrainType(int drivetrainId, string newDrivetrain);
 
-        IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypes();
+        Task<VehicleGearboxType> UpdateVehicleGearboxType(int gearboxId, string newGearbox);
 
-        IEnumerable<Make> GetAllMakes();
+        Task<Make> UpdateMake(int makeId, string newMake);
 
-        IEnumerable<Model> GetAllModelsByMakeId(int id);
+        Task<Model> UpdateModel(int modelId, string newModel);
 
-        IEnumerable<VehicleFuelType> GetAllVehicleFuelTypes();
+        Task<VehicleFuelType> UpdateFuelType(int fuelTypeId, string newFuelType);
 
-        IEnumerable<VehicleDetailsCondition> GetAllVehicleDetailsConditions();
+        Task<VehicleCondition> UpdateVehicleCondition(int vehicleConditionId, string newVehicleCondition);
 
-        IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersions();
+        Task<VehicleOption> UpdateVehicleOption(int vehicleOptionId, string newVehicleOption);
 
-        IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptions();
+        Task<VehicleMarketVersion> UpdateVehicleMarketVersion(int marketVersionId, string newMarketVersion);
 
+        Task<VehicleColor> DeleteVehicleColor(int colorId);
+
+        Task<VehicleBodyType> DeleteVehicleBodyType(int bodyTypeId);
+
+        Task<VehicleDrivetrainType> DeleteVehicleDrivetrainType(int drivetrainId);
+
+        Task<VehicleGearboxType> DeleteVehicleGearboxType(int gearboxId);
+
+        Task<Make> DeleteMake(int makeId);
+
+        Task<Model> DeleteModel(int modelId);
+
+        Task<VehicleFuelType> DeleteFuelType(int fuelTypeId);
+
+        Task<VehicleCondition> DeleteVehicleCondition(int vehicleConditionId);
+
+        Task<VehicleOption> DeleteVehicleOption(int vehicleOptionId);
+
+        Task<VehicleMarketVersion> DeleteVehicleMarketVersion(int marketVersionId);
+        
         Task<ApplicationUser> AddModerator(RegisterDto registerDTO);
     }
 }

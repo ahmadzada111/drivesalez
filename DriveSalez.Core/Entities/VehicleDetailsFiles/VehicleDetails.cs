@@ -19,9 +19,9 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 
         public VehicleGearboxType GearboxType { get; set; }     // Manual
 
-        public VehicleDriveTrainType DriveTrainType { get; set; }  // FWD
+        public VehicleDrivetrainType DrivetrainType { get; set; }  // FWD
 
-        public List<VehicleDetailsCondition> Condition { get; set; }  //No Damage, No Color
+        public List<VehicleCondition> Condition { get; set; }  //No Damage, No Color
 
         public VehicleMarketVersion MarketVersion { get; set; }      // US
 
@@ -31,7 +31,7 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 
         public string? VinCode { get; set; }
 
-        public List<VehicleDetailsOptions> Options { get; set; }      // ABS, REAR CAMERA, FRONT RADAR
+        public List<VehicleOption> Options { get; set; }      // ABS, REAR CAMERA, FRONT RADAR
 
         public int? EngineVolume { get; set; }     //6200 CC
 

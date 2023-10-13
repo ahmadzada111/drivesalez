@@ -26,6 +26,12 @@ public class AnnouncementService : IAnnouncementService
     public async Task<Announcement> AddAnnouncement(AnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            return null;
+        }
+        
         var response = await _announcementRepository.CreateAnnouncement(user.Id, request);
         
         return response;
@@ -34,7 +40,13 @@ public class AnnouncementService : IAnnouncementService
     public async Task<Announcement> DeleteDeactivateAnnouncement(int announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-        var response = await _announcementRepository.DeleteInactiveAnnouncementFromDb(user.Id,announcementId);
+        
+        if (user == null)
+        {
+            return null;
+        }
+        
+        var response = await _announcementRepository.DeleteInactiveAnnouncementFromDb(user.Id, announcementId);
 
         return response;
     }
@@ -67,6 +79,12 @@ public class AnnouncementService : IAnnouncementService
     public async Task<Announcement> ChangeAnnouncementState(int announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            return null;
+        }
+        
         var response = await _announcementRepository.ChangeAnnouncementStateInDb(user.Id, announcementId, announcementState);
 
         return response;

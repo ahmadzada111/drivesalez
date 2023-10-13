@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 {
-    public class VehicleDetailsOptions
+    public class VehicleOption
     {
         public int Id { get; set; }
 

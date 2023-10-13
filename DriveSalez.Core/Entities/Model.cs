@@ -17,7 +17,7 @@ namespace DriveSalez.Core.Entities
         [StringLength(30, MinimumLength = 3, ErrorMessage = "Car Model can't be longer than 30 characters or less than 3.")]
         public string Name { get; set; }
 
-        public Make? Make { get; set; }
+        public Make Make { get; set; }
 
         [JsonIgnore]
         public List<Vehicle> Vehicles { get; set; }  //EF CORE FOREIGN KEY

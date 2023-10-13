@@ -29,7 +29,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.FuelType).
                 Include(x => x.Vehicle.VehicleDetails).
                 Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DriveTrainType).
+                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
                 Include(x => x.Vehicle.VehicleDetails.GearboxType).
                 Include(x => x.Vehicle.VehicleDetails.Color).
                 Include(x => x.Vehicle.VehicleDetails.MarketVersion).
@@ -47,8 +47,7 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 throw new KeyNotFoundException();
             }
-
-
+            
             var announcement = new Announcement()
             {
                 Vehicle = new Vehicle()
@@ -65,7 +64,7 @@ namespace DriveSalez.Infrastructure.Repositories
                         Color = _dbContext.VehicleColors.Find(request.ColorID),
                         HorsePower = request.HorsePower,
                         GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxID),
-                        DriveTrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
+                        DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
                         //Condition=_dbContext.Vehicle
                         MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
                         OwnerQuantity = request.OwnerQuantity,
@@ -87,7 +86,6 @@ namespace DriveSalez.Infrastructure.Repositories
                 City = _dbContext.Cities.Find(request.City.Id),
                 Owner = user
             };
-
 
             if (announcement.Vehicle.Model.Make != announcement.Vehicle.Make)
             {
@@ -126,7 +124,7 @@ namespace DriveSalez.Infrastructure.Repositories
                         Color = _dbContext.VehicleColors.Find(request.ColorID),
                         HorsePower = request.HorsePower,
                         GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxID),
-                        DriveTrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
+                        DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
                         //Condition=_dbContext.Vehicle
                         MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
                         OwnerQuantity = request.OwnerQuantity,

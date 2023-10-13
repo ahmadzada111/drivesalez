@@ -3,6 +3,8 @@ using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Core.Services;
@@ -12,13 +14,16 @@ public class AccountService : IAccountService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly IHttpContextAccessor _contextAccessor;
     private readonly IJwtService _jwtService;
     
-    public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, IJwtService jwtService)
+    public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
+        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
+        _contextAccessor = contextAccessor;
         _jwtService = jwtService;
     }
 
@@ -116,16 +121,16 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<ApplicationUser> DeleteUser(LoginDto request)
+    [Authorize]
+    public async Task<ApplicationUser> DeleteUser(string password)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        var result = await _userManager.CheckPasswordAsync(user, request.Password);
-
-        if (result)
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user != null && await _userManager.CheckPasswordAsync(user, password))
         {
-            var deleteResult = await _userManager.DeleteAsync(user);
-
-            if (deleteResult.Succeeded)
+            var result = await _userManager.DeleteAsync(user);
+            
+            if (result.Succeeded)
             {
                 return user;
             }

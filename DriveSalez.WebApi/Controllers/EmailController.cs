@@ -70,6 +70,6 @@ public class EmailController : Controller
     public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
     {
         var result = await _emailService.ResetPassword(request);
-        return result ? Ok("Password successfully changed") : BadRequest("Error");
+        return result ? Ok("Password was successfully changed") : BadRequest("Error");
     }
 }

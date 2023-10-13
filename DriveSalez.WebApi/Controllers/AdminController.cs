@@ -1,9 +1,7 @@
 ﻿using DriveSalez.Core.DTO;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
-using DriveSalez.Infrastructure.DbContext;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers
@@ -27,21 +25,21 @@ namespace DriveSalez.WebApi.Controllers
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-body-type")]
+        [HttpPost("add-new-body")]
         public ActionResult AddNewBodyType(string bodyType)
         {
             var response = _adminService.AddBodyType(bodyType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-drive-train-type")]
-        public ActionResult AddNewDriveTrainType(string driveTrainType)
+        [HttpPost("add-new-drivetrain")]
+        public ActionResult AddNewDrivetrainType(string driveTrainType)
         {
-            var response = _adminService.AddVehicleDriveTrainType(driveTrainType);
+            var response = _adminService.AddVehicleDrivetrainType(driveTrainType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-gearbox-type")]
+        [HttpPost("add-new-gearbox")]
         public ActionResult AddNewGearboxType(string gearboxType)
         {
             var response = _adminService.AddVehicleGearboxType(gearboxType);
@@ -62,102 +60,172 @@ namespace DriveSalez.WebApi.Controllers
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-fuel-type")]
+        [HttpPost("add-new-fuel")]
         public ActionResult AddNewFuelType(string fuelType)
         {
             var response = _adminService.AddVehicleFuelType(fuelType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-vehicle-details-condition")]
-        public ActionResult AddNewVehicleDetailsCondition(string condition)
+        [HttpPost("add-new-condition")]
+        public ActionResult AddNewVehicleCondition(string condition)
         {
-            var response = _adminService.AddVehicleDetailsCondition(condition);
+            var response = _adminService.AddVehicleCondition(condition);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-vehicle-market-version")]
+        [HttpPost("add-new-market-version")]
         public ActionResult AddNewVehicleMarketVersion(string marketVersion)
         {
             var response = _adminService.AddVehicleMarketVersion(marketVersion);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpPost("add-new-vehicle-details-option")]
-        public ActionResult AddNewVehicleDetailsOption(string option)
+        [HttpPost("add-new-option")]
+        public ActionResult AddNewVehicleOption(string option)
         {
-            var response = _adminService.AddVehicleDetailsOption(option);
+            var response = _adminService.AddVehicleOption(option);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
-        [HttpGet("get-all-colors")]
-        public ActionResult GetAllColors()
+        [HttpPut("update-color/{colorId}")]
+        public async Task<ActionResult> UpdateVehicleColor([FromRoute] int colorId, [FromBody] string newColor)
         {
-            var response = _adminService.GetAllColors();
+            var response = await _adminService.UpdateVehicleColor(colorId, newColor);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-body-types")]
-        public ActionResult GetAllBodyTypes()
+        
+        [HttpPut("update-body/{bodyTypeId}")]
+        public async Task<ActionResult> UpdateVehicleBodyType([FromRoute] int bodyTypeId, [FromBody] string newBodyType)
         {
-            var response = _adminService.GetAllVehicleBodyTypes();
+            var response = await _adminService.UpdateVehicleBodyType(bodyTypeId, newBodyType);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-drive-train-types")]
-        public ActionResult GetAllDriveTrainTypes()
+        
+        [HttpPut("update-drivetrain/{drivetrainId}")]
+        public async Task<ActionResult> UpdateVehicleDriveTrainType([FromRoute] int drivetrainId, [FromBody] string drivetrain)
         {
-            var response = _adminService.GetAllVehicleDriveTrains();
+            var response = await _adminService.UpdateVehicleDrivetrainType(drivetrainId, drivetrain);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-gearbox-types")]
-        public ActionResult GetAllGearboxTypes()
+        
+        [HttpPut("update-gearbox/{gearboxId}")]
+        public async Task<ActionResult> UpdateVehicleGearboxType([FromRoute] int gearboxId, [FromBody] string newGearbox)
         {
-            var response = _adminService.GetAllVehicleGearboxTypes();
+            var response = await _adminService.UpdateVehicleGearboxType(gearboxId, newGearbox);
+            return response != null ? Ok(response) : BadRequest(response);   
+        }
+        
+        [HttpPut("update-make/{makeId}")]
+        public async Task<ActionResult> UpdateMake([FromRoute] int makeId, [FromBody] string newMake)
+        {
+            var response = await _adminService.UpdateMake(makeId, newMake);
+            return response != null ? Ok(response) : BadRequest(response);   
+        }
+        
+        [HttpPut("update-model/{modelId}")]
+        public async Task<ActionResult> UpdateModel([FromRoute] int modelId, [FromBody] string newModel)
+        {
+            var response = await _adminService.UpdateModel(modelId, newModel);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpPut("update-fuel/{fuelTypeId}")]
+        public async Task<ActionResult> UpdateFuelType([FromRoute] int fuelTypeId, [FromBody] string newFuelType)
+        {
+            var response = await _adminService.UpdateFuelType(fuelTypeId, newFuelType);
+            return response != null ? Ok(response) : BadRequest(response);   
+        }
+        
+        [HttpPut("update-condition/{vehicleConditionId}")]
+        public async Task<ActionResult> UpdateVehicleCondition([FromRoute] int vehicleConditionId, [FromBody] string newVehicleCondition)
+        {
+            var response = await _adminService.UpdateVehicleCondition(vehicleConditionId, newVehicleCondition);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpPut("update-option/{vehicleOptionId}")]
+        public async Task<ActionResult> UpdateVehicleOption([FromRoute] int vehicleConditionId, [FromBody] string newVehicleOption)
+        {
+            var response = await _adminService.UpdateVehicleOption(vehicleConditionId, newVehicleOption);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpPut("update-market-version/{marketVersionId}")]
+        public async Task<ActionResult> UpdateVehicleMarketVersion([FromRoute] int marketVersionId, [FromBody] string newMarketVersion)
+        {
+            var response = await _adminService.UpdateVehicleMarketVersion(marketVersionId, newMarketVersion);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpDelete("delete-color/{colorId}")]
+        public async Task<ActionResult> DeleteVehicleColor([FromRoute] int colorId)
+        {
+            var response = await _adminService.DeleteVehicleColor(colorId);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-makes")]
-        public ActionResult GetAllMakes()
+        
+        [HttpDelete("delete-body/{bodyTypeId}")]
+        public async Task<ActionResult> DeleteVehicleBodyType([FromRoute] int bodyTypeId)
         {
-            var response = _adminService.GetAllMakes();
+            var response = await _adminService.DeleteVehicleBodyType(bodyTypeId);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-models")]
-        public ActionResult GetAllModels(int id)
+        
+        [HttpDelete("delete-drivetrain/{drivetrainId}")]
+        public async Task<ActionResult> DeleteVehicleDriveTrainType([FromRoute] int drivetrainId)
         {
-            var response = _adminService.GetAllModelsByMakeId(id);
+            var response = await _adminService.DeleteVehicleDrivetrainType(drivetrainId);
             return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpGet("get-all-fuel-types")]
-        public ActionResult GetAllFuelTypes()
+        
+        [HttpDelete("delete-gearbox/{gearboxId}")]
+        public async Task<ActionResult> DeleteVehicleGearboxType([FromRoute] int gearboxId)
         {
-            var response = _adminService.GetAllVehicleFuelTypes();
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _adminService.DeleteVehicleGearboxType(gearboxId);
+            return response != null ? Ok(response) : BadRequest(response);   
         }
-
-        [HttpGet("get-all-vehicle-details-conditions")]
-        public ActionResult GetAllVehicleDetailsConditions()
+        
+        [HttpDelete("delete-make/{makeId}")]
+        public async Task<ActionResult> DeleteMake([FromRoute] int makeId)
         {
-            var response = _adminService.GetAllVehicleDetailsConditions();
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _adminService.DeleteMake(makeId);
+            return response != null ? Ok(response) : BadRequest(response);   
         }
-
-        [HttpGet("get-all-vehicle-market-versions")]
-        public ActionResult GetAllVehicleMarketVersions()
+        
+        [HttpDelete("delete-model/{modelId}")]
+        public async Task<ActionResult> DeleteModel([FromRoute] int modelId)
         {
-            var response = _adminService.GetAllVehicleMarketVersions();
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _adminService.DeleteModel(modelId);
+            return response != null ? Ok(response) : BadRequest(response);  
         }
-
-        [HttpGet("get-all-vehicle-details-options")]
-        public ActionResult GetAllVehicleDetailsOptions()
+        
+        [HttpDelete("delete-fuel/{fuelTypeId}")]
+        public async Task<ActionResult> DeleteFuelType([FromRoute] int fuelTypeId)
         {
-            var response = _adminService.GetAllVehicleDetailsOptions();
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _adminService.DeleteFuelType(fuelTypeId);
+            return response != null ? Ok(response) : BadRequest(response);   
+        }
+        
+        [HttpDelete("delete-condition/{vehicleConditionId}")]
+        public async Task<ActionResult> DeleteVehicleCondition([FromRoute] int vehicleConditionId)
+        {
+            var response = await _adminService.DeleteVehicleCondition(vehicleConditionId);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpDelete("delete-option/{vehicleOptionId}")]
+        public async Task<ActionResult> DeleteVehicleOption([FromRoute] int vehicleConditionId)
+        {
+            var response = await _adminService.DeleteVehicleOption(vehicleConditionId);
+            return response != null ? Ok(response) : BadRequest(response);  
+        }
+        
+        [HttpDelete("delete-market-version/{marketVersionId}")]
+        public async Task<ActionResult> DeleteVehicleMarketVersion([FromRoute] int marketVersionId)
+        {
+            var response = await _adminService.DeleteVehicleMarketVersion(marketVersionId);
+            return response != null ? Ok(response) : BadRequest(response);  
         }
 
         [HttpPost("create-moderator")]

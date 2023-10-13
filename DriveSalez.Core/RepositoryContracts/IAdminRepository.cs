@@ -17,7 +17,7 @@ namespace DriveSalez.Core.RepositoryContracts
 
         VehicleBodyType SendNewBodyTypeToDb(string bodyType);
 
-        VehicleDriveTrainType SendNewVehicleDriveTrainTypeToDb(string driveTrainType);
+        VehicleDrivetrainType SendNewVehicleDrivetrainTypeToDb(string driveTrainType);
 
         VehicleGearboxType SendNewVehicleGearboxTypeToDb(string gearboxType);
 
@@ -27,30 +27,50 @@ namespace DriveSalez.Core.RepositoryContracts
 
         VehicleFuelType SendNewVehicleFuelTypeToDb(string fuelType);
 
-        VehicleDetailsCondition SendNewVehicleDetailsConditionToDb(string condition);
+        VehicleCondition SendNewVehicleDetailsConditionToDb(string condition);
 
         VehicleMarketVersion SendNewVehicleMarketVersionToDb(string marketVersion);
 
-        VehicleDetailsOptions SendNewVehicleDetailsOptionsToDb(string option);
-       
-        IEnumerable<VehicleColor> GetAllColorsFromDb();
+        VehicleOption SendNewVehicleDetailsOptionsToDb(string option);
 
-        IEnumerable<VehicleBodyType> GetAllVehicleBodyTypesFromDb();
-        
-        IEnumerable<VehicleDriveTrainType> GetAllVehicleDriveTrainsFromDb();
-        
-        IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypesFromDb();
-        
-        IEnumerable<Make> GetAllMakesFromDb();
-        
-        IEnumerable<VehicleFuelType> GetAllVehicleFuelTypesFromDb();
-        
-        IEnumerable<VehicleDetailsCondition> GetAllVehicleDetailsConditionsFromDb();
-        
-        IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersionsFromDb();
-        
-        IEnumerable<VehicleDetailsOptions> GetAllVehicleDetailsOptionsFromDb();
+        Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor);
 
-        IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id);
+        Task<VehicleBodyType> UpdateVehicleBodyTypeInDb(int bodyTypeId, string newBodyType);
+
+        Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDb(int driveTrainId, string newDrivetrain);
+
+        Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDb(int gearboxId, string newGearbox);
+
+        Task<Make> UpdateMakeInDb(int gearboxId, string newGearbox);
+
+        Task<Model> UpdateModelInDb(int modelId, string newModel);
+
+        Task<VehicleFuelType> UpdateFuelTypeInDb(int fuelTypeId, string newFuelType);
+
+        Task<VehicleCondition> UpdateVehicleConditionInDb(int vehicleConditionId, string newVehicleCondition);
+
+        Task<VehicleOption> UpdateVehicleOptionInDb(int vehicleOptionId, string newVehicleOption);
+
+        Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDb(int marketVersionId, string newMarketVersion);
+        
+        Task<VehicleColor> DeleteVehicleColorFromDb(int colorId);
+
+        Task<VehicleBodyType> DeleteVehicleBodyTypeFromDb(int bodyTypeId);
+
+        Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDb(int driveTrainId);
+
+        Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDb(int gearboxId);
+
+        Task<Make> DeleteMakeFromDb(int makeId);
+
+        Task<Model> DeleteModelFromDb(int modelId);
+
+        Task<VehicleFuelType> DeleteFuelTypeFromDb(int fuelTypeId);
+
+        Task<VehicleCondition> DeleteVehicleConditionFromDb(int vehicleConditionId);
+
+        Task<VehicleOption> DeleteVehicleOptionFromDb(int vehicleOptionId);
+
+        Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDb(int marketVersionId);
     }
 }
