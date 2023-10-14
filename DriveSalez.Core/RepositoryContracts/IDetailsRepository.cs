@@ -24,5 +24,7 @@ public interface IDetailsRepository
         
     IEnumerable<VehicleOption> GetAllVehicleDetailsOptionsFromDb();
 
+    IEnumerable<Model> GetAllModelsFromDb();
+
     IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id);
 }

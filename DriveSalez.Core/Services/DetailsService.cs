@@ -69,6 +69,12 @@ public class DetailsService : IDetailsService
         return response;
     }
 
+    public IEnumerable<Model> GetAllModels()
+    {
+        var response = _detailsRepository.GetAllModelsFromDb();
+        return response;
+    }
+    
     public IEnumerable<Model> GetAllModelsByMakeId(int id)
     {
         var response = _detailsRepository.GetAllModelsByMakeIdFromDb(id);

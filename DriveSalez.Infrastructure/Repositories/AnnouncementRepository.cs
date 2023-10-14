@@ -65,7 +65,6 @@ namespace DriveSalez.Infrastructure.Repositories
                         HorsePower = request.HorsePower,
                         GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxID),
                         DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
-                        //Condition=_dbContext.Vehicle
                         MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
                         OwnerQuantity = request.OwnerQuantity,
                         SeatCount = request.SeatCount,
@@ -74,7 +73,6 @@ namespace DriveSalez.Infrastructure.Repositories
                         MileAge = request.MileAge,
                         MileageType = request.MileageType
                     }
-
                 },
 
                 Barter = request.Barter,
@@ -106,48 +104,48 @@ namespace DriveSalez.Infrastructure.Repositories
             return response;
         }
 
-        public Announcement ConvertToAnnouncement(AnnouncementDto request)
-        {
-            var announcement = new Announcement()
-            {
-                Vehicle = new Vehicle()
-                {
-                    Year = request.Year,
-                    Make = _dbContext.Makes.Find(request.MakeID),
-                    Model = _dbContext.Models.Find(request.ModelID),
-                    FuelType = _dbContext.VehicleFuelTypes.Find(request.FuelTypeID),
-                    IsBrandNew = request.IsBrandNew,
-
-                    VehicleDetails = new VehicleDetails()
-                    {
-                        BodyType = _dbContext.VehicleBodyTypes.Find(request.BodyTypeID),
-                        Color = _dbContext.VehicleColors.Find(request.ColorID),
-                        HorsePower = request.HorsePower,
-                        GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxID),
-                        DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
-                        //Condition=_dbContext.Vehicle
-                        MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
-                        OwnerQuantity = request.OwnerQuantity,
-                        SeatCount = request.SeatCount,
-                        VinCode = request.VinCode,
-                        EngineVolume = request.EngineVolume,
-                        MileAge = request.MileAge,
-                        MileageType = request.MileageType
-                    }
-                },
-
-                Barter = request.Barter,
-                OnCredit = request.OnCredit,
-                Description = request.Description,
-                Price = request.Price,
-                Currency = request.Currency,
-                City = request.City,
-                Country = request.Country,
-                Owner = _dbContext.Users.Find(request.ApplicationUserID)
-            };
-
-            return announcement;
-        }
+        // public Announcement ConvertToAnnouncement(AnnouncementDto request)
+        // {
+        //     var announcement = new Announcement()
+        //     {
+        //         Vehicle = new Vehicle()
+        //         {
+        //             Year = request.Year,
+        //             Make = _dbContext.Makes.Find(request.MakeID),
+        //             Model = _dbContext.Models.Find(request.ModelID),
+        //             FuelType = _dbContext.VehicleFuelTypes.Find(request.FuelTypeID),
+        //             IsBrandNew = request.IsBrandNew,
+        //
+        //             VehicleDetails = new VehicleDetails()
+        //             {
+        //                 BodyType = _dbContext.VehicleBodyTypes.Find(request.BodyTypeID),
+        //                 Color = _dbContext.VehicleColors.Find(request.ColorID),
+        //                 HorsePower = request.HorsePower,
+        //                 GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxID),
+        //                 DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeID),
+        //                 Name=_dbContext.Vehicle
+        //                 MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
+        //                 OwnerQuantity = request.OwnerQuantity,
+        //                 SeatCount = request.SeatCount,
+        //                 VinCode = request.VinCode,
+        //                 EngineVolume = request.EngineVolume,
+        //                 MileAge = request.MileAge,
+        //                 MileageType = request.MileageType
+        //             }
+        //         },
+        //
+        //         Barter = request.Barter,
+        //         OnCredit = request.OnCredit,
+        //         Description = request.Description,
+        //         Price = request.Price,
+        //         Currency = request.Currency,
+        //         City = request.City,
+        //         Country = request.Country,
+        //         Owner = _dbContext.Users.Find(request.ApplicationUserID)
+        //     };
+        //
+        //     return announcement;
+        // }
 
         public IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
         {

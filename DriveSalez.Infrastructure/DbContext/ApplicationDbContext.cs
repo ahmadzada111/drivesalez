@@ -79,6 +79,24 @@ namespace DriveSalez.Infrastructure.DbContext
                 this.Cities.Add(new City() { Name = "Baku", Country = aze });
                 this.Cities.Add(new City() { Name = "Quba", Country = aze });
                 this.Cities.Add(new City() { Name = "Qax", Country = aze });
+                
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Alloy Wheels" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "ABS" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Sunroof" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Rain sensor" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Central locking" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Parking sensors" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Air conditioning" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Heated seats" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Leather interior" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Xenon headlights" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Rearview camera" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Side curtains" });
+                this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Seat ventilation" });
+
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Damaged", Description= "One or more parts have been replaced or repaired." });
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Painted", Description= "One or more parts have been repainted or cosmetic work has been done." });
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Crashed or for parts", Description= "Needs repair or is completely unfit for use." });
             }
         }
         

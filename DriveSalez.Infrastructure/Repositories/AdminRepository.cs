@@ -112,7 +112,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = _dbContext.VehicleDetailsConditions.Add(new VehicleCondition() { Condition = condition }).Entity;
+            var response = _dbContext.VehicleDetailsConditions.Add(new VehicleCondition() { Name = condition }).Entity;
             _dbContext.SaveChanges();
             return response;
         }
@@ -254,7 +254,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
-            vehicleCondition.Condition = newVehicleCondition;
+            vehicleCondition.Name = newVehicleCondition;
             _dbContext.Update(vehicleCondition);
             await _dbContext.SaveChangesAsync();
 

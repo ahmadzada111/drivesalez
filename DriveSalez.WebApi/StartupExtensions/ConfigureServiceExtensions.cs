@@ -71,6 +71,8 @@ public static class ConfigureServiceExtensions
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IDetailsService, DetailsService>();
+        services.AddScoped<IDetailsRepository, DetailsRepository>();
 
         services.AddMemoryCache();
 
@@ -120,12 +122,12 @@ public static class ConfigureServiceExtensions
             });
 
 
-        services.AddAuthorization(options =>
-        {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-        });
+        // services.AddAuthorization(options =>
+        // {
+        //     options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        //         .RequireAuthenticatedUser()
+        //         .Build();
+        // });
 
         return services;
     }

@@ -49,6 +49,13 @@ public class DetailsController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
 
+    [HttpGet("get-all-models")]
+    public ActionResult GetAllModels()
+    {
+        var response = _detailsService.GetAllModels();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
+    
     [HttpGet("get-all-models-by-make")]
     public ActionResult GetAllModelsByMake(int id)
     {

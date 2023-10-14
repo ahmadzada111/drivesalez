@@ -24,5 +24,7 @@ public interface IDetailsService
 
     IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersions();
 
+    IEnumerable<Model> GetAllModels();
+
     IEnumerable<VehicleOption> GetAllVehicleDetailsOptions();
 }

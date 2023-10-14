@@ -3,6 +3,7 @@ using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriveSalez.Infrastructure.Repositories;
 
@@ -60,6 +61,11 @@ public class DetailsRepository : IDetailsRepository
         return _dbContext.VehicleMarketVersions.ToList();
     }
 
+    public IEnumerable<Model> GetAllModelsFromDb()
+    {
+        return _dbContext.Models.Include(m => m.Make).ToList();
+    }
+    
     public IEnumerable<VehicleOption> GetAllVehicleDetailsOptionsFromDb()
     {
         return _dbContext.VehicleDetailsOptions.ToList();

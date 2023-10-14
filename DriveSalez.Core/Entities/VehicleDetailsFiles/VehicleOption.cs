@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities.VehicleDetailsFiles
@@ -12,6 +13,7 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 
         public string Option { get; set; }
 
+        [JsonIgnore]
         public List<VehicleDetails> Details { get; set; }
     }
 }
