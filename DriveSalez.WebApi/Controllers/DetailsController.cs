@@ -90,4 +90,11 @@ public class DetailsController : Controller
         var response = _detailsService.GetAllVehicleDetailsOptions();
         return response != null ? Ok(response) : BadRequest(response);
     }
+    
+    [HttpGet("get-all-years")]
+    public ActionResult GetAllManufactureYears()
+    {
+        var response = _detailsService.GetAllManufactureYears();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
 }

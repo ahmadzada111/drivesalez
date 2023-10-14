@@ -80,4 +80,10 @@ public class DetailsService : IDetailsService
         var response = _detailsRepository.GetAllModelsByMakeIdFromDb(id);
         return response;
     }
+    
+    public IEnumerable<ManufactureYear> GetAllManufactureYears()
+    {
+        var response = _detailsRepository.GetAllManufactureYearsFromDb();
+        return response;
+    }
 }

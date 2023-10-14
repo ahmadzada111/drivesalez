@@ -27,4 +27,6 @@ public interface IDetailsRepository
     IEnumerable<Model> GetAllModelsFromDb();
 
     IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id);
+
+    IEnumerable<ManufactureYear> GetAllManufactureYearsFromDb();
 }

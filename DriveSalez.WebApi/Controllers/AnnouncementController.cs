@@ -1,12 +1,9 @@
-using Azure;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.ServiceContracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace DriveSalez.WebApi.Controllers;
 

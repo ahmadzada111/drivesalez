@@ -97,6 +97,12 @@ namespace DriveSalez.Infrastructure.DbContext
                 this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Damaged", Description= "One or more parts have been replaced or repaired." });
                 this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Painted", Description= "One or more parts have been repainted or cosmetic work has been done." });
                 this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Crashed or for parts", Description= "Needs repair or is completely unfit for use." });
+
+                Years.Add(new ManufactureYear() { Year = 2023 });
+                Years.Add(new ManufactureYear() { Year = 2022 });
+                Years.Add(new ManufactureYear() { Year = 2021 });
+                Years.Add(new ManufactureYear() { Year = 2020 });
+                Years.Add(new ManufactureYear() { Year = 2019 });
             }
         }
         
@@ -135,5 +141,7 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<Country> Countries => Set<Country>();
         
         public DbSet<City> Cities => Set<City>();
+
+        public DbSet<ManufactureYear> Years => Set<ManufactureYear>();
     }
 }

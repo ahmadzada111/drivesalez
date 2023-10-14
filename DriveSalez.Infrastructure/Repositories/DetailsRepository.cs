@@ -70,4 +70,9 @@ public class DetailsRepository : IDetailsRepository
     {
         return _dbContext.VehicleDetailsOptions.ToList();
     }
+    
+    public IEnumerable<ManufactureYear> GetAllManufactureYearsFromDb()
+    {
+        return _dbContext.Years.ToList();
+    }
 }

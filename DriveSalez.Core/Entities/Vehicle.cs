@@ -10,7 +10,7 @@ namespace DriveSalez.Core.Entities
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter Year")]
-        public int? Year { get; set; }   // 2009
+        public ManufactureYear? Year { get; set; }   // 2009
 
         public Make? Make { get; set; }
 

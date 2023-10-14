@@ -7,7 +7,7 @@ namespace DriveSalez.Core.DTO
     {
         //Vehicle   --------------------------------------------------------------
 
-        public int? Year { get; set; }   // 2009
+        public ManufactureYear? Year { get; set; }   // 2009
 
         public int? MakeID { get; set; }
 
