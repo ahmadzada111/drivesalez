@@ -83,6 +83,6 @@ public class DetailsRepository : IDetailsRepository
     
     public IEnumerable<City> GetAllCitiesFromDb()
     {
-        return _dbContext.Cities.ToList();
+        return _dbContext.Cities.Include(x=>x.Country).ToList();
     }
 }

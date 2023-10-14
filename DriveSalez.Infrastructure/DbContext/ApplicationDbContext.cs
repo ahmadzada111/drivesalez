@@ -75,10 +75,16 @@ namespace DriveSalez.Infrastructure.DbContext
                 var gasoline = this.VehicleFuelTypes.Add(new VehicleFuelType() { FuelType = "Gasoline" }).Entity;
 
                 var aze = this.Countries.Add(new Country() { Name = "Azerbaijan" }).Entity;
+                var pl = this.Countries.Add(new Country() { Name = "Poland" }).Entity;
+
 
                 this.Cities.Add(new City() { Name = "Baku", Country = aze });
                 this.Cities.Add(new City() { Name = "Quba", Country = aze });
                 this.Cities.Add(new City() { Name = "Qax", Country = aze });
+
+                this.Cities.Add(new City() { Name = "Warsaw", Country = pl });
+                this.Cities.Add(new City() { Name = "Krakow", Country = pl });
+                this.Cities.Add(new City() { Name = "Gdansk", Country = pl });
                 
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Alloy Wheels" });
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "ABS" });

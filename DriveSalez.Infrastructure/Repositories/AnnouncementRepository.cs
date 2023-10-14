@@ -24,6 +24,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Owner).
                 Include(x => x.Vehicle).
                 Include(x => x.ImageUrls).
+                Include(x => x.Vehicle.Year).
                 Include(x => x.Vehicle.Make).
                 Include(x => x.Vehicle.Model).
                 Include(x => x.Vehicle.FuelType).
