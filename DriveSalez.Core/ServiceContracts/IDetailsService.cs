@@ -29,4 +29,8 @@ public interface IDetailsService
     IEnumerable<VehicleOption> GetAllVehicleDetailsOptions();
 
     IEnumerable<ManufactureYear> GetAllManufactureYears();
+
+    IEnumerable<Country> GetAllCountries();
+
+    IEnumerable<City> GetAllCities();
 }

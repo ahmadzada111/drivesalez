@@ -86,4 +86,16 @@ public class DetailsService : IDetailsService
         var response = _detailsRepository.GetAllManufactureYearsFromDb();
         return response;
     }
+    
+    public IEnumerable<Country> GetAllCountries()
+    {
+        var response = _detailsRepository.GetAllCountriesFromDb();
+        return response;
+    }
+    
+    public IEnumerable<City> GetAllCities()
+    {
+        var response = _detailsRepository.GetAllCitiesFromDb();
+        return response;
+    }
 }

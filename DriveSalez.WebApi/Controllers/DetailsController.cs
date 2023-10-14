@@ -97,4 +97,18 @@ public class DetailsController : Controller
         var response = _detailsService.GetAllManufactureYears();
         return response != null ? Ok(response) : BadRequest(response);
     }
+    
+    [HttpGet("get-all-countries")]
+    public ActionResult GetAllCountries()
+    {
+        var response = _detailsService.GetAllCountries();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
+    
+    [HttpGet("get-all-cities")]
+    public ActionResult GetAllCities()
+    {
+        var response = _detailsService.GetAllCities();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
 }

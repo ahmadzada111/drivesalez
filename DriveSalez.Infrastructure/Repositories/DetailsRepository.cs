@@ -75,4 +75,14 @@ public class DetailsRepository : IDetailsRepository
     {
         return _dbContext.Years.ToList();
     }
+    
+    public IEnumerable<Country> GetAllCountriesFromDb()
+    {
+        return _dbContext.Countries.ToList();
+    }
+    
+    public IEnumerable<City> GetAllCitiesFromDb()
+    {
+        return _dbContext.Cities.ToList();
+    }
 }
