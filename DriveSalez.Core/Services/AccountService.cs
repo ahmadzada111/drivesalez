@@ -121,6 +121,30 @@ public class AccountService : IAccountService
         return response;
     }
 
+    public async Task<bool> ChangePassword(ChangePasswordDto request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        
+        if (user == null)
+        {
+            return false;
+        }
+
+        var changeResult = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        
+        if (changeResult.Succeeded)
+        {
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     [Authorize]
     public async Task<ApplicationUser> DeleteUser(string password)
     {

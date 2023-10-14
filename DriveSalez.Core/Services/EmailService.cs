@@ -50,7 +50,7 @@ public class EmailService : IEmailService
 
         return true;
     }
-
+    
     public async Task<bool> VerifyEmail(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -71,26 +71,22 @@ public class EmailService : IEmailService
 
         return false;
     }
-    
-    public async Task<bool> ResetPassword(ResetPasswordDto request)
+
+    public async Task<bool> ResetPassword(string email, string newPassword)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _userManager.FindByEmailAsync(email);
         
         if (user == null)
         {
             return false;
         }
 
-        var changeResult = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, newPassword);
+        var result = await _userManager.UpdateAsync(user);
         
-        if (changeResult.Succeeded)
+        if (result.Succeeded)
         {
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded)
-            {
-                return true;
-            }
+            return true;
         }
 
         return false;

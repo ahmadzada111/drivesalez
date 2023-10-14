@@ -1,6 +1,6 @@
 namespace DriveSalez.Core.DTO;
 
-public class ResetPasswordDto
+public class ChangePasswordDto
 {
     public string Email { get; set; }
     

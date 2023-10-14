@@ -4,6 +4,7 @@ using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DriveSalez.WebApi.Controllers
 {
@@ -14,11 +15,18 @@ namespace DriveSalez.WebApi.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAccountService _accountService;
-
-        public AccountController(SignInManager<ApplicationUser> signInManager, IAccountService accountService)
+        private readonly IOtpService _otpService;
+        private readonly IEmailService _emailService;
+        private readonly IMemoryCache _cache;
+        
+        public AccountController(SignInManager<ApplicationUser> signInManager, IAccountService accountService, 
+            IOtpService otpService, IEmailService emailService, IMemoryCache cache)
         {
             _signInManager = signInManager;
             _accountService = accountService;
+            _otpService = otpService;
+            _emailService = emailService;
+            _cache = cache;
         }
 
         [HttpPost("register")]
@@ -82,6 +90,33 @@ namespace DriveSalez.WebApi.Controllers
             }
 
             return Ok(response);
+        }
+        
+        [HttpPost("change-password")]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)
+        {
+            var result = await _accountService.ChangePassword(request);
+            return result ? Ok("Password was successfully changed") : BadRequest("Error");
+        }
+        
+        [HttpPost("reset-password")]
+        public async Task<ActionResult> ResetPassword([FromBody] ValidateOtpDto request, string newPassword)
+        {
+            var response =  await _otpService.ValidateOtp(_cache, request);
+
+            if (response)
+            {
+                var result = await _emailService.ResetPassword(request.Email, newPassword);
+            
+                if (result)
+                {
+                    return Ok("Password was successfully changed");
+                }
+
+                return BadRequest("User not found");
+            }
+
+            return BadRequest("Cannot validate OTP");
         }
         
         [HttpDelete("delete-user")]

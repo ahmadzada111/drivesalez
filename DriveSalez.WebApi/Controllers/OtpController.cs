@@ -9,20 +9,20 @@ namespace DriveSalez.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class EmailController : Controller
+public class OtpController : Controller
 {
     private readonly IEmailService _emailService;
     private readonly IOtpService _otpService;
     private readonly IMemoryCache _cache;
     
-    public EmailController(IEmailService emailService, IOtpService otpService, IMemoryCache cache)
+    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache)
     {
         _emailService = emailService;
         _otpService = otpService;
         _cache = cache;
     }
     
-    [HttpPost("otp/send")]
+    [HttpPost("send")]
     public async Task<ActionResult> SendOtpByEmail([FromBody] string email)
     {
         if (_cache.TryGetValue(email, out string cachedOtp))
@@ -46,7 +46,7 @@ public class EmailController : Controller
         return BadRequest("Cannot send OTP");
     }
 
-    [HttpPost("otp/validate")]
+    [HttpPost("verify-email")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
         var response =  await _otpService.ValidateOtp(_cache, request);
@@ -64,12 +64,5 @@ public class EmailController : Controller
         }
 
         return BadRequest("Cannot validate OTP");
-    }
-    
-    [HttpPost("reset-password")]
-    public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
-    {
-        var result = await _emailService.ResetPassword(request);
-        return result ? Ok("Password was successfully changed") : BadRequest("Error");
     }
 }

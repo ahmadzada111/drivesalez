@@ -9,5 +9,5 @@ public interface IEmailService
 
     Task<bool> VerifyEmail(string email);
 
-    Task<bool> ResetPassword(ResetPasswordDto request);
+    Task<bool> ResetPassword(string email, string newPassword);
 }
