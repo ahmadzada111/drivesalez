@@ -36,7 +36,7 @@ namespace DriveSalez.WebApi
             {
                 app.UseMiddleware<ExceptionHandlingMiddleware>();
             }
-
+            
             app.UseCors("DriveSalezCorsPolicy");
             
             app.UseHsts();

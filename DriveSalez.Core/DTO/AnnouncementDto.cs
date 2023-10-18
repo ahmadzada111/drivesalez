@@ -5,23 +5,19 @@ namespace DriveSalez.Core.DTO
 {
     public class AnnouncementDto
     {
-        //Vehicle   --------------------------------------------------------------
+        public int? YearId { get; set; }   
 
-        public ManufactureYear? Year { get; set; }   // 2009
+        public int? MakeId { get; set; }
 
-        public int? MakeID { get; set; }
+        public int? ModelId { get; set; }
 
-        public int? ModelID { get; set; }
+        public int? FuelTypeId { get; set; }
 
-        public int? FuelTypeID { get; set; }
+        public int? GearboxId { get; set; }
 
-        // List of IMAGE URLS NEED TO ADD 
+        public int? DriveTrainTypeId { get; set; }
 
-        public int? GearboxID { get; set; }
-
-        public int? DriveTrainTypeID { get; set; }
-
-        public int? BodyTypeID { get; set; }
+        public int? BodyTypeId { get; set; }
 
         public List<int>? ConditionsIDs { get; set; }
         
@@ -31,9 +27,9 @@ namespace DriveSalez.Core.DTO
 
         public int? MarketVersionID { get; set; }
 
-        public int HorsePower { get; set; }     // 150 hp
+        public int HorsePower { get; set; }     
 
-        public bool? IsBrandNew { get; set; }       //NEW Or USED
+        public bool? IsBrandNew { get; set; }       
 
         public int? OwnerQuantity { get; set; }
 
@@ -41,28 +37,17 @@ namespace DriveSalez.Core.DTO
 
         public string? VinCode { get; set; }
 
-        public int MileAge { get; set; }    //149000 km
+        public int MileAge { get; set; }    
 
         public DistanceUnit MileageType { get; set; }
 
         public int? EngineVolume { get; set; }
 
         public List<ImageUrl>? ImageUrls { get; set; }
-        
-        // -----------------------------------------------------------------------
 
+        public int CountryId { get; set; }
 
-
-
-
-        // Owner Details --------------------------------------------------------------------
-
-        public Country Country { get; set; }
-
-        public City City { get; set; }
-
-        public Guid ApplicationUserID { get; set; }
-        //-----------------------------------------------------------------------------------
+        public int CityId { get; set; }
 
         public bool? Barter { get; set; }
 
@@ -70,9 +55,8 @@ namespace DriveSalez.Core.DTO
 
         public string? Description { get; set; }
 
-        public decimal Price { get; set; }  // 10900      
+        public decimal Price { get; set; }   
 
-        public Currency Currency { get; set; }  // USD
-
+        public Currency Currency { get; set; }  
     }
 }
