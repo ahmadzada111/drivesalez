@@ -30,24 +30,25 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthenticationResponseDto>> Register([FromBody] RegisterDto request)
+        public async Task<ActionResult> Register([FromBody] RegisterDto request)
         {
             if (!ModelState.IsValid)
             {
-                string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                string errorMessage = string.Join(" | ",
+                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
 
             var response = await _accountService.Register(request);
 
-            if (response.Error != null)
+            if (!response.Succeeded)
             {
-                return BadRequest(response.Error);
+                return BadRequest("Error during registration process");
             }
-            
-            return Ok(response);
+
+            return Ok(string.Join(" | ", response.Errors.Select(e => e.Description)));
         }
-        
+
         [HttpPost("login")]
         public async Task<ActionResult<AuthenticationResponseDto>> Login([FromBody] LoginDto request)
         {

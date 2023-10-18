@@ -1,11 +1,12 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Core.ServiceContracts;
 
 public interface IAccountService
 {
-    Task<AuthenticationResponseDto> Register(RegisterDto request);
+    Task<IdentityResult> Register(RegisterDto request);
 
     Task<AuthenticationResponseDto> Login(LoginDto request);
 
