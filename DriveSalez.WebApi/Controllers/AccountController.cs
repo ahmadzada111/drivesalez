@@ -43,10 +43,10 @@ namespace DriveSalez.WebApi.Controllers
 
             if (!response.Succeeded)
             {
-                return BadRequest("Error during registration process");
+                return BadRequest(string.Join(" | ", response.Errors.Select(e => e.Description)));
             }
 
-            return Ok(string.Join(" | ", response.Errors.Select(e => e.Description)));
+            return Ok();
         }
 
         [HttpPost("login")]
