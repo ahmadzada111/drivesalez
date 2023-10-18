@@ -78,7 +78,7 @@ public class AccountService : IAccountService
         {
             ApplicationUser user = await _userManager.FindByEmailAsync(request.Email);
 
-            if (user == null)
+            if (user == null || !user.EmailConfirmed)
             {
                 return null;
             }
