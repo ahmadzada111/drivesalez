@@ -33,63 +33,63 @@ namespace DriveSalez.Core.Services
             _roleManager = roleManager;
         }
 
-        public VehicleBodyType AddBodyType(string bodyType)
+        public async Task<VehicleBodyType> AddBodyType(string bodyType)
         {
-            var response = _adminRepository.SendNewBodyTypeToDb(bodyType);
+            var response = await _adminRepository.SendNewBodyTypeToDb(bodyType);
             return response;
         }
 
-        public VehicleColor AddColor(string color)
+        public async Task<VehicleColor> AddColor(string color)
         {
-            var response = _adminRepository.SendNewColorToDb(color);
+            var response = await _adminRepository.SendNewColorToDb(color);
             return response;
         }
 
-        public Make AddMake(string make)
+        public async Task<Make> AddMake(string make)
         {
-            var response = _adminRepository.SendNewMakeToDb(make);
+            var response = await _adminRepository.SendNewMakeToDb(make);
             return response;
         }
 
-        public Model AddModel(int makeId, string model)
+        public async Task<Model> AddModel(int makeId, string model)
         {
-            var response = _adminRepository.SendNewModelToDb(makeId, model);
+            var response = await _adminRepository.SendNewModelToDb(makeId, model);
             return response;
         }
 
-        public VehicleCondition AddVehicleCondition(string condition)
+        public async Task<VehicleCondition> AddVehicleCondition(string condition)
         {
-            var response = _adminRepository.SendNewVehicleDetailsConditionToDb(condition);
+            var response = await _adminRepository.SendNewVehicleDetailsConditionToDb(condition);
             return response;
         }
 
-        public VehicleOption AddVehicleOption(string option)
+        public async Task<VehicleOption> AddVehicleOption(string option)
         {
-            var response = _adminRepository.SendNewVehicleDetailsOptionsToDb(option);
+            var response = await _adminRepository.SendNewVehicleDetailsOptionsToDb(option);
             return response;
         }
 
-        public VehicleDrivetrainType AddVehicleDrivetrainType(string driveTrainType)
+        public async Task<VehicleDrivetrainType> AddVehicleDrivetrainType(string driveTrainType)
         {
-            var response = _adminRepository.SendNewVehicleDrivetrainTypeToDb(driveTrainType);
+            var response = await _adminRepository.SendNewVehicleDrivetrainTypeToDb(driveTrainType);
             return response;
         }
 
-        public VehicleFuelType AddVehicleFuelType(string fuelType)
+        public async Task<VehicleFuelType> AddVehicleFuelType(string fuelType)
         {
-            var response = _adminRepository.SendNewVehicleFuelTypeToDb(fuelType);
+            var response = await _adminRepository.SendNewVehicleFuelTypeToDb(fuelType);
             return response;
         }
 
-        public VehicleGearboxType AddVehicleGearboxType(string gearboxType)
+        public async Task<VehicleGearboxType> AddVehicleGearboxType(string gearboxType)
         {
-            var response = _adminRepository.SendNewVehicleGearboxTypeToDb(gearboxType);
+            var response = await _adminRepository.SendNewVehicleGearboxTypeToDb(gearboxType);
             return response;
         }
 
-        public VehicleMarketVersion AddVehicleMarketVersion(string marketVersion)
+        public async Task<VehicleMarketVersion> AddVehicleMarketVersion(string marketVersion)
         {
-            var response = _adminRepository.SendNewVehicleMarketVersionToDb(marketVersion);
+            var response = await _adminRepository.SendNewVehicleMarketVersionToDb(marketVersion);
             return response;
         }
 

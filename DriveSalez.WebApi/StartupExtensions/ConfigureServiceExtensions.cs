@@ -65,7 +65,7 @@ public static class ConfigureServiceExtensions
     {
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAnnoucementRepository, AnnouncementRepository>();
+        services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
         services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IAccountService, AccountService>();
@@ -121,13 +121,12 @@ public static class ConfigureServiceExtensions
                 };
             });
 
-
-        // services.AddAuthorization(options =>
-        // {
-        //     options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        //         .RequireAuthenticatedUser()
-        //         .Build();
-        // });
+        services.AddAuthorization(options =>
+        {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+        });
 
         return services;
     }

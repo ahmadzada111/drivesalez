@@ -46,7 +46,7 @@ public class EmailService : IEmailService
         message.From = new MailAddress(_emailConfig["Email:CompanyEmail"], "DriveSalez");
         message.To.Add(new MailAddress(toEmail));
 
-        client.Send(message);
+        await client.SendMailAsync(message);
 
         return true;
     }

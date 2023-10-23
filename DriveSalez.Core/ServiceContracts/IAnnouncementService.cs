@@ -15,7 +15,7 @@ public interface IAnnouncementService
 
     Task<Announcement> ChangeAnnouncementState(int announcementId, AnnouncementState announcementState);
 
-    Task<Announcement> GetAnnouncementById(int id);
+    Announcement GetAnnouncementById(int id);
 
     IEnumerable<Announcement> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
 }

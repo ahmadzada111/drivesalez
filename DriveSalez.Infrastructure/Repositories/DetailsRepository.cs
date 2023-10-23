@@ -16,73 +16,73 @@ public class DetailsRepository : IDetailsRepository
         _dbContext = dbContext;
     }
 
-    public IEnumerable<VehicleColor> GetAllColorsFromDb()
+    public async Task<IEnumerable<VehicleColor>> GetAllColorsFromDb()
     {
-        return _dbContext.VehicleColors.ToList();
+        return await _dbContext.VehicleColors.ToListAsync();
     }
 
-    public IEnumerable<VehicleBodyType> GetAllVehicleBodyTypesFromDb()
+    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDb()
     {
-        return _dbContext.VehicleBodyTypes.ToList();
+        return await _dbContext.VehicleBodyTypes.ToListAsync();
     }
 
-    public IEnumerable<VehicleDrivetrainType> GetAllVehicleDrivetrainsFromDb()
+    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDb()
     {
-        return _dbContext.VehicleDriveTrainTypes.ToList();
+        return await _dbContext.VehicleDriveTrainTypes.ToListAsync();
     }
 
-    public IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypesFromDb()
+    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDb()
     {
-        return _dbContext.VehicleGearboxTypes.ToList();
+        return await _dbContext.VehicleGearboxTypes.ToListAsync();
     }
 
-    public IEnumerable<Make> GetAllMakesFromDb()
+    public async Task<IEnumerable<Make>> GetAllMakesFromDb()
     {
-        return _dbContext.Makes.ToList();
+        return await _dbContext.Makes.ToListAsync();
     }
 
-    public IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id)
+    public async Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDb(int id)
     {
-        return _dbContext.Models.Where(e => e.Make.Id == id).ToList();
+        return await _dbContext.Models.Where(e => e.Make.Id == id).ToListAsync();
     }
 
-    public IEnumerable<VehicleFuelType> GetAllVehicleFuelTypesFromDb()
+    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDb()
     {
-        return _dbContext.VehicleFuelTypes.ToList();
+        return await _dbContext.VehicleFuelTypes.ToListAsync();
     }
 
-    public IEnumerable<VehicleCondition> GetAllVehicleDetailsConditionsFromDb()
+    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDb()
     {
-        return _dbContext.VehicleDetailsConditions.ToList();
+        return await _dbContext.VehicleDetailsConditions.ToListAsync();
     }
 
-    public IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersionsFromDb()
+    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDb()
     {
-        return _dbContext.VehicleMarketVersions.ToList();
+        return await _dbContext.VehicleMarketVersions.ToListAsync();
     }
 
-    public IEnumerable<Model> GetAllModelsFromDb()
+    public async Task<IEnumerable<Model>> GetAllModelsFromDb()
     {
-        return _dbContext.Models.Include(m => m.Make).ToList();
+        return await _dbContext.Models.Include(m => m.Make).ToListAsync();
     }
     
-    public IEnumerable<VehicleOption> GetAllVehicleDetailsOptionsFromDb()
+    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDb()
     {
-        return _dbContext.VehicleDetailsOptions.ToList();
+        return await _dbContext.VehicleDetailsOptions.ToListAsync();
     }
     
-    public IEnumerable<ManufactureYear> GetAllManufactureYearsFromDb()
+    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDb()
     {
-        return _dbContext.Years.ToList();
+        return await _dbContext.Years.ToListAsync();
     }
     
-    public IEnumerable<Country> GetAllCountriesFromDb()
+    public async Task<IEnumerable<Country>> GetAllCountriesFromDb()
     {
-        return _dbContext.Countries.ToList();
+        return await _dbContext.Countries.ToListAsync();
     }
     
-    public IEnumerable<City> GetAllCitiesFromDb()
+    public async Task<IEnumerable<City>> GetAllCitiesFromDb()
     {
-        return _dbContext.Cities.Include(x=>x.Country).ToList();
+        return await _dbContext.Cities.Include(x=>x.Country).ToListAsync();
     }
 }

@@ -12,11 +12,11 @@ namespace DriveSalez.Core.Services;
 
 public class AnnouncementService : IAnnouncementService
 {
-    private readonly IAnnoucementRepository _announcementRepository;
+    private readonly IAnnouncementRepository _announcementRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public AnnouncementService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IAnnoucementRepository announcementRepository)
+    public AnnouncementService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IAnnouncementRepository announcementRepository)
     {
         _contextAccessor = accessor;
         _userManager = userManager;
@@ -51,9 +51,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<Announcement> GetAnnouncementById(int id)
+    public Announcement GetAnnouncementById(int id)
     {
-        var response = await _announcementRepository.GetAnnouncementByIdFromDb(id);
+        var response =  _announcementRepository.GetAnnouncementByIdFromDb(id);
         return response;
     }
 

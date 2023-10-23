@@ -15,100 +15,100 @@ public class DetailsController : Controller
     }
 
     [HttpGet("get-all-colors")]
-    public ActionResult GetAllColors()
+    public async Task<ActionResult> GetAllColors()
     {
-        var response = _detailsService.GetAllColors();
+        var response = await _detailsService.GetAllColors();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-body-types")]
-    public ActionResult GetAllBodyTypes()
+    public async Task<ActionResult> GetAllBodyTypes()
     {
-        var response = _detailsService.GetAllVehicleBodyTypes();
+        var response = await _detailsService.GetAllVehicleBodyTypes();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-drivetrain-types")]
-    public ActionResult GetAllDrivetrainTypes()
+    public async Task<ActionResult> GetAllDrivetrainTypes()
     {
-        var response = _detailsService.GetAllVehicleDrivetrains();
+        var response = await _detailsService.GetAllVehicleDrivetrains();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-gearbox-types")]
-    public ActionResult GetAllGearboxTypes()
+    public async Task<ActionResult> GetAllGearboxTypes()
     {
-        var response = _detailsService.GetAllVehicleGearboxTypes();
+        var response = await _detailsService.GetAllVehicleGearboxTypes();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-makes")]
-    public ActionResult GetAllMakes()
+    public async Task<ActionResult> GetAllMakes()
     {
-        var response = _detailsService.GetAllMakes();
+        var response = await _detailsService.GetAllMakes();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-models")]
-    public ActionResult GetAllModels()
+    public async Task<ActionResult> GetAllModels()
     {
-        var response = _detailsService.GetAllModels();
+        var response = await _detailsService.GetAllModels();
         return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpGet("get-all-models-by-make")]
-    public ActionResult GetAllModelsByMake(int id)
+    public async Task<ActionResult> GetAllModelsByMake(int id)
     {
-        var response = _detailsService.GetAllModelsByMakeId(id);
+        var response = await _detailsService.GetAllModelsByMakeId(id);
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-fuel-types")]
-    public ActionResult GetAllFuelTypes()
+    public async Task<ActionResult> GetAllFuelTypes()
     {
-        var response = _detailsService.GetAllVehicleFuelTypes();
+        var response = await _detailsService.GetAllVehicleFuelTypes();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-conditions")]
-    public ActionResult GetAllVehicleDetailsConditions()
+    public async Task<ActionResult> GetAllVehicleDetailsConditions()
     {
-        var response = _detailsService.GetAllVehicleDetailsConditions();
+        var response = await _detailsService.GetAllVehicleDetailsConditions();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-market-versions")]
-    public ActionResult GetAllVehicleMarketVersions()
+    public async Task<ActionResult> GetAllVehicleMarketVersions()
     {
-        var response = _detailsService.GetAllVehicleMarketVersions();
+        var response = await _detailsService.GetAllVehicleMarketVersions();
         return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpGet("get-all-options")]
-    public ActionResult GetAllVehicleDetailsOptions()
+    public async Task<ActionResult> GetAllVehicleDetailsOptions()
     {
-        var response = _detailsService.GetAllVehicleDetailsOptions();
+        var response = await _detailsService.GetAllVehicleDetailsOptions();
         return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpGet("get-all-years")]
-    public ActionResult GetAllManufactureYears()
+    public async Task<ActionResult> GetAllManufactureYears()
     {
-        var response = _detailsService.GetAllManufactureYears();
+        var response = await _detailsService.GetAllManufactureYears();
         return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpGet("get-all-countries")]
-    public ActionResult GetAllCountries()
+    public async Task<ActionResult> GetAllCountries()
     {
-        var response = _detailsService.GetAllCountries();
+        var response = await _detailsService.GetAllCountries();
         return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpGet("get-all-cities")]
-    public ActionResult GetAllCities()
+    public async Task<ActionResult> GetAllCities()
     {
-        var response = _detailsService.GetAllCities();
+        var response = await _detailsService.GetAllCities();
         return response != null ? Ok(response) : BadRequest(response);
     }
 }

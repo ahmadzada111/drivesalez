@@ -5,7 +5,7 @@ using DriveSalez.Core.Enums;
 
 namespace DriveSalez.Core.RepositoryContracts
 {
-    public interface IAnnoucementRepository
+    public interface IAnnouncementRepository
     {
         Task<Announcement> CreateAnnouncement(Guid userId, AnnouncementDto request);
 
@@ -15,7 +15,7 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<Announcement> ChangeAnnouncementStateInDb(Guid userId, int annoucementId, AnnouncementState announcementState);
 
-        Task<Announcement> GetAnnouncementByIdFromDb(int id);
+        Announcement GetAnnouncementByIdFromDb(int id);
 
         IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
     }

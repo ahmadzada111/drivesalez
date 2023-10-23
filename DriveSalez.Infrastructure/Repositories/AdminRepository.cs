@@ -15,130 +15,130 @@ namespace DriveSalez.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public VehicleColor SendNewColorToDb(string color)
+        public async Task<VehicleColor> SendNewColorToDb(string color)
         {
             if (string.IsNullOrEmpty(color))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleColors.Add(new VehicleColor() { Name = color }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Name = color });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public VehicleBodyType SendNewBodyTypeToDb(string bodyType)
+        public async Task<VehicleBodyType> SendNewBodyTypeToDb(string bodyType)
         {
             if (string.IsNullOrEmpty(bodyType))
             {
                 return null;
             }
 
-            var responce = _dbContext.VehicleBodyTypes.Add(new VehicleBodyType() { Name = bodyType }).Entity;
-            _dbContext.SaveChanges();
-            return responce;
+            var responce = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { Name = bodyType });
+            await _dbContext.SaveChangesAsync();
+            return responce.Entity;
         }
 
-        public VehicleDrivetrainType SendNewVehicleDrivetrainTypeToDb(string driveTrainType)
+        public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDb(string driveTrainType)
         {
             if (string.IsNullOrEmpty(driveTrainType))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { Name = driveTrainType }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { Name = driveTrainType });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public VehicleGearboxType SendNewVehicleGearboxTypeToDb(string gearboxType)
+        public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDb(string gearboxType)
         {
             if (string.IsNullOrEmpty(gearboxType))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleGearboxTypes.Add(new VehicleGearboxType() { Name = gearboxType }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { Name = gearboxType });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public Make SendNewMakeToDb(string make)
+        public async Task<Make> SendNewMakeToDb(string make)
         {
             if (string.IsNullOrEmpty(make))
             {
                 return null;
             }
 
-            var response = _dbContext.Makes.Add(new Make() { Name = make }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.Makes.AddAsync(new Make() { Name = make });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public Model SendNewModelToDb(int makeId, string model)
+        public async Task<Model> SendNewModelToDb(int makeId, string model)
         {
             if (string.IsNullOrEmpty(model))
             {
                 return null;
             }
 
-            var response = _dbContext.Models.Add(new Core.Entities.Model() { Name = model, Make = this._dbContext.Makes.Find(makeId) }).Entity;
+            var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { Name = model, Make = await _dbContext.Makes.FindAsync(makeId) });
 
             if (response != null)
             {
-                this._dbContext.SaveChanges();
-                return response;
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
             }
 
             return null;
         }
 
-        public VehicleFuelType SendNewVehicleFuelTypeToDb(string fuelType)
+        public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDb(string fuelType)
         {
             if (string.IsNullOrEmpty(fuelType))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleFuelTypes.Add(new VehicleFuelType() { FuelType = fuelType }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleFuelTypes.AddAsync(new VehicleFuelType() { FuelType = fuelType });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public VehicleCondition SendNewVehicleDetailsConditionToDb(string condition)
+        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDb(string condition)
         {
             if (string.IsNullOrEmpty(condition))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDetailsConditions.Add(new VehicleCondition() { Name = condition }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition() { Name = condition });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public VehicleMarketVersion SendNewVehicleMarketVersionToDb(string marketVersion)
+        public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDb(string marketVersion)
         {
             if (string.IsNullOrEmpty(marketVersion))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleMarketVersions.Add(new VehicleMarketVersion() { Name = marketVersion }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { Name = marketVersion });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
-        public VehicleOption SendNewVehicleDetailsOptionsToDb(string option)
+        public async Task<VehicleOption> SendNewVehicleDetailsOptionsToDb(string option)
         {
             if (string.IsNullOrEmpty(option))
             {
                 return null;
             }
 
-            var response = _dbContext.VehicleDetailsOptions.Add(new VehicleOption() { Option = option }).Entity;
-            _dbContext.SaveChanges();
-            return response;
+            var response = await _dbContext.VehicleDetailsOptions.AddAsync(new VehicleOption() { Option = option });
+            await _dbContext.SaveChangesAsync();
+            return response.Entity;
         }
 
         public async Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor)

@@ -8,25 +8,25 @@ namespace DriveSalez.Core.ServiceContracts
 {
     public interface IAdminService
     {
-        VehicleColor AddColor(string color);
+        Task<VehicleColor> AddColor(string color);
 
-        VehicleBodyType AddBodyType(string bodyType);
+        Task<VehicleBodyType> AddBodyType(string bodyType);
 
-        VehicleDrivetrainType AddVehicleDrivetrainType(string driveTrainType);
+        Task<VehicleDrivetrainType> AddVehicleDrivetrainType(string driveTrainType);
 
-        VehicleGearboxType AddVehicleGearboxType(string gearboxType);
+        Task<VehicleGearboxType> AddVehicleGearboxType(string gearboxType);
 
-        Make AddMake(string make);
+        Task<Make> AddMake(string make);
 
-        Model AddModel(int makeId, string model);
+        Task<Model> AddModel(int makeId, string model);
 
-        VehicleFuelType AddVehicleFuelType(string fuelType);
+        Task<VehicleFuelType> AddVehicleFuelType(string fuelType);
 
-        VehicleCondition AddVehicleCondition(string condition);
+        Task<VehicleCondition> AddVehicleCondition(string condition);
 
-        VehicleMarketVersion AddVehicleMarketVersion(string marketVersion);
+        Task<VehicleMarketVersion> AddVehicleMarketVersion(string marketVersion);
 
-        VehicleOption AddVehicleOption(string option);
+        Task<VehicleOption> AddVehicleOption(string option);
 
         Task<VehicleColor> UpdateVehicleColor(int colorId, string newColor);
 

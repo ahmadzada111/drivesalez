@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
-    public class AnnouncementRepository : IAnnoucementRepository
+    public class AnnouncementRepository : IAnnouncementRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -53,20 +53,20 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 Vehicle = new Vehicle()
                 {
-                    Year = _dbContext.Years.Find(request.YearId),
-                    Make = _dbContext.Makes.Find(request.MakeId),
-                    Model = _dbContext.Models.Find(request.ModelId),
-                    FuelType = _dbContext.VehicleFuelTypes.Find(request.FuelTypeId),
+                    Year = await _dbContext.Years.FindAsync(request.YearId),
+                    Make = await _dbContext.Makes.FindAsync(request.MakeId),
+                    Model = await _dbContext.Models.FindAsync(request.ModelId),
+                    FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
                     IsBrandNew = request.IsBrandNew,
 
                     VehicleDetails = new VehicleDetails()
                     {
-                        BodyType = _dbContext.VehicleBodyTypes.Find(request.BodyTypeId),
-                        Color = _dbContext.VehicleColors.Find(request.ColorID),
+                        BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
+                        Color = await _dbContext.VehicleColors.FindAsync(request.ColorID),
                         HorsePower = request.HorsePower,
-                        GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxId),
-                        DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeId),
-                        MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
+                        GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
+                        DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DriveTrainTypeId),
+                        MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionID),
                         OwnerQuantity = request.OwnerQuantity,
                         SeatCount = request.SeatCount,
                         VinCode = request.VinCode,
@@ -81,8 +81,8 @@ namespace DriveSalez.Infrastructure.Repositories
                 Description = request.Description,
                 Price = request.Price,
                 Currency = request.Currency,
-                Country = _dbContext.Countries.Find(request.CountryId),
-                City = _dbContext.Cities.Find(request.CityId),
+                Country = await _dbContext.Countries.FindAsync(request.CountryId),
+                City = await _dbContext.Cities.FindAsync(request.CityId),
                 Owner = user
             };
 
@@ -94,59 +94,16 @@ namespace DriveSalez.Infrastructure.Repositories
             user.Announcements.Add(announcement);
             var response = _dbContext.Announcements.Add(announcement).Entity;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return response;
         }
 
-        public async Task<Announcement> GetAnnouncementByIdFromDb(int id)
+        public Announcement GetAnnouncementByIdFromDb(int id)
         {
             var response = IncludeAllKeysInAnnouncement().FirstOrDefault(x => x.Id == id);
             return response;
         }
-
-        // public Announcement ConvertToAnnouncement(AnnouncementDto request)
-        // {
-        //     var announcement = new Announcement()
-        //     {
-        //         Vehicle = new Vehicle()
-        //         {
-        //             Year = request.Year,
-        //             Make = _dbContext.Makes.Find(request.MakeId),
-        //             Model = _dbContext.Models.Find(request.ModelId),
-        //             FuelType = _dbContext.VehicleFuelTypes.Find(request.FuelTypeId),
-        //             IsBrandNew = request.IsBrandNew,
-        //
-        //             VehicleDetails = new VehicleDetails()
-        //             {
-        //                 BodyType = _dbContext.VehicleBodyTypes.Find(request.BodyTypeId),
-        //                 Color = _dbContext.VehicleColors.Find(request.ColorID),
-        //                 HorsePower = request.HorsePower,
-        //                 GearboxType = _dbContext.VehicleGearboxTypes.Find(request.GearboxId),
-        //                 DrivetrainType = _dbContext.VehicleDriveTrainTypes.Find(request.DriveTrainTypeId),
-        //                 Name=_dbContext.Vehicle
-        //                 MarketVersion = _dbContext.VehicleMarketVersions.Find(request.MarketVersionID),
-        //                 OwnerQuantity = request.OwnerQuantity,
-        //                 SeatCount = request.SeatCount,
-        //                 VinCode = request.VinCode,
-        //                 EngineVolume = request.EngineVolume,
-        //                 MileAge = request.MileAge,
-        //                 MileageType = request.MileageType
-        //             }
-        //         },
-        //
-        //         Barter = request.Barter,
-        //         OnCredit = request.OnCredit,
-        //         Description = request.Description,
-        //         Price = request.Price,
-        //         Currency = request.Currency,
-        //         City = request.City,
-        //         Country = request.Country,
-        //         Owner = _dbContext.Users.Find(request.ApplicationUserID)
-        //     };
-        //
-        //     return announcement;
-        // }
 
         public IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
         {
@@ -167,10 +124,10 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = await GetAnnouncementByIdFromDb(announcementId);
-            announcement.Vehicle.Year = _dbContext.Years.Find(request.YearId);
+            var announcement = GetAnnouncementByIdFromDb(announcementId);
+            announcement.Vehicle.Year = await _dbContext.Years.FindAsync(request.YearId);
             announcement.Price = request.Price;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return announcement;
         }
@@ -193,7 +150,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
             announcement.AnnoucementState = announcementState;
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return announcement;
         }

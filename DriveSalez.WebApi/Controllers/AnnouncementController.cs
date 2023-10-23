@@ -32,9 +32,9 @@ public class AnnouncementController : Controller
     }
 
     [HttpGet("get-announcement-by-id/{announcementId}")]
-    public async Task<IActionResult> GetAnnouncementById([FromRoute] int announcementId)
+    public IActionResult GetAnnouncementById([FromRoute] int announcementId)
     {
-        var response = await _announcementService.GetAnnouncementById(announcementId);
+        var response =  _announcementService.GetAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
 

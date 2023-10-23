@@ -6,32 +6,32 @@ namespace DriveSalez.Core.RepositoryContracts;
 
 public interface IDetailsRepository
 {
-    IEnumerable<VehicleColor> GetAllColorsFromDb();
+    Task<IEnumerable<VehicleColor>> GetAllColorsFromDb();
 
-    IEnumerable<VehicleBodyType> GetAllVehicleBodyTypesFromDb();
+    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDb();
         
-    IEnumerable<VehicleDrivetrainType> GetAllVehicleDrivetrainsFromDb();
+    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDb();
         
-    IEnumerable<VehicleGearboxType> GetAllVehicleGearboxTypesFromDb();
+    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDb();
         
-    IEnumerable<Make> GetAllMakesFromDb();
+    Task<IEnumerable<Make>> GetAllMakesFromDb();
         
-    IEnumerable<VehicleFuelType> GetAllVehicleFuelTypesFromDb();
+    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDb();
         
-    IEnumerable<VehicleCondition> GetAllVehicleDetailsConditionsFromDb();
+    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDb();
         
-    IEnumerable<VehicleMarketVersion> GetAllVehicleMarketVersionsFromDb();
+    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDb();
         
-    IEnumerable<VehicleOption> GetAllVehicleDetailsOptionsFromDb();
+    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDb();
 
-    IEnumerable<Model> GetAllModelsFromDb();
+    Task<IEnumerable<Model>> GetAllModelsFromDb();
 
-    IEnumerable<Model> GetAllModelsByMakeIdFromDb(int id);
+    Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDb(int id);
 
-    IEnumerable<ManufactureYear> GetAllManufactureYearsFromDb();
+    Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDb();
 
-    IEnumerable<Country> GetAllCountriesFromDb();
+    Task<IEnumerable<Country>> GetAllCountriesFromDb();
 
-    IEnumerable<City> GetAllCitiesFromDb();
+    Task<IEnumerable<City>> GetAllCitiesFromDb();
 
 }

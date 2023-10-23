@@ -13,25 +13,25 @@ namespace DriveSalez.Core.RepositoryContracts
 {
     public interface IAdminRepository
     {
-        VehicleColor SendNewColorToDb(string color);
+        Task<VehicleColor> SendNewColorToDb(string color);
 
-        VehicleBodyType SendNewBodyTypeToDb(string bodyType);
+        Task<VehicleBodyType> SendNewBodyTypeToDb(string bodyType);
 
-        VehicleDrivetrainType SendNewVehicleDrivetrainTypeToDb(string driveTrainType);
+        Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDb(string driveTrainType);
 
-        VehicleGearboxType SendNewVehicleGearboxTypeToDb(string gearboxType);
+        Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDb(string gearboxType);
 
-        Make SendNewMakeToDb(string make);
+        Task<Make> SendNewMakeToDb(string make);
 
-        Model SendNewModelToDb(int makeId, string model);
+        Task<Model> SendNewModelToDb(int makeId, string model);
 
-        VehicleFuelType SendNewVehicleFuelTypeToDb(string fuelType);
+        Task<VehicleFuelType> SendNewVehicleFuelTypeToDb(string fuelType);
 
-        VehicleCondition SendNewVehicleDetailsConditionToDb(string condition);
+        Task<VehicleCondition> SendNewVehicleDetailsConditionToDb(string condition);
 
-        VehicleMarketVersion SendNewVehicleMarketVersionToDb(string marketVersion);
+        Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDb(string marketVersion);
 
-        VehicleOption SendNewVehicleDetailsOptionsToDb(string option);
+        Task<VehicleOption> SendNewVehicleDetailsOptionsToDb(string option);
 
         Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor);
 

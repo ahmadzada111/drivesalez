@@ -19,72 +19,72 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("add-new-color")]
-        public ActionResult AddNewColor(string color)
+        public async Task<ActionResult> AddNewColor(string color)
         {
-            var response = _adminService.AddColor(color);
+            var response = await _adminService.AddColor(color);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-body")]
-        public ActionResult AddNewBodyType(string bodyType)
+        public async Task<ActionResult> AddNewBodyType(string bodyType)
         {
-            var response = _adminService.AddBodyType(bodyType);
+            var response = await _adminService.AddBodyType(bodyType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-drivetrain")]
-        public ActionResult AddNewDrivetrainType(string driveTrainType)
+        public async Task<ActionResult> AddNewDrivetrainType(string driveTrainType)
         {
-            var response = _adminService.AddVehicleDrivetrainType(driveTrainType);
+            var response = await _adminService.AddVehicleDrivetrainType(driveTrainType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-gearbox")]
-        public ActionResult AddNewGearboxType(string gearboxType)
+        public async Task<ActionResult> AddNewGearboxType(string gearboxType)
         {
-            var response = _adminService.AddVehicleGearboxType(gearboxType);
+            var response = await _adminService.AddVehicleGearboxType(gearboxType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-make")]
-        public ActionResult AddNewMake(string make)
+        public async Task<ActionResult> AddNewMake(string make)
         {
-            var response = _adminService.AddMake(make);
+            var response = await _adminService.AddMake(make);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-model")]
-        public ActionResult AddNewModel(int makeId, string model)
+        public async Task<ActionResult> AddNewModel(int makeId, string model)
         {
-            var response = _adminService.AddModel(makeId, model);
+            var response = await _adminService.AddModel(makeId, model);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-fuel")]
-        public ActionResult AddNewFuelType(string fuelType)
+        public async Task<ActionResult> AddNewFuelType(string fuelType)
         {
-            var response = _adminService.AddVehicleFuelType(fuelType);
+            var response = await _adminService.AddVehicleFuelType(fuelType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-condition")]
-        public ActionResult AddNewVehicleCondition(string condition)
+        public async Task<ActionResult> AddNewVehicleCondition(string condition)
         {
-            var response = _adminService.AddVehicleCondition(condition);
+            var response = await _adminService.AddVehicleCondition(condition);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-market-version")]
-        public ActionResult AddNewVehicleMarketVersion(string marketVersion)
+        public async Task<ActionResult> AddNewVehicleMarketVersion(string marketVersion)
         {
-            var response = _adminService.AddVehicleMarketVersion(marketVersion);
+            var response = await _adminService.AddVehicleMarketVersion(marketVersion);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-option")]
-        public ActionResult AddNewVehicleOption(string option)
+        public async Task<ActionResult> AddNewVehicleOption(string option)
         {
-            var response = _adminService.AddVehicleOption(option);
+            var response = await _adminService.AddVehicleOption(option);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
