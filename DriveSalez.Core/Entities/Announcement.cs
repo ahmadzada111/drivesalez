@@ -30,5 +30,7 @@ namespace DriveSalez.Core.Entities
         public City City { get; set; }
 
         public ApplicationUser Owner { get; set; }
+        
+        public DateTimeOffset ExpirationDate { get; set; } = DateTimeOffset.Now.AddMonths(1);
     }
 }

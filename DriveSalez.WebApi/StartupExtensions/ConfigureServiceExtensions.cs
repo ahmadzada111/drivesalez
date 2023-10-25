@@ -12,11 +12,36 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using DriveSalez.Infrastructure.Quartz;
+using DriveSalez.Infrastructure.Quartz.Jobs;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
+using QuartzHostedService = Quartz.QuartzHostedService;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 
 public static class ConfigureServiceExtensions
 {
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        // services.AddSingleton<IJob, CheckAnnouncementExpirationJob>();
+        services.AddScoped<IAnnouncementService, AnnouncementService>();
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+        services.AddScoped<IAdminService, AdminService>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IOtpService, OtpService>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IDetailsService, DetailsService>();
+        services.AddScoped<IDetailsRepository, DetailsRepository>();
+
+        services.AddMemoryCache();
+
+        return services;
+    }
+    
     public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(setup =>
@@ -63,29 +88,6 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<IAnnouncementService, AnnouncementService>();
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
-        services.AddScoped<IAdminService, AdminService>();
-        services.AddScoped<IAdminRepository, AdminRepository>();
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IOtpService, OtpService>();
-        services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IDetailsService, DetailsService>();
-        services.AddScoped<IDetailsRepository, DetailsRepository>();
-
-        services.AddMemoryCache();
-
-        services.AddCors(options =>
-        {
-            options.AddPolicy("DriveSalezCorsPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            });
-        });
-
         services.AddDbContext<ApplicationDbContext>(
             options => { options.UseSqlServer(configuration.GetConnectionString("MacConnection")); }
         );
@@ -127,6 +129,54 @@ public static class ConfigureServiceExtensions
                 .RequireAuthenticatedUser()
                 .Build();
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddCorsToServices(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("DriveSalezCorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        return services;
+    }
+    
+    public static IServiceCollection AddQuartzToServices(this IServiceCollection services)
+    {
+        services.AddQuartz(q =>
+        {
+            q.SchedulerId = "ds_scheduler";
+            q.SchedulerName = "DriveSalezQuartzScheduler";
+            
+            var checkAnnouncementStateKey = new JobKey("CheckAnnouncementExpiration");
+            q.AddJob<CheckAnnouncementExpirationJob>(opts => opts.WithIdentity(checkAnnouncementStateKey)
+                .StoreDurably());
+
+            q.AddTrigger(opts => opts
+                .ForJob(checkAnnouncementStateKey)
+                .WithIdentity("CheckAnnouncementExpiration-trigger")
+                .WithCronSchedule("0 0 1 1 * ?")
+                .StartNow());
+            
+            var deleteInactiveAccountsKey = new JobKey("DeleteInactiveAccounts");
+            q.AddJob<DeleteInactiveAccountsJob>(opts => opts.WithIdentity(deleteInactiveAccountsKey)
+                .StoreDurably());
+
+            q.AddTrigger(opts => opts
+                .ForJob(deleteInactiveAccountsKey)
+                .WithIdentity("DeleteInactiveAccounts-trigger")
+                .WithCronSchedule("0 0 1 1 * ?")
+                .StartNow());
+        });
+
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
         return services;
     }

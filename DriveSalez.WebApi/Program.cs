@@ -1,6 +1,9 @@
 using DriveSalez.WebApi.StartupExtensions;
 using System.Text.Json.Serialization;
+using DriveSalez.Infrastructure.Quartz.Jobs;
 using DriveSalez.WebApi.Middleware;
+using Quartz;
+using Quartz.AspNetCore;
 
 namespace DriveSalez.WebApi
 {
@@ -18,11 +21,15 @@ namespace DriveSalez.WebApi
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.Secrets.json")
                 .Build();
-            
-            builder.Services.AddAuthenticationAndAuthorization(configuration);
-            builder.Services.AddSwagger();
-            builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddServices();
+            builder.Services.AddAuthenticationAndAuthorization(configuration);
+            builder.Services.AddQuartzToServices();
+            builder.Services.AddSwagger();
+            builder.Services.AddCorsToServices();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddLogging();
+            
             builder.Services.AddAuthentication();
 
             var app = builder.Build();

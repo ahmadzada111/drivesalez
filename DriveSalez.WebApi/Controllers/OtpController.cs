@@ -8,7 +8,7 @@ namespace DriveSalez.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[AllowAnonymous]
 public class OtpController : Controller
 {
     private readonly IEmailService _emailService;

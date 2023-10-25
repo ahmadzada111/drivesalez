@@ -39,7 +39,7 @@ public class EmailService : IEmailService
     
         var message = new MailMessage()
         {
-            Subject = "Email verification",
+            Subject = "Email verification",        
             Body = $"Your one time password: {otp}.\nPlease, don't answer to this mail.\nDo not share this password with anybody."
         };
 

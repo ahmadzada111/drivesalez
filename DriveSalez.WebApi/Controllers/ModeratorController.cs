@@ -22,5 +22,19 @@ namespace DriveSalez.WebApi.Controllers
             var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
             return response != null ? Ok(response) : BadRequest(response);
         }
+
+        [HttpPatch("make-announcement-inactive/{announcementId}")]
+        public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] int announcementId)
+        {
+            var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Inactive);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        
+        [HttpPatch("make-announcement-waiting/{announcementId}")]
+        public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] int announcementId)
+        {
+            var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Waiting);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
     }
 }
