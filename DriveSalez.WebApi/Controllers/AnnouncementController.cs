@@ -51,4 +51,11 @@ public class AnnouncementController : Controller
         var response = _announcementService.GetAnnouncements(parameters, announcementState);
         return response != null ? Ok(response) : BadRequest();
     }
+
+    [HttpPost("reactivate-announcement/{announcementId}")]
+    public async Task<ActionResult> ReactivateAnnouncement([FromRoute] int announcementId)
+    {
+        var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
+        return response != null ? Ok(response) : BadRequest(response);
+    }
 }
