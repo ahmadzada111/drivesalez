@@ -12,12 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using DriveSalez.Infrastructure.Quartz;
 using DriveSalez.Infrastructure.Quartz.Jobs;
 using Quartz;
-using Quartz.Impl;
-using Quartz.Spi;
-using QuartzHostedService = Quartz.QuartzHostedService;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 
@@ -25,7 +21,6 @@ public static class ConfigureServiceExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        // services.AddSingleton<IJob, CheckAnnouncementExpirationJob>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();

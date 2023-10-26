@@ -141,7 +141,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = _dbContext.Announcements.FirstOrDefault(x => x.Id == announcementId);
+            var announcement = _dbContext.Announcements.FirstOrDefault(x => x.Id == announcementId && x.Owner == user);
 
             if (announcement == null)
             {
