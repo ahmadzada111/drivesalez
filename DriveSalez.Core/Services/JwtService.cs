@@ -25,7 +25,7 @@ public class JwtService : IJwtService
 
     public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
     {
-        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtConfig["JWT:JwtExpiration"]));
+        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["JWT:Expiration"]));
         var role = await _userManager.GetRolesAsync(user);
         
         Claim[] claims = new Claim[]
@@ -66,7 +66,7 @@ public class JwtService : IJwtService
             LastName = user.LastName,
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
-            RefreshTokenExpiration = DateTime.Now.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),
+            RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),
             UserRole = role[0]
         };
     }

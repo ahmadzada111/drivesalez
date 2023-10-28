@@ -3,11 +3,13 @@ using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 public class AnnouncementController : Controller
 {
     private readonly IAnnouncementService _announcementService;
