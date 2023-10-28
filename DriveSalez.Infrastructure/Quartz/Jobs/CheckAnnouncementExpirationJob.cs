@@ -22,12 +22,12 @@ public class CheckAnnouncementExpirationJob : IJob
         _logger.LogInformation($"{typeof(CheckAnnouncementExpirationJob)} job started");
         
         var expiredAnnouncements = await _dbContext.Announcements
-            .Where(a => a.AnnoucementState == AnnouncementState.Active && a.ExpirationDate <= DateTimeOffset.Now)
+            .Where(a => a.AnnouncementState == AnnouncementState.Active && a.ExpirationDate <= DateTimeOffset.Now)
             .ToListAsync();
         
         foreach (var announcement in expiredAnnouncements)
         {
-            announcement.AnnoucementState = AnnouncementState.Inactive;
+            announcement.AnnouncementState = AnnouncementState.Inactive;
         }
         
         await _dbContext.SaveChangesAsync();

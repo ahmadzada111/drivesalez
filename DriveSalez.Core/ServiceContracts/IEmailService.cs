@@ -5,9 +5,9 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IEmailService
 {
-    Task<bool> SendOtpByEmail(string toEmail, string otp);
+    Task<bool> SendOtpByEmailAsync(string toEmail, string otp);
 
-    Task<bool> VerifyEmail(string email);
+    Task<bool> VerifyEmailAsync(string email);
 
-    Task<bool> ResetPassword(string email, string newPassword);
+    Task<bool> ResetPasswordAsync(string email, string newPassword);
 }

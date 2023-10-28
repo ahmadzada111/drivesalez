@@ -19,21 +19,21 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPatch("confirm-announcement/{announcementId}")]
         public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] int announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
+            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPatch("make-announcement-inactive/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] int announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementState(announcementId, AnnouncementState.Inactive);
+            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Inactive);
             return response != null ? Ok(response) : BadRequest(response);
         }
         
         [HttpPatch("make-announcement-waiting/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] int announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementState(announcementId, AnnouncementState.Waiting);
+            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Waiting);
             return response != null ? Ok(response) : BadRequest(response);
         }
     }

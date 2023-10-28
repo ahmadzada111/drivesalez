@@ -21,7 +21,7 @@ public class EmailService : IEmailService
         _userManager = userManager;
     }
     
-    public async Task<bool> SendOtpByEmail(string toEmail, string otp)
+    public async Task<bool> SendOtpByEmailAsync(string toEmail, string otp)
     {
         var user = await _userManager.FindByEmailAsync(toEmail);
         
@@ -51,7 +51,7 @@ public class EmailService : IEmailService
         return true;
     }
     
-    public async Task<bool> VerifyEmail(string email)
+    public async Task<bool> VerifyEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
         
@@ -72,7 +72,7 @@ public class EmailService : IEmailService
         return false;
     }
 
-    public async Task<bool> ResetPassword(string email, string newPassword)
+    public async Task<bool> ResetPasswordAsync(string email, string newPassword)
     {
         var user = await _userManager.FindByEmailAsync(email);
         

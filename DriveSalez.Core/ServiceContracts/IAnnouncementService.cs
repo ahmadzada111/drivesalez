@@ -7,13 +7,13 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IAnnouncementService
 {
-    Task<Announcement> AddAnnouncement(AnnouncementDto announcement);
+    Task<Announcement> AddAnnouncementAsync(AnnouncementDto announcement);
 
-    Task<Announcement> UpdateAnnouncement(int announcementId, AnnouncementDto request);
+    Task<Announcement> UpdateAnnouncementAsync(int announcementId, AnnouncementDto request);
 
-    Task<Announcement> DeleteDeactivateAnnouncement(int announcementId);
+    Task<Announcement> DeleteDeactivateAnnouncementAsync(int announcementId);
 
-    Task<Announcement> ChangeAnnouncementState(int announcementId, AnnouncementState announcementState);
+    Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState);
 
     Announcement GetAnnouncementById(int id);
 

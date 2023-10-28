@@ -27,7 +27,7 @@ public class AccountService : IAccountService
         _jwtService = jwtService;
     }
 
-    public async Task<IdentityResult> Register(RegisterDto request)
+    public async Task<IdentityResult> RegisterAsync(RegisterDto request)
     {
         ApplicationUser user = new ApplicationUser()
         {
@@ -66,7 +66,7 @@ public class AccountService : IAccountService
         return result;
     }
 
-    public async Task<AuthenticationResponseDto> Login(LoginDto request)
+    public async Task<AuthenticationResponseDto> LoginAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -80,7 +80,7 @@ public class AccountService : IAccountService
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityToken(user);
+            var response = await _jwtService.GenerateSecurityTokenAsync(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiration = response.RefreshTokenExpiration;
             await _userManager.UpdateAsync(user);
@@ -91,7 +91,7 @@ public class AccountService : IAccountService
         return null;
     }
 
-    public async Task<AuthenticationResponseDto> Refresh(RefreshJwtDto request)
+    public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
     {
         ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
 
@@ -108,7 +108,7 @@ public class AccountService : IAccountService
             return new AuthenticationResponseDto { Error = "Invalid refresh token" };
         }
 
-        var response = await _jwtService.GenerateSecurityToken(user);
+        var response = await _jwtService.GenerateSecurityTokenAsync(user);
         user.RefreshToken = response.RefreshToken;
         user.RefreshTokenExpiration = response.RefreshTokenExpiration;
 
@@ -117,7 +117,7 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<bool> ChangePassword(ChangePasswordDto request)
+    public async Task<bool> ChangePasswordAsync(ChangePasswordDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         
@@ -142,7 +142,7 @@ public class AccountService : IAccountService
     }
     
     [Authorize]
-    public async Task<ApplicationUser> DeleteUser(string password)
+    public async Task<ApplicationUser> DeleteUserAsync(string password)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         

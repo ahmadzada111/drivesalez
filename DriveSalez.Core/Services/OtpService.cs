@@ -21,7 +21,7 @@ public class OtpService : IOtpService
         return random.Next(100000, 999999).ToString();
     }
 
-    public async Task<bool> ValidateOtp(IMemoryCache cache, ValidateOtpDto request)
+    public async Task<bool> ValidateOtpAsync(IMemoryCache cache, ValidateOtpDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         

@@ -20,28 +20,28 @@ public class AnnouncementController : Controller
     [HttpPost("create-announcement")]
     public async Task<IActionResult> CreateAnnouncement([FromBody] AnnouncementDto announcement)
     {
-        var response = await _announcementService.AddAnnouncement(announcement);
+        var response = await _announcementService.AddAnnouncementAsync(announcement);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpPatch("update-announcement/{announcementId}")]
     public async Task<IActionResult> UpdateAnnouncement([FromBody] AnnouncementDto announcement, [FromRoute] int announcementId)
     {
-        var response = await _announcementService.UpdateAnnouncement(announcementId, announcement);
+        var response = await _announcementService.UpdateAnnouncementAsync(announcementId, announcement);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpGet("get-announcement-by-id/{announcementId}")]
     public IActionResult GetAnnouncementById([FromRoute] int announcementId)
     {
-        var response =  _announcementService.GetAnnouncementById(announcementId);
+        var response =  _announcementService.GetAnnouncementByIdAsync(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpDelete("delete-announcement/{announcementId}")]
     public async Task<IActionResult> DeleteAnnouncement([FromRoute] int announcementId)
     {
-        var response = await _announcementService.DeleteDeactivateAnnouncement(announcementId);
+        var response = await _announcementService.DeleteDeactivateAnnouncementAsync(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
     
@@ -55,7 +55,13 @@ public class AnnouncementController : Controller
     [HttpPost("reactivate-announcement/{announcementId}")]
     public async Task<ActionResult> ReactivateAnnouncement([FromRoute] int announcementId)
     {
-        var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
+        var response = await _announcementService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
         return response != null ? Ok(response) : BadRequest(response);
     }
+    
+    // [HttpGet("filter-announcements")]
+    // public Task<ActionResult> FilterAnnouncements([FromRoute] FilterParameters parameters)
+    // {
+    //     
+    // }
 }

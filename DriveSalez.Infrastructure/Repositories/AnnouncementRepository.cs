@@ -40,7 +40,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.City);
         }
 
-        public async Task<Announcement> CreateAnnouncement(Guid userId, AnnouncementDto request)
+        public async Task<Announcement> CreateAnnouncementAsync(Guid userId, AnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -58,7 +58,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     Model = await _dbContext.Models.FindAsync(request.ModelId),
                     FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
                     IsBrandNew = request.IsBrandNew,
-
+                    
                     VehicleDetails = new VehicleDetails()
                     {
                         BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
@@ -76,6 +76,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     }
                 },
 
+                ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
                 OnCredit = request.OnCredit,
                 Description = request.Description,
@@ -108,14 +109,14 @@ namespace DriveSalez.Infrastructure.Repositories
         public IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
         {
             return IncludeAllKeysInAnnouncement().
-                Where(on => on.AnnoucementState == announcementState).
+                Where(on => on.AnnouncementState == announcementState).
                 OrderBy(o => o.Price).
                 Skip((parameter.PageNumber - 1) * parameter.PageSize).
                 Take(parameter.PageSize).
                 ToList();
         }
 
-        public async Task<Announcement> UpdateAnnouncementInDb(Guid userId, int announcementId, AnnouncementDto request)
+        public async Task<Announcement> UpdateAnnouncementInDbAsync(Guid userId, int announcementId, AnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -132,7 +133,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return announcement;
         }
 
-        public async Task<Announcement> ChangeAnnouncementStateInDb(Guid userId, int announcementId, AnnouncementState announcementState)
+        public async Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -141,21 +142,22 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = _dbContext.Announcements.FirstOrDefault(x => x.Id == announcementId && x.Owner == user);
+            var announcement = await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId && x.Owner == user);
 
             if (announcement == null)
             {
                 return null;
             }
 
-            announcement.AnnoucementState = announcementState;
+            announcement.AnnouncementState = announcementState;
+            announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
 
             await _dbContext.SaveChangesAsync();
 
             return announcement;
         }
 
-        public async Task<Announcement> DeleteInactiveAnnouncementFromDb(Guid userId, int announcementId)
+        public async Task<Announcement> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -164,7 +166,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = _dbContext.Announcements.FirstOrDefault(x => x.Id == announcementId || x.AnnoucementState == AnnouncementState.Inactive || x.Owner.Id == userId);
+            var announcement = await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId || x.AnnouncementState == AnnouncementState.Inactive || x.Owner.Id == userId);
 
             if (announcement == null)
             {
@@ -174,6 +176,43 @@ namespace DriveSalez.Infrastructure.Repositories
             var response = _dbContext.Announcements.Remove(announcement).Entity;
 
             return response;
+        }
+        
+        public async Task<IEnumerable<Announcement>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters)
+        {
+            var filteredAnnouncement = await _dbContext.Announcements
+                .Where(x => x.Vehicle.Year.Id >= parameters.FromYearId 
+                            && x.Vehicle.Year.Id <= parameters.ToYearId
+                            && x.Vehicle.Make.Id == parameters.MakeId 
+                            && x.Vehicle.Model.Id == parameters.ModelId 
+                            && x.Vehicle.FuelType.Id == parameters.FuelTypeId 
+                            && x.Vehicle.IsBrandNew == parameters.IsBrandNew
+                            && x.Vehicle.VehicleDetails.BodyType.Id == parameters.BodyTypeId 
+                            && x.Vehicle.VehicleDetails.Color.Id == parameters.ColorId 
+                            && x.Vehicle.VehicleDetails.HorsePower >= parameters.FromHorsePower 
+                            && x.Vehicle.VehicleDetails.HorsePower <= parameters.ToHorsePower 
+                            && x.Vehicle.VehicleDetails.GearboxType.Id == parameters.GearboxTypeId 
+                            && x.Vehicle.VehicleDetails.DrivetrainType.Id == parameters.DriveTrainTypeId
+                            && x.Vehicle.VehicleDetails.MarketVersion.Id == parameters.MarketVersionId
+                            && x.Vehicle.VehicleDetails.SeatCount == parameters.SeatCount
+                            && x.Vehicle.VehicleDetails.EngineVolume == parameters.EngineVolume
+                            && x.Vehicle.VehicleDetails.MileAge == parameters.Mileage
+                            && x.Vehicle.VehicleDetails.MileageType == parameters.DistanceUnit
+                            && x.Barter == parameters.Barter
+                            && x.OnCredit == parameters.OnCredit
+                            && x.Price >= parameters.FromPrice
+                            && x.Price <= parameters.ToPrice
+                            && x.Currency == parameters.Currency
+                            && x.Country.Id == parameters.CountryId
+                            && x.City.Id == parameters.CityId 
+                ).ToListAsync();
+            
+            if (filteredAnnouncement == null)
+            {
+                return null;
+            }
+            
+            return filteredAnnouncement;
         }
     }
 }

@@ -21,7 +21,7 @@ public class ModeratorService : IModeratorService
         _moderatorRepository = moderatorRepository;
     }
     
-    public async Task<Announcement> ChangeAnnouncementState(int announcementId, AnnouncementState announcementState)
+    public async Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -30,7 +30,7 @@ public class ModeratorService : IModeratorService
             return null;
         }
         
-        var response = await _moderatorRepository.ChangeAnnouncementStateInDb(user.Id, announcementId, announcementState);
+        var response = await _moderatorRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);
 
         return response;
     }

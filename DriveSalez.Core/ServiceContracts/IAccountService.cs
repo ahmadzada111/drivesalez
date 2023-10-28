@@ -6,13 +6,13 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IAccountService
 {
-    Task<IdentityResult> Register(RegisterDto request);
+    Task<IdentityResult> RegisterAsync(RegisterDto request);
 
-    Task<AuthenticationResponseDto> Login(LoginDto request);
+    Task<AuthenticationResponseDto> LoginAsync(LoginDto request);
 
-    Task<AuthenticationResponseDto> Refresh(RefreshJwtDto request);
+    Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 
-    Task<ApplicationUser> DeleteUser(string password);
+    Task<ApplicationUser> DeleteUserAsync(string password);
     
-    Task<bool> ChangePassword(ChangePasswordDto request);
+    Task<bool> ChangePasswordAsync(ChangePasswordDto request);
 }

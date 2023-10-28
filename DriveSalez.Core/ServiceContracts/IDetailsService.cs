@@ -6,31 +6,31 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IDetailsService
 {
-    Task<IEnumerable<VehicleColor>> GetAllColors();
+    Task<IEnumerable<VehicleColor>> GetAllColorsAsync();
 
-    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypes();
+    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesAsync();
 
-    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrains();
+    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsAsync();
 
-    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypes();
+    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesAsync();
 
-    Task<IEnumerable<Make>> GetAllMakes();
+    Task<IEnumerable<Make>> GetAllMakesAsync();
 
-    Task<IEnumerable<Model>> GetAllModelsByMakeId(int id);
+    Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id);
 
-    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypes();
+    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesAsync();
 
-    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditions();
+    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsAsync();
 
-    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersions();
+    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsAsync();
 
-    Task<IEnumerable<Model>> GetAllModels();
+    Task<IEnumerable<Model>> GetAllModelsAsync();
 
-    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptions();
+    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsAsync();
 
-    Task<IEnumerable<ManufactureYear>> GetAllManufactureYears();
+    Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsAsync();
 
-    Task<IEnumerable<Country>> GetAllCountries();
+    Task<IEnumerable<Country>> GetAllCountriesAsync();
 
-    Task<IEnumerable<City>> GetAllCities();
+    Task<IEnumerable<City>> GetAllCitiesAsync();
 }

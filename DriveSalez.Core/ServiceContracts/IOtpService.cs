@@ -7,5 +7,5 @@ public interface IOtpService
 {
     string GenerateOtp();
 
-    Task<bool> ValidateOtp(IMemoryCache cache, ValidateOtpDto request);
+    Task<bool> ValidateOtpAsync(IMemoryCache cache, ValidateOtpDto request);
 }

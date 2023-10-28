@@ -39,7 +39,7 @@ namespace DriveSalez.WebApi.Controllers
                 return Problem(errorMessage);
             }
 
-            var response = await _accountService.Register(request);
+            var response = await _accountService.RegisterAsync(request);
 
             if (!response.Succeeded)
             {
@@ -58,18 +58,18 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized(errorMessage);
             }
 
-            var responce = await _accountService.Login(request);
+            var response = await _accountService.LoginAsync(request);
 
-            if (responce == null)
+            if (response == null)
             {
                 return Unauthorized("Email or password is invalid");
             }
 
-            return Ok(responce);
+            return Ok(response);
         }
 
         [HttpGet("logout")]
-        public async Task<ActionResult<AuthenticationResponseDto>> LogOut()
+        public async Task<ActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
             return NoContent();
@@ -83,7 +83,7 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized("Invalid request");
             }
 
-            var response = await _accountService.Refresh(request);
+            var response = await _accountService.RefreshAsync(request);
 
             if (response.Error != null)
             {
@@ -96,18 +96,18 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("change-password")]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)
         {
-            var result = await _accountService.ChangePassword(request);
+            var result = await _accountService.ChangePasswordAsync(request);
             return result ? Ok("Password was successfully changed") : BadRequest("Error");
         }
         
         [HttpPost("reset-password")]
         public async Task<ActionResult> ResetPassword([FromBody] ValidateOtpDto request, string newPassword)
         {
-            var response =  await _otpService.ValidateOtp(_cache, request);
+            var response =  await _otpService.ValidateOtpAsync(_cache, request);
 
             if (response)
             {
-                var result = await _emailService.ResetPassword(request.Email, newPassword);
+                var result = await _emailService.ResetPasswordAsync(request.Email, newPassword);
             
                 if (result)
                 {
@@ -128,7 +128,7 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized("Password is invalid");
             }
 
-            var response = await _accountService.DeleteUser(password);
+            var response = await _accountService.DeleteUserAsync(password);
             return response != null ? Ok() : BadRequest();
         }
     }

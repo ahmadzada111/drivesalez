@@ -23,7 +23,7 @@ public class AnnouncementService : IAnnouncementService
         _announcementRepository = announcementRepository;
     }
 
-    public async Task<Announcement> AddAnnouncement(AnnouncementDto request)
+    public async Task<Announcement> AddAnnouncementAsync(AnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -32,12 +32,12 @@ public class AnnouncementService : IAnnouncementService
             return null;
         }
         
-        var response = await _announcementRepository.CreateAnnouncement(user.Id, request);
+        var response = await _announcementRepository.CreateAnnouncementAsync(user.Id, request);
         
         return response;
     }
 
-    public async Task<Announcement> DeleteDeactivateAnnouncement(int announcementId)
+    public async Task<Announcement> DeleteDeactivateAnnouncementAsync(int announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -46,7 +46,7 @@ public class AnnouncementService : IAnnouncementService
             return null;
         }
         
-        var response = await _announcementRepository.DeleteInactiveAnnouncementFromDb(user.Id, announcementId);
+        var response = await _announcementRepository.DeleteInactiveAnnouncementFromDbAsync(user.Id, announcementId);
 
         return response;
     }
@@ -63,7 +63,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<Announcement> UpdateAnnouncement(int announcementId, AnnouncementDto request)
+    public async Task<Announcement> UpdateAnnouncementAsync(int announcementId, AnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -72,11 +72,11 @@ public class AnnouncementService : IAnnouncementService
             return null;
         }
 
-        var response = await _announcementRepository.UpdateAnnouncementInDb(user.Id, announcementId, request);
+        var response = await _announcementRepository.UpdateAnnouncementInDbAsync(user.Id, announcementId, request);
         return response;
     }
 
-    public async Task<Announcement> ChangeAnnouncementState(int announcementId, AnnouncementState announcementState)
+    public async Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -85,7 +85,7 @@ public class AnnouncementService : IAnnouncementService
             return null;
         }
         
-        var response = await _announcementRepository.ChangeAnnouncementStateInDb(user.Id, announcementId, announcementState);
+        var response = await _announcementRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);
 
         return response;
     }

@@ -21,6 +21,8 @@ public static class ConfigureServiceExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
+        services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();

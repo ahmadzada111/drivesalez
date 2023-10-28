@@ -33,187 +33,187 @@ namespace DriveSalez.Core.Services
             _roleManager = roleManager;
         }
 
-        public async Task<VehicleBodyType> AddBodyType(string bodyType)
+        public async Task<VehicleBodyType> AddBodyTypeAsync(string bodyType)
         {
-            var response = await _adminRepository.SendNewBodyTypeToDb(bodyType);
+            var response = await _adminRepository.SendNewBodyTypeToDbAsync(bodyType);
             return response;
         }
 
-        public async Task<VehicleColor> AddColor(string color)
+        public async Task<VehicleColor> AddColorAsync(string color)
         {
-            var response = await _adminRepository.SendNewColorToDb(color);
+            var response = await _adminRepository.SendNewColorToDbAsync(color);
             return response;
         }
 
-        public async Task<Make> AddMake(string make)
+        public async Task<Make> AddMakeAsync(string make)
         {
-            var response = await _adminRepository.SendNewMakeToDb(make);
+            var response = await _adminRepository.SendNewMakeToDbAsync(make);
             return response;
         }
 
-        public async Task<Model> AddModel(int makeId, string model)
+        public async Task<Model> AddModelAsync(int makeId, string model)
         {
-            var response = await _adminRepository.SendNewModelToDb(makeId, model);
+            var response = await _adminRepository.SendNewModelToDbAsync(makeId, model);
             return response;
         }
 
-        public async Task<VehicleCondition> AddVehicleCondition(string condition)
+        public async Task<VehicleCondition> AddVehicleConditionAsync(string condition)
         {
-            var response = await _adminRepository.SendNewVehicleDetailsConditionToDb(condition);
+            var response = await _adminRepository.SendNewVehicleDetailsConditionToDbAsync(condition);
             return response;
         }
 
-        public async Task<VehicleOption> AddVehicleOption(string option)
+        public async Task<VehicleOption> AddVehicleOptionAsync(string option)
         {
-            var response = await _adminRepository.SendNewVehicleDetailsOptionsToDb(option);
+            var response = await _adminRepository.SendNewVehicleDetailsOptionsToDbAsync(option);
             return response;
         }
 
-        public async Task<VehicleDrivetrainType> AddVehicleDrivetrainType(string driveTrainType)
+        public async Task<VehicleDrivetrainType> AddVehicleDrivetrainTypeAsync(string driveTrainType)
         {
-            var response = await _adminRepository.SendNewVehicleDrivetrainTypeToDb(driveTrainType);
+            var response = await _adminRepository.SendNewVehicleDrivetrainTypeToDbAsync(driveTrainType);
             return response;
         }
 
-        public async Task<VehicleFuelType> AddVehicleFuelType(string fuelType)
+        public async Task<VehicleFuelType> AddVehicleFuelTypeAsync(string fuelType)
         {
-            var response = await _adminRepository.SendNewVehicleFuelTypeToDb(fuelType);
+            var response = await _adminRepository.SendNewVehicleFuelTypeToDbAsync(fuelType);
             return response;
         }
 
-        public async Task<VehicleGearboxType> AddVehicleGearboxType(string gearboxType)
+        public async Task<VehicleGearboxType> AddVehicleGearboxTypeAsync(string gearboxType)
         {
-            var response = await _adminRepository.SendNewVehicleGearboxTypeToDb(gearboxType);
+            var response = await _adminRepository.SendNewVehicleGearboxTypeToDbAsync(gearboxType);
             return response;
         }
 
-        public async Task<VehicleMarketVersion> AddVehicleMarketVersion(string marketVersion)
+        public async Task<VehicleMarketVersion> AddVehicleMarketVersionAsync(string marketVersion)
         {
-            var response = await _adminRepository.SendNewVehicleMarketVersionToDb(marketVersion);
+            var response = await _adminRepository.SendNewVehicleMarketVersionToDbAsync(marketVersion);
             return response;
         }
 
-        public async Task<VehicleColor> UpdateVehicleColor(int colorId, string newColor)
+        public async Task<VehicleColor> UpdateVehicleColorAsync(int colorId, string newColor)
         {
-            var response = await _adminRepository.UpdateVehicleColorInDb(colorId, newColor);
+            var response = await _adminRepository.UpdateVehicleColorInDbAsync(colorId, newColor);
             return response;
         }
         
-        public async Task<VehicleBodyType> UpdateVehicleBodyType(int bodyTypeId, string newBodyType)
+        public async Task<VehicleBodyType> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
         {
-            var response = await _adminRepository.UpdateVehicleBodyTypeInDb(bodyTypeId, newBodyType);
+            var response = await _adminRepository.UpdateVehicleBodyTypeInDbAsync(bodyTypeId, newBodyType);
             return response;
         }
         
-        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainType(int drivetrainId, string newDrivetrain)
+        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
         {
-            var response = await _adminRepository.UpdateVehicleDrivetrainTypeInDb(drivetrainId, newDrivetrain);
+            var response = await _adminRepository.UpdateVehicleDrivetrainTypeInDbAsync(drivetrainId, newDrivetrain);
             return response;
         }
         
-        public async Task<VehicleGearboxType> UpdateVehicleGearboxType(int gearboxId, string newGearbox)
+        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
         {
-            var response = await _adminRepository.UpdateVehicleGearboxTypeInDb(gearboxId, newGearbox);
+            var response = await _adminRepository.UpdateVehicleGearboxTypeInDbAsync(gearboxId, newGearbox);
             return response;
         }
 
-        public async Task<Make> UpdateMake(int makeId, string newMake)
+        public async Task<Make> UpdateMakeAsync(int makeId, string newMake)
         {
-            var response = await _adminRepository.UpdateMakeInDb(makeId, newMake);
+            var response = await _adminRepository.UpdateMakeInDbAsync(makeId, newMake);
             return response;
         }
         
-        public async Task<Model> UpdateModel(int modelId, string newModel)
+        public async Task<Model> UpdateModelAsync(int modelId, string newModel)
         {
-            var response = await _adminRepository.UpdateModelInDb(modelId, newModel);
+            var response = await _adminRepository.UpdateModelInDbAsync(modelId, newModel);
             return response;
         }
         
-        public async Task<VehicleFuelType> UpdateFuelType(int fuelTypeId, string newFuelType)
+        public async Task<VehicleFuelType> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
         {
-            var response = await _adminRepository.UpdateFuelTypeInDb(fuelTypeId, newFuelType);
+            var response = await _adminRepository.UpdateFuelTypeInDbAsync(fuelTypeId, newFuelType);
             return response;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleCondition(int vehicleConditionId, string newVehicleCondition)
+        public async Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition)
         {
-            var response = await _adminRepository.UpdateVehicleConditionInDb(vehicleConditionId, newVehicleCondition);
+            var response = await _adminRepository.UpdateVehicleConditionInDbAsync(vehicleConditionId, newVehicleCondition);
             return response;
         }
         
-        public async Task<VehicleOption> UpdateVehicleOption(int vehicleOptionId, string newVehicleOption)
+        public async Task<VehicleOption> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption)
         {
-            var response = await _adminRepository.UpdateVehicleOptionInDb(vehicleOptionId, newVehicleOption);
+            var response = await _adminRepository.UpdateVehicleOptionInDbAsync(vehicleOptionId, newVehicleOption);
             return response;
         }
         
-        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersion(int marketVersionId, string newMarketVersion)
+        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion)
         {
-            var response = await _adminRepository.UpdateVehicleMarketVersionInDb(marketVersionId, newMarketVersion);
+            var response = await _adminRepository.UpdateVehicleMarketVersionInDbAsync(marketVersionId, newMarketVersion);
             return response;
         }
 
-        public async Task<VehicleColor> DeleteVehicleColor(int colorId)
+        public async Task<VehicleColor> DeleteVehicleColorAsync(int colorId)
         {
-            var response = await _adminRepository.DeleteVehicleColorFromDb(colorId);
+            var response = await _adminRepository.DeleteVehicleColorFromDbAsync(colorId);
             return response;
         }
 
-        public async Task<VehicleBodyType> DeleteVehicleBodyType(int bodyTypeId)
+        public async Task<VehicleBodyType> DeleteVehicleBodyTypeAsync(int bodyTypeId)
         {
-            var response = await _adminRepository.DeleteVehicleBodyTypeFromDb(bodyTypeId);
+            var response = await _adminRepository.DeleteVehicleBodyTypeFromDbAsync(bodyTypeId);
             return response;
         }
 
-        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainType(int drivetrainId)
+        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeAsync(int drivetrainId)
         {
-            var response = await _adminRepository.DeleteVehicleDrivetrainTypeFromDb(drivetrainId);
+            var response = await _adminRepository.DeleteVehicleDrivetrainTypeFromDbAsync(drivetrainId);
             return response;
         }
 
-        public async Task<VehicleGearboxType> DeleteVehicleGearboxType(int gearboxId)
+        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeAsync(int gearboxId)
         {
-            var response = await _adminRepository.DeleteVehicleGearboxTypeFromDb(gearboxId);
+            var response = await _adminRepository.DeleteVehicleGearboxTypeFromDbAsync(gearboxId);
             return response;
         }
 
-        public async Task<Make> DeleteMake(int makeId)
+        public async Task<Make> DeleteMakeAsync(int makeId)
         {
-            var response = await _adminRepository.DeleteMakeFromDb(makeId);
+            var response = await _adminRepository.DeleteMakeFromDbAsync(makeId);
             return response;
         }
 
-        public async Task<Model> DeleteModel(int modelId)
+        public async Task<Model> DeleteModelAsync(int modelId)
         {
-            var response = await _adminRepository.DeleteModelFromDb(modelId);
+            var response = await _adminRepository.DeleteModelFromDbAsync(modelId);
             return response;
         }
 
-        public async Task<VehicleFuelType> DeleteFuelType(int fuelTypeId)
+        public async Task<VehicleFuelType> DeleteFuelTypeAsync(int fuelTypeId)
         {
-            var response = await _adminRepository.DeleteFuelTypeFromDb(fuelTypeId);
+            var response = await _adminRepository.DeleteFuelTypeFromDbAsync(fuelTypeId);
             return response;
         }
 
-        public async Task<VehicleCondition> DeleteVehicleCondition(int vehicleConditionId)
+        public async Task<VehicleCondition> DeleteVehicleConditionAsync(int vehicleConditionId)
         {
-            var response = await _adminRepository.DeleteVehicleConditionFromDb(vehicleConditionId);
+            var response = await _adminRepository.DeleteVehicleConditionFromDbAsync(vehicleConditionId);
             return response;
         }
 
-        public async Task<VehicleOption> DeleteVehicleOption(int vehicleOptionId)
+        public async Task<VehicleOption> DeleteVehicleOptionAsync(int vehicleOptionId)
         {
-            var response = await _adminRepository.DeleteVehicleOptionFromDb(vehicleOptionId);
+            var response = await _adminRepository.DeleteVehicleOptionFromDbAsync(vehicleOptionId);
             return response;
         }
 
-        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersion(int marketVersionId)
+        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId)
         {
-            var response = await _adminRepository.DeleteVehicleMarketVersionFromDb(marketVersionId);
+            var response = await _adminRepository.DeleteVehicleMarketVersionFromDbAsync(marketVersionId);
             return response;
         }
 
-        public async Task<ApplicationUser> AddModerator(RegisterDto request)
+        public async Task<ApplicationUser> AddModeratorAsync(RegisterDto request)
         {
             ApplicationUser user = new ApplicationUser()
             {

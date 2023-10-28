@@ -15,87 +15,87 @@ public class DetailsService : IDetailsService
         _detailsRepository = detailsRepository;
     }
 
-    public async Task<IEnumerable<VehicleColor>> GetAllColors()
+    public async Task<IEnumerable<VehicleColor>> GetAllColorsAsync()
     {
-        var response = await _detailsRepository.GetAllColorsFromDb();
+        var response = await _detailsRepository.GetAllColorsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypes()
+    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleBodyTypesFromDb();
+        var response = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrains()
+    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleDrivetrainsFromDb();
+        var response = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypes()
+    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleGearboxTypesFromDb();
+        var response = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<Make>> GetAllMakes()
+    public async Task<IEnumerable<Make>> GetAllMakesAsync()
     {
-        var response = await _detailsRepository.GetAllMakesFromDb();
+        var response = await _detailsRepository.GetAllMakesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypes()
+    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleFuelTypesFromDb();
+        var response = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditions()
+    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleDetailsConditionsFromDb();
+        var response = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersions()
+    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleMarketVersionsFromDb();
+        var response = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptions()
+    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsAsync()
     {
-        var response = await _detailsRepository.GetAllVehicleDetailsOptionsFromDb();
+        var response = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<Model>> GetAllModels()
+    public async Task<IEnumerable<Model>> GetAllModelsAsync()
     {
-        var response = await _detailsRepository.GetAllModelsFromDb();
+        var response = await _detailsRepository.GetAllModelsFromDbAsync();
         return response;
     }
     
-    public async Task<IEnumerable<Model>> GetAllModelsByMakeId(int id)
+    public async Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id)
     {
-        var response = await _detailsRepository.GetAllModelsByMakeIdFromDb(id);
+        var response = await _detailsRepository.GetAllModelsByMakeIdFromDbAsync(id);
         return response;
     }
     
-    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYears()
+    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsAsync()
     {
-        var response = await _detailsRepository.GetAllManufactureYearsFromDb();
+        var response = await _detailsRepository.GetAllManufactureYearsFromDbAsync();
         return response;
     }
     
-    public async Task<IEnumerable<Country>> GetAllCountries()
+    public async Task<IEnumerable<Country>> GetAllCountriesAsync()
     {
-        var response = await _detailsRepository.GetAllCountriesFromDb();
+        var response = await _detailsRepository.GetAllCountriesFromDbAsync();
         return response;
     }
     
-    public async Task<IEnumerable<City>> GetAllCities()
+    public async Task<IEnumerable<City>> GetAllCitiesAsync()
     {
-        var response = await _detailsRepository.GetAllCitiesFromDb();
+        var response = await _detailsRepository.GetAllCitiesFromDbAsync();
         return response;
     }
 }

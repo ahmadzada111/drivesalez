@@ -21,7 +21,7 @@ namespace DriveSalez.Core.Entities
 
         public Currency Currency { get; set; }  // USD
 
-        public AnnouncementState AnnoucementState { get; set; } = AnnouncementState.Waiting;
+        public AnnouncementState AnnouncementState { get; set; } = AnnouncementState.Waiting;
 
         public List<ImageUrl>? ImageUrls { get; set; }
         
@@ -31,6 +31,6 @@ namespace DriveSalez.Core.Entities
 
         public ApplicationUser Owner { get; set; }
         
-        public DateTimeOffset ExpirationDate { get; set; } = DateTimeOffset.Now.AddMonths(1);
+        public DateTimeOffset ExpirationDate { get; set; }
     }
 }

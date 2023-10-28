@@ -23,7 +23,7 @@ public class JwtService : IJwtService
         _userManager = userManager;
     }
 
-    public async Task<AuthenticationResponseDto> GenerateSecurityToken(ApplicationUser user)
+    public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_jwtConfig["JWT:JwtExpiration"]));
         var role = await _userManager.GetRolesAsync(user);

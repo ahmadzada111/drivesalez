@@ -19,7 +19,7 @@ namespace DriveSalez.Infrastructure.Repositories
             _roleManager = roleManager;
         }
         
-        public async Task<Announcement> ChangeAnnouncementStateInDb(Guid userId, int announcementId, AnnouncementState announcementState)
+        public async Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -37,8 +37,9 @@ namespace DriveSalez.Infrastructure.Repositories
                     return null;
                 }
 
-                announcement.AnnoucementState = announcementState;
-
+                announcement.AnnouncementState = announcementState;
+                announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
+                
                 await _dbContext.SaveChangesAsync();
 
                 return announcement; 

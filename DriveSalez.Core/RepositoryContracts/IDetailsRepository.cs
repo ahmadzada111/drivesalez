@@ -6,32 +6,32 @@ namespace DriveSalez.Core.RepositoryContracts;
 
 public interface IDetailsRepository
 {
-    Task<IEnumerable<VehicleColor>> GetAllColorsFromDb();
+    Task<IEnumerable<VehicleColor>> GetAllColorsFromDbAsync();
 
-    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDb();
+    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDbAsync();
         
-    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDb();
+    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync();
         
-    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDb();
+    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDbAsync();
         
-    Task<IEnumerable<Make>> GetAllMakesFromDb();
+    Task<IEnumerable<Make>> GetAllMakesFromDbAsync();
         
-    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDb();
+    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDbAsync();
         
-    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDb();
+    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDbAsync();
         
-    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDb();
+    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync();
         
-    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDb();
+    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDbAsync();
 
-    Task<IEnumerable<Model>> GetAllModelsFromDb();
+    Task<IEnumerable<Model>> GetAllModelsFromDbAsync();
 
-    Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDb(int id);
+    Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDbAsync(int id);
 
-    Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDb();
+    Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDbAsync();
 
-    Task<IEnumerable<Country>> GetAllCountriesFromDb();
+    Task<IEnumerable<Country>> GetAllCountriesFromDbAsync();
 
-    Task<IEnumerable<City>> GetAllCitiesFromDb();
+    Task<IEnumerable<City>> GetAllCitiesFromDbAsync();
 
 }

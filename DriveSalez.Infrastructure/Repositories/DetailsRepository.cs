@@ -16,72 +16,72 @@ public class DetailsRepository : IDetailsRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<VehicleColor>> GetAllColorsFromDb()
+    public async Task<IEnumerable<VehicleColor>> GetAllColorsFromDbAsync()
     {
         return await _dbContext.VehicleColors.ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDb()
+    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDbAsync()
     {
         return await _dbContext.VehicleBodyTypes.ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDb()
+    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync()
     {
         return await _dbContext.VehicleDriveTrainTypes.ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDb()
+    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDbAsync()
     {
         return await _dbContext.VehicleGearboxTypes.ToListAsync();
     }
 
-    public async Task<IEnumerable<Make>> GetAllMakesFromDb()
+    public async Task<IEnumerable<Make>> GetAllMakesFromDbAsync()
     {
         return await _dbContext.Makes.ToListAsync();
     }
 
-    public async Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDb(int id)
+    public async Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDbAsync(int id)
     {
         return await _dbContext.Models.Where(e => e.Make.Id == id).ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDb()
+    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDbAsync()
     {
         return await _dbContext.VehicleFuelTypes.ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDb()
+    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDbAsync()
     {
         return await _dbContext.VehicleDetailsConditions.ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDb()
+    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync()
     {
         return await _dbContext.VehicleMarketVersions.ToListAsync();
     }
 
-    public async Task<IEnumerable<Model>> GetAllModelsFromDb()
+    public async Task<IEnumerable<Model>> GetAllModelsFromDbAsync()
     {
         return await _dbContext.Models.Include(m => m.Make).ToListAsync();
     }
     
-    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDb()
+    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDbAsync()
     {
         return await _dbContext.VehicleDetailsOptions.ToListAsync();
     }
     
-    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDb()
+    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDbAsync()
     {
         return await _dbContext.Years.ToListAsync();
     }
     
-    public async Task<IEnumerable<Country>> GetAllCountriesFromDb()
+    public async Task<IEnumerable<Country>> GetAllCountriesFromDbAsync()
     {
         return await _dbContext.Countries.ToListAsync();
     }
     
-    public async Task<IEnumerable<City>> GetAllCitiesFromDb()
+    public async Task<IEnumerable<City>> GetAllCitiesFromDbAsync()
     {
         return await _dbContext.Cities.Include(x=>x.Country).ToListAsync();
     }

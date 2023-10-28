@@ -15,7 +15,7 @@ namespace DriveSalez.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<VehicleColor> SendNewColorToDb(string color)
+        public async Task<VehicleColor> SendNewColorToDbAsync(string color)
         {
             if (string.IsNullOrEmpty(color))
             {
@@ -27,7 +27,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleBodyType> SendNewBodyTypeToDb(string bodyType)
+        public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
         {
             if (string.IsNullOrEmpty(bodyType))
             {
@@ -39,7 +39,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return responce.Entity;
         }
 
-        public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDb(string driveTrainType)
+        public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
         {
             if (string.IsNullOrEmpty(driveTrainType))
             {
@@ -51,7 +51,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDb(string gearboxType)
+        public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
         {
             if (string.IsNullOrEmpty(gearboxType))
             {
@@ -63,7 +63,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<Make> SendNewMakeToDb(string make)
+        public async Task<Make> SendNewMakeToDbAsync(string make)
         {
             if (string.IsNullOrEmpty(make))
             {
@@ -75,7 +75,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<Model> SendNewModelToDb(int makeId, string model)
+        public async Task<Model> SendNewModelToDbAsync(int makeId, string model)
         {
             if (string.IsNullOrEmpty(model))
             {
@@ -93,7 +93,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDb(string fuelType)
+        public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
         {
             if (string.IsNullOrEmpty(fuelType))
             {
@@ -105,7 +105,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDb(string condition)
+        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition)
         {
             if (string.IsNullOrEmpty(condition))
             {
@@ -117,7 +117,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDb(string marketVersion)
+        public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
         {
             if (string.IsNullOrEmpty(marketVersion))
             {
@@ -129,7 +129,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleOption> SendNewVehicleDetailsOptionsToDb(string option)
+        public async Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option)
         {
             if (string.IsNullOrEmpty(option))
             {
@@ -141,7 +141,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return response.Entity;
         }
 
-        public async Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor)
+        public async Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor)
         {
             if (colorId == null || string.IsNullOrEmpty(newColor))
             {
@@ -156,7 +156,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return color;
         }
         
-        public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDb(int bodyTypeId, string newBodyType)
+        public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
         {
             if (bodyTypeId == null || string.IsNullOrEmpty(newBodyType))
             {
@@ -171,7 +171,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return bodyType;
         }
         
-        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDb(int driveTrainId, string newDrivetrain)
+        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
         {
             if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
             {
@@ -186,7 +186,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return drivetrain;
         }
         
-        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDb(int gearboxId, string newGearbox)
+        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
         {
             if (gearboxId == null || string.IsNullOrEmpty(newGearbox))
             {
@@ -201,7 +201,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return gearbox;
         }
         
-        public async Task<Make> UpdateMakeInDb(int makeId, string newMake)
+        public async Task<Make> UpdateMakeInDbAsync(int makeId, string newMake)
         {
             if (makeId == null || string.IsNullOrEmpty(newMake))
             {
@@ -216,7 +216,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return make;
         }
         
-        public async Task<Model> UpdateModelInDb(int modelId, string newModel)
+        public async Task<Model> UpdateModelInDbAsync(int modelId, string newModel)
         {
             if (modelId == null || string.IsNullOrEmpty(newModel))
             {
@@ -231,7 +231,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return model;
         }
         
-        public async Task<VehicleFuelType> UpdateFuelTypeInDb(int fuelTypeId, string newFuelType)
+        public async Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
         {
             if (fuelTypeId == null || string.IsNullOrEmpty(newFuelType))
             {
@@ -246,7 +246,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return fuelType;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleConditionInDb(int vehicleConditionId, string newVehicleCondition)
+        public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition)
         {
             if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition))
             {
@@ -261,7 +261,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return vehicleCondition;
         }
         
-        public async Task<VehicleOption> UpdateVehicleOptionInDb(int vehicleOptionId, string newVehicleOption)
+        public async Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
         {
             if (vehicleOptionId == null || string.IsNullOrEmpty(newVehicleOption))
             {
@@ -276,7 +276,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return vehicleOption;
         }
         
-        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDb(int marketVersionId, string newMarketVersion)
+        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
         {
             if (marketVersionId == null || string.IsNullOrEmpty(newMarketVersion))
             {
@@ -291,7 +291,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return marketVersion;
         }
 
-        public async Task<VehicleColor> DeleteVehicleColorFromDb(int colorId)
+        public async Task<VehicleColor> DeleteVehicleColorFromDbAsync(int colorId)
         {
             if (colorId == null)
             {
@@ -310,7 +310,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleBodyType> DeleteVehicleBodyTypeFromDb(int bodyTypeId)
+        public async Task<VehicleBodyType> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId)
         {
             if (bodyTypeId == null)
             {
@@ -329,7 +329,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDb(int driveTrainId)
+        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId)
         {
             if (driveTrainId == null)
             {
@@ -348,7 +348,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDb(int gearboxId)
+        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId)
         {
             if (gearboxId == null)
             {
@@ -367,7 +367,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Make> DeleteMakeFromDb(int makeId)
+        public async Task<Make> DeleteMakeFromDbAsync(int makeId)
         {
             if (makeId == null)
             {
@@ -386,7 +386,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Model> DeleteModelFromDb(int modelId)
+        public async Task<Model> DeleteModelFromDbAsync(int modelId)
         {
             if (modelId == null)
             {
@@ -405,7 +405,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleFuelType> DeleteFuelTypeFromDb(int fuelTypeId)
+        public async Task<VehicleFuelType> DeleteFuelTypeFromDbAsync(int fuelTypeId)
         {
             if (fuelTypeId == null)
             {
@@ -424,7 +424,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleCondition> DeleteVehicleConditionFromDb(int vehicleConditionId)
+        public async Task<VehicleCondition> DeleteVehicleConditionFromDbAsync(int vehicleConditionId)
         {
             if (vehicleConditionId == null)
             {
@@ -443,7 +443,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleOption> DeleteVehicleOptionFromDb(int vehicleOptionId)
+        public async Task<VehicleOption> DeleteVehicleOptionFromDbAsync(int vehicleOptionId)
         {
             if (vehicleOptionId == null)
             {
@@ -462,7 +462,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDb(int marketVersionId)
+        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId)
         {
             if (marketVersionId == null)
             {

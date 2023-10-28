@@ -31,7 +31,7 @@ public class OtpController : Controller
         }
         
         string otp = _otpService.GenerateOtp();
-        var response = await _emailService.SendOtpByEmail(email, otp);
+        var response = await _emailService.SendOtpByEmailAsync(email, otp);
 
         if (response)
         {
@@ -49,11 +49,11 @@ public class OtpController : Controller
     [HttpPost("verify-email")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
-        var response =  await _otpService.ValidateOtp(_cache, request);
+        var response =  await _otpService.ValidateOtpAsync(_cache, request);
 
         if (response)
         {
-            var result = await _emailService.VerifyEmail(request.Email);
+            var result = await _emailService.VerifyEmailAsync(request.Email);
             
             if (result)
             {

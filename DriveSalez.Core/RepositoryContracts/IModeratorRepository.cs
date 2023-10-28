@@ -10,7 +10,7 @@ namespace DriveSalez.Core.RepositoryContracts
 {
     public interface IModeratorRepository
     {
-        public Task<Announcement> ChangeAnnouncementStateInDb(Guid userId, int announcementId,
+        public Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId,
             AnnouncementState announcementState);
     }
 }

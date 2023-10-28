@@ -13,64 +13,64 @@ namespace DriveSalez.Core.RepositoryContracts
 {
     public interface IAdminRepository
     {
-        Task<VehicleColor> SendNewColorToDb(string color);
+        Task<VehicleColor> SendNewColorToDbAsync(string color);
 
-        Task<VehicleBodyType> SendNewBodyTypeToDb(string bodyType);
+        Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType);
 
-        Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDb(string driveTrainType);
+        Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
 
-        Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDb(string gearboxType);
+        Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
 
-        Task<Make> SendNewMakeToDb(string make);
+        Task<Make> SendNewMakeToDbAsync(string make);
 
-        Task<Model> SendNewModelToDb(int makeId, string model);
+        Task<Model> SendNewModelToDbAsync(int makeId, string model);
 
-        Task<VehicleFuelType> SendNewVehicleFuelTypeToDb(string fuelType);
+        Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
 
-        Task<VehicleCondition> SendNewVehicleDetailsConditionToDb(string condition);
+        Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition);
 
-        Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDb(string marketVersion);
+        Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
 
-        Task<VehicleOption> SendNewVehicleDetailsOptionsToDb(string option);
+        Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option);
 
-        Task<VehicleColor> UpdateVehicleColorInDb(int colorId, string newColor);
+        Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor);
 
-        Task<VehicleBodyType> UpdateVehicleBodyTypeInDb(int bodyTypeId, string newBodyType);
+        Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
 
-        Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDb(int driveTrainId, string newDrivetrain);
+        Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
 
-        Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDb(int gearboxId, string newGearbox);
+        Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
 
-        Task<Make> UpdateMakeInDb(int gearboxId, string newGearbox);
+        Task<Make> UpdateMakeInDbAsync(int gearboxId, string newGearbox);
 
-        Task<Model> UpdateModelInDb(int modelId, string newModel);
+        Task<Model> UpdateModelInDbAsync(int modelId, string newModel);
 
-        Task<VehicleFuelType> UpdateFuelTypeInDb(int fuelTypeId, string newFuelType);
+        Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
 
-        Task<VehicleCondition> UpdateVehicleConditionInDb(int vehicleConditionId, string newVehicleCondition);
+        Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition);
 
-        Task<VehicleOption> UpdateVehicleOptionInDb(int vehicleOptionId, string newVehicleOption);
+        Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption);
 
-        Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDb(int marketVersionId, string newMarketVersion);
+        Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion);
         
-        Task<VehicleColor> DeleteVehicleColorFromDb(int colorId);
+        Task<VehicleColor> DeleteVehicleColorFromDbAsync(int colorId);
 
-        Task<VehicleBodyType> DeleteVehicleBodyTypeFromDb(int bodyTypeId);
+        Task<VehicleBodyType> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId);
 
-        Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDb(int driveTrainId);
+        Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId);
 
-        Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDb(int gearboxId);
+        Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId);
 
-        Task<Make> DeleteMakeFromDb(int makeId);
+        Task<Make> DeleteMakeFromDbAsync(int makeId);
 
-        Task<Model> DeleteModelFromDb(int modelId);
+        Task<Model> DeleteModelFromDbAsync(int modelId);
 
-        Task<VehicleFuelType> DeleteFuelTypeFromDb(int fuelTypeId);
+        Task<VehicleFuelType> DeleteFuelTypeFromDbAsync(int fuelTypeId);
 
-        Task<VehicleCondition> DeleteVehicleConditionFromDb(int vehicleConditionId);
+        Task<VehicleCondition> DeleteVehicleConditionFromDbAsync(int vehicleConditionId);
 
-        Task<VehicleOption> DeleteVehicleOptionFromDb(int vehicleOptionId);
+        Task<VehicleOption> DeleteVehicleOptionFromDbAsync(int vehicleOptionId);
 
-        Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDb(int marketVersionId);
+        Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
     }
 }
