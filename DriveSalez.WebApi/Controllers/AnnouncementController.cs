@@ -34,7 +34,7 @@ public class AnnouncementController : Controller
     [HttpGet("get-announcement-by-id/{announcementId}")]
     public IActionResult GetAnnouncementById([FromRoute] int announcementId)
     {
-        var response =  _announcementService.GetAnnouncementByIdAsync(announcementId);
+        var response =  _announcementService.GetAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
 
