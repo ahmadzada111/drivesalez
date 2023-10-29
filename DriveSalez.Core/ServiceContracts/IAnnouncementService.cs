@@ -7,15 +7,15 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IAnnouncementService
 {
-    Task<Announcement> AddAnnouncementAsync(AnnouncementDto announcement);
+    Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto createAnnouncement);
 
-    Task<Announcement> UpdateAnnouncementAsync(int announcementId, AnnouncementDto request);
+    Task<AnnouncementResponseDto> UpdateAnnouncementAsync(int announcementId, CreateAnnouncementDto request);
 
-    Task<Announcement> DeleteDeactivateAnnouncementAsync(int announcementId);
+    Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(int announcementId);
 
-    Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState);
+    Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState);
 
-    Announcement GetAnnouncementById(int id);
+    AnnouncementResponseDto GetAnnouncementById(int id);
 
-    IEnumerable<Announcement> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
+    IEnumerable<AnnouncementResponseDto> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
 }

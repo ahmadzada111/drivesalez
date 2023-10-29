@@ -101,13 +101,13 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPost("reset-password")]
-        public async Task<ActionResult> ResetPassword([FromBody] ValidateOtpDto request, string newPassword)
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
         {
-            var response =  await _otpService.ValidateOtpAsync(_cache, request);
+            var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
 
             if (response)
             {
-                var result = await _emailService.ResetPasswordAsync(request.Email, newPassword);
+                var result = await _emailService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
             
                 if (result)
                 {

@@ -29,7 +29,9 @@ namespace DriveSalez.WebApi
             builder.Services.AddCorsToServices();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddLogging();
-            
+            builder.Services.AddMapper();
+            builder.Services.AddMemoryCache();
+
             builder.Services.AddAuthentication();
 
             var app = builder.Build();

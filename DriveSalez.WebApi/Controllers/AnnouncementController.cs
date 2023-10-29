@@ -20,16 +20,16 @@ public class AnnouncementController : Controller
     }
 
     [HttpPost("create-announcement")]
-    public async Task<IActionResult> CreateAnnouncement([FromBody] AnnouncementDto announcement)
+    public async Task<IActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement)
     {
-        var response = await _announcementService.AddAnnouncementAsync(announcement);
+        var response = await _announcementService.AddAnnouncementAsync(createAnnouncement);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpPatch("update-announcement/{announcementId}")]
-    public async Task<IActionResult> UpdateAnnouncement([FromBody] AnnouncementDto announcement, [FromRoute] int announcementId)
+    public async Task<IActionResult> UpdateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement, [FromRoute] int announcementId)
     {
-        var response = await _announcementService.UpdateAnnouncementAsync(announcementId, announcement);
+        var response = await _announcementService.UpdateAnnouncementAsync(announcementId, createAnnouncement);
         return response != null ? Ok(response) : BadRequest();
     }
 
@@ -47,8 +47,9 @@ public class AnnouncementController : Controller
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [HttpGet("get-announcement")]
-    public ActionResult<IEnumerable<Announcement>> GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
+    [AllowAnonymous]
+    [HttpGet("get-announcements")]
+    public IActionResult GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
     {
         var response = _announcementService.GetAnnouncements(parameters, announcementState);
         return response != null ? Ok(response) : BadRequest();

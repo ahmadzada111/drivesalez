@@ -109,6 +109,10 @@ namespace DriveSalez.Infrastructure.DbContext
                 Years.Add(new ManufactureYear() { Year = 2021 });
                 Years.Add(new ManufactureYear() { Year = 2020 });
                 Years.Add(new ManufactureYear() { Year = 2019 });
+
+                Currencies.Add(new Currency() { CurrencyName = "AZN" });
+                Currencies.Add(new Currency() { CurrencyName = "EUR" });
+                Currencies.Add(new Currency() { CurrencyName = "USD" });
             }
         }
         
@@ -149,5 +153,7 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<City> Cities => Set<City>();
 
         public DbSet<ManufactureYear> Years => Set<ManufactureYear>();
+
+        public DbSet<Currency> Currencies => Set<Currency>();
     }
 }

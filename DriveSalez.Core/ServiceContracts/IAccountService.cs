@@ -12,7 +12,7 @@ public interface IAccountService
 
     Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 
-    Task<ApplicationUser> DeleteUserAsync(string password);
+    Task<DeleteAccountResponceDto> DeleteUserAsync(string password);
     
     Task<bool> ChangePasswordAsync(ChangePasswordDto request);
 }

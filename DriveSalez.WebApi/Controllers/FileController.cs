@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DriveSalez.WebApi.Controllers;
 
 [AllowAnonymous]
+[Route("api/[controller]")]
 public class FileController : Controller
 {
     private readonly IFileService _fileService;
@@ -15,7 +16,7 @@ public class FileController : Controller
     }
 
     [HttpPost("file/upload")]
-    public ActionResult Index()
+    public ActionResult Upload()
     {
         var response = _fileService.UploadFilesAsync();
         return response != null ? Ok() : BadRequest();

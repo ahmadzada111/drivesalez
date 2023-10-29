@@ -1,4 +1,5 @@
 ﻿using DriveSalez.Core.DTO;
+using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
@@ -19,70 +20,70 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("add-new-color")]
-        public async Task<ActionResult> AddNewColor(string color)
+        public async Task<ActionResult> AddNewColor([FromBody] string color)
         {
             var response = await _adminService.AddColorAsync(color);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-body")]
-        public async Task<ActionResult> AddNewBodyType(string bodyType)
+        public async Task<ActionResult> AddNewBodyType([FromBody] string bodyType)
         {
             var response = await _adminService.AddBodyTypeAsync(bodyType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-drivetrain")]
-        public async Task<ActionResult> AddNewDrivetrainType(string driveTrainType)
+        public async Task<ActionResult> AddNewDrivetrainType([FromBody] string driveTrainType)
         {
             var response = await _adminService.AddVehicleDrivetrainTypeAsync(driveTrainType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-gearbox")]
-        public async Task<ActionResult> AddNewGearboxType(string gearboxType)
+        public async Task<ActionResult> AddNewGearboxType([FromBody] string gearboxType)
         {
             var response = await _adminService.AddVehicleGearboxTypeAsync(gearboxType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-make")]
-        public async Task<ActionResult> AddNewMake(string make)
+        public async Task<ActionResult> AddNewMake([FromBody] string make)
         {
             var response = await _adminService.AddMakeAsync(make);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-model")]
-        public async Task<ActionResult> AddNewModel(int makeId, string model)
+        public async Task<ActionResult> AddNewModel([FromBody] AddNewModelDto request)
         {
-            var response = await _adminService.AddModelAsync(makeId, model);
+            var response = await _adminService.AddModelAsync(request.MakeId, request.Model);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-fuel")]
-        public async Task<ActionResult> AddNewFuelType(string fuelType)
+        public async Task<ActionResult> AddNewFuelType([FromBody] string fuelType)
         {
             var response = await _adminService.AddVehicleFuelTypeAsync(fuelType);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-condition")]
-        public async Task<ActionResult> AddNewVehicleCondition(string condition)
+        public async Task<ActionResult> AddNewVehicleCondition([FromBody] string condition)
         {
             var response = await _adminService.AddVehicleConditionAsync(condition);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-market-version")]
-        public async Task<ActionResult> AddNewVehicleMarketVersion(string marketVersion)
+        public async Task<ActionResult> AddNewVehicleMarketVersion([FromBody] string marketVersion)
         {
             var response = await _adminService.AddVehicleMarketVersionAsync(marketVersion);
             return response != null ? Ok(response) : BadRequest(response);
         }
 
         [HttpPost("add-new-option")]
-        public async Task<ActionResult> AddNewVehicleOption(string option)
+        public async Task<ActionResult> AddNewVehicleOption([FromBody] string option)
         {
             var response = await _adminService.AddVehicleOptionAsync(option);
             return response != null ? Ok(response) : BadRequest(response);
@@ -229,7 +230,7 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("create-moderator")]
-        public async Task<ActionResult<ApplicationUser>> CreateModerator(RegisterDto request)
+        public async Task<ActionResult<ApplicationUser>> CreateModerator([FromBody] RegisterModeratorDto request)
         {
             if (!ModelState.IsValid)
             {

@@ -1,3 +1,4 @@
+using DriveSalez.Core.DTO;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.IdentityEntities;
@@ -13,7 +14,7 @@ public class ModeratorService : IModeratorService
     private readonly IModeratorRepository _moderatorRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
-
+    
     public ModeratorService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IModeratorRepository moderatorRepository)
     {
         _contextAccessor = accessor;
@@ -21,7 +22,7 @@ public class ModeratorService : IModeratorService
         _moderatorRepository = moderatorRepository;
     }
     
-    public async Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
+    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         

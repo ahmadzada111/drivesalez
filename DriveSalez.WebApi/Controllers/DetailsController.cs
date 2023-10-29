@@ -57,7 +57,7 @@ public class DetailsController : Controller
     }
     
     [HttpGet("get-all-models-by-make")]
-    public async Task<ActionResult> GetAllModelsByMake(int id)
+    public async Task<ActionResult> GetAllModelsByMake([FromQuery] int id)
     {
         var response = await _detailsService.GetAllModelsByMakeIdAsync(id);
         return response != null ? Ok(response) : BadRequest(response);

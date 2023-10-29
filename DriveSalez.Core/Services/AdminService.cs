@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DriveSalez.Core.DTO.Enums;
+using DriveSalez.Core.DTO.Pagination;
 
 namespace DriveSalez.Core.Services
 {
@@ -213,12 +214,11 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<ApplicationUser> AddModeratorAsync(RegisterDto request)
+        public async Task<RegisterModeratorResponseDto> AddModeratorAsync(RegisterModeratorDto request)
         {
             ApplicationUser user = new ApplicationUser()
             {
                 Email = request.Email,
-                PhoneNumber = request.Phone,
                 UserName = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName
@@ -243,7 +243,12 @@ namespace DriveSalez.Core.Services
                     await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
                 }
 
-                return user;
+                return new RegisterModeratorResponseDto()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                };
             }
 
             return null;

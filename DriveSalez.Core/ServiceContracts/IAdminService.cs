@@ -1,4 +1,5 @@
 ﻿using DriveSalez.Core.DTO;
+using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
@@ -68,6 +69,6 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId);
         
-        Task<ApplicationUser> AddModeratorAsync(RegisterDto registerDTO);
+        Task<RegisterModeratorResponseDto> AddModeratorAsync(RegisterModeratorDto registerDTO);
     }
 }

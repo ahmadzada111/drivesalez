@@ -1,4 +1,6 @@
-﻿using DriveSalez.Core.DTO.Enums;
+﻿using AutoMapper;
+using DriveSalez.Core.DTO;
+using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.IdentityEntities;
@@ -12,14 +14,17 @@ namespace DriveSalez.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<ApplicationUser> _roleManager;
-
-        public ModeratorRepository(ApplicationDbContext dbContext, RoleManager<ApplicationUser> roleManager)
+        private readonly IMapper _mapper;
+        
+        public ModeratorRepository(ApplicationDbContext dbContext, RoleManager<ApplicationUser> roleManager
+        ,IMapper mapper)
         {
             _dbContext = dbContext;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         
-        public async Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
+        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -42,7 +47,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 
                 await _dbContext.SaveChangesAsync();
 
-                return announcement; 
+                return _mapper.Map<AnnouncementResponseDto>(announcement); 
             }
 
             return null;

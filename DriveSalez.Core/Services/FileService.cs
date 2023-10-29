@@ -20,7 +20,7 @@ public class FileService : IFileService
      public async Task<Uri> UploadFilesAsync()
      {
           MemoryStream stream = new MemoryStream();
-          string filePath = "/Users/ahmad/Desktop/drivesalez/drivesalez/DriveSalez.Core/DTO/AnnouncementDto.cs";
+          string filePath = "/Users/ahmad/Desktop/drivesalez/drivesalez/DriveSalez.Core/DTO/CreateAnnouncementDto.cs";
 
           try
           {

@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using AutoMapper;
+using DriveSalez.Infrastructure.AutoMapper;
 using DriveSalez.Infrastructure.Quartz.Jobs;
 using Quartz;
 
@@ -22,7 +24,7 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
-        services.AddScoped<IFileService, FileService>();
+        services.AddSingleton<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
@@ -34,7 +36,18 @@ public static class ConfigureServiceExtensions
         services.AddScoped<IDetailsService, DetailsService>();
         services.AddScoped<IDetailsRepository, DetailsRepository>();
 
-        services.AddMemoryCache();
+        return services;
+    }
+
+    public static IServiceCollection AddMapper(this IServiceCollection services)
+    {
+        var mappingConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(new MappingProfile());
+        });
+
+        IMapper mapper = mappingConfig.CreateMapper();
+        services.AddSingleton(mapper);
 
         return services;
     }

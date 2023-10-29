@@ -7,18 +7,18 @@ namespace DriveSalez.Core.RepositoryContracts
 {
     public interface IAnnouncementRepository
     {
-        Task<Announcement> CreateAnnouncementAsync(Guid userId, AnnouncementDto request);
+        Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request);
 
-        Task<Announcement> UpdateAnnouncementInDbAsync(Guid userId, int annoucementId, AnnouncementDto request);
+        Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, int annoucementId, CreateAnnouncementDto request);
 
-        Task<Announcement> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId);
+        Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId);
 
-        Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int annoucementId, AnnouncementState announcementState);
+        Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, int annoucementId, AnnouncementState announcementState);
 
-        Announcement GetAnnouncementByIdFromDb(int id);
+        AnnouncementResponseDto GetAnnouncementByIdFromDb(int id);
 
-        IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
+        IEnumerable<AnnouncementResponseDto> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
 
-        Task<IEnumerable<Announcement>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters);
+        Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters);
     }
 }

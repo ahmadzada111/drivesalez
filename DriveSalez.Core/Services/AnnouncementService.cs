@@ -1,6 +1,5 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
-using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
@@ -23,7 +22,7 @@ public class AnnouncementService : IAnnouncementService
         _announcementRepository = announcementRepository;
     }
 
-    public async Task<Announcement> AddAnnouncementAsync(AnnouncementDto request)
+    public async Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -37,7 +36,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<Announcement> DeleteDeactivateAnnouncementAsync(int announcementId)
+    public async Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(int announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -51,19 +50,19 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public Announcement GetAnnouncementById(int id)
+    public AnnouncementResponseDto GetAnnouncementById(int id)
     {
         var response =  _announcementRepository.GetAnnouncementByIdFromDb(id);
         return response;
     }
 
-    public IEnumerable<Announcement> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
+    public IEnumerable<AnnouncementResponseDto> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
     {
         var response = _announcementRepository.GetAnnouncementsFromDb(parameters, announcementState);
         return response;
     }
 
-    public async Task<Announcement> UpdateAnnouncementAsync(int announcementId, AnnouncementDto request)
+    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(int announcementId, CreateAnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -76,7 +75,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<Announcement> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
+    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         

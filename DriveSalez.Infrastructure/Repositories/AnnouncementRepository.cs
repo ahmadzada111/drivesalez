@@ -1,4 +1,5 @@
-﻿using DriveSalez.Core.DTO;
+﻿using AutoMapper;
+using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
@@ -12,10 +13,12 @@ namespace DriveSalez.Infrastructure.Repositories
     public class AnnouncementRepository : IAnnouncementRepository
     {
         private readonly ApplicationDbContext _dbContext;
-
-        public AnnouncementRepository(ApplicationDbContext dbContext)
+        private readonly IMapper _mapper;
+        
+        public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         private IEnumerable<Announcement> IncludeAllKeysInAnnouncement()
@@ -23,6 +26,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return _dbContext.Announcements.
                 Include(x => x.Owner).
                 Include(x => x.Vehicle).
+                Include(x => x.Currency).
                 Include(x => x.ImageUrls).
                 Include(x => x.Vehicle.Year).
                 Include(x => x.Vehicle.Make).
@@ -40,7 +44,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.City);
         }
 
-        public async Task<Announcement> CreateAnnouncementAsync(Guid userId, AnnouncementDto request)
+        public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -48,6 +52,10 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 throw new KeyNotFoundException();
             }
+
+            var result = await CheckAllRelationsInAnnouncement(request);
+
+            if (!result) return null;
             
             var announcement = new Announcement()
             {
@@ -81,42 +89,56 @@ namespace DriveSalez.Infrastructure.Repositories
                 OnCredit = request.OnCredit,
                 Description = request.Description,
                 Price = request.Price,
-                Currency = request.Currency,
+                Currency = await _dbContext.Currencies.FindAsync(request.CurrencyId),
                 Country = await _dbContext.Countries.FindAsync(request.CountryId),
                 City = await _dbContext.Cities.FindAsync(request.CityId),
                 Owner = user
             };
-
-            if (announcement.Vehicle.Model.Make != announcement.Vehicle.Make)
-            {
-                return null;
-            }
-
+            
             user.Announcements.Add(announcement);
             var response = _dbContext.Announcements.Add(announcement).Entity;
 
             await _dbContext.SaveChangesAsync();
 
-            return response;
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
+        
 
-        public Announcement GetAnnouncementByIdFromDb(int id)
+        private async Task<bool> CheckAllRelationsInAnnouncement(CreateAnnouncementDto request)
+        {
+            var model = await _dbContext.Models.FindAsync(request.ModelId);
+            var make = await _dbContext.Makes.FindAsync(request.MakeId);
+            var country = await _dbContext.Countries.FindAsync(request.CountryId);
+            var city = await _dbContext.Cities.FindAsync(request.CityId);
+            var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
+            
+            if (model.Make != make && country != city.Country && currency == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
+        public AnnouncementResponseDto GetAnnouncementByIdFromDb(int id)
         {
             var response = IncludeAllKeysInAnnouncement().FirstOrDefault(x => x.Id == id);
-            return response;
+            return _mapper.Map<AnnouncementResponseDto>(response);
         }
 
-        public IEnumerable<Announcement> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
+        public IEnumerable<AnnouncementResponseDto> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
         {
-            return IncludeAllKeysInAnnouncement().
+            var announcements = IncludeAllKeysInAnnouncement().
                 Where(on => on.AnnouncementState == announcementState).
                 OrderBy(o => o.Price).
                 Skip((parameter.PageNumber - 1) * parameter.PageSize).
                 Take(parameter.PageSize).
                 ToList();
+
+            return _mapper.Map<List<AnnouncementResponseDto>>(announcements);
         }
 
-        public async Task<Announcement> UpdateAnnouncementInDbAsync(Guid userId, int announcementId, AnnouncementDto request)
+        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, int announcementId, CreateAnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -132,8 +154,8 @@ namespace DriveSalez.Infrastructure.Repositories
 
             return announcement;
         }
-
-        public async Task<Announcement> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
+        
+        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -154,10 +176,10 @@ namespace DriveSalez.Infrastructure.Repositories
 
             await _dbContext.SaveChangesAsync();
 
-            return announcement;
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        public async Task<Announcement> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId)
+        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -175,10 +197,10 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var response = _dbContext.Announcements.Remove(announcement).Entity;
 
-            return response;
+            return _mapper.Map<AnnouncementResponseDto>(response);
         }
         
-        public async Task<IEnumerable<Announcement>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters)
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters)
         {
             var filteredAnnouncement = await _dbContext.Announcements
                 .Where(x => x.Vehicle.Year.Id >= parameters.FromYearId 
@@ -212,7 +234,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
             
-            return filteredAnnouncement;
+            return _mapper.Map<List<AnnouncementResponseDto>>(filteredAnnouncement);
         }
     }
 }

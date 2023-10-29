@@ -3,7 +3,7 @@ using DriveSalez.Core.Enums;
 
 namespace DriveSalez.Core.DTO
 {
-    public class AnnouncementDto
+    public class CreateAnnouncementDto
     {
         public int? YearId { get; set; }   
 
@@ -57,6 +57,6 @@ namespace DriveSalez.Core.DTO
 
         public decimal Price { get; set; }   
 
-        public Currency Currency { get; set; }  
+        public int CurrencyId { get; set; }  
     }
 }
