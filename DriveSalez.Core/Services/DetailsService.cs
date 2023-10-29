@@ -98,4 +98,10 @@ public class DetailsService : IDetailsService
         var response = await _detailsRepository.GetAllCitiesFromDbAsync();
         return response;
     }
+
+    public async Task<IEnumerable<Currency>> GetAllCurrenciesAsync()
+    {
+        var response = await _detailsRepository.GetAllCurrenciesFromDbAsync();
+        return response;
+    }
 }

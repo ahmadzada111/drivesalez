@@ -33,4 +33,6 @@ public interface IDetailsService
     Task<IEnumerable<Country>> GetAllCountriesAsync();
 
     Task<IEnumerable<City>> GetAllCitiesAsync();
+    
+    Task<IEnumerable<Currency>> GetAllCurrenciesAsync();
 }

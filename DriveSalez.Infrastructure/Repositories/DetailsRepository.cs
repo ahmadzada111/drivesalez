@@ -85,4 +85,9 @@ public class DetailsRepository : IDetailsRepository
     {
         return await _dbContext.Cities.Include(x=>x.Country).ToListAsync();
     }
+    
+    public async Task<IEnumerable<Currency>> GetAllCurrenciesFromDbAsync()
+    {
+        return await _dbContext.Currencies.ToListAsync();
+    }
 }

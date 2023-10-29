@@ -1,10 +1,12 @@
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class DetailsController : Controller
 {
     private readonly IDetailsService _detailsService;
@@ -109,6 +111,13 @@ public class DetailsController : Controller
     public async Task<ActionResult> GetAllCities()
     {
         var response = await _detailsService.GetAllCitiesAsync();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
+    
+    [HttpGet("get-all-currencies")]
+    public async Task<ActionResult> GetAllCurrencies()
+    {
+        var response = await _detailsService.GetAllCurrenciesAsync();
         return response != null ? Ok(response) : BadRequest(response);
     }
 }
