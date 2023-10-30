@@ -1,6 +1,6 @@
 namespace DriveSalez.Core.DTO;
 
-public class DeleteAccountResponceDto
+public class DeleteAccountResponseDto
 {
     public string FirstName { get; set; }
     

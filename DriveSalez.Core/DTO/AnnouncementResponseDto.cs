@@ -5,6 +5,8 @@ namespace DriveSalez.Core.DTO;
 
 public class AnnouncementResponseDto
 {
+    public Guid Id { get; set; }
+    
     public Vehicle Vehicle { get; set; }
 
     public bool? Barter { get; set; }

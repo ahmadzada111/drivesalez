@@ -141,7 +141,7 @@ public class AccountService : IAccountService
         return false;
     }
     
-    public async Task<DeleteAccountResponceDto> DeleteUserAsync(string password)
+    public async Task<DeleteAccountResponseDto> DeleteUserAsync(string password)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -151,7 +151,7 @@ public class AccountService : IAccountService
             
             if (result.Succeeded)
             {
-                return new DeleteAccountResponceDto()
+                return new DeleteAccountResponseDto()
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,

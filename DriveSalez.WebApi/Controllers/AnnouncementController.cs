@@ -27,21 +27,21 @@ public class AnnouncementController : Controller
     }
 
     [HttpPatch("update-announcement/{announcementId}")]
-    public async Task<IActionResult> UpdateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement, [FromRoute] int announcementId)
+    public async Task<IActionResult> UpdateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
     {
         var response = await _announcementService.UpdateAnnouncementAsync(announcementId, createAnnouncement);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpGet("get-announcement-by-id/{announcementId}")]
-    public IActionResult GetAnnouncementById([FromRoute] int announcementId)
+    public IActionResult GetAnnouncementById([FromRoute] Guid announcementId)
     {
         var response =  _announcementService.GetAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
 
     [HttpDelete("delete-announcement/{announcementId}")]
-    public async Task<IActionResult> DeleteAnnouncement([FromRoute] int announcementId)
+    public async Task<IActionResult> DeleteAnnouncement([FromRoute] Guid announcementId)
     {
         var response = await _announcementService.DeleteDeactivateAnnouncementAsync(announcementId);
         return response != null ? Ok(response) : BadRequest();
@@ -56,7 +56,7 @@ public class AnnouncementController : Controller
     }
 
     [HttpPost("reactivate-announcement/{announcementId}")]
-    public async Task<ActionResult> ReactivateAnnouncement([FromRoute] int announcementId)
+    public async Task<ActionResult> ReactivateAnnouncement([FromRoute] Guid announcementId)
     {
         var response = await _announcementService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
         return response != null ? Ok(response) : BadRequest(response);

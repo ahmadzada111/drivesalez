@@ -7,7 +7,7 @@ namespace DriveSalez.Core.Entities
     public class Announcement
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public Vehicle Vehicle { get; set; }
 

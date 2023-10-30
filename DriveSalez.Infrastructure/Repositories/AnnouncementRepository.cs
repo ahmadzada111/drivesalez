@@ -55,7 +55,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var result = await CheckAllRelationsInAnnouncement(request);
 
-            if (!result) return null;
+            if (result == false) return null;
             
             var announcement = new Announcement()
             {
@@ -111,8 +111,10 @@ namespace DriveSalez.Infrastructure.Repositories
             var country = await _dbContext.Countries.FindAsync(request.CountryId);
             var city = await _dbContext.Cities.FindAsync(request.CityId);
             var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
+            var distanceUnit = request.MileAge;
             
-            if (model.Make != make && country != city.Country && currency == null)
+            if (model.Make != make && country != city.Country && currency == null
+                && distanceUnit != 0 || distanceUnit != 1)
             {
                 return false;
             }
@@ -120,7 +122,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return true;
         }
         
-        public AnnouncementResponseDto GetAnnouncementByIdFromDb(int id)
+        public AnnouncementResponseDto GetAnnouncementByIdFromDb(Guid id)
         {
             var response = IncludeAllKeysInAnnouncement().FirstOrDefault(x => x.Id == id);
             return _mapper.Map<AnnouncementResponseDto>(response);
@@ -138,7 +140,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<List<AnnouncementResponseDto>>(announcements);
         }
 
-        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, int announcementId, CreateAnnouncementDto request)
+        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId, CreateAnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -155,7 +157,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return announcement;
         }
         
-        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
+        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -179,7 +181,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, int announcementId)
+        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, Guid announcementId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 

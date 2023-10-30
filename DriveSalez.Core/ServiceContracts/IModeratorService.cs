@@ -11,6 +11,6 @@ namespace DriveSalez.Core.ServiceContracts
 {
     public interface IModeratorService
     {
-        public Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState);
+        public Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState);
     }
 }

@@ -24,7 +24,7 @@ namespace DriveSalez.Infrastructure.Repositories
             _mapper = mapper;
         }
         
-        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, int announcementId, AnnouncementState announcementState)
+        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 

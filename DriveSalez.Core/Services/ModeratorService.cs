@@ -22,7 +22,7 @@ public class ModeratorService : IModeratorService
         _moderatorRepository = moderatorRepository;
     }
     
-    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
+    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         

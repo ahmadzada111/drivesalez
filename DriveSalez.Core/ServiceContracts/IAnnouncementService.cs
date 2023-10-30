@@ -9,13 +9,13 @@ public interface IAnnouncementService
 {
     Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto createAnnouncement);
 
-    Task<AnnouncementResponseDto> UpdateAnnouncementAsync(int announcementId, CreateAnnouncementDto request);
+    Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, CreateAnnouncementDto request);
 
-    Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(int announcementId);
+    Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId);
 
-    Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState);
+    Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState);
 
-    AnnouncementResponseDto GetAnnouncementById(int id);
+    AnnouncementResponseDto GetAnnouncementById(Guid id);
 
     IEnumerable<AnnouncementResponseDto> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
 }

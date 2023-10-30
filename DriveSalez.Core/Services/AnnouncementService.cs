@@ -36,7 +36,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(int announcementId)
+    public async Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -50,7 +50,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public AnnouncementResponseDto GetAnnouncementById(int id)
+    public AnnouncementResponseDto GetAnnouncementById(Guid id)
     {
         var response =  _announcementRepository.GetAnnouncementByIdFromDb(id);
         return response;
@@ -62,7 +62,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(int announcementId, CreateAnnouncementDto request)
+    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, CreateAnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -75,7 +75,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(int announcementId, AnnouncementState announcementState)
+    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
