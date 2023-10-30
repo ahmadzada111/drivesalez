@@ -111,10 +111,10 @@ namespace DriveSalez.Infrastructure.Repositories
             var country = await _dbContext.Countries.FindAsync(request.CountryId);
             var city = await _dbContext.Cities.FindAsync(request.CityId);
             var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
-            var distanceUnit = request.MileAge;
+            var distanceUnit = request.MileageType;
             
-            if (model.Make != make && country != city.Country && currency == null
-                && distanceUnit != 0 || distanceUnit != 1)
+            if (model.Make != make || country != city.Country || currency == null
+                || distanceUnit != DistanceUnit.KM || distanceUnit != DistanceUnit.MI)
             {
                 return false;
             }
