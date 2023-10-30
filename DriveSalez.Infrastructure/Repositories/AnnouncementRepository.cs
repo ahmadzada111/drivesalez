@@ -114,7 +114,7 @@ namespace DriveSalez.Infrastructure.Repositories
             var distanceUnit = request.MileageType;
             
             if (model.Make != make || country != city.Country || currency == null
-                || distanceUnit != DistanceUnit.KM || distanceUnit != DistanceUnit.MI)
+                || distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
             {
                 return false;
             }
