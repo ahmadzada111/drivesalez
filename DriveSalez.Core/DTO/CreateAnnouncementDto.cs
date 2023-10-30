@@ -19,13 +19,13 @@ namespace DriveSalez.Core.DTO
 
         public int? BodyTypeId { get; set; }
 
-        public List<int>? ConditionsIDs { get; set; }
+        public List<int>? ConditionsIds { get; set; }
         
-        public List<int>? OptionsIDs { get; set; }
+        public List<int>? OptionsIds { get; set; }
 
-        public int? ColorID { get; set; }
+        public int? ColorId { get; set; }
 
-        public int? MarketVersionID { get; set; }
+        public int? MarketVersionId { get; set; }
 
         public int HorsePower { get; set; }     
 

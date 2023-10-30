@@ -11,7 +11,7 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
     {
         public int Id { get; set; }
         
-        public string Name { get; set; }
+        public string Condition { get; set; }
         
         public string Description { get; set; }
 

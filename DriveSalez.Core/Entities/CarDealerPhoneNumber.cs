@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities
 {
-    public class CarDealerPhoneNumbers
+    public class CarDealerPhoneNumber
     {
         public int Id { get; set; }
 

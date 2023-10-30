@@ -15,7 +15,7 @@ namespace DriveSalez.Core.Entities
         [Key]
         public int Id { get; set; }
         [StringLength(30, MinimumLength = 3, ErrorMessage = "Car Model can't be longer than 30 characters or less than 3.")]
-        public string Name { get; set; }
+        public string ModelName { get; set; }
 
         public Make Make { get; set; }
 

@@ -21,7 +21,7 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 
         public VehicleDrivetrainType DrivetrainType { get; set; }  // FWD
 
-        public List<VehicleCondition> Condition { get; set; }  //No Damage, No Color
+        public List<VehicleCondition> Conditions { get; set; }  //No Damage, No Color
 
         public VehicleMarketVersion MarketVersion { get; set; }      // US
 

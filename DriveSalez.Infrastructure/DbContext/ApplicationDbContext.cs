@@ -16,75 +16,75 @@ namespace DriveSalez.Infrastructure.DbContext
             if (!VehicleColors.Any())
             {
                 var marketVersion = this.VehicleMarketVersions.Add(new Core.Entities.VehicleParts.VehicleMarketVersion()
-                    { Name = "USA" }).Entity;
+                    { MarketVersion = "USA" }).Entity;
                 this.VehicleMarketVersions.Add(new Core.Entities.VehicleParts.VehicleMarketVersion()
-                    { Name = "Azerbaijan" });
+                    { MarketVersion = "Azerbaijan" });
                 this.VehicleMarketVersions.Add(new Core.Entities.VehicleParts.VehicleMarketVersion()
-                    { Name = "Korea" });
+                    { MarketVersion = "Korea" });
                 this.VehicleMarketVersions.Add(
-                    new Core.Entities.VehicleParts.VehicleMarketVersion() { Name = "Europe" });
+                    new Core.Entities.VehicleParts.VehicleMarketVersion() { MarketVersion = "Europe" });
 
-                var white = this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "White" })
+                var white = this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "White" })
                     .Entity;
-                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "Black" });
-                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "Red" });
-                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "Yellow" });
-                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "Green" });
-                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Name = "Blue" });
+                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Black" });
+                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Red" });
+                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Yellow" });
+                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Green" });
+                this.VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Blue" });
 
-                var sedan = this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "Sedan" }).Entity;
-                this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "Coupe" });
-                this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "Cabriolet" });
-                this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "Station Wagon" });
-                this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "SUV/Off-Road" });
-                this.VehicleBodyTypes.Add(new VehicleBodyType() { Name = "Pick-Up" });
+                var sedan = this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Sedan" }).Entity;
+                this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Coupe" });
+                this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Cabriolet" });
+                this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Station Wagon" });
+                this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "SUV/Off-Road" });
+                this.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Pick-Up" });
 
-                var gearboxType = this.VehicleGearboxTypes.Add(new VehicleGearboxType() { Name = "Manual" }).Entity;
-                this.VehicleGearboxTypes.Add(new VehicleGearboxType() { Name = "Auto" });
-                this.VehicleGearboxTypes.Add(new VehicleGearboxType() { Name = "Robotic" });
+                var gearboxType = this.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Manual" }).Entity;
+                this.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Auto" });
+                this.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Robotic" });
 
-                var fwd = this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { Name = "FWD" }).Entity;
-                this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { Name = "RWD" });
-                this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { Name = "AWD" });
+                var fwd = this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "FWD" }).Entity;
+                this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "RWD" });
+                this.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "AWD" });
 
-                var bmw = this.Makes.Add(new Make() { Name = "BMW" }).Entity;
-                var mercedes = this.Makes.Add(new Make() { Name = "Mercedes-Benz" }).Entity;
-                var audi = this.Makes.Add(new Make() { Name = "Audi" }).Entity;
-                var ford = this.Makes.Add(new Make() { Name = "Ford" }).Entity;
+                var bmw = this.Makes.Add(new Make() { MakeName = "BMW" }).Entity;
+                var mercedes = this.Makes.Add(new Make() { MakeName = "Mercedes-Benz" }).Entity;
+                var audi = this.Makes.Add(new Make() { MakeName = "Audi" }).Entity;
+                var ford = this.Makes.Add(new Make() { MakeName = "Ford" }).Entity;
 
-                this.Models.Add(new Model() { Name = "M5", Make = bmw });
-                this.Models.Add(new Model() { Name = "M8", Make = bmw });
-                this.Models.Add(new Model() { Name = "M3", Make = bmw });
-                this.Models.Add(new Model() { Name = "M2", Make = bmw });
+                this.Models.Add(new Model() { ModelName = "M5", Make = bmw });
+                this.Models.Add(new Model() { ModelName = "M8", Make = bmw });
+                this.Models.Add(new Model() { ModelName = "M3", Make = bmw });
+                this.Models.Add(new Model() { ModelName = "M2", Make = bmw });
 
-                this.Models.Add(new Model() { Name = "C200", Make = mercedes });
-                var merc_model = this.Models.Add(new Model() { Name = "C220", Make = mercedes }).Entity;
-                this.Models.Add(new Model() { Name = "C230", Make = mercedes });
-                this.Models.Add(new Model() { Name = "C240", Make = mercedes });
+                this.Models.Add(new Model() { ModelName = "C200", Make = mercedes });
+                var merc_model = this.Models.Add(new Model() { ModelName = "C220", Make = mercedes }).Entity;
+                this.Models.Add(new Model() { ModelName = "C230", Make = mercedes });
+                this.Models.Add(new Model() { ModelName = "C240", Make = mercedes });
 
-                this.Models.Add(new Model() { Name = "RS6", Make = audi });
-                this.Models.Add(new Model() { Name = "RS7", Make = audi });
-                this.Models.Add(new Model() { Name = "RS4", Make = audi });
-                this.Models.Add(new Model() { Name = "RS3", Make = audi });
+                this.Models.Add(new Model() { ModelName = "RS6", Make = audi });
+                this.Models.Add(new Model() { ModelName = "RS7", Make = audi });
+                this.Models.Add(new Model() { ModelName = "RS4", Make = audi });
+                this.Models.Add(new Model() { ModelName = "RS3", Make = audi });
 
-                this.Models.Add(new Model() { Name = "GT", Make = ford });
-                this.Models.Add(new Model() { Name = "Mondeo", Make = ford });
-                this.Models.Add(new Model() { Name = "F150", Make = ford });
-                this.Models.Add(new Model() { Name = "F500", Make = ford });
+                this.Models.Add(new Model() { ModelName = "GT", Make = ford });
+                this.Models.Add(new Model() { ModelName = "Mondeo", Make = ford });
+                this.Models.Add(new Model() { ModelName = "F150", Make = ford });
+                this.Models.Add(new Model() { ModelName = "F500", Make = ford });
 
                 var gasoline = this.VehicleFuelTypes.Add(new VehicleFuelType() { FuelType = "Gasoline" }).Entity;
 
-                var aze = this.Countries.Add(new Country() { Name = "Azerbaijan" }).Entity;
-                var pl = this.Countries.Add(new Country() { Name = "Poland" }).Entity;
+                var aze = this.Countries.Add(new Country() { CountryName = "Azerbaijan" }).Entity;
+                var pl = this.Countries.Add(new Country() { CountryName = "Poland" }).Entity;
 
 
-                this.Cities.Add(new City() { Name = "Baku", Country = aze });
-                this.Cities.Add(new City() { Name = "Quba", Country = aze });
-                this.Cities.Add(new City() { Name = "Qax", Country = aze });
+                this.Cities.Add(new City() { CityName = "Baku", Country = aze });
+                this.Cities.Add(new City() { CityName = "Quba", Country = aze });
+                this.Cities.Add(new City() { CityName = "Qax", Country = aze });
 
-                this.Cities.Add(new City() { Name = "Warsaw", Country = pl });
-                this.Cities.Add(new City() { Name = "Krakow", Country = pl });
-                this.Cities.Add(new City() { Name = "Gdansk", Country = pl });
+                this.Cities.Add(new City() { CityName = "Warsaw", Country = pl });
+                this.Cities.Add(new City() { CityName = "Krakow", Country = pl });
+                this.Cities.Add(new City() { CityName = "Gdansk", Country = pl });
                 
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Alloy Wheels" });
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "ABS" });
@@ -100,9 +100,9 @@ namespace DriveSalez.Infrastructure.DbContext
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Side curtains" });
                 this.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Seat ventilation" });
 
-                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Damaged", Description= "One or more parts have been replaced or repaired." });
-                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Painted", Description= "One or more parts have been repainted or cosmetic work has been done." });
-                this.VehicleDetailsConditions.Add(new VehicleCondition() { Name= "Crashed or for parts", Description= "Needs repair or is completely unfit for use." });
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Condition= "Damaged", Description= "One or more parts have been replaced or repaired." });
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Condition= "Painted", Description= "One or more parts have been repainted or cosmetic work has been done." });
+                this.VehicleDetailsConditions.Add(new VehicleCondition() { Condition= "Crashed or for parts", Description= "Needs repair or is completely unfit for use." });
 
                 Years.Add(new ManufactureYear() { Year = 2023 });
                 Years.Add(new ManufactureYear() { Year = 2022 });

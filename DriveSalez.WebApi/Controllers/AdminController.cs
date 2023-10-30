@@ -57,7 +57,7 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("add-new-model")]
         public async Task<ActionResult> AddNewModel([FromBody] AddNewModelDto request)
         {
-            var response = await _adminService.AddModelAsync(request.MakeId, request.Model);
+            var response = await _adminService.AddModelAsync(request.MakeId, request.ModelName);
             return response != null ? Ok(response) : BadRequest(response);
         }
 

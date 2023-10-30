@@ -39,7 +39,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.VehicleDetails.Color).
                 Include(x => x.Vehicle.VehicleDetails.MarketVersion).
                 Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Condition).
+                Include(x => x.Vehicle.VehicleDetails.Conditions).
                 Include(x => x.Country).
                 Include(x => x.City);
         }
@@ -70,11 +70,11 @@ namespace DriveSalez.Infrastructure.Repositories
                     VehicleDetails = new VehicleDetails()
                     {
                         BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
-                        Color = await _dbContext.VehicleColors.FindAsync(request.ColorID),
+                        Color = await _dbContext.VehicleColors.FindAsync(request.ColorId),
                         HorsePower = request.HorsePower,
                         GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
                         DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DriveTrainTypeId),
-                        MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionID),
+                        MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId),
                         OwnerQuantity = request.OwnerQuantity,
                         SeatCount = request.SeatCount,
                         VinCode = request.VinCode,
@@ -113,8 +113,7 @@ namespace DriveSalez.Infrastructure.Repositories
             var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
             var distanceUnit = request.MileageType;
             
-            if (model.Make != make || country != city.Country || currency == null
-                || distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
+            if (model.Make != make || country != city.Country || currency == null || distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
             {
                 return false;
             }

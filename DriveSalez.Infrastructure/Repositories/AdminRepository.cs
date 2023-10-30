@@ -22,7 +22,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Name = color });
+            var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Color = color });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -34,7 +34,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var responce = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { Name = bodyType });
+            var responce = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
             await _dbContext.SaveChangesAsync();
             return responce.Entity;
         }
@@ -46,7 +46,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { Name = driveTrainType });
+            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { DrivetrainType = driveTrainType });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -58,7 +58,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { Name = gearboxType });
+            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { GearboxType = gearboxType });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -70,7 +70,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.Makes.AddAsync(new Make() { Name = make });
+            var response = await _dbContext.Makes.AddAsync(new Make() { MakeName = make });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -82,7 +82,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { Name = model, Make = await _dbContext.Makes.FindAsync(makeId) });
+            var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
 
             if (response != null)
             {
@@ -112,7 +112,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition() { Name = condition });
+            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition() { Condition = condition });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -124,7 +124,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { Name = marketVersion });
+            var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { MarketVersion = marketVersion });
             await _dbContext.SaveChangesAsync();
             return response.Entity;
         }
@@ -149,7 +149,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var color = await _dbContext.FindAsync<VehicleColor>(colorId);
-            color.Name = newColor;
+            color.Color = newColor;
             _dbContext.Update(color);
             await _dbContext.SaveChangesAsync();
 
@@ -164,7 +164,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
-            bodyType.Name = newBodyType;
+            bodyType.BodyType = newBodyType;
             _dbContext.Update(bodyType);
             await _dbContext.SaveChangesAsync();
 
@@ -179,7 +179,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
-            drivetrain.Name = newDrivetrain;
+            drivetrain.DrivetrainType = newDrivetrain;
             _dbContext.Update(drivetrain);
             await _dbContext.SaveChangesAsync();
 
@@ -194,7 +194,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
-            gearbox.Name = newGearbox;
+            gearbox.GearboxType = newGearbox;
             _dbContext.Update(gearbox);
             await _dbContext.SaveChangesAsync();
 
@@ -209,7 +209,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var make = await _dbContext.FindAsync<Make>(makeId);
-            make.Name = newMake;
+            make.MakeName = newMake;
             _dbContext.Update(make);
             await _dbContext.SaveChangesAsync();
 
@@ -224,7 +224,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var model = await _dbContext.FindAsync<Model>(modelId);
-            model.Name = newModel;
+            model.ModelName = newModel;
             _dbContext.Update(model);
             await _dbContext.SaveChangesAsync();
 
@@ -254,7 +254,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
-            vehicleCondition.Name = newVehicleCondition;
+            vehicleCondition.Condition = newVehicleCondition;
             _dbContext.Update(vehicleCondition);
             await _dbContext.SaveChangesAsync();
 
@@ -284,7 +284,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
-            marketVersion.Name = newMarketVersion;
+            marketVersion.MarketVersion = newMarketVersion;
             _dbContext.Update(marketVersion);
             await _dbContext.SaveChangesAsync();
 

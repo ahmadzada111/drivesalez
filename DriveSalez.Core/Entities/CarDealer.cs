@@ -6,7 +6,7 @@ namespace DriveSalez.Core.Entities
     {
         public ImageUrl BackgroundPhotoUrl { get; set; }
 
-        public List<CarDealerPhoneNumbers> PhoneNumbers { get; set; }
+        public List<CarDealerPhoneNumber> PhoneNumbers { get; set; }
 
         public string? Address { get; set; }
 
