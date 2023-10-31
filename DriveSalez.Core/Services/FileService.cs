@@ -1,7 +1,10 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
 namespace DriveSalez.Core.Services;
@@ -10,47 +13,60 @@ public class FileService : IFileService
 {
      private readonly IBlobContainerClientProvider _containerClient;
      private readonly IConfiguration _blobConfig;
+     private readonly UserManager<ApplicationUser> _userManager;
+     private readonly IHttpContextAccessor _contextAccessor;
      
-     public FileService(IBlobContainerClientProvider containerClient, IConfiguration blobConfig)
+     public FileService(IBlobContainerClientProvider containerClient, UserManager<ApplicationUser> userManager, 
+          IHttpContextAccessor contextAccessor)
      {
           _containerClient = containerClient;
-          _blobConfig = blobConfig;
+          _userManager = userManager;
+          _contextAccessor = contextAccessor;
      }
 
-     public async Task<Uri> UploadFilesAsync()
+     public async Task<List<Uri>> UploadFilesAsync(List<IFormFile> files)
      {
-          MemoryStream stream = new MemoryStream();
-          string filePath = "/Users/ahmad/Desktop/drivesalez/drivesalez/DriveSalez.Core/DTO/CreateAnnouncementDto.cs";
+          var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+          if (user == null)
+          {
+               return null;
+          }
+
+          List<Uri> uploadedUris = new List<Uri>();
 
           try
           {
-               using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+               BlobContainerClient blobContainerClient = _containerClient.GetContainerClient();
+               string userBlobName = $"{user.Id}";
+
+               foreach (var file in files)
                {
-                    // Copy the file content to the MemoryStream
-                    fileStream.CopyTo(stream);
-               }
+                    if (file.Length > 0)
+                    {
+                         using (var stream = new MemoryStream())
+                         {
+                              await file.CopyToAsync(stream);
+                              stream.Seek(0, SeekOrigin.Begin);
 
-               // Reset the position of the stream to the start
-               stream.Seek(0, SeekOrigin.Begin);
+                              var blobName = $"{userBlobName}/{file.FileName}";
+                              var blobClient = blobContainerClient.GetBlobClient(blobName);
 
-               BlobContainerClient blobClient = _containerClient.GetContainerClient();
-               string blobName = _blobConfig["BlobStorage:FileStorage"]; // Blob name from configuration
-               var blob = blobClient.GetBlobClient(blobName);
-
-               Response<BlobContentInfo> response = await blob.UploadAsync(stream);
-
-               if (response.GetRawResponse().Status == 201) // 201 indicates a successful upload
-               {
-                    return blob.Uri;
+                              Response<BlobContentInfo> response = await blobClient.UploadAsync(stream);
+                              
+                              if (response.GetRawResponse().Status == 201)
+                              {
+                                   uploadedUris.Add(blobClient.Uri);
+                              }
+                         }
+                    }
                }
           }
-          catch (RequestFailedException ex)
+          catch (RequestFailedException)
           {
-               // Handle exceptions (e.g., container does not exist, invalid credentials, etc.)
-               // You can log the exception and handle it as needed.
+               throw;
           }
 
-          return null;
+          return uploadedUris;
      }
-
 }

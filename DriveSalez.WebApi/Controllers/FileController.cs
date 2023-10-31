@@ -16,9 +16,9 @@ public class FileController : Controller
     }
 
     [HttpPost("file/upload")]
-    public ActionResult Upload()
+    public async Task<ActionResult> Upload(List<IFormFile> files)
     {
-        var response = _fileService.UploadFilesAsync();
+        var response = await _fileService.UploadFilesAsync(files);
         return response != null ? Ok() : BadRequest();
     }
 }
