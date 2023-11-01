@@ -1,5 +1,6 @@
 ﻿using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,22 +20,43 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPatch("confirm-announcement/{announcementId}")]
         public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] Guid announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
-            return response != null ? Ok(response) : BadRequest(response);
+            try
+            {
+                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
 
         [HttpPatch("make-announcement-inactive/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] Guid announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Inactive);
-            return response != null ? Ok(response) : BadRequest(response);
+            try
+            {
+                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Inactive);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
         
         [HttpPatch("make-announcement-waiting/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] Guid announcementId)
         {
-            var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Waiting);
-            return response != null ? Ok(response) : BadRequest(response);
+            try
+            {
+                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Waiting);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
     }
 }

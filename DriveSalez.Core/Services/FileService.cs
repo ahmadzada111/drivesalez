@@ -1,6 +1,7 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,7 @@ public class FileService : IFileService
 
           if (user == null)
           {
-               return null;
+               throw new UserNotAuthorizedException("User is not authorized!");
           }
 
           List<Uri> uploadedUris = new List<Uri>();

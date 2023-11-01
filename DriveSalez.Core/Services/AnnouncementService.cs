@@ -1,6 +1,7 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Enums;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
@@ -28,7 +29,7 @@ public class AnnouncementService : IAnnouncementService
 
         if (user == null)
         {
-            return null;
+            throw new UserNotAuthorizedException("User is not authorized!");
         }
         
         var response = await _announcementRepository.CreateAnnouncementAsync(user.Id, request);
@@ -42,7 +43,7 @@ public class AnnouncementService : IAnnouncementService
         
         if (user == null)
         {
-            return null;
+            throw new UserNotAuthorizedException("User is not authorized!");
         }
         
         var response = await _announcementRepository.DeleteInactiveAnnouncementFromDbAsync(user.Id, announcementId);
@@ -66,9 +67,9 @@ public class AnnouncementService : IAnnouncementService
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
-        if(user == null)
+        if (user == null)
         {
-            return null;
+            throw new UserNotAuthorizedException("User is not authorized!");
         }
 
         var response = await _announcementRepository.UpdateAnnouncementInDbAsync(user.Id, announcementId, request);
@@ -81,7 +82,7 @@ public class AnnouncementService : IAnnouncementService
         
         if (user == null)
         {
-            return null;
+            throw new UserNotAuthorizedException("User is not authorized!");
         }
         
         var response = await _announcementRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);

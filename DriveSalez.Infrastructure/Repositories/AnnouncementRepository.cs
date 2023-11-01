@@ -73,13 +73,13 @@ namespace DriveSalez.Infrastructure.Repositories
                         Color = await _dbContext.VehicleColors.FindAsync(request.ColorId),
                         HorsePower = request.HorsePower,
                         GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
-                        DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DriveTrainTypeId),
+                        DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId),
                         MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId),
                         OwnerQuantity = request.OwnerQuantity,
                         SeatCount = request.SeatCount,
                         VinCode = request.VinCode,
                         EngineVolume = request.EngineVolume,
-                        MileAge = request.MileAge,
+                        MileAge = request.Mileage,
                         MileageType = request.MileageType
                     }
                 },

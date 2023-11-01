@@ -8,6 +8,4 @@ public interface IEmailService
     Task<bool> SendOtpByEmailAsync(string toEmail, string otp);
 
     Task<bool> VerifyEmailAsync(string email);
-
-    Task<bool> ResetPasswordAsync(string email, string newPassword);
 }

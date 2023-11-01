@@ -1,4 +1,5 @@
 using DriveSalez.Core.DTO;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +28,7 @@ public class OtpService : IOtpService
         
         if (user == null)
         {
-            return false;
+            throw new UserNotFoundException("User is not found!");
         }
         
         if (cache.TryGetValue(request.Email, out string cachedOtp))

@@ -15,4 +15,6 @@ public interface IAccountService
     Task<DeleteAccountResponseDto> DeleteUserAsync(string password);
     
     Task<bool> ChangePasswordAsync(ChangePasswordDto request);
+
+    Task<bool> ResetPasswordAsync(string email, string newPassword);
 }

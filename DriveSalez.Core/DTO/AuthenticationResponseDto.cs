@@ -19,7 +19,5 @@ namespace DriveSalez.Core.DTO
         public DateTime? RefreshTokenExpiration { get; set; }
         
         public string? UserRole { get; set; }
-        
-        public string? Error { get; set; }
     }
 }

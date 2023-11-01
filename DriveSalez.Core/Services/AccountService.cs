@@ -1,11 +1,13 @@
 using System.Security.Claims;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.Core.Services;
 
@@ -74,11 +76,16 @@ public class AccountService : IAccountService
         {
             ApplicationUser user = await _userManager.FindByEmailAsync(request.Email);
 
-            if (user == null || !user.EmailConfirmed)
+            if (user == null)
             {
-                return null;
+                throw new UserNotFoundException("User not found!");
             }
 
+            if (!user.EmailConfirmed)
+            {
+                throw new EmailNotConfirmedException("Email is not confirmed!");
+            }
+            
             await _signInManager.SignInAsync(user, isPersistent: false);
             var response = await _jwtService.GenerateSecurityTokenAsync(user);
             user.RefreshToken = response.RefreshToken;
@@ -97,7 +104,7 @@ public class AccountService : IAccountService
 
         if (principal == null)
         {
-            return new AuthenticationResponseDto { Error = "Invalid JWT token"};
+            throw new SecurityTokenException("Invalid JWT token");
         }
 
         string email = principal.FindFirstValue(ClaimTypes.Email);
@@ -105,7 +112,7 @@ public class AccountService : IAccountService
 
         if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
         {
-            return new AuthenticationResponseDto { Error = "Invalid refresh token" };
+            throw new SecurityTokenException("Invalid refresh token");
         }
 
         var response = await _jwtService.GenerateSecurityTokenAsync(user);
@@ -123,9 +130,17 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            return false;
+            throw new UserNotFoundException("User is not found!");
         }
 
+        var passwordValidator = new PasswordValidator<ApplicationUser>();
+        var validationResult = await passwordValidator.ValidateAsync(_userManager, user, request.NewPassword);
+
+        if (!validationResult.Succeeded)
+        {
+            return false;
+        }
+        
         var changeResult = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
         
         if (changeResult.Succeeded)
@@ -136,6 +151,34 @@ public class AccountService : IAccountService
             {
                 return true;
             }
+        }
+
+        return false;
+    }
+    
+    public async Task<bool> ResetPasswordAsync(string email, string newPassword)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        
+        if (user == null)
+        {
+            throw new UserNotFoundException("User is not found!");
+        }
+
+        var passwordValidator = new PasswordValidator<ApplicationUser>();
+        var validationResult = await passwordValidator.ValidateAsync(_userManager, user, newPassword);
+
+        if (!validationResult.Succeeded)
+        {
+            return false;
+        }
+        
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, newPassword);
+        var result = await _userManager.UpdateAsync(user);
+        
+        if (result.Succeeded)
+        {
+            return true;
         }
 
         return false;
@@ -162,6 +205,6 @@ public class AccountService : IAccountService
             return null;
         }
 
-        return null;
+        throw new UserNotAuthorizedException("User is not authorized!");
     }
 }

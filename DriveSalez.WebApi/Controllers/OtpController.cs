@@ -1,4 +1,5 @@
 using DriveSalez.Core.DTO;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,40 +30,52 @@ public class OtpController : Controller
         {
             _cache.Remove(email);    
         }
-        
-        string otp = _otpService.GenerateOtp();
-        var response = await _emailService.SendOtpByEmailAsync(email, otp);
 
-        if (response)
+        try
         {
-            _cache.Set(email, otp, new MemoryCacheEntryOptions
+            string otp = _otpService.GenerateOtp();
+            var response = await _emailService.SendOtpByEmailAsync(email, otp);
+
+            if (response)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
-            });
+                _cache.Set(email, otp, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
+                });
 
-            return Ok("OTP was sent to your Email");
+                return Ok("OTP was sent to your Email");
+            }
+
+            return BadRequest("Cannot send OTP");
         }
-
-        return BadRequest("Cannot send OTP");
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPost("verify-email")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
-        var response =  await _otpService.ValidateOtpAsync(_cache, request);
-
-        if (response)
+        try
         {
-            var result = await _emailService.VerifyEmailAsync(request.Email);
-            
-            if (result)
+            var response =  await _otpService.ValidateOtpAsync(_cache, request);
+
+            if (response)
             {
-                return Ok("Email was successfully verified");
+                var result = await _emailService.VerifyEmailAsync(request.Email);
+            
+                if (result)
+                {
+                    return Ok("Email was successfully verified");
+                }
             }
 
-            return BadRequest("User not found");
+            return BadRequest("Cannot validate OTP");
         }
-
-        return BadRequest("Cannot validate OTP");
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

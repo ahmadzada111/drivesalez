@@ -1,6 +1,7 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
@@ -28,7 +29,7 @@ public class ModeratorService : IModeratorService
         
         if (user == null)
         {
-            return null;
+            throw new UserNotAuthorizedException("User is not authorized!");
         }
         
         var response = await _moderatorRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);

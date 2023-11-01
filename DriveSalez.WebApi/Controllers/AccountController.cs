@@ -1,10 +1,13 @@
-﻿using DriveSalez.Core.DTO;
+﻿using System.ComponentModel;
+using DriveSalez.Core.DTO;
+using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.WebApi.Controllers
 {
@@ -55,17 +58,28 @@ namespace DriveSalez.WebApi.Controllers
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-                return Unauthorized(errorMessage);
+                return Problem(errorMessage);
             }
 
-            var response = await _accountService.LoginAsync(request);
-
-            if (response == null)
+            try
             {
-                return Unauthorized("Email or password is invalid");
-            }
+                var response = await _accountService.LoginAsync(request);
 
-            return Ok(response);
+                if (response == null)
+                {
+                    return Unauthorized("Email or password is invalid");
+                }
+
+                return Ok(response);
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (EmailNotConfirmedException e)
+            {
+                return Forbid();
+            }
         }
 
         [HttpGet("logout")]
@@ -83,41 +97,75 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized("Invalid request");
             }
 
-            var response = await _accountService.RefreshAsync(request);
-
-            if (response.Error != null)
+            if (!ModelState.IsValid)
             {
-                return Unauthorized(response.Error);
+                string errorMessage = string.Join(" | ",
+                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
 
-            return Ok(response);
+            try
+            {
+                var response = await _accountService.RefreshAsync(request);
+                return Ok(response);
+            }
+            catch (SecurityTokenException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
         
         [HttpPost("change-password")]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)
         {
-            var result = await _accountService.ChangePasswordAsync(request);
-            return result ? Ok("Password was successfully changed") : BadRequest("Error");
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(" | ",
+                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+
+            try
+            {
+                var result = await _accountService.ChangePasswordAsync(request);
+                return result ? Ok("Password was successfully changed") : BadRequest("Error");
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
         
         [HttpPost("reset-password")]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
         {
-            var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
-
-            if (response)
+            if (!ModelState.IsValid)
             {
-                var result = await _emailService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
-            
-                if (result)
-                {
-                    return Ok("Password was successfully changed");
-                }
-
-                return BadRequest("User not found");
+                string errorMessage = string.Join(" | ",
+                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
             }
 
-            return BadRequest("Cannot validate OTP");
+            try
+            {
+                var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
+
+                if (response)
+                {
+                    var result = await _accountService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
+            
+                    if (result)
+                    {
+                        return Ok("Password was successfully changed");
+                    }
+                }
+
+                return BadRequest("Cannot validate OTP");
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
         
         [HttpDelete("delete-user")]
@@ -128,8 +176,15 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized("Password is invalid");
             }
 
-            var response = await _accountService.DeleteUserAsync(password);
-            return response != null ? Ok() : BadRequest();
+            try
+            {
+                var response = await _accountService.DeleteUserAsync(password);
+                return response != null ? Ok() : BadRequest();
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
         }
     }
 }

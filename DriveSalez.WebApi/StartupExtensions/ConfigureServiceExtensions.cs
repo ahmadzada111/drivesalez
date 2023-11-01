@@ -114,8 +114,7 @@ public static class ConfigureServiceExtensions
             .AddDefaultTokenProviders()
             .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
             .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
-
-
+        
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
