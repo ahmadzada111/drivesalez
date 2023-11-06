@@ -1,8 +1,9 @@
+using DriveSalez.Core.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace DriveSalez.Core.ServiceContracts;
 
 public interface IFileService
 {
-    Task<List<Uri>> UploadFilesAsync(List<IFormFile> files);
+    Task<List<ImageUrl>> UploadFilesAsync(List<IFormFile> files);
 }

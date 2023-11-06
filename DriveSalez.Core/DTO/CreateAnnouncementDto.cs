@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace DriveSalez.Core.DTO
 {
@@ -62,7 +63,7 @@ namespace DriveSalez.Core.DTO
         [Required(ErrorMessage = "Engine volume cannot be blank!")]
         public int? EngineVolume { get; set; }
 
-        public List<ImageUrl>? ImageUrls { get; set; }
+        public List<IFormFile>? ImageUrls { get; set; }
 
         [Required(ErrorMessage = "Country cannot be blank!")]
         public int CountryId { get; set; }

@@ -122,7 +122,7 @@ namespace DriveSalez.Infrastructure.DbContext
 
         public DbSet<Announcement> Announcements => Set<Announcement>();
         
-        public DbSet<CarDealer> CarDealers => Set<CarDealer>();
+        public DbSet<BusinessAccount> CarDealers => Set<BusinessAccount>();
 
         public DbSet<Make> Makes => Set<Make>();
 

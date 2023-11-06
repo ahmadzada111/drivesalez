@@ -5,6 +5,7 @@ using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.RepositoryContracts;
+using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +15,14 @@ namespace DriveSalez.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IFileService _fileService;
         
-        public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper)
+        public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
+           IFileService fileService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         private IEnumerable<Announcement> IncludeAllKeysInAnnouncement()
@@ -83,7 +87,8 @@ namespace DriveSalez.Infrastructure.Repositories
                         MileageType = request.MileageType
                     }
                 },
-
+                
+                ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls),
                 ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
                 OnCredit = request.OnCredit,

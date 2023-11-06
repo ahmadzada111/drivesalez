@@ -12,6 +12,6 @@ namespace DriveSalez.Core.Entities
 
         public string PhoneNumber { get; set; }
 
-        public CarDealer Dealer { get; set; }       //EF CORE FOREIGN KEY
+        public BusinessAccount Dealer { get; set; }       //EF CORE FOREIGN KEY
     }
 }

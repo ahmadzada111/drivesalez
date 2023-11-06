@@ -15,6 +15,8 @@ namespace DriveSalez.Core.IdentityEntities
         public DateTime? RefreshTokenExpiration { get; set; }
         
         public ImageUrl? ProfilePhotoUrl { get; set; } 
+
+        public ImageUrl? BackgroundPhotoUrl { get; set; }
         
         [JsonIgnore]
         public List<Announcement>? Announcements { get; set; } = new List<Announcement>();

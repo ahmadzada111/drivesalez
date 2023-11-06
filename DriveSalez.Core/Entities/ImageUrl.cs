@@ -10,6 +10,6 @@ namespace DriveSalez.Core.Entities
     {
         public int Id { get; set; }
 
-        public string Url { get; set; }
+        public Uri? Url { get; set; }
     }
 }

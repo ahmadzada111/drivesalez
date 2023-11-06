@@ -78,7 +78,7 @@ namespace DriveSalez.WebApi.Controllers
             }
             catch (EmailNotConfirmedException e)
             {
-                return Forbid();
+                return Forbid(e.Message);
             }
         }
 
@@ -92,11 +92,6 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthenticationResponseDto>> Refresh([FromBody] RefreshJwtDto request)
         {
-            if (request == null)
-            {
-                return Unauthorized("Invalid request");
-            }
-
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",

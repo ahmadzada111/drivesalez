@@ -1,19 +1,18 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
 namespace DriveSalez.Core.Services;
 
 public class FileService : IFileService
 {
      private readonly IBlobContainerClientProvider _containerClient;
-     private readonly IConfiguration _blobConfig;
      private readonly UserManager<ApplicationUser> _userManager;
      private readonly IHttpContextAccessor _contextAccessor;
      
@@ -25,7 +24,7 @@ public class FileService : IFileService
           _contextAccessor = contextAccessor;
      }
 
-     public async Task<List<Uri>> UploadFilesAsync(List<IFormFile> files)
+     public async Task<List<ImageUrl>> UploadFilesAsync(List<IFormFile> files)
      {
           var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -34,7 +33,7 @@ public class FileService : IFileService
                throw new UserNotAuthorizedException("User is not authorized!");
           }
 
-          List<Uri> uploadedUris = new List<Uri>();
+          List<ImageUrl> uploadedUris = new List<ImageUrl>();
 
           try
           {
@@ -57,7 +56,7 @@ public class FileService : IFileService
                               
                               if (response.GetRawResponse().Status == 201)
                               {
-                                   uploadedUris.Add(blobClient.Uri);
+                                   uploadedUris.Add(new ImageUrl(){Url = blobClient.Uri});
                               }
                          }
                     }
