@@ -32,8 +32,6 @@ namespace DriveSalez.WebApi
             builder.Services.AddMapper();
             builder.Services.AddMemoryCache();
 
-            builder.Services.AddAuthentication();
-
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -46,14 +44,14 @@ namespace DriveSalez.WebApi
                 app.UseMiddleware<ExceptionHandlingMiddleware>();
             }
             
-            app.UseCors("DriveSalezCorsPolicy");
-            
             app.UseHsts();
             app.UseHttpsRedirection();
             
+            app.UseCors("DriveSalezCorsPolicy");
+            
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.MapControllers();
 
             app.Run();

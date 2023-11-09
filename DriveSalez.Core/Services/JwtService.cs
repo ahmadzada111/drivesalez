@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Core.DTO;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.IdentityEntities;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +24,7 @@ public class JwtService : IJwtService
         _userManager = userManager;
     }
 
-    public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
+    public async Task<DefaultUserAuthenticationResponseDto> GenerateSecurityTokenForDefaultUserAsync(DefaultAccount user)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["JWT:Expiration"]));
         var role = await _userManager.GetRolesAsync(user);
@@ -58,12 +59,56 @@ public class JwtService : IJwtService
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
         string response = tokenHandler.WriteToken(token);
 
-        return new AuthenticationResponseDto()
+        return new DefaultUserAuthenticationResponseDto()
         {
             Token = response,
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            JwtExpiration = expiration,
+            RefreshToken = GenerateRefreshToken(),
+            RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),
+            UserRole = role[0]
+        };
+    }
+    
+    public async Task<PaidUserAuthenticationResponseDto> GenerateSecurityTokenForPaidUserAsync(PaidUser user)
+    {
+        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["JWT:Expiration"]));
+        var role = await _userManager.GetRolesAsync(user);
+        
+        Claim[] claims = new Claim[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Email),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, role[0])
+        };
+        
+        var possibleClaims = await _userManager.GetClaimsAsync(user);
+        await _userManager.RemoveClaimsAsync(user, possibleClaims);
+        await _userManager.AddClaimsAsync(user, claims);
+        
+        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig["JWT:Secret"]));
+        SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        JwtSecurityToken token = new JwtSecurityToken(
+            _jwtConfig["JWT:Issuer"],
+            _jwtConfig["JWT:Audience"],
+            claims,
+            expires: expiration,
+            signingCredentials: signingCredentials
+            );
+
+        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        string response = tokenHandler.WriteToken(token);
+
+        return new PaidUserAuthenticationResponseDto()
+        {
+            Token = response,
+            Email = user.Email,
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
             RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),

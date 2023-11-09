@@ -427,7 +427,7 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            ApplicationUser user = new ApplicationUser()
+            DefaultAccount user = new DefaultAccount()
             {
                 Email = request.Email,
                 UserName = request.Email,

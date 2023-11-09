@@ -27,10 +27,11 @@ namespace DriveSalez.Core.DTO
 
         [Required(ErrorMessage = "Body type cannot be blank!")]
         public int? BodyTypeId { get; set; }
-
         
+        [Required(ErrorMessage = "Conditions cannot be blank!")]
         public List<int>? ConditionsIds { get; set; }
         
+        [Required(ErrorMessage = "Options cannot be blank!")]
         public List<int>? OptionsIds { get; set; }
 
         [Required(ErrorMessage = "Color cannot be blank!")]

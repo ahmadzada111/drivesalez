@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
@@ -29,9 +30,9 @@ public class AccountService : IAccountService
         _jwtService = jwtService;
     }
 
-    public async Task<IdentityResult> RegisterAsync(RegisterDto request)
+    public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
     {
-        ApplicationUser user = new ApplicationUser()
+        ApplicationUser user = new DefaultAccount()
         {
             Email = request.Email,
             PhoneNumber = request.Phone,
@@ -68,7 +69,81 @@ public class AccountService : IAccountService
         return result;
     }
 
-    public async Task<AuthenticationResponseDto> LoginAsync(LoginDto request)
+    public async Task<IdentityResult> RegisterPremiumAccountAsync(RegisterPaidAccountDto request)
+    {
+        ApplicationUser user = new PremiumAccount()
+        {
+            Email = request.Email,
+            PhoneNumbers = request.PhoneNumbers,
+            UserName = request.Email,
+            EmailConfirmed = false
+        };
+
+        IdentityResult result = await _userManager.CreateAsync(user, request.Password);
+
+        if (result.Succeeded)
+        {
+            if (await _roleManager.FindByNameAsync(UserType.PremiumAccount.ToString()) == null)
+            {
+                ApplicationRole applicationRole = new ApplicationRole()
+                {
+                    Name = UserType.PremiumAccount.ToString()
+                };
+
+                await _roleManager.CreateAsync(applicationRole);
+                await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
+            }
+
+            await _userManager.UpdateAsync(user);
+
+            return result;
+        }
+
+        return result;
+    }
+    
+    public async Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request)
+    {
+        ApplicationUser user = new BusinessAccount()
+        {
+            Email = request.Email,
+            PhoneNumbers = request.PhoneNumbers,
+            UserName = request.Email,
+            EmailConfirmed = false
+        };
+
+        IdentityResult result = await _userManager.CreateAsync(user, request.Password);
+
+        if (result.Succeeded)
+        {
+            if (await _roleManager.FindByNameAsync(UserType.BusinessAccount.ToString()) == null)
+            {
+                ApplicationRole applicationRole = new ApplicationRole()
+                {
+                    Name = UserType.BusinessAccount.ToString()
+                };
+
+                await _roleManager.CreateAsync(applicationRole);
+                await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
+            }
+
+            await _userManager.UpdateAsync(user);
+
+            return result;
+        }
+
+        return result;
+    }
+    
+    public async Task<DefaultUserAuthenticationResponseDto> LoginDefaultAccountAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -87,7 +162,7 @@ public class AccountService : IAccountService
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityTokenAsync(user);
+            var response = await _jwtService.GenerateSecurityTokenForDefaultUserAsync((DefaultAccount)user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiration = response.RefreshTokenExpiration;
             await _userManager.UpdateAsync(user);
@@ -97,8 +172,38 @@ public class AccountService : IAccountService
         
         return null;
     }
+    
+    public async Task<PaidUserAuthenticationResponseDto> LoginPaidAccountAsync(LoginDto request)
+    {
+        SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
-    public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
+        if (result.Succeeded)
+        {
+            ApplicationUser user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found!");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                throw new EmailNotConfirmedException("Email is not confirmed!");
+            }
+            
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            var response = await _jwtService.GenerateSecurityTokenForPaidUserAsync((PaidUser)user);
+            user.RefreshToken = response.RefreshToken;
+            user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+            await _userManager.UpdateAsync(user);
+
+            return response;
+        }
+        
+        return null;
+    }
+    
+    public async Task<DefaultUserAuthenticationResponseDto> RefreshDefaultAccountAsync(RefreshJwtDto request)
     {
         ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
 
@@ -115,7 +220,7 @@ public class AccountService : IAccountService
             throw new SecurityTokenException("Invalid refresh token");
         }
 
-        var response = await _jwtService.GenerateSecurityTokenAsync(user);
+        var response = await _jwtService.GenerateSecurityTokenForDefaultUserAsync((DefaultAccount)user);
         user.RefreshToken = response.RefreshToken;
         user.RefreshTokenExpiration = response.RefreshTokenExpiration;
 
@@ -124,6 +229,32 @@ public class AccountService : IAccountService
         return response;
     }
 
+    public async Task<PaidUserAuthenticationResponseDto> RefreshPaidAccountAsync(RefreshJwtDto request)
+    {
+        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
+
+        if (principal == null)
+        {
+            throw new SecurityTokenException("Invalid JWT token");
+        }
+
+        string email = principal.FindFirstValue(ClaimTypes.Email);
+        ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+
+        if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
+        {
+            throw new SecurityTokenException("Invalid refresh token");
+        }
+
+        var response = await _jwtService.GenerateSecurityTokenForPaidUserAsync((PaidUser)user);
+        user.RefreshToken = response.RefreshToken;
+        user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+
+        await _userManager.UpdateAsync(user);
+
+        return response;
+    }
+    
     public async Task<bool> ChangePasswordAsync(ChangePasswordDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
@@ -184,25 +315,32 @@ public class AccountService : IAccountService
         return false;
     }
     
-    public async Task<DeleteAccountResponseDto> DeleteUserAsync(string password)
+    public async Task LogOutAsync()
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+
+        await _signInManager.SignOutAsync();
+    }
+    
+    public async Task<bool> DeleteUserAsync(string password)
+    {
+        var user = (DefaultAccount) await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
-        if (user != null && await _userManager.CheckPasswordAsync(user, password))
+        if (user != null  && await _userManager.CheckPasswordAsync(user, password))
         {
             var result = await _userManager.DeleteAsync(user);
             
             if (result.Succeeded)
             {
-                return new DeleteAccountResponseDto()
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email
-                };
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         throw new UserNotAuthorizedException("User is not authorized!");

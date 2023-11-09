@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.Core.DTO
 {
-    public class RegisterDto
+    public class RegisterDefaultAccountDto
     {
 	    [Required(ErrorMessage = "Person name cannot be blank!")]
 	    public string FirstName { get; set; }

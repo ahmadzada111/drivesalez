@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace DriveSalez.Core.Entities
 {
-    public class CarDealerPhoneNumber
+    public class AccountPhoneNumber
     {
         public int Id { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        public BusinessAccount Dealer { get; set; }       //EF CORE FOREIGN KEY
     }
 }

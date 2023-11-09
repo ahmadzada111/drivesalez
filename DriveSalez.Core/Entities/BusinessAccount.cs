@@ -2,7 +2,7 @@
 
 namespace DriveSalez.Core.Entities
 {
-    public class BusinessAccount : PremiumAccount
+    public class BusinessAccount : PaidUser
     {
         public bool? IsOfficial { get; set; }
     }

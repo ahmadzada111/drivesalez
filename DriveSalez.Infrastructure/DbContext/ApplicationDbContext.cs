@@ -116,10 +116,16 @@ namespace DriveSalez.Infrastructure.DbContext
             }
         }
         
-        public DbSet<ApplicationUser> Users => Set<ApplicationUser>();
+        public DbSet<DefaultAccount> DefaultAccounts => Set<DefaultAccount>();
 
+        public DbSet<PremiumAccount> PremiumAccounts => Set<PremiumAccount>();
+
+        public DbSet<BusinessAccount> BusinessAccounts => Set<BusinessAccount>();
+        
         public DbSet<ApplicationRole> Roles => Set<ApplicationRole>();
 
+        public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
+        
         public DbSet<Announcement> Announcements => Set<Announcement>();
         
         public DbSet<BusinessAccount> CarDealers => Set<BusinessAccount>();
