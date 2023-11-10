@@ -5,7 +5,6 @@ using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +31,7 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
     {
-        ApplicationUser user = new DefaultAccount()
+        DefaultAccount user = new DefaultAccount()
         {
             Email = request.Email,
             PhoneNumber = request.Phone,
@@ -71,11 +70,15 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> RegisterPremiumAccountAsync(RegisterPaidAccountDto request)
     {
-        ApplicationUser user = new PremiumAccount()
+        PremiumAccount user = new PremiumAccount()
         {
             Email = request.Email,
             PhoneNumbers = request.PhoneNumbers,
             UserName = request.Email,
+            WorkHours = request.WorkHours,
+            CompanyName = request.CompanyName,
+            Address = request.Address,
+            Description = request.Description,
             EmailConfirmed = false
         };
 
@@ -108,11 +111,16 @@ public class AccountService : IAccountService
     
     public async Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request)
     {
-        ApplicationUser user = new BusinessAccount()
+        BusinessAccount user = new BusinessAccount()
         {
             Email = request.Email,
             PhoneNumbers = request.PhoneNumbers,
             UserName = request.Email,
+            WorkHours = request.WorkHours,
+            CompanyName = request.CompanyName,
+            Address = request.Address,
+            Description = request.Description,
+            IsOfficial = false,
             EmailConfirmed = false
         };
 
@@ -143,7 +151,7 @@ public class AccountService : IAccountService
         return result;
     }
     
-    public async Task<DefaultUserAuthenticationResponseDto> LoginDefaultAccountAsync(LoginDto request)
+    public async Task<AuthenticationResponseDto> LoginAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -162,7 +170,7 @@ public class AccountService : IAccountService
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityTokenForDefaultUserAsync((DefaultAccount)user);
+            var response = await _jwtService.GenerateSecurityTokenAsync(user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiration = response.RefreshTokenExpiration;
             await _userManager.UpdateAsync(user);
@@ -172,38 +180,8 @@ public class AccountService : IAccountService
         
         return null;
     }
-    
-    public async Task<PaidUserAuthenticationResponseDto> LoginPaidAccountAsync(LoginDto request)
-    {
-        SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
 
-        if (result.Succeeded)
-        {
-            ApplicationUser user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found!");
-            }
-
-            if (!user.EmailConfirmed)
-            {
-                throw new EmailNotConfirmedException("Email is not confirmed!");
-            }
-            
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityTokenForPaidUserAsync((PaidUser)user);
-            user.RefreshToken = response.RefreshToken;
-            user.RefreshTokenExpiration = response.RefreshTokenExpiration;
-            await _userManager.UpdateAsync(user);
-
-            return response;
-        }
-        
-        return null;
-    }
-    
-    public async Task<DefaultUserAuthenticationResponseDto> RefreshDefaultAccountAsync(RefreshJwtDto request)
+    public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
     {
         ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
 
@@ -220,33 +198,7 @@ public class AccountService : IAccountService
             throw new SecurityTokenException("Invalid refresh token");
         }
 
-        var response = await _jwtService.GenerateSecurityTokenForDefaultUserAsync((DefaultAccount)user);
-        user.RefreshToken = response.RefreshToken;
-        user.RefreshTokenExpiration = response.RefreshTokenExpiration;
-
-        await _userManager.UpdateAsync(user);
-
-        return response;
-    }
-
-    public async Task<PaidUserAuthenticationResponseDto> RefreshPaidAccountAsync(RefreshJwtDto request)
-    {
-        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
-
-        if (principal == null)
-        {
-            throw new SecurityTokenException("Invalid JWT token");
-        }
-
-        string email = principal.FindFirstValue(ClaimTypes.Email);
-        ApplicationUser? user = await _userManager.FindByEmailAsync(email);
-
-        if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
-        {
-            throw new SecurityTokenException("Invalid refresh token");
-        }
-
-        var response = await _jwtService.GenerateSecurityTokenForPaidUserAsync((PaidUser)user);
+        var response = await _jwtService.GenerateSecurityTokenAsync(user);
         user.RefreshToken = response.RefreshToken;
         user.RefreshTokenExpiration = response.RefreshTokenExpiration;
 
@@ -329,7 +281,7 @@ public class AccountService : IAccountService
     
     public async Task<bool> DeleteUserAsync(string password)
     {
-        var user = (DefaultAccount) await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
         if (user != null  && await _userManager.CheckPasswordAsync(user, password))
         {

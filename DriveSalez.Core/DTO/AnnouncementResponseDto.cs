@@ -29,7 +29,7 @@ public class AnnouncementResponseDto
 
     public DateTimeOffset ExpirationDate { get; set; }
 
-    public string Email { get; set; }
+    public Guid UserId { get; set; }
     
     public string UserName { get; set; }
     
@@ -38,5 +38,4 @@ public class AnnouncementResponseDto
     public string LastName { get; set; }
     
     public string Phone { get; set; }
-    
 }

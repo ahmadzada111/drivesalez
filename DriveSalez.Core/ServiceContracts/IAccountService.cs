@@ -12,13 +12,9 @@ public interface IAccountService
 
     Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request);
 
-    Task<DefaultUserAuthenticationResponseDto> LoginDefaultAccountAsync(LoginDto request);
-
-    Task<PaidUserAuthenticationResponseDto> LoginPaidAccountAsync(LoginDto request);
+    Task<AuthenticationResponseDto> LoginAsync(LoginDto request);
     
-    Task<DefaultUserAuthenticationResponseDto> RefreshDefaultAccountAsync(RefreshJwtDto request);
-
-    Task<PaidUserAuthenticationResponseDto> RefreshPaidAccountAsync(RefreshJwtDto request);
+    Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 
     Task<bool> DeleteUserAsync(string password);
     

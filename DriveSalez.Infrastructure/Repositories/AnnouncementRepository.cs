@@ -108,7 +108,6 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
         
-
         private async Task<bool> CheckAllRelationsInAnnouncement(CreateAnnouncementDto request)
         {
             var model = await _dbContext.Models.FindAsync(request.ModelId);

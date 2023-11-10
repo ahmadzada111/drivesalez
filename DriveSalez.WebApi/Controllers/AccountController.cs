@@ -88,8 +88,8 @@ namespace DriveSalez.WebApi.Controllers
             return Ok();
         }
         
-        [HttpPost("login-default-account")]
-        public async Task<ActionResult<DefaultUserAuthenticationResponseDto>> LoginDefaultAccount([FromBody] LoginDto request)
+        [HttpPost("login")]
+        public async Task<ActionResult<AuthenticationResponseDto>> Login([FromBody] LoginDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -99,7 +99,7 @@ namespace DriveSalez.WebApi.Controllers
 
             try
             {
-                var response = await _accountService.LoginDefaultAccountAsync(request);
+                var response = await _accountService.LoginAsync(request);
 
                 if (response == null)
                 {
@@ -107,36 +107,6 @@ namespace DriveSalez.WebApi.Controllers
                 }
 
                 return Ok(response);
-            }
-            catch (UserNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (EmailNotConfirmedException e)
-            {
-                return Forbid(e.Message);
-            }
-        }
-
-        [HttpPost("login-paid-account")]
-        public async Task<ActionResult<DefaultUserAuthenticationResponseDto>> LoginPaidAccount([FromBody] LoginDto request)
-        {
-            if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
-
-            try
-            {
-                var response = await _accountService.LoginPaidAccountAsync(request);
-
-                if (response == null)
-                {
-                    return Unauthorized("Email or password is invalid");
-                }
-
-                return response != null ? Ok(response): BadRequest();
             }
             catch (UserNotFoundException e)
             {
@@ -155,8 +125,8 @@ namespace DriveSalez.WebApi.Controllers
             return NoContent();
         }
         
-        [HttpPost("refresh-default-account")]
-        public async Task<ActionResult<DefaultUserAuthenticationResponseDto>> Refresh([FromBody] RefreshJwtDto request)
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthenticationResponseDto>> Refresh([FromBody] RefreshJwtDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -167,28 +137,7 @@ namespace DriveSalez.WebApi.Controllers
 
             try
             {
-                var response = await _accountService.RefreshDefaultAccountAsync(request);
-                return Ok(response);
-            }
-            catch (SecurityTokenException e)
-            {
-                return Unauthorized(e.Message);
-            }
-        }
-        
-        [HttpPost("refresh-paid-account")]
-        public async Task<ActionResult<DefaultUserAuthenticationResponseDto>> RefreshPaid([FromBody] RefreshJwtDto request)
-        {
-            if (!ModelState.IsValid)
-            {
-                string errorMessage = string.Join(" | ",
-                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-                return Problem(errorMessage);
-            }
-
-            try
-            {
-                var response = await _accountService.RefreshPaidAccountAsync(request);
+                var response = await _accountService.RefreshAsync(request);
                 return Ok(response);
             }
             catch (SecurityTokenException e)
@@ -251,7 +200,7 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpDelete("delete-user")]
-        public async Task<ActionResult<ApplicationUser>> DeleteUser([FromBody] string password)
+        public async Task<ActionResult> DeleteUser([FromBody] string password)
         {
             if (string.IsNullOrEmpty(password))
             {

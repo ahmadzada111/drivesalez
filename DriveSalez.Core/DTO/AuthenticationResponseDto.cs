@@ -2,7 +2,7 @@
 
 namespace DriveSalez.Core.DTO
 {
-    public class DefaultUserAuthenticationResponseDto
+    public class AuthenticationResponseDto
     {
         public string? FirstName { get; set; }
         

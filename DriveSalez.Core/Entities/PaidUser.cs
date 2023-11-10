@@ -14,5 +14,5 @@ public class PaidUser : ApplicationUser
     
     public string? WorkHours { get; set; }
     
-    public List<AccountPhoneNumber> PhoneNumbers { get; set; }
+    public List<AccountPhoneNumber>? PhoneNumbers { get; set; }
 }

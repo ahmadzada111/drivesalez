@@ -1,9 +1,6 @@
 using DriveSalez.WebApi.StartupExtensions;
 using System.Text.Json.Serialization;
-using DriveSalez.Infrastructure.Quartz.Jobs;
 using DriveSalez.WebApi.Middleware;
-using Quartz;
-using Quartz.AspNetCore;
 
 namespace DriveSalez.WebApi
 {

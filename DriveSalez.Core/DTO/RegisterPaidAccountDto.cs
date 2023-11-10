@@ -10,6 +10,18 @@ public class RegisterPaidAccountDto
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
     
+    [Required(ErrorMessage = "Company name cannot be blank!")]
+    public string CompanyName { get; set; }
+    
+    [Required(ErrorMessage = "Address name cannot be blank!")]
+    public string Address { get; set; }
+
+    [Required(ErrorMessage = "Description name cannot be blank!")]
+    public string Description { get; set; }
+    
+    [Required(ErrorMessage = "Work hours cannot be blank!")]
+    public string WorkHours { get; set; }
+    
     [Required(ErrorMessage = "Password cannot be blank!")]
     [DataType(DataType.Password)]
     [Compare("ConfirmPassword")]
