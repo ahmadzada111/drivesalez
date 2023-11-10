@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DriveSalez.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.Core.DTO
@@ -17,9 +18,8 @@ namespace DriveSalez.Core.DTO
 	    public string Email { get; set; }
 	    
         [Required(ErrorMessage = "Phone number cannot be blank!")]
-        [RegularExpression("^[0-9]*$", ErrorMessage = "Phone number should contain only numbers!")]
         [DataType(DataType.PhoneNumber)]
-        public string Phone { get ; set; }
+        public List<AccountPhoneNumber> PhoneNumbers { get ; set; }
 
         [Required(ErrorMessage = "Password cannot be blank!")]
         [DataType(DataType.Password)]

@@ -34,7 +34,7 @@ public class AccountService : IAccountService
         DefaultAccount user = new DefaultAccount()
         {
             Email = request.Email,
-            PhoneNumber = request.Phone,
+            PhoneNumbers = request.PhoneNumbers,
             UserName = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -74,9 +74,8 @@ public class AccountService : IAccountService
         {
             Email = request.Email,
             PhoneNumbers = request.PhoneNumbers,
-            UserName = request.Email,
+            UserName = request.UserName,
             WorkHours = request.WorkHours,
-            CompanyName = request.CompanyName,
             Address = request.Address,
             Description = request.Description,
             EmailConfirmed = false
@@ -115,9 +114,8 @@ public class AccountService : IAccountService
         {
             Email = request.Email,
             PhoneNumbers = request.PhoneNumbers,
-            UserName = request.Email,
             WorkHours = request.WorkHours,
-            CompanyName = request.CompanyName,
+            UserName = request.UserName,
             Address = request.Address,
             Description = request.Description,
             IsOfficial = false,

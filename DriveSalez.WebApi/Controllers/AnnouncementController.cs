@@ -42,7 +42,7 @@ public class AnnouncementController : Controller
     }
 
     [HttpPatch("update-announcement/{announcementId}")]
-    public async Task<IActionResult> UpdateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
+    public async Task<IActionResult> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
     {
         try
         {

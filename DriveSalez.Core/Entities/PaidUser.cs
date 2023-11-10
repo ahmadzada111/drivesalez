@@ -13,6 +13,4 @@ public class PaidUser : ApplicationUser
     public string? Description { get; set; }
     
     public string? WorkHours { get; set; }
-    
-    public List<AccountPhoneNumber>? PhoneNumbers { get; set; }
 }

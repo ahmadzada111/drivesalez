@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DriveSalez.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 using DriveSalez.Core.Enums;
 using Microsoft.AspNetCore.Http;
 
-namespace DriveSalez.Core.DTO
+namespace DriveSalez.Core.DTO;
+
+public class UpdateAnnouncementDto
 {
-    public class CreateAnnouncementDto
-    {
-        [Required(ErrorMessage = "Year cannot be blank!")]
+    [Required(ErrorMessage = "Year cannot be blank!")]
         public int? YearId { get; set; }   
 
         [Required(ErrorMessage = "Make cannot be blank!")]
@@ -85,6 +84,5 @@ namespace DriveSalez.Core.DTO
         public decimal Price { get; set; }   
 
         [Required(ErrorMessage = "Currency cannot be blank!")]
-        public int CurrencyId { get; set; }  
-    }
+        public int CurrencyId { get; set; } 
 }

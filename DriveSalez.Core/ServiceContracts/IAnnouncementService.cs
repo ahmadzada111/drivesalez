@@ -9,7 +9,7 @@ public interface IAnnouncementService
 {
     Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto createAnnouncement);
 
-    Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, CreateAnnouncementDto request);
+    Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request);
 
     Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId);
 

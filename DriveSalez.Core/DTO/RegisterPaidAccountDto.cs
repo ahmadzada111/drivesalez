@@ -11,7 +11,7 @@ public class RegisterPaidAccountDto
     public string Email { get; set; }
     
     [Required(ErrorMessage = "Company name cannot be blank!")]
-    public string CompanyName { get; set; }
+    public string UserName { get; set; }
     
     [Required(ErrorMessage = "Address name cannot be blank!")]
     public string Address { get; set; }

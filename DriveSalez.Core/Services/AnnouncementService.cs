@@ -63,7 +63,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, CreateAnnouncementDto request)
+    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 

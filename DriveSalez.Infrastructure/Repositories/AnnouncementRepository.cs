@@ -88,7 +88,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     }
                 },
                 
-                ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls),
+                // ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls),
                 ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
                 OnCredit = request.OnCredit,
@@ -143,7 +143,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<List<AnnouncementResponseDto>>(announcements);
         }
 
-        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId, CreateAnnouncementDto request)
+        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId, UpdateAnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -152,12 +152,41 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = GetAnnouncementByIdFromDb(announcementId);
+            var tmpAnnouncement = GetAnnouncementByIdFromDb(announcementId);
+            var announcement = _mapper.Map<Announcement>(tmpAnnouncement);
+            
+            announcement.Id = announcementId;
             announcement.Vehicle.Year = await _dbContext.Years.FindAsync(request.YearId);
+            announcement.Vehicle.Make = await _dbContext.Makes.FindAsync(request.MakeId);
+            announcement.Vehicle.Model = await _dbContext.Models.FindAsync(request.ModelId);
+            announcement.Vehicle.FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId);
+            announcement.Vehicle.IsBrandNew = request.IsBrandNew;
+            announcement.Vehicle.VehicleDetails.BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId);
+            announcement.Vehicle.VehicleDetails.Color = await _dbContext.VehicleColors.FindAsync(request.ColorId);
+            announcement.Vehicle.VehicleDetails.HorsePower = request.HorsePower;
+            announcement.Vehicle.VehicleDetails.GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId);
+            announcement.Vehicle.VehicleDetails.DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId);
+            announcement.Vehicle.VehicleDetails.MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId);
+            announcement.Vehicle.VehicleDetails.OwnerQuantity = request.OwnerQuantity;
+            announcement.Vehicle.VehicleDetails.SeatCount = request.SeatCount;
+            announcement.Vehicle.VehicleDetails.VinCode = request.VinCode;
+            announcement.Vehicle.VehicleDetails.EngineVolume = request.EngineVolume;
+            announcement.Vehicle.VehicleDetails.MileAge = request.Mileage;
+            announcement.Vehicle.VehicleDetails.MileageType = request.MileageType;
+            // announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls);
+            announcement.Barter = request.Barter;
+            announcement.OnCredit = request.OnCredit;
+            announcement.Description = request.Description;
             announcement.Price = request.Price;
+            announcement.Currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
+            announcement.Country = await _dbContext.Countries.FindAsync(request.CountryId);
+            announcement.City = await _dbContext.Cities.FindAsync(request.CityId);
+            announcement.Owner = user;
+
+            _dbContext.Update(announcement);
             await _dbContext.SaveChangesAsync();
 
-            return announcement;
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
         
         public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId, AnnouncementState announcementState)

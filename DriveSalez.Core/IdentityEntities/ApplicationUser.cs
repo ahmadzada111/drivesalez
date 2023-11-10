@@ -10,9 +10,9 @@ namespace DriveSalez.Core.IdentityEntities
         
         public string? LastName { get; set; }
         
-        public string? CompanyName { get; set; }
-        
         public string? RefreshToken { get; set; }
+        
+        public List<AccountPhoneNumber>? PhoneNumbers { get; set; }
         
         public DateTime? RefreshTokenExpiration { get; set; }
         
