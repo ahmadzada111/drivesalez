@@ -64,7 +64,8 @@ namespace DriveSalez.Core.DTO
         [Required(ErrorMessage = "Engine volume cannot be blank!")]
         public int? EngineVolume { get; set; }
 
-        // public List<IFormFile>? ImageUrls { get; set; }
+        [Required(ErrorMessage = "Images cannot be blank!")]
+        public List<string>? ImageData { get; set; }
 
         [Required(ErrorMessage = "Country cannot be blank!")]
         public int CountryId { get; set; }

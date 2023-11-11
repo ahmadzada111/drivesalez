@@ -88,7 +88,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     }
                 },
                 
-                // ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls),
+                ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
                 ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
                 OnCredit = request.OnCredit,
@@ -173,7 +173,7 @@ namespace DriveSalez.Infrastructure.Repositories
             announcement.Vehicle.VehicleDetails.EngineVolume = request.EngineVolume;
             announcement.Vehicle.VehicleDetails.MileAge = request.Mileage;
             announcement.Vehicle.VehicleDetails.MileageType = request.MileageType;
-            // announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageUrls);
+            // announcement.ImageUrls = await _fileService.UploadFilesAsync(request.I);
             announcement.Barter = request.Barter;
             announcement.OnCredit = request.OnCredit;
             announcement.Description = request.Description;

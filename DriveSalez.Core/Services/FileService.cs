@@ -1,3 +1,4 @@
+using System.Text;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -24,49 +25,59 @@ public class FileService : IFileService
           _contextAccessor = contextAccessor;
      }
 
-     public async Task<List<ImageUrl>> UploadFilesAsync(List<IFormFile> files)
+    public async Task<List<ImageUrl>> UploadFilesAsync(List<string> base64Images)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+
+        List<ImageUrl> uploadedUris = new List<ImageUrl>();
+        
+        BlobContainerClient blobContainerClient = _containerClient.GetContainerClient();
+        string userBlobName = $"{user.Id}";
+
+        foreach (var base64Image in base64Images)
+        {
+            byte[] imageBytes = RemovePrefixFromBase64(base64Image);
+            string fileType = GetImageTypeFromBase64(base64Image);
+                
+            using (var stream = new MemoryStream(imageBytes))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                    
+                var blobName = $"{userBlobName}/image_{Guid.NewGuid()}.{fileType}";
+                var blobClient = blobContainerClient.GetBlobClient(blobName);
+
+                Response<BlobContentInfo> response = await blobClient.UploadAsync(stream);
+
+                if (response.GetRawResponse().Status == 201)
+                {
+                    uploadedUris.Add(new ImageUrl { Url = blobClient.Uri });
+                }
+            }
+        }
+        
+        return uploadedUris;
+    }
+
+     private string GetImageTypeFromBase64(string base64String)
      {
-          var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+         int prefixEndIndex = base64String.IndexOf(';');
+         string prefix = base64String.Substring(0, prefixEndIndex);
+         string imageType = prefix.Replace("data:image/", "");
 
-          if (user == null)
-          {
-               throw new UserNotAuthorizedException("User is not authorized!");
-          }
+         return imageType;
+     }
+     
+     private byte[] RemovePrefixFromBase64(string base64String)
+     {
+         int prefixEndIndex = base64String.IndexOf(',') + 1;
+         string base64WithoutPrefix = base64String.Substring(prefixEndIndex);
+         byte[] bytes = Convert.FromBase64String(base64WithoutPrefix);
 
-          List<ImageUrl> uploadedUris = new List<ImageUrl>();
-
-          try
-          {
-               BlobContainerClient blobContainerClient = _containerClient.GetContainerClient();
-               string userBlobName = $"{user.Id}";
-
-               foreach (var file in files)
-               {
-                    if (file.Length > 0)
-                    {
-                         using (var stream = new MemoryStream())
-                         {
-                              await file.CopyToAsync(stream);
-                              stream.Seek(0, SeekOrigin.Begin);
-
-                              var blobName = $"{userBlobName}/{file.FileName}";
-                              var blobClient = blobContainerClient.GetBlobClient(blobName);
-
-                              Response<BlobContentInfo> response = await blobClient.UploadAsync(stream);
-                              
-                              if (response.GetRawResponse().Status == 201)
-                              {
-                                   uploadedUris.Add(new ImageUrl(){Url = blobClient.Uri});
-                              }
-                         }
-                    }
-               }
-          }
-          catch (RequestFailedException)
-          {
-               throw;
-          }
-
-          return uploadedUris;
+         return bytes;
      }
 }

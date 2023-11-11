@@ -5,5 +5,5 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IFileService
 {
-    Task<List<ImageUrl>> UploadFilesAsync(List<IFormFile> files);
+    Task<List<ImageUrl>> UploadFilesAsync(List<string> files);
 }
