@@ -15,7 +15,12 @@ public interface IAnnouncementService
 
     Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState);
 
-    AnnouncementResponseDto GetAnnouncementById(Guid id);
+    Task<AnnouncementResponseDto> GetAnnouncementById(Guid id);
 
-    IEnumerable<AnnouncementResponseDto> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
+    Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);
+
+    Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters,
+        PagingParameters pagingParameters);
+
+    Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters);
 }

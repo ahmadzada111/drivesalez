@@ -15,10 +15,13 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid annoucementId, AnnouncementState announcementState);
 
-        AnnouncementResponseDto GetAnnouncementByIdFromDb(Guid id);
+        Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id);
 
-        IEnumerable<AnnouncementResponseDto> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
+        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(FilterParameters parameters);
+        Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(
+            FilterParameters filterParameters, PagingParameters pagingParameters);
+
+        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters);
     }
 }

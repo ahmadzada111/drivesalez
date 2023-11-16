@@ -42,7 +42,7 @@ public class AnnouncementController : Controller
     }
 
     [HttpPatch("update-announcement/{announcementId}")]
-    public async Task<IActionResult> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
+    public async Task<ActionResult<AnnouncementResponseDto>> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
     {
         try
         {
@@ -56,11 +56,11 @@ public class AnnouncementController : Controller
     }
 
     [HttpGet("get-announcement-by-id/{announcementId}")]
-    public IActionResult GetAnnouncementById([FromRoute] Guid announcementId)
+    public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncementById([FromRoute] Guid announcementId)
     {
         try
         {
-            var response =  _announcementService.GetAnnouncementById(announcementId);
+            var response = await _announcementService.GetAnnouncementById(announcementId);
             return response != null ? Ok(response) : BadRequest();
         }
         catch (UserNotAuthorizedException e)
@@ -85,9 +85,9 @@ public class AnnouncementController : Controller
     
     [AllowAnonymous]
     [HttpGet("get-announcements")]
-    public IActionResult GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
+    public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
     {
-        var response = _announcementService.GetAnnouncements(parameters, announcementState);
+        var response = await _announcementService.GetAnnouncements(parameters, announcementState);
         return response != null ? Ok(response) : BadRequest();
     }
 
@@ -104,10 +104,32 @@ public class AnnouncementController : Controller
             return Unauthorized(e.Message);
         }
     }
+
+    [HttpGet("get-announcements-by-user-id")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAnnouncementsByUserId(PagingParameters pagingParameters)
+    {
+        try
+        {
+            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
     
-    // [HttpGet("filter-announcements")]
-    // public Task<ActionResult> FilterAnnouncements([FromRoute] FilterParameters parameters)
-    // {
-    //     
-    // }
+    [HttpGet("filter-announcements")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
+    {
+        try
+        {
+            var response = await _announcementService.GetFilteredAnnouncementsAsync(filterParameters, pagingParameters);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
 }

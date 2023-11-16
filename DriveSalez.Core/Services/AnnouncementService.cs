@@ -51,15 +51,15 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public AnnouncementResponseDto GetAnnouncementById(Guid id)
+    public async Task<AnnouncementResponseDto> GetAnnouncementById(Guid id)
     {
-        var response =  _announcementRepository.GetAnnouncementByIdFromDb(id);
+        var response = await _announcementRepository.GetAnnouncementByIdFromDb(id);
         return response;
     }
 
-    public IEnumerable<AnnouncementResponseDto> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
+    public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
     {
-        var response = _announcementRepository.GetAnnouncementsFromDb(parameters, announcementState);
+        var response = await _announcementRepository.GetAnnouncementsFromDb(parameters, announcementState);
         return response;
     }
 
@@ -86,6 +86,26 @@ public class AnnouncementService : IAnnouncementService
         }
         
         var response = await _announcementRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);
+
+        return response;
+    }
+    
+    public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
+    {
+        var response = await _announcementRepository.GetFilteredAnnouncementsFromDbAsync(filterParameters, pagingParameters);
+        return response;
+    }
+
+    public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+
+        var response = await _announcementRepository.GetAnnouncementsByUserIdFromDbAsync(user.Id, pagingParameters);
 
         return response;
     }

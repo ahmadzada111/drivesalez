@@ -1,11 +1,7 @@
-﻿using System.ComponentModel;
-using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
+﻿using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
@@ -114,7 +110,12 @@ namespace DriveSalez.WebApi.Controllers
             }
             catch (EmailNotConfirmedException e)
             {
-                return Forbid(e.Message);
+                return new ContentResult()
+                {
+                    StatusCode = 403,
+                    Content = e.Message,
+                    ContentType = "text/plain"
+                };
             }
         }
         
