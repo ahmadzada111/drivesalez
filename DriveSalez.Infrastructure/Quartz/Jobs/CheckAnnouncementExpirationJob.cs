@@ -30,6 +30,7 @@ public class CheckAnnouncementExpirationJob : IJob
             announcement.AnnouncementState = AnnouncementState.Inactive;
         }
         
+        _dbContext.UpdateRange(expiredAnnouncements);
         await _dbContext.SaveChangesAsync();
         
         _logger.LogInformation($"{typeof(CheckAnnouncementExpirationJob)} job finished");

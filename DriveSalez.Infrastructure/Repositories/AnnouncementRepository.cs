@@ -29,6 +29,7 @@ namespace DriveSalez.Infrastructure.Repositories
         {
             return _dbContext.Announcements.
                 Include(x => x.Owner).
+                Include(x => x.Owner.PhoneNumbers).
                 Include(x => x.Vehicle).
                 Include(x => x.Currency).
                 Include(x => x.ImageUrls).

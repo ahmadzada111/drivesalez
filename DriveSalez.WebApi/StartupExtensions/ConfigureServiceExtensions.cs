@@ -24,6 +24,7 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
+        services.AddScoped<IComputerVisionService, ComputerVisionService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -186,6 +187,16 @@ public static class ConfigureServiceExtensions
                 .ForJob(deleteInactiveAccountsKey)
                 .WithIdentity("DeleteInactiveAccounts-trigger")
                 .WithCronSchedule("0 0 1 1 * ?")
+                .StartNow());
+            
+            var startImageAnalyzer = new JobKey("StartImageAnalyzer");
+            q.AddJob<StartImageAnalyzerJob>(opts => opts.WithIdentity(startImageAnalyzer)
+                .StoreDurably());
+
+            q.AddTrigger(opts => opts
+                .ForJob(startImageAnalyzer)
+                .WithIdentity("StartImageAnalyzer-trigger")
+                .WithCronSchedule("0 * * ? * *")
                 .StartNow());
         });
 

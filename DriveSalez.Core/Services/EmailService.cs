@@ -22,7 +22,7 @@ public class EmailService : IEmailService
         _userManager = userManager;
     }
     
-    public async Task<bool> SendOtpByEmailAsync(string toEmail, string otp)
+    public async Task<bool> SendEmailAsync(string toEmail, string subject, string body)
     {
         var user = await _userManager.FindByEmailAsync(toEmail);
         
@@ -40,8 +40,8 @@ public class EmailService : IEmailService
     
         var message = new MailMessage()
         {
-            Subject = "Email verification",        
-            Body = $"Your one time password: {otp}.\nPlease, don't answer to this mail.\nDo not share this password with anybody."
+            Subject = subject,        
+            Body = body
         };
 
         message.From = new MailAddress(_emailConfig["Email:CompanyEmail"], "DriveSalez");

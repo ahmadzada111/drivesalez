@@ -34,7 +34,15 @@ public class OtpController : Controller
         try
         {
             string otp = _otpService.GenerateOtp();
-            var response = await _emailService.SendOtpByEmailAsync(email, otp);
+            string subject = "DriveSalez - One-Time Password (OTP) for Account Verification";
+            string body = $"Thank you for choosing DriveSalez! " +
+                          $"To complete the account verification process, please use the following One-Time Password (OTP):" +
+                          $"\n\nYour OTP: {otp}\n\n" +
+                          $"This OTP is valid for a short duration and is used to ensure the security of your account. " +
+                          $"Please do not share this OTP with anyone, and avoid responding to any requests for it." +
+                          $"\n\nBest regards,\nDriveSalez Team";
+            
+            var response = await _emailService.SendEmailAsync(email, subject, body);
 
             if (response)
             {
