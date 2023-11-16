@@ -196,7 +196,7 @@ public static class ConfigureServiceExtensions
             q.AddTrigger(opts => opts
                 .ForJob(startImageAnalyzer)
                 .WithIdentity("StartImageAnalyzer-trigger")
-                .WithCronSchedule("0 * * ? * *")
+                .WithCronSchedule("0 0 1 1 * ?")
                 .StartNow());
         });
 

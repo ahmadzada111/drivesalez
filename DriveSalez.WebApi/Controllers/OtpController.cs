@@ -34,11 +34,11 @@ public class OtpController : Controller
         try
         {
             string otp = _otpService.GenerateOtp();
-            string subject = "DriveSalez - One-Time Password (OTP) for Account Verification";
+            string subject = "DriveSalez - One-Time Password (OTP)";
             string body = $"Thank you for choosing DriveSalez! " +
-                          $"To complete the account verification process, please use the following One-Time Password (OTP):" +
+                          $"To verify your personality, please use the following One-Time Password (OTP):" +
                           $"\n\nYour OTP: {otp}\n\n" +
-                          $"This OTP is valid for a short duration and is used to ensure the security of your account. " +
+                          $"This OTP is valid for a 3 minutes and is used to ensure the security of your account. " +
                           $"Please do not share this OTP with anyone, and avoid responding to any requests for it." +
                           $"\n\nBest regards,\nDriveSalez Team";
             
