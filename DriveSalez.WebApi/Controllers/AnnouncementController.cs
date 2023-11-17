@@ -106,11 +106,25 @@ public class AnnouncementController : Controller
     }
 
     [HttpGet("get-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAnnouncementsByUserId(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters);
+            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, announcementState);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
+    [HttpGet("get-all-announcements-by-user-id")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllAnnouncementsByUserId(PagingParameters pagingParameters)
+    {
+        try
+        {
+            var response = await _announcementService.GetAllAnnouncementsByUserIdAsync(pagingParameters);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)

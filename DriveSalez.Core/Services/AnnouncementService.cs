@@ -96,7 +96,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters)
+    public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -105,7 +105,21 @@ public class AnnouncementService : IAnnouncementService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
 
-        var response = await _announcementRepository.GetAnnouncementsByUserIdFromDbAsync(user.Id, pagingParameters);
+        var response = await _announcementRepository.GetAnnouncementsByUserIdFromDbAsync(user.Id, pagingParameters, announcementState);
+
+        return response;
+    }
+    
+    public async Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdAsync(PagingParameters pagingParameters)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+
+        var response = await _announcementRepository.GetAllAnnouncementsByUserIdFromDbAsync(user.Id, pagingParameters);
 
         return response;
     }

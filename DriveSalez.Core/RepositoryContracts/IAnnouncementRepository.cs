@@ -22,6 +22,9 @@ namespace DriveSalez.Core.RepositoryContracts
         Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters);
+        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState);
+
+        Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
+            PagingParameters pagingParameters);
     }
 }

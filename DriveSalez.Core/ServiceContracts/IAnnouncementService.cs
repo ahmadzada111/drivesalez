@@ -22,5 +22,7 @@ public interface IAnnouncementService
     Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters,
         PagingParameters pagingParameters);
 
-    Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters);
+    Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters, AnnouncementState announcementState);
+
+    Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdAsync(PagingParameters pagingParameters);
 }

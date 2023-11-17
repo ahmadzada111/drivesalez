@@ -111,6 +111,7 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id)
         {
             var response = await _dbContext.Announcements.
+                AsNoTracking().
                 Include(x => x.Owner).
                 Include(x => x.Owner.PhoneNumbers).
                 Include(x => x.Vehicle).
@@ -138,6 +139,7 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
         {
             var announcements = await _dbContext.Announcements.
+                AsNoTracking().
                 Where(on => on.AnnouncementState == announcementState).
                 Include(x => x.Owner).
                 Include(x => x.Owner.PhoneNumbers).
@@ -257,7 +259,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<AnnouncementResponseDto>(response);
         }
 
-        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters)
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -267,6 +269,52 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var announcement = await _dbContext.Announcements.
+                AsNoTracking().
+                Where(x => x.Owner.Id == userId
+                && x.AnnouncementState == announcementState).
+                Include(x => x.Owner).
+                Include(x => x.Owner.PhoneNumbers).
+                Include(x => x.Vehicle).
+                Include(x => x.Currency).
+                Include(x => x.ImageUrls).
+                Include(x => x.Vehicle.Year).
+                Include(x => x.Vehicle.Make).
+                Include(x => x.Vehicle.Model).
+                Include(x => x.Vehicle.FuelType).
+                Include(x => x.Vehicle.VehicleDetails).
+                Include(x => x.Vehicle.VehicleDetails.BodyType).
+                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
+                Include(x => x.Vehicle.VehicleDetails.GearboxType).
+                Include(x => x.Vehicle.VehicleDetails.Color).
+                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
+                Include(x => x.Vehicle.VehicleDetails.Options).
+                Include(x => x.Vehicle.VehicleDetails.Conditions).
+                Include(x => x.Country).
+                Include(x => x.City).
+                OrderBy(o => o.Price).
+                Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
+                Take(pagingParameters.PageSize).
+                ToListAsync();;
+
+            if (announcement == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<List<AnnouncementResponseDto>>(announcement);
+        }
+        
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var announcement = await _dbContext.Announcements.
+                AsNoTracking().
                 Where(x => x.Owner.Id == userId).
                 Include(x => x.Owner).
                 Include(x => x.Owner.PhoneNumbers).
@@ -303,6 +351,7 @@ namespace DriveSalez.Infrastructure.Repositories
        public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
         {
             var filteredAnnouncement = await _dbContext.Announcements
+                .AsNoTracking()
                 .Where(x => (x.Vehicle.Year.Id >= filterParameters.FromYearId
                              && x.Vehicle.Year.Id <= filterParameters.ToYearId) 
                             || x.Vehicle.Make.Id == filterParameters.MakeId 
