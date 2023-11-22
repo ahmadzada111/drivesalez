@@ -35,17 +35,19 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 return false;
             }
-            else if (user is PremiumAccount paidUser)
+            else if (user is PremiumAccount premiumAccount)
             {
-                if (paidUser.PremiumUploadLimit.PremiumAnnouncementsLimit > 0 && request.IsFreePremiumToggleSwitched)
+                if (premiumAccount.PremiumUploadLimit > 0 && request.IsFreePremiumToggleSwitched)
                 {
+                    premiumAccount.PremiumUploadLimit--;
                     return true;
                 }
             }
             else if (user is BusinessAccount businessAccount)
             {
-                if (businessAccount.PremiumUploadLimit.PremiumAnnouncementsLimit > 0 && request.IsFreePremiumToggleSwitched)
+                if (businessAccount.PremiumUploadLimit > 0 && request.IsFreePremiumToggleSwitched)
                 {
+                    businessAccount.PremiumUploadLimit--;
                     return true;
                 }
             }
@@ -58,16 +60,12 @@ namespace DriveSalez.Infrastructure.Repositories
             var user = await _dbContext.Users
                 .Where(x => x.Id == userId)
                 .FirstOrDefaultAsync();
-            
+
             if (user is PaidUser paidUser)
             {
-                 await _dbContext.Entry(paidUser)
-                    .Reference(u => u.PremiumUploadLimit)
-                    .LoadAsync();
-                 
-                return paidUser.PremiumUploadLimit.PremiumAnnouncementsLimit;
+                return paidUser.PremiumUploadLimit;
             }
-            
+
             return 0;
         }
 

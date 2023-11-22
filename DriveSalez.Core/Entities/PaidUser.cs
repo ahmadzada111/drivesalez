@@ -9,7 +9,7 @@ public class PaidUser : ApplicationUser
 
     public ImageUrl? BackgroundPhotoUrl { get; set; }
     
-    public PaidAccountLimit? PremiumUploadLimit { get; set; }
+    public int PremiumUploadLimit { get; set; }
     
     public string? Address { get; set; }
 

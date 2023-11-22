@@ -23,7 +23,7 @@ public class AccountRepository : IAccountRepository
             Where(x => x.UserType == userType).
             FirstOrDefaultAsync();
 
-        user.PremiumUploadLimit = limit;
+        user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
 
         _dbContext.Update(user);
         await _dbContext.SaveChangesAsync();
