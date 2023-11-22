@@ -18,5 +18,9 @@ namespace DriveSalez.Core.IdentityEntities
         
         [JsonIgnore]
         public List<Announcement>? Announcements { get; set; } = new List<Announcement>();
+        
+        public DateTimeOffset CreationDate { get; set; }
+        
+        public DateTimeOffset LastUpdateDate { get; set; }
     }
 }

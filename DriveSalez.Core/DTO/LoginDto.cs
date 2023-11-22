@@ -9,10 +9,8 @@ namespace DriveSalez.Core.DTO
 {
     public class LoginDto
     {
-        [Required(ErrorMessage = "Email cannot be blank!")]
-        [EmailAddress(ErrorMessage = "Email address should be in a proper format!")]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "User name cannot be blank!")]
+        public string UserName { get; set; }
 
         [Required(ErrorMessage = "Password cannot be blank!")]
         [DataType(DataType.Password)]

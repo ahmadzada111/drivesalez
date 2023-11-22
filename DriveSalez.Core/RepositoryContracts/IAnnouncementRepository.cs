@@ -26,5 +26,7 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
             PagingParameters pagingParameters);
+
+        Task<int> GetUserLimitsFromDbAsync(Guid userId);
     }
 }

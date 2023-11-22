@@ -4,6 +4,7 @@ using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
+using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,15 +19,18 @@ public class AccountService : IAccountService
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IJwtService _jwtService;
+    private readonly IAccountRepository _accountRepository;
     
     public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor)
+        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor,
+        IAccountRepository accountRepository)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _contextAccessor = contextAccessor;
         _jwtService = jwtService;
+        _accountRepository = accountRepository;
     }
 
     public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
@@ -38,7 +42,8 @@ public class AccountService : IAccountService
             UserName = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            EmailConfirmed = false
+            EmailConfirmed = false,
+            CreationDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -78,7 +83,8 @@ public class AccountService : IAccountService
             WorkHours = request.WorkHours,
             Address = request.Address,
             Description = request.Description,
-            EmailConfirmed = false
+            EmailConfirmed = false,
+            CreationDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -101,7 +107,8 @@ public class AccountService : IAccountService
             }
 
             await _userManager.UpdateAsync(user);
-
+            
+            await _accountRepository.AddPremiumLimitToPaidAccountInDbAsync(user.Id, UserType.PremiumAccount);
             return result;
         }
 
@@ -119,7 +126,8 @@ public class AccountService : IAccountService
             Address = request.Address,
             Description = request.Description,
             IsOfficial = false,
-            EmailConfirmed = false
+            EmailConfirmed = false,
+            CreationDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -143,6 +151,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
 
+            await _accountRepository.AddPremiumLimitToPaidAccountInDbAsync(user.Id, UserType.BusinessAccount);
             return result;
         }
 
@@ -151,11 +160,11 @@ public class AccountService : IAccountService
     
     public async Task<AuthenticationResponseDto> LoginAsync(LoginDto request)
     {
-        SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: false);
+        SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
 
         if (result.Succeeded)
         {
-            ApplicationUser user = await _userManager.FindByEmailAsync(request.Email);
+            ApplicationUser user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
 
             if (user == null)
             {

@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
+using DriveSalez.Core.Entities;
 using DriveSalez.Infrastructure.AutoMapper;
 using DriveSalez.Infrastructure.Quartz.Jobs;
 using Quartz;
@@ -24,6 +25,8 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddSingleton<IPaymentService, PaymentService>();
         services.AddScoped<IComputerVisionService, ComputerVisionService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
@@ -176,7 +179,7 @@ public static class ConfigureServiceExtensions
             q.AddTrigger(opts => opts
                 .ForJob(checkAnnouncementStateKey)
                 .WithIdentity("CheckAnnouncementExpiration-trigger")
-                .WithCronSchedule("0 0 1 1 * ?")
+                .WithCronSchedule("0 0 * * * ?")
                 .StartNow());
             
             var deleteInactiveAccountsKey = new JobKey("DeleteInactiveAccounts");
@@ -186,7 +189,7 @@ public static class ConfigureServiceExtensions
             q.AddTrigger(opts => opts
                 .ForJob(deleteInactiveAccountsKey)
                 .WithIdentity("DeleteInactiveAccounts-trigger")
-                .WithCronSchedule("0 0 1 1 * ?")
+                .WithCronSchedule("0 0 * * * ?")
                 .StartNow());
             
             var startImageAnalyzer = new JobKey("StartImageAnalyzer");
@@ -196,6 +199,16 @@ public static class ConfigureServiceExtensions
             q.AddTrigger(opts => opts
                 .ForJob(startImageAnalyzer)
                 .WithIdentity("StartImageAnalyzer-trigger")
+                .WithCronSchedule("0 * * * * ?")
+                .StartNow());
+            
+            var lookForExpiredPremiumAnnouncements = new JobKey("LookForExpiredPremiumAnnouncements");
+            q.AddJob<LookForExpiredPremiumAnnouncementsJob>(opts => opts.WithIdentity(lookForExpiredPremiumAnnouncements)
+                .StoreDurably());
+
+            q.AddTrigger(opts => opts
+                .ForJob(startImageAnalyzer)
+                .WithIdentity("LookForExpiredPremiumAnnouncements-trigger")
                 .WithCronSchedule("0 0 * * * ?")
                 .StartNow());
         });

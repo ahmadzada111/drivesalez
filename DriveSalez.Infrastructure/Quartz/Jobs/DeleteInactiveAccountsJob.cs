@@ -1,4 +1,5 @@
 using DriveSalez.Core.Enums;
+using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,9 +21,9 @@ public class DeleteInactiveAccountsJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation($"{typeof(DeleteInactiveAccountsJob)} job started");
-        
+  
         var inactiveAccounts = await _dbContext.Users
-            .Where(a => !a.EmailConfirmed)
+            .Where(a => !a.EmailConfirmed && (DateTimeOffset.Now - a.CreationDate).TotalDays >= 30)
             .ToListAsync();
         
         _dbContext.Users.RemoveRange(inactiveAccounts);

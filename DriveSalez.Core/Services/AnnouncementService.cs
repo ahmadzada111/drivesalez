@@ -1,5 +1,6 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
@@ -22,7 +23,7 @@ public class AnnouncementService : IAnnouncementService
         _userManager = userManager;
         _announcementRepository = announcementRepository;
     }
-
+    
     public async Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto request)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
@@ -36,7 +37,7 @@ public class AnnouncementService : IAnnouncementService
         
         return response;
     }
-
+    
     public async Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
@@ -51,7 +52,21 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> GetAnnouncementById(Guid id)
+    public async Task<int> GetUserLimitsAsync()
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+
+        var response = await _announcementRepository.GetUserLimitsFromDbAsync(user.Id);
+
+        return response;
+    }
+    
+    public async Task<AnnouncementResponseDto> GetAnnouncementByIdAsync(Guid id)
     {
         var response = await _announcementRepository.GetAnnouncementByIdFromDb(id);
         return response;

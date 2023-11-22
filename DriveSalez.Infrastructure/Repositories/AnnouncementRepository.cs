@@ -4,6 +4,8 @@ using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Enums;
+using DriveSalez.Core.Exceptions;
+using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
@@ -16,15 +18,60 @@ namespace DriveSalez.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
+        private readonly IPaymentService _paymentService;
         
         public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
-           IFileService fileService)
+           IFileService fileService, IPaymentService paymentService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _fileService = fileService;
+            _paymentService = paymentService;
         }
 
+        private bool CheckForPremiumAnnouncementUploadPermission(ApplicationUser user, CreateAnnouncementDto request)
+        {
+            if (user is DefaultAccount)
+            {
+                return false;
+            }
+            else if (user is PremiumAccount paidUser)
+            {
+                if (paidUser.PremiumUploadLimit.PremiumAnnouncementsLimit > 0 && request.IsFreePremiumToggleSwitched)
+                {
+                    return true;
+                }
+            }
+            else if (user is BusinessAccount businessAccount)
+            {
+                if (businessAccount.PremiumUploadLimit.PremiumAnnouncementsLimit > 0 && request.IsFreePremiumToggleSwitched)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public async Task<int> GetUserLimitsFromDbAsync(Guid userId)
+        {
+            var user = await _dbContext.Users
+                .Where(x => x.Id == userId)
+                .FirstOrDefaultAsync();
+            
+            if (user is PaidUser paidUser)
+            {
+                 await _dbContext.Entry(paidUser)
+                    .Reference(u => u.PremiumUploadLimit)
+                    .LoadAsync();
+                 
+                return paidUser.PremiumUploadLimit.PremiumAnnouncementsLimit;
+            }
+            
+            return 0;
+        }
+
+        
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
             var user = await _dbContext.Users.
@@ -36,13 +83,23 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
+            if (request.IsPremium)
+            {
+                if (!CheckForPremiumAnnouncementUploadPermission(user, request))
+                {
+                    var result = _paymentService.ProcessPayment(request.PaymentRequest);
+                    
+                    if (!result) throw new PaymentFailedException("Payment Error!");
+                }
+            }
+            
             if(!await CheckAllRelationsInAnnouncement(request)) return null;
             
             var announcement = new Announcement()
             {
                 Vehicle = new Vehicle()
                 {
-                    Year = await _dbContext.Years.FindAsync(request.YearId),
+                    Year = await _dbContext.ManufactureYears.FindAsync(request.YearId),
                     Make = await _dbContext.Makes.FindAsync(request.MakeId),
                     Model = await _dbContext.Models.FindAsync(request.ModelId),
                     FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
@@ -80,6 +137,8 @@ namespace DriveSalez.Infrastructure.Repositories
                 Currency = await _dbContext.Currencies.FindAsync(request.CurrencyId),
                 Country = await _dbContext.Countries.FindAsync(request.CountryId),
                 City = await _dbContext.Cities.FindAsync(request.CityId),
+                IsPremium = request.IsPremium,
+                PremiumExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Owner = user
             };
             
@@ -160,7 +219,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.VehicleDetails.Conditions).
                 Include(x => x.Country).
                 Include(x => x.City).
-                OrderBy(o => o.Price).
+                OrderBy(o => o.IsPremium).
                 Skip((parameter.PageNumber - 1) * parameter.PageSize).
                 Take(parameter.PageSize).
                 ToListAsync();
@@ -177,11 +236,11 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var tmpAnnouncement = GetAnnouncementByIdFromDb(announcementId);
+            var tmpAnnouncement = await GetAnnouncementByIdFromDb(announcementId);
             var announcement = _mapper.Map<Announcement>(tmpAnnouncement);
             
             announcement.Id = announcementId;
-            announcement.Vehicle.Year = await _dbContext.Years.FindAsync(request.YearId);
+            announcement.Vehicle.Year = await _dbContext.ManufactureYears.FindAsync(request.YearId);
             announcement.Vehicle.Make = await _dbContext.Makes.FindAsync(request.MakeId);
             announcement.Vehicle.Model = await _dbContext.Models.FindAsync(request.ModelId);
             announcement.Vehicle.FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId);
@@ -291,7 +350,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.VehicleDetails.Conditions).
                 Include(x => x.Country).
                 Include(x => x.City).
-                OrderBy(o => o.Price).
+                OrderBy(o => o.IsPremium).
                 Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
                 Take(pagingParameters.PageSize).
                 ToListAsync();;
@@ -335,7 +394,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.VehicleDetails.Conditions).
                 Include(x => x.Country).
                 Include(x => x.City).
-                OrderBy(o => o.Price).
+                OrderBy(o => o.IsPremium).
                 Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
                 Take(pagingParameters.PageSize).
                 ToListAsync();;
@@ -396,7 +455,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Vehicle.VehicleDetails.Conditions).
                 Include(x => x.Country).
                 Include(x => x.City).
-                OrderBy(o => o.Price).
+                OrderBy(o => o.IsPremium).
                 Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
                 Take(pagingParameters.PageSize).
                 ToListAsync();

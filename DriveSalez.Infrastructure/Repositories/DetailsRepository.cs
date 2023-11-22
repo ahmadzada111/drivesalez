@@ -25,7 +25,7 @@ public class DetailsRepository : IDetailsRepository
     {
         return await _dbContext.VehicleBodyTypes.ToListAsync();
     }
-
+    
     public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync()
     {
         return await _dbContext.VehicleDriveTrainTypes.ToListAsync();
@@ -73,7 +73,7 @@ public class DetailsRepository : IDetailsRepository
     
     public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDbAsync()
     {
-        return await _dbContext.Years.ToListAsync();
+        return await _dbContext.ManufactureYears.ToListAsync();
     }
     
     public async Task<IEnumerable<Country>> GetAllCountriesFromDbAsync()

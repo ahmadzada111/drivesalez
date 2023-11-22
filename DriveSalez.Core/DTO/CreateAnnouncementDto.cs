@@ -86,6 +86,13 @@ namespace DriveSalez.Core.DTO
         public decimal Price { get; set; }   
 
         [Required(ErrorMessage = "Currency cannot be blank!")]
-        public int CurrencyId { get; set; }  
+        public int CurrencyId { get; set; } 
+        
+        [Required(ErrorMessage = "Is Premium cannot be blank!")]
+        public bool IsPremium { get; set; }
+
+        public bool IsFreePremiumToggleSwitched { get; set; }
+        
+        public PaymentRequestDto PaymentRequest { get; set; }
     }
 }

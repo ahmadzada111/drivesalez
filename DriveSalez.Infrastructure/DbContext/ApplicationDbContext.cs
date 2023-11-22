@@ -1,4 +1,6 @@
-﻿using DriveSalez.Core.Entities;
+﻿using DriveSalez.Core.DTO;
+using DriveSalez.Core.DTO.Enums;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.IdentityEntities;
@@ -76,8 +78,7 @@ namespace DriveSalez.Infrastructure.DbContext
 
                 var aze = this.Countries.Add(new Country() { CountryName = "Azerbaijan" }).Entity;
                 var pl = this.Countries.Add(new Country() { CountryName = "Poland" }).Entity;
-
-
+                
                 this.Cities.Add(new City() { CityName = "Baku", Country = aze });
                 this.Cities.Add(new City() { CityName = "Quba", Country = aze });
                 this.Cities.Add(new City() { CityName = "Qax", Country = aze });
@@ -104,17 +105,33 @@ namespace DriveSalez.Infrastructure.DbContext
                 this.VehicleDetailsConditions.Add(new VehicleCondition() { Condition= "Painted", Description= "One or more parts have been repainted or cosmetic work has been done." });
                 this.VehicleDetailsConditions.Add(new VehicleCondition() { Condition= "Crashed or for parts", Description= "Needs repair or is completely unfit for use." });
 
-                Years.Add(new ManufactureYear() { Year = 2023 });
-                Years.Add(new ManufactureYear() { Year = 2022 });
-                Years.Add(new ManufactureYear() { Year = 2021 });
-                Years.Add(new ManufactureYear() { Year = 2020 });
-                Years.Add(new ManufactureYear() { Year = 2019 });
+                ManufactureYears.Add(new ManufactureYear() { Year = 2023 });
+                ManufactureYears.Add(new ManufactureYear() { Year = 2022 });
+                ManufactureYears.Add(new ManufactureYear() { Year = 2021 });
+                ManufactureYears.Add(new ManufactureYear() { Year = 2020 });
+                ManufactureYears.Add(new ManufactureYear() { Year = 2019 });
 
-                Currencies.Add(new Currency() { CurrencyName = "AZN" });
+                var azn = Currencies.Add(new Currency() { CurrencyName = "AZN" }).Entity;
                 Currencies.Add(new Currency() { CurrencyName = "EUR" });
                 Currencies.Add(new Currency() { CurrencyName = "USD" });
+
+                var subPrice = SubscriptionPrices.Add(new SubscriptionPrice() { Price = 5, Currency = azn}).Entity;
+
+                Subscriptions.Add(new Subscription() { SubscriptionName = "Premium", Price = subPrice });
+                
+                PaidAccountLimits.Add(new PaidAccountLimit() { PremiumAnnouncementsLimit = 10, UserType = UserType.PremiumAccount});
+                PaidAccountLimits.Add(new PaidAccountLimit() { PremiumAnnouncementsLimit = 20, UserType = UserType.BusinessAccount});
             }
         }
+        
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // {
+        //     base.OnModelCreating(modelBuilder);
+        //
+        //     modelBuilder.Entity<DefaultAccount>().ToTable("DefaultAccounts");
+        //     modelBuilder.Entity<PremiumAccount>().ToTable("PremiumAccounts");
+        //     modelBuilder.Entity<BusinessAccount>().ToTable("BusinessAccounts");
+        // }
         
         public DbSet<DefaultAccount> DefaultAccounts => Set<DefaultAccount>();
 
@@ -125,6 +142,12 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<ApplicationRole> Roles => Set<ApplicationRole>();
 
         public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
+
+        public DbSet<PaidAccountLimit> PaidAccountLimits => Set<PaidAccountLimit>();
+
+        public DbSet<Subscription> Subscriptions => Set<Subscription>();
+        
+        public DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
         
         public DbSet<Announcement> Announcements => Set<Announcement>();
         
@@ -158,7 +181,7 @@ namespace DriveSalez.Infrastructure.DbContext
         
         public DbSet<City> Cities => Set<City>();
 
-        public DbSet<ManufactureYear> Years => Set<ManufactureYear>();
+        public DbSet<ManufactureYear> ManufactureYears => Set<ManufactureYear>();
 
         public DbSet<Currency> Currencies => Set<Currency>();
     }

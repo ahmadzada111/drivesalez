@@ -39,8 +39,26 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
+        catch (PaymentFailedException e)
+        {
+            return Problem(e.Message);
+        }
     }
 
+    [HttpGet("get-user-limit")]
+    public async Task<ActionResult> GetUserLimits()
+    {
+        try
+        {
+            var response = await _announcementService.GetUserLimitsAsync();
+            return response != null ? Ok(response) : BadRequest();
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
     [HttpPatch("update-announcement/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
     {
@@ -60,7 +78,7 @@ public class AnnouncementController : Controller
     {
         try
         {
-            var response = await _announcementService.GetAnnouncementById(announcementId);
+            var response = await _announcementService.GetAnnouncementByIdAsync(announcementId);
             return response != null ? Ok(response) : BadRequest();
         }
         catch (UserNotAuthorizedException e)

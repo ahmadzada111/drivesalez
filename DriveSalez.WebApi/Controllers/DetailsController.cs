@@ -29,7 +29,7 @@ public class DetailsController : Controller
         var response = await _detailsService.GetAllVehicleBodyTypesAsync();
         return response != null ? Ok(response) : BadRequest(response);
     }
-
+    
     [HttpGet("get-all-drivetrain-types")]
     public async Task<ActionResult> GetAllDrivetrainTypes()
     {
@@ -93,7 +93,7 @@ public class DetailsController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
     
-    [HttpGet("get-all-years")]
+    [HttpGet("get-all-manufacture-years")]
     public async Task<ActionResult> GetAllManufactureYears()
     {
         var response = await _detailsService.GetAllManufactureYearsAsync();

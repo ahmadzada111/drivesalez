@@ -33,6 +33,8 @@ namespace DriveSalez.Core.Entities
         
         public DateTimeOffset ExpirationDate { get; set; }
         
+        public DateTimeOffset PremiumExpirationDate { get; set; }
+        
         public bool IsPremium { get; set; }
         
         public int ViewCount { get; set; }
