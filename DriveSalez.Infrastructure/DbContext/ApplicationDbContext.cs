@@ -1,9 +1,11 @@
-﻿using DriveSalez.Core.DTO;
+﻿using System.IdentityModel.Tokens.Jwt;
+using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +15,31 @@ namespace DriveSalez.Infrastructure.DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            
             Database.EnsureCreated();
 
             if (!VehicleColors.Any())
             {
+                ApplicationRole applicationRole1 = new ApplicationRole()
+                {
+                    Name = UserType.DefaultAccount.ToString(),
+                    NormalizedName = UserType.DefaultAccount.ToString().ToUpper(),
+                };
+                
+                ApplicationRole applicationRole2 = new ApplicationRole()
+                {
+                    Name = UserType.PremiumAccount.ToString(),
+                    NormalizedName = UserType.PremiumAccount.ToString().ToUpper(),
+                };
+
+                ApplicationRole applicationRole3 = new ApplicationRole()
+                {
+                    Name = UserType.BusinessAccount.ToString(),
+                    NormalizedName = UserType.BusinessAccount.ToString().ToUpper(),
+                };
+                
+                Roles.AddRange(applicationRole1, applicationRole2, applicationRole3);
+                
                 var marketVersion = this.VehicleMarketVersions.Add(new Core.Entities.VehicleParts.VehicleMarketVersion()
                     { MarketVersion = "USA" }).Entity;
                 this.VehicleMarketVersions.Add(new Core.Entities.VehicleParts.VehicleMarketVersion()
@@ -132,12 +155,16 @@ namespace DriveSalez.Infrastructure.DbContext
         //     modelBuilder.Entity<PremiumAccount>().ToTable("PremiumAccounts");
         //     modelBuilder.Entity<BusinessAccount>().ToTable("BusinessAccounts");
         // }
-        
+
+        public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+
+        public DbSet<PaidUser> PaidUsers => Set<PaidUser>();
+
         public DbSet<DefaultAccount> DefaultAccounts => Set<DefaultAccount>();
 
-        public DbSet<PremiumAccount> PremiumAccounts => Set<PremiumAccount>();
-
         public DbSet<BusinessAccount> BusinessAccounts => Set<BusinessAccount>();
+
+        public DbSet<PremiumAccount> PremiumAccounts => Set<PremiumAccount>();
         
         public DbSet<ApplicationRole> Roles => Set<ApplicationRole>();
 
@@ -150,8 +177,6 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
         
         public DbSet<Announcement> Announcements => Set<Announcement>();
-        
-        public DbSet<BusinessAccount> CarDealers => Set<BusinessAccount>();
 
         public DbSet<Make> Makes => Set<Make>();
 

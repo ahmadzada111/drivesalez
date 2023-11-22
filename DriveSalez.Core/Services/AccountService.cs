@@ -43,7 +43,8 @@ public class AccountService : IAccountService
             FirstName = request.FirstName,
             LastName = request.LastName,
             EmailConfirmed = false,
-            CreationDate = DateTimeOffset.Now
+            CreationDate = DateTimeOffset.Now,
+            LastUpdateDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -84,7 +85,9 @@ public class AccountService : IAccountService
             Address = request.Address,
             Description = request.Description,
             EmailConfirmed = false,
-            CreationDate = DateTimeOffset.Now
+            CreationDate = DateTimeOffset.Now,
+            LastUpdateDate = DateTimeOffset.Now,
+            SubscriptionExpirationDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -127,7 +130,9 @@ public class AccountService : IAccountService
             Description = request.Description,
             IsOfficial = false,
             EmailConfirmed = false,
-            CreationDate = DateTimeOffset.Now
+            CreationDate = DateTimeOffset.Now,
+            LastUpdateDate = DateTimeOffset.Now,
+            SubscriptionExpirationDate = DateTimeOffset.Now
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -303,5 +308,18 @@ public class AccountService : IAccountService
         }
 
         throw new UserNotAuthorizedException("User is not authorized!");
+    }
+
+    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, roles);
+
+        var defaultAccount = await _accountRepository.ChangeUserTypeToDefaultAccountInDbAsync(user);
+        
+        await _userManager.AddToRoleAsync(defaultAccount, UserType.DefaultAccount.ToString());
+        await _userManager.UpdateAsync(defaultAccount);
+
+        return defaultAccount;
     }
 }

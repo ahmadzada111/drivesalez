@@ -211,6 +211,26 @@ public static class ConfigureServiceExtensions
                 .WithIdentity("LookForExpiredPremiumAnnouncements-trigger")
                 .WithCronSchedule("0 0 * * * ?")
                 .StartNow());
+            
+            var notifyUsersWithExpiredSubscriptions = new JobKey("NotifyUsersWithExpiredSubscriptions");
+            q.AddJob<NotifyUsersWithExpiringSubscriptionsJob>(opts => opts.WithIdentity(notifyUsersWithExpiredSubscriptions)
+                .StoreDurably());
+
+            q.AddTrigger(opts => opts
+                .ForJob(notifyUsersWithExpiredSubscriptions)
+                .WithIdentity("NotifyUsersWithExpiredSubscriptions-trigger")
+                .WithCronSchedule("0 0 * * * ?")
+                .StartNow());
+            
+            var notifyUserAboutSubscriptionCancellation = new JobKey("NotifyUserAboutSubscriptionCancellation");
+            q.AddJob<NotifyUserAboutSubscriptionCancellationJob>(opts => opts.WithIdentity(notifyUserAboutSubscriptionCancellation)
+                .StoreDurably());
+            
+            q.AddTrigger(opts => opts
+                .ForJob(notifyUserAboutSubscriptionCancellation)
+                .WithIdentity("NotifyUserAboutSubscriptionCancellation-trigger")
+                .WithCronSchedule("0 * * * * ?")
+                .StartNow());
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

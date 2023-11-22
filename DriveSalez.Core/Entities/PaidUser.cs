@@ -11,6 +11,8 @@ public class PaidUser : ApplicationUser
     
     public int PremiumUploadLimit { get; set; }
     
+    public DateTimeOffset SubscriptionExpirationDate { get; set; }
+    
     public string? Address { get; set; }
 
     public string? Description { get; set; }

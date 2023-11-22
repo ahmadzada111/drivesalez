@@ -37,4 +37,29 @@ public class AccountRepository : IAccountRepository
 
         return user;
     }
+    
+    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
+    {
+        var defaultAccount = new DefaultAccount
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            EmailConfirmed = true,
+            SecurityStamp = user.SecurityStamp,
+            CreationDate = user.CreationDate,
+            LastUpdateDate = user.LastUpdateDate
+        };
+
+        _dbContext.Users.Remove(user);
+
+        await _dbContext.AddAsync(defaultAccount);
+
+        await _dbContext.SaveChangesAsync();
+        
+        return defaultAccount;
+    }
 }

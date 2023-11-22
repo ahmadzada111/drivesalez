@@ -23,4 +23,6 @@ public interface IAccountService
     Task<bool> ResetPasswordAsync(string email, string newPassword);
 
     Task LogOutAsync();
+
+    Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user);
 }
