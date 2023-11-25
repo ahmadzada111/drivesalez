@@ -81,7 +81,7 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 if (!CheckForPremiumAnnouncementUploadPermission(user, request))
                 {
-                    var result = _paymentService.ProcessPayment(request.PaymentRequest);
+                    var result = await _paymentService.ProcessPayment(request.PaymentRequest);
                     
                     if (!result) throw new PaymentFailedException("Payment Error!");
                 }

@@ -1,43 +1,28 @@
 using DriveSalez.Core.ServiceContracts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Microsoft.Extensions.Configuration;
+using Google.Cloud.Vision.V1;
 using ImageUrl = DriveSalez.Core.Entities.ImageUrl;
 
 namespace DriveSalez.Core.Services;
 
 public class ComputerVisionService : IComputerVisionService
 {
-    private readonly IConfiguration _configuration;
-    private readonly IComputerVisionClient _computerVisionClient;
-
-    public ComputerVisionService(IConfiguration configuration)
-    {
-        _configuration = configuration;
-
-        var subscriptionKey = _configuration["ImageAnalyzer:Key"];
-        var endpoint = _configuration["ImageAnalyzer:Endpoint"];
-
-        _computerVisionClient = new ComputerVisionClient(new ApiKeyServiceClientCredentials(subscriptionKey))
-        {
-            Endpoint = endpoint
-        };
-    }
+    private readonly IImageAnnotatorClientProvider _imageAnnotatorClientProvider;
     
+    public ComputerVisionService(IImageAnnotatorClientProvider imageAnnotatorClientProvider)
+    {
+        _imageAnnotatorClientProvider = imageAnnotatorClientProvider;
+    }
+
     public async Task<bool> AnalyzeImagesAsync(List<ImageUrl> imageUrls)
     {
+        var annotatorClient = _imageAnnotatorClientProvider.GetImageAnnotatorClient();
+
         foreach (var imageUrl in imageUrls)
         {
-            var analysisResult = await _computerVisionClient.AnalyzeImageAsync(
-                imageUrl.Url.ToString(),
-                new List<VisualFeatureTypes?>
-                {
-                    VisualFeatureTypes.Adult,   
-                    VisualFeatureTypes.Objects, 
-                });
+            var image = Image.FromUri(imageUrl.Url);
+            var response = await annotatorClient.DetectLabelsAsync(image);
 
-            if (!IsSafeImage(analysisResult) || !ContainsOnlyCar(analysisResult))
+            if (!IsSafeImage(response) || !ContainsCarComponents(response))
             {
                 return false;
             }
@@ -45,14 +30,15 @@ public class ComputerVisionService : IComputerVisionService
 
         return true;
     }
-
-    private bool IsSafeImage(ImageAnalysis analysisResult)
+    
+    private bool IsSafeImage(IEnumerable<EntityAnnotation> annotations)
     {
-        return analysisResult.Adult.IsAdultContent == false && analysisResult.Adult.IsRacyContent == false;
+        return !annotations.Any(a => a.Description.Contains("explicit", StringComparison.OrdinalIgnoreCase));
     }
 
-    private bool ContainsOnlyCar(ImageAnalysis analysisResult)
+    private bool ContainsCarComponents(IEnumerable<EntityAnnotation> annotations)
     {
-        return analysisResult.Objects.Any(obj => obj.ObjectProperty.Equals("car", StringComparison.OrdinalIgnoreCase));
+        var carComponents = new List<string> { "car", "gear shift", "steering wheel", "speedometer", "car interior" };
+        return annotations.Any(a => carComponents.Any(c => a.Description.Equals(c, StringComparison.OrdinalIgnoreCase)));
     }
 }

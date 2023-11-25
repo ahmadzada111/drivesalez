@@ -168,6 +168,8 @@ namespace DriveSalez.Infrastructure.DbContext
         
         public DbSet<ApplicationRole> Roles => Set<ApplicationRole>();
 
+        public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
+        
         public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
 
         public DbSet<PaidAccountLimit> PaidAccountLimits => Set<PaidAccountLimit>();

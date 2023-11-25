@@ -6,6 +6,7 @@ using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
+using Google.Apis.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -63,6 +64,61 @@ public class FileService : IFileService
         return uploadedUris;
     }
 
+    public async Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        
+        try
+        {
+            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
+            await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+
+            return await UploadFilesAsync(base64Images);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    
+    public async Task<bool> DeleteFilesAsync(List<ImageUrl> imageUrls)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        
+        try
+        {
+            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
+            var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+
+            return result.Value;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    
+    public async Task<bool> DeleteAllFilesAsync(Guid userId)
+    {
+        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        
+        try
+        {
+            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(userId.ToString());
+            var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+
+            return result.Value;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    
      private string GetImageTypeFromBase64(string base64String)
      {
          int prefixEndIndex = base64String.IndexOf(';');

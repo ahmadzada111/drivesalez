@@ -1,5 +1,6 @@
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.ServiceContracts;
+using DriveSalez.Core.Services;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,14 +14,16 @@ public class StartImageAnalyzerJob : IJob
     private readonly ILogger _logger;
     private readonly IComputerVisionService _computerVisionService;
     private readonly IEmailService _emailService;
+    private readonly IFileService _fileService;
     
     public StartImageAnalyzerJob(ApplicationDbContext dbContext, ILogger<StartImageAnalyzerJob> logger,
-        IComputerVisionService computerVisionService, IEmailService emailService)
+        IComputerVisionService computerVisionService, IEmailService emailService, IFileService fileService)
     {
         _dbContext = dbContext;
         _logger = logger;
         _computerVisionService = computerVisionService;
         _emailService = emailService;
+        _fileService = fileService;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -47,8 +50,12 @@ public class StartImageAnalyzerJob : IJob
                     $"\n\nThank you for your understanding and cooperation." +
                     $"\n\nBest regards," +
                     $"\n\nDriveSalez Team";
+
+                await _fileService.DeleteAllFilesAsync(announcement.Owner.Id);
                 
                 _dbContext.Remove(announcement);
+                _dbContext.RemoveRange(announcement.ImageUrls);
+                
                 await _dbContext.SaveChangesAsync();
                 await _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
             }

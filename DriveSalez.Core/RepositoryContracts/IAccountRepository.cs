@@ -11,4 +11,10 @@ public interface IAccountRepository
     Task<ApplicationUser> FindUserByLoginInDbAsync(string login);
 
     Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user);
+
+    Task<ApplicationUser> ChangeUserTypeFromDefaultAccountToPremiumInDbAsync(ApplicationUser user);
+
+    Task<ApplicationUser> ChangeUserTypeFromDefaultAccountToBusinessInDbAsync(ApplicationUser user);
+    
+    Task<ApplicationUser> ChangeUserTypeFromPremiumAccountToBusinessInDbAsync(ApplicationUser user);
 }

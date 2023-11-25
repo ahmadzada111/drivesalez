@@ -44,7 +44,7 @@ public class NotifyUserAboutSubscriptionCancellationJob : IJob
                           $"We regret to inform you that your subscription with DriveSalez has been canceled due to non-payment." +
                           $"\n\nReason for Cancellation:\nUnfortunately, we did not receive payment for your subscription, and as a result, your account has been set to the default status." +
                           $"\n\nAction Required:\nIf you believe this is an error or if you would like to reinstate your subscription, please log in to your account and update your payment information." +
-                          $"\n\nAccount Status:\n-Username: {user.UserName}\n-Account Status: Default\n-Subscription Expiration Date: {user.SubscriptionExpirationDate}" +
+                          $"\n\nAccount Status:\n- Username: {user.UserName}\n- Account Status: Default\n- Subscription Expiration Date: {user.SubscriptionExpirationDate}" +
                           $"\n\nContact Us:\nIf you have any questions or concerns, please feel free to contact our support team." +
                           $"\n\nWe appreciate your understanding and prompt attention to this matter.\n\nBest regards,\n\nDriveSalez Team";
 

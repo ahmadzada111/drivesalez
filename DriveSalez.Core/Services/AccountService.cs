@@ -322,4 +322,43 @@ public class AccountService : IAccountService
 
         return defaultAccount;
     }
+    
+    public async Task<ApplicationUser> ChangeDefaultAccountToPremiumAsync(ApplicationUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, roles);
+
+        var premiumAccount = await _accountRepository.ChangeUserTypeToDefaultAccountInDbAsync(user);
+        
+        await _userManager.AddToRoleAsync(premiumAccount, UserType.PremiumAccount.ToString());
+        await _userManager.UpdateAsync(premiumAccount);
+
+        return premiumAccount;
+    }
+    
+    public async Task<ApplicationUser> ChangeDefaultAccountToBusinessAsync(ApplicationUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, roles);
+
+        var businessAccount = await _accountRepository.ChangeUserTypeFromDefaultAccountToBusinessInDbAsync(user);
+        
+        await _userManager.AddToRoleAsync(businessAccount, UserType.BusinessAccount.ToString());
+        await _userManager.UpdateAsync(businessAccount);
+
+        return businessAccount;
+    }
+    
+    public async Task<ApplicationUser> ChangePremiumAccountToBusinessAsync(ApplicationUser user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, roles);
+
+        var businessAccount = await _accountRepository.ChangeUserTypeFromPremiumAccountToBusinessInDbAsync(user);
+        
+        await _userManager.AddToRoleAsync(businessAccount, UserType.BusinessAccount.ToString());
+        await _userManager.UpdateAsync(businessAccount);
+
+        return businessAccount;
+    }
 }

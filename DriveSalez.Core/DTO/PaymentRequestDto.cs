@@ -1,3 +1,5 @@
+using DriveSalez.Core.Entities;
+
 namespace DriveSalez.Core.DTO;
 
 public class PaymentRequestDto
@@ -13,4 +15,6 @@ public class PaymentRequestDto
     public string FirstName { get; set; }
     
     public string LastName { get; set; }
+    
+    public int SubscriptionId { get; set; }
 }

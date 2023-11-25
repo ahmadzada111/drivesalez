@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
-using DriveSalez.Core.Entities;
 using DriveSalez.Infrastructure.AutoMapper;
 using DriveSalez.Infrastructure.Quartz.Jobs;
 using Quartz;
@@ -25,8 +24,9 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
+        services.AddSingleton<IImageAnnotatorClientProvider, ImageAnnotatorClientProvider>();
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddSingleton<IPaymentService, PaymentService>();
+        services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IComputerVisionService, ComputerVisionService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
@@ -39,7 +39,8 @@ public static class ConfigureServiceExtensions
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IDetailsService, DetailsService>();
         services.AddScoped<IDetailsRepository, DetailsRepository>();
-
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
+        
         return services;
     }
 

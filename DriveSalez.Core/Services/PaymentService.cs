@@ -1,6 +1,11 @@
 using System.Globalization;
 using DriveSalez.Core.DTO;
+using DriveSalez.Core.Entities;
+using DriveSalez.Core.Exceptions;
+using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using PayPal.Api;
 
@@ -9,14 +14,20 @@ namespace DriveSalez.Core.Services;
 public class PaymentService : IPaymentService
 {
     private readonly IConfiguration _configuration;
+    private readonly IPaymentRepository _paymentRepository;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly UserManager<ApplicationUser> _userManager;
     
-    public PaymentService(IConfiguration configuration)
+    public PaymentService(IConfiguration configuration, IPaymentRepository paymentRepository,
+        IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager)
     {
         _configuration = configuration;
-       
+        _paymentRepository = paymentRepository;
+        _contextAccessor = contextAccessor;
+        _userManager = userManager;
     }
 
-    public bool ProcessPayment(PaymentRequestDto request)
+    public async Task<bool> ProcessPayment(PaymentRequestDto request)
     {
         // try
         // {
@@ -67,6 +78,16 @@ public class PaymentService : IPaymentService
         //     return false;
         // }
 
+        // var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        //
+        // if (user == null)
+        // {
+        //     throw new UserNotAuthorizedException("User is not Authorized");
+        // }
+        //
+        //
+        // await _paymentRepository.RecordPaymentInDbAsync(user.Id);
+        
         return true;
     }
 }

@@ -44,6 +44,7 @@ public class AccountRepository : IAccountRepository
         {
             Id = user.Id,
             UserName = user.UserName,
+            PhoneNumbers = user.PhoneNumbers,
             Email = user.Email,
             PasswordHash = user.PasswordHash,
             FirstName = user.FirstName,
@@ -61,5 +62,83 @@ public class AccountRepository : IAccountRepository
         await _dbContext.SaveChangesAsync();
         
         return defaultAccount;
+    }
+    
+    public async Task<ApplicationUser> ChangeUserTypeFromDefaultAccountToPremiumInDbAsync(ApplicationUser user)
+    {
+        var premiumAccount = new PremiumAccount()
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            PhoneNumbers = user.PhoneNumbers,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            EmailConfirmed = true,
+            SecurityStamp = user.SecurityStamp,
+            CreationDate = user.CreationDate,
+            LastUpdateDate = user.LastUpdateDate
+        };
+
+        _dbContext.Users.Remove(user);
+
+        await _dbContext.AddAsync(premiumAccount);
+
+        await _dbContext.SaveChangesAsync();
+        
+        return premiumAccount;
+    }
+
+    public async Task<ApplicationUser> ChangeUserTypeFromDefaultAccountToBusinessInDbAsync(ApplicationUser user)
+    {
+        var businessAccount = new BusinessAccount()
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            PhoneNumbers = user.PhoneNumbers,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            EmailConfirmed = true,
+            SecurityStamp = user.SecurityStamp,
+            CreationDate = user.CreationDate,
+            LastUpdateDate = user.LastUpdateDate
+        };
+
+        _dbContext.Users.Remove(user);
+
+        await _dbContext.AddAsync(businessAccount);
+
+        await _dbContext.SaveChangesAsync();
+        
+        return businessAccount;
+    }
+
+    public async Task<ApplicationUser> ChangeUserTypeFromPremiumAccountToBusinessInDbAsync(ApplicationUser user)
+    {
+        var businessAccount = new BusinessAccount()
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            PhoneNumbers = user.PhoneNumbers,
+            Email = user.Email,
+            PasswordHash = user.PasswordHash,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            EmailConfirmed = true,
+            SecurityStamp = user.SecurityStamp,
+            CreationDate = user.CreationDate,
+            LastUpdateDate = user.LastUpdateDate
+        };
+
+        _dbContext.Users.Remove(user);
+
+        await _dbContext.AddAsync(businessAccount);
+
+        await _dbContext.SaveChangesAsync();
+        
+        return businessAccount;
     }
 }

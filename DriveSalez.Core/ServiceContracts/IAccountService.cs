@@ -25,4 +25,10 @@ public interface IAccountService
     Task LogOutAsync();
 
     Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user);
+
+    Task<ApplicationUser> ChangeDefaultAccountToPremiumAsync(ApplicationUser user);
+
+    Task<ApplicationUser> ChangeDefaultAccountToBusinessAsync(ApplicationUser user);
+
+    Task<ApplicationUser> ChangePremiumAccountToBusinessAsync(ApplicationUser user);
 }

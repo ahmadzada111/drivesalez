@@ -4,5 +4,5 @@ namespace DriveSalez.Core.ServiceContracts;
 
 public interface IPaymentService
 {
-    bool ProcessPayment(PaymentRequestDto request);
+    Task<bool> ProcessPayment(PaymentRequestDto request);
 }

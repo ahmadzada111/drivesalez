@@ -73,6 +73,7 @@ public class AnnouncementController : Controller
         }
     }
 
+    [AllowAnonymous]
     [HttpGet("get-announcement-by-id/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncementById([FromRoute] Guid announcementId)
     {

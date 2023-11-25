@@ -7,6 +7,7 @@ public class PaymentController : Controller
     [HttpPost("pay-for-subscription")]
     public ActionResult PayForSubscription()
     {
+        
         return Ok();
     }
 }
