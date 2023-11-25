@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.Core", "DriveSal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.Infrastructure", "DriveSalez.Infrastructure\DriveSalez.Infrastructure.csproj", "{DFB4DBCB-49C7-4F30-91E0-1ACCA889337B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{82711767-AD15-477C-862C-6EB0146ACBBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{51190C46-A0F9-48F7-A458-41D65D3295A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,10 @@ Global
 		{DFB4DBCB-49C7-4F30-91E0-1ACCA889337B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFB4DBCB-49C7-4F30-91E0-1ACCA889337B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFB4DBCB-49C7-4F30-91E0-1ACCA889337B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{22F3DD22-ED0E-42FA-BEC3-B94CDCF45CC7} = {82711767-AD15-477C-862C-6EB0146ACBBF}
+		{DFB4DBCB-49C7-4F30-91E0-1ACCA889337B} = {82711767-AD15-477C-862C-6EB0146ACBBF}
+		{C42D8478-4896-4A0A-8BE3-135F9E476CEE} = {82711767-AD15-477C-862C-6EB0146ACBBF}
 	EndGlobalSection
 EndGlobal
