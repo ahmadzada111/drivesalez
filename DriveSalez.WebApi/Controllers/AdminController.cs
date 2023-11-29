@@ -48,6 +48,34 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
 
+        [HttpPost("add-new-subscription")]
+        public async Task<ActionResult> AddNewSubscription([FromBody] string subscriptionName, decimal price, int currencyId)
+        {
+            try
+            {
+                var response = await _adminService.AddSubscriptionAsync(subscriptionName, price, currencyId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPost("add-new-currency")]
+        public async Task<ActionResult> AddNewCurrency([FromBody] string currencyName)
+        {
+            try
+            {
+                var response = await _adminService.AddCurrencyAsync(currencyName);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
         [HttpPost("add-new-drivetrain")]
         public async Task<ActionResult> AddNewDrivetrainType([FromBody] string driveTrainType)
         {
@@ -189,6 +217,50 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [HttpPut("update-account-limit/{limitId}")]
+        public async Task<ActionResult> UpdateVehicleBodyType([FromRoute] int limitId, [FromBody] int limit)
+        {
+            try
+            {
+                var response = await _adminService.UpdateAccountLimitAsync(limitId, limit);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPut("update-currency/{currencyId}")]
+        public async Task<ActionResult> UpdateCurrency([FromRoute] int currencyId, [FromBody] string currencyName )
+        {
+            try
+            {
+                var response = await _adminService.UpdateCurrencyAsync(currencyId, currencyName);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPut("update-subscription/{subscriptionId}")]
+        public async Task<ActionResult> UpdateCurrency([FromRoute] int subscriptionId, [FromBody] string subscriptionName, 
+            decimal price, 
+            int currencyId)
+        {
+            try
+            {
+                var response = await _adminService.UpdateSubscriptionAsync(subscriptionId, subscriptionName, price, currencyId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
         [HttpPut("update-drivetrain/{drivetrainId}")]
         public async Task<ActionResult> UpdateVehicleDriveTrainType([FromRoute] int drivetrainId, [FromBody] string drivetrain)
         {
@@ -307,6 +379,20 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var response = await _adminService.DeleteVehicleColorAsync(colorId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpDelete("delete-currency/{currencyId}")]
+        public async Task<ActionResult> DeleteCurrency([FromRoute] int currencyId)
+        {
+            try
+            {
+                var response = await _adminService.DeleteCurrencyAsync(currencyId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)

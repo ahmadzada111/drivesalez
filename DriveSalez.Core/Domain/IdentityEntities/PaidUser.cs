@@ -9,8 +9,6 @@ public class PaidUser : ApplicationUser
 
     public ImageUrl? BackgroundPhotoUrl { get; set; }
     
-    public int PremiumUploadLimit { get; set; }
-    
     public DateTimeOffset SubscriptionExpirationDate { get; set; }
     
     public string? Address { get; set; }

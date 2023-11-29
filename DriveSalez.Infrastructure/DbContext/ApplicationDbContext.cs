@@ -142,8 +142,8 @@ namespace DriveSalez.Infrastructure.DbContext
 
                 Subscriptions.Add(new Subscription() { SubscriptionName = "Premium", Price = subPrice });
                 
-                PaidAccountLimits.Add(new PaidAccountLimit() { PremiumAnnouncementsLimit = 10, UserType = UserType.PremiumAccount});
-                PaidAccountLimits.Add(new PaidAccountLimit() { PremiumAnnouncementsLimit = 20, UserType = UserType.BusinessAccount});
+                PaidAccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 10, UserType = UserType.PremiumAccount});
+                PaidAccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 20, UserType = UserType.BusinessAccount});
             }
         }
         
@@ -172,7 +172,7 @@ namespace DriveSalez.Infrastructure.DbContext
         
         public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
 
-        public DbSet<PaidAccountLimit> PaidAccountLimits => Set<PaidAccountLimit>();
+        public DbSet<AccountLimit> PaidAccountLimits => Set<AccountLimit>();
 
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
         

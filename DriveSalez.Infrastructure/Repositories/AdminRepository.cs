@@ -1,8 +1,10 @@
-﻿using DriveSalez.Core.Entities;
+﻿using DriveSalez.Core.DTO;
+using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
@@ -23,8 +25,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Color = color });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
@@ -34,9 +42,15 @@ namespace DriveSalez.Infrastructure.Repositories
                 return null;
             }
 
-            var responce = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
-            await _dbContext.SaveChangesAsync();
-            return responce.Entity;
+            var response = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
+
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
@@ -47,8 +61,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { DrivetrainType = driveTrainType });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+           
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
@@ -59,8 +79,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { GearboxType = gearboxType });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<Make> SendNewMakeToDbAsync(string make)
@@ -71,8 +97,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.Makes.AddAsync(new Make() { MakeName = make });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<Model> SendNewModelToDbAsync(int makeId, string model)
@@ -84,7 +116,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
 
-            if (response != null)
+            if (response.State == EntityState.Added)
             {
                 await _dbContext.SaveChangesAsync();
                 return response.Entity;
@@ -101,8 +133,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleFuelTypes.AddAsync(new VehicleFuelType() { FuelType = fuelType });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition)
@@ -113,8 +151,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition() { Condition = condition });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
@@ -125,8 +169,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { MarketVersion = marketVersion });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option)
@@ -137,40 +187,144 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var response = await _dbContext.VehicleDetailsOptions.AddAsync(new VehicleOption() { Option = option });
-            await _dbContext.SaveChangesAsync();
-            return response.Entity;
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
+        }
+
+        public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId)
+        {
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                return null;
+            }
+
+            var response = await _dbContext.Subscriptions.AddAsync(new Subscription()
+            {
+                SubscriptionName = subscriptionName,
+                Price = new SubscriptionPrice()
+                {
+                    Price = price,
+                    Currency = await _dbContext.FindAsync<Currency>(currencyId)
+                }
+            });
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
+        }
+
+        public async Task<Currency> SendNewCurrencyToDbAsync(string currencyName)
+        {
+            if (string.IsNullOrEmpty(currencyName))
+            {
+                return null;
+            }
+
+            var response = await _dbContext.Currencies.AddAsync(new Currency() { CurrencyName = currencyName });
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
         }
 
         public async Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor)
         {
-            if (colorId == null || string.IsNullOrEmpty(newColor))
+            if (string.IsNullOrEmpty(newColor))
             {
                 return null;
             }
 
             var color = await _dbContext.FindAsync<VehicleColor>(colorId);
             color.Color = newColor;
-            _dbContext.Update(color);
-            await _dbContext.SaveChangesAsync();
+            
+            var response = _dbContext.Update(color);
 
-            return color;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return color;
+            }
+
+            return null;
         }
         
         public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
         {
-            if (bodyTypeId == null || string.IsNullOrEmpty(newBodyType))
+            if (string.IsNullOrEmpty(newBodyType))
             {
                 return null;
             }
 
             var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
             bodyType.BodyType = newBodyType;
-            _dbContext.Update(bodyType);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(bodyType);
 
-            return bodyType;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return bodyType;
+            }
+
+            return null;
         }
-        
+
+        public async Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
+        {
+            if (string.IsNullOrEmpty(currencyName))
+            {
+                return null;
+            }
+
+            var currency = await _dbContext.FindAsync<Currency>(currencyId);
+            currency.CurrencyName = currencyName;
+            var response = _dbContext.Update(currency);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return currency;
+            }
+
+            return null;
+        }
+
+        public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, string subscriptionName, decimal price, int currencyId)
+        {
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                return null;
+            }
+
+            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
+            subscription.SubscriptionName = subscriptionName;
+            subscription.Price.Price = price;
+            subscription.Price.Currency = await _dbContext.Currencies.FindAsync(currencyId);
+            
+            var response = _dbContext.Update(subscription);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return subscription;
+            }
+
+            return null;
+        }
+
         public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
         {
             if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
@@ -180,10 +334,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
             drivetrain.DrivetrainType = newDrivetrain;
-            _dbContext.Update(drivetrain);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(drivetrain);
 
-            return drivetrain;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return drivetrain;
+            }
+
+            return null;
         }
         
         public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
@@ -195,10 +354,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
             gearbox.GearboxType = newGearbox;
-            _dbContext.Update(gearbox);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(gearbox);
 
-            return gearbox;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return gearbox;
+            }
+
+            return null;
         }
         
         public async Task<Make> UpdateMakeInDbAsync(int makeId, string newMake)
@@ -210,10 +374,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var make = await _dbContext.FindAsync<Make>(makeId);
             make.MakeName = newMake;
-            _dbContext.Update(make);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(make);
 
-            return make;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return make;
+            }
+
+            return null;
         }
         
         public async Task<Model> UpdateModelInDbAsync(int modelId, string newModel)
@@ -225,10 +394,35 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var model = await _dbContext.FindAsync<Model>(modelId);
             model.ModelName = newModel;
-            _dbContext.Update(model);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(model);
 
-            return model;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return model;
+            }
+
+            return null;
+        }
+
+        public async Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int limit)
+        {
+            if (limitId == null || limit == null)
+            {
+                return null;
+            }
+
+            var accountLimit = await _dbContext.FindAsync<AccountLimit>(limitId);
+            accountLimit.PremiumAnnouncementsLimit = limit;
+            var response = _dbContext.Update(accountLimit);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return accountLimit;
+            }
+
+            return null;
         }
         
         public async Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
@@ -240,10 +434,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var fuelType = await _dbContext.FindAsync<VehicleFuelType>(fuelTypeId);
             fuelType.FuelType = newFuelType;
-            _dbContext.Update(fuelType);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(fuelType);
 
-            return fuelType;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return fuelType;
+            }
+
+            return null;
         }
         
         public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition)
@@ -255,10 +454,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
             vehicleCondition.Condition = newVehicleCondition;
-            _dbContext.Update(vehicleCondition);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(vehicleCondition);
 
-            return vehicleCondition;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return vehicleCondition;
+            }
+
+            return null;
         }
         
         public async Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
@@ -270,10 +474,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var vehicleOption = await _dbContext.FindAsync<VehicleOption>(vehicleOptionId);
             vehicleOption.Option = newVehicleOption;
-            _dbContext.Update(vehicleOption);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(vehicleOption);
 
-            return vehicleOption;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return vehicleOption;   
+            }
+
+            return null;
         }
         
         public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
@@ -285,10 +494,15 @@ namespace DriveSalez.Infrastructure.Repositories
 
             var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
             marketVersion.MarketVersion = newMarketVersion;
-            _dbContext.Update(marketVersion);
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Update(marketVersion);
 
-            return marketVersion;
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return marketVersion;
+            }
+
+            return null;
         }
 
         public async Task<VehicleColor> DeleteVehicleColorFromDbAsync(int colorId)
@@ -302,9 +516,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (color != null)
             {
-                _dbContext.Remove(color);
-                await _dbContext.SaveChangesAsync();
-                return color;
+                var response = _dbContext.Remove(color);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return color;
+                }
             }
             
             return null;
@@ -321,9 +539,36 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (bodyType != null)
             {
-                _dbContext.Remove(bodyType);
-                await _dbContext.SaveChangesAsync();
-                return bodyType;
+                var response = _dbContext.Remove(bodyType);
+                
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return bodyType;
+                }
+            }
+            
+            return null;
+        }
+
+        public async Task<Currency> DeleteCurrencyFromDbAsync(int currencyId)
+        {
+            if (currencyId == null)
+            {
+                return null;
+            }
+
+            var currency = await _dbContext.FindAsync<Currency>(currencyId);
+            
+            if (currency != null)
+            {
+                var response = _dbContext.Remove(currency);
+                
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return currency;
+                }
             }
             
             return null;
@@ -340,9 +585,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (drivetrain != null)
             {
-                _dbContext.Remove(drivetrain);
-                await _dbContext.SaveChangesAsync();
-                return drivetrain;
+                var response = _dbContext.Remove(drivetrain);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return drivetrain;   
+                }
             }
             
             return null;
@@ -359,9 +608,36 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (gearbox != null)
             {
-                _dbContext.Remove(gearbox);
-                await _dbContext.SaveChangesAsync();
-                return gearbox;
+                var response = _dbContext.Remove(gearbox);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return gearbox;
+                }
+            }
+            
+            return null;
+        }
+
+        public async Task<Subscription> DeleteSubscriptionFromDbAsync(int subscriptionId)
+        {
+            if (subscriptionId == null)
+            {
+                return null;
+            }
+
+            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
+            
+            if (subscription != null)
+            {
+                var response = _dbContext.Remove(subscription);
+                
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return subscription;
+                }
             }
             
             return null;
@@ -378,9 +654,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (make != null)
             {
-                _dbContext.Remove(make);
-                await _dbContext.SaveChangesAsync();
-                return make;
+                var response = _dbContext.Remove(make);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return make;
+                }
             }
             
             return null;
@@ -397,9 +677,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (model != null)
             {
-                _dbContext.Remove(model);
-                await _dbContext.SaveChangesAsync();
-                return model;
+                var response = _dbContext.Remove(model);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return model;
+                }
             }
             
             return null;
@@ -416,9 +700,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (fuelType != null)
             {
-                _dbContext.Remove(fuelType);
-                await _dbContext.SaveChangesAsync();
-                return fuelType;
+                var response = _dbContext.Remove(fuelType);
+                
+                if(response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return fuelType;   
+                }
             }
             
             return null;
@@ -435,9 +723,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (vehicleCondition != null)
             {
-                _dbContext.Remove(vehicleCondition);
-                await _dbContext.SaveChangesAsync();
-                return vehicleCondition;
+                var response = _dbContext.Remove(vehicleCondition);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return vehicleCondition;   
+                }
             }
             
             return null;
@@ -454,9 +746,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (vehicleOption != null)
             {
-                _dbContext.Remove(vehicleOption);
-                await _dbContext.SaveChangesAsync();
-                return vehicleOption;
+                var response = _dbContext.Remove(vehicleOption);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return vehicleOption;
+                }
             }
             
             return null;
@@ -473,9 +769,13 @@ namespace DriveSalez.Infrastructure.Repositories
             
             if (marketVersion != null)
             {
-                _dbContext.Remove(marketVersion);
-                await _dbContext.SaveChangesAsync();
-                return marketVersion;
+                var response = _dbContext.Remove(marketVersion);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return marketVersion;
+                }
             }
             
             return null;

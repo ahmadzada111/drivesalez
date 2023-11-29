@@ -18,41 +18,13 @@ namespace DriveSalez.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
-        private readonly IPaymentService _paymentService;
         
         public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
-           IFileService fileService, IPaymentService paymentService)
+           IFileService fileService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _fileService = fileService;
-            _paymentService = paymentService;
-        }
-
-        private bool CheckForPremiumAnnouncementUploadPermission(ApplicationUser user, CreateAnnouncementDto request)
-        {
-            if (user is DefaultAccount)
-            {
-                return false;
-            }
-            else if (user is PremiumAccount premiumAccount)
-            {
-                if (premiumAccount.PremiumUploadLimit > 0 && request.IsFreePremiumToggleSwitched)
-                {
-                    premiumAccount.PremiumUploadLimit--;
-                    return true;
-                }
-            }
-            else if (user is BusinessAccount businessAccount)
-            {
-                if (businessAccount.PremiumUploadLimit > 0 && request.IsFreePremiumToggleSwitched)
-                {
-                    businessAccount.PremiumUploadLimit--;
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public async Task<int> GetUserLimitsFromDbAsync(Guid userId)
@@ -61,10 +33,14 @@ namespace DriveSalez.Infrastructure.Repositories
                 .OfType<PaidUser>()
                 .Where(x => x.Id == userId)
                 .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
             
             return user.PremiumUploadLimit;
         }
-
         
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
@@ -74,17 +50,17 @@ namespace DriveSalez.Infrastructure.Repositories
 
             if (user == null)
             {
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException("User not found");
             }
 
             if (request.IsPremium)
             {
-                if (!CheckForPremiumAnnouncementUploadPermission(user, request))
+                if (user.PremiumUploadLimit < 0 && request.IsFreePremiumToggleSwitched)
                 {
-                    var result = await _paymentService.ProcessPayment(request.PaymentRequest);
-                    
-                    if (!result) throw new PaymentFailedException("Payment Error!");
+                    return null;
                 }
+                
+                user.PremiumUploadLimit--;
             }
             
             if(!await CheckAllRelationsInAnnouncement(request)) return null;
@@ -137,11 +113,15 @@ namespace DriveSalez.Infrastructure.Repositories
             };
             
             user.Announcements.Add(announcement);
-            var response = _dbContext.Announcements.Add(announcement).Entity;
+            var response = await _dbContext.Announcements.AddAsync(announcement);
 
-            await _dbContext.SaveChangesAsync();
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
+            }
 
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            return null;
         }
         
         private async Task<bool> CheckAllRelationsInAnnouncement(CreateAnnouncementDto request)
@@ -185,6 +165,11 @@ namespace DriveSalez.Infrastructure.Repositories
                 Include(x => x.Country).
                 Include(x => x.City).
                 FirstOrDefaultAsync(x => x.Id == id);
+
+            if (response == null)
+            {
+                throw new KeyNotFoundException();
+            }
             
             return _mapper.Map<AnnouncementResponseDto>(response);
         }
@@ -217,7 +202,12 @@ namespace DriveSalez.Infrastructure.Repositories
                 Skip((parameter.PageNumber - 1) * parameter.PageSize).
                 Take(parameter.PageSize).
                 ToListAsync();
-
+            
+            if (announcements == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            
             return _mapper.Map<List<AnnouncementResponseDto>>(announcements);
         }
         
@@ -261,10 +251,15 @@ namespace DriveSalez.Infrastructure.Repositories
             announcement.City = await _dbContext.Cities.FindAsync(request.CityId);
             announcement.Owner = user;
 
-            _dbContext.Update(announcement);
-            await _dbContext.SaveChangesAsync();
+            var result = _dbContext.Update(announcement);
 
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
+            }
+
+            return null;
         }
         
         public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId, AnnouncementState announcementState)
@@ -286,7 +281,12 @@ namespace DriveSalez.Infrastructure.Repositories
             announcement.AnnouncementState = announcementState;
             announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
 
-            await _dbContext.SaveChangesAsync();
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+            }
 
             return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
@@ -300,16 +300,24 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var announcement = await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId || x.AnnouncementState == AnnouncementState.Inactive || x.Owner.Id == userId);
+            var announcement = await _dbContext.Announcements.
+                Where(x => x.Id == announcementId && x.AnnouncementState == AnnouncementState.Inactive && x.Owner.Id == userId).
+                FirstOrDefaultAsync();
 
             if (announcement == null)
             {
                 return null;
             }
 
-            var response = _dbContext.Announcements.Remove(announcement).Entity;
+            var response = _dbContext.Announcements.Remove(announcement);
 
-            return _mapper.Map<AnnouncementResponseDto>(response);
+            if (response.State == EntityState.Deleted)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(response);
+            }
+
+            return null;
         }
 
         public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState)

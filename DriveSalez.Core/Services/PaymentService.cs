@@ -1,93 +1,118 @@
-using System.Globalization;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
+using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
+using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using PayPal.Api;
 
 namespace DriveSalez.Core.Services;
 
 public class PaymentService : IPaymentService
 {
-    private readonly IConfiguration _configuration;
+    private readonly IAccountService _accountService;
     private readonly IPaymentRepository _paymentRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
     
-    public PaymentService(IConfiguration configuration, IPaymentRepository paymentRepository,
-        IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager)
+    public PaymentService(IPaymentRepository paymentRepository,
+        IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager, IAccountService accountService)
     {
-        _configuration = configuration;
         _paymentRepository = paymentRepository;
         _contextAccessor = contextAccessor;
         _userManager = userManager;
+        _accountService = accountService;
     }
 
-    public async Task<bool> ProcessPayment(PaymentRequestDto request)
+    public async Task<bool> TopUpBalance(PaymentRequestDto request)
     {
-        // try
-        // {
-        //     var config = new Dictionary<string, string>
-        //     {
-        //         { "mode", "sandbox" },
-        //         { "clientId", _configuration["PayPal:ClientId"] },
-        //         { "clientSecret", _configuration["PayPal:Secret"] }
-        //     };
-        //
-        //     var accessToken = new OAuthTokenCredential(config).GetAccessToken();
-        //
-        //     var apiContext = new APIContext(accessToken);
-        //
-        //     var payment = new Payment
-        //     {
-        //         intent = "sale",
-        //         payer = new Payer { payment_method = "credit_card", funding_instruments = new List<FundingInstrument>() },
-        //         transactions = new List<Transaction>
-        //         {
-        //             new Transaction
-        //             {
-        //                 amount = new Amount { currency = "USD", total = (request.AmountInCents / 100.0).ToString("F2", CultureInfo.InvariantCulture) },
-        //                 payee = new Payee {email = _configuration["PayPal:Email"]},
-        //             }
-        //         }
-        //     };
-        //
-        //     var card = new CreditCard
-        //     {
-        //         number = request.CardNumber,
-        //         expire_month = request.ExpireMonth,
-        //         expire_year = request.ExpireYear,
-        //         cvv2 = request.Cvv,
-        //         first_name = request.FirstName,
-        //         last_name = request.LastName,
-        //         type = "visa"
-        //     };
-        //
-        //     payment.payer.funding_instruments.Add(new FundingInstrument { credit_card = card });
-        //
-        //     var createdPayment = payment.Create(apiContext);
-        //     
-        //     return true;
-        // }
-        // catch (Exception ex)
-        // {
-        //     return false;
-        // }
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
-        // var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-        //
-        // if (user == null)
-        // {
-        //     throw new UserNotAuthorizedException("User is not Authorized");
-        // }
-        //
-        //
-        // await _paymentRepository.RecordPaymentInDbAsync(user.Id);
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not Authorized");
+        }
+
+        var result = await _paymentRepository.RecordBalanceTopUpInDbAsync(user.Id, request);
+
+        if (!result)
+        {
+            return false;
+        }
         
         return true;
+    }
+
+    public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not Authorized");
+        }
+
+        var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
+
+        if (!result)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    public async Task<bool> BuyPremiumAccount(int subscriptionId)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not Authorized");
+        }
+
+        var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId);
+        
+        if (user.AccountBalance - subscription.Price.Price > 0)
+        {
+            var premiumAccount = await _accountService.ChangeUserTypeToPremiumAccountAsync(user);
+            
+            if (premiumAccount == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public async Task<bool> BuyBusinessAccount(int subscriptionId)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not Authorized");
+        }
+
+        var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId); 
+        
+        if (user.AccountBalance - subscription.Price.Price > 0)
+        {
+            var businessAccount = await _accountService.ChangeUserTypeToBusinessAccountAsync(user);
+            
+            if (businessAccount == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
+        return false;
     }
 }

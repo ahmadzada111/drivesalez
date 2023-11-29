@@ -33,10 +33,20 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option);
 
+        Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId);
+        
+        Task<Currency> SendNewCurrencyToDbAsync(string currencyName);
+        
         Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor);
 
         Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
 
+        Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int limit);
+
+        Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName);
+
+        Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId,string subscriptionName, decimal price, int currencyId);
+        
         Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
 
         Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
@@ -57,9 +67,13 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<VehicleBodyType> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId);
 
+        Task<Currency> DeleteCurrencyFromDbAsync(int currencyId);
+        
         Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId);
 
         Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId);
+
+        Task<Subscription> DeleteSubscriptionFromDbAsync(int subscriptionId);
 
         Task<Make> DeleteMakeFromDbAsync(int makeId);
 

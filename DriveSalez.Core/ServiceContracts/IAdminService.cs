@@ -13,6 +13,10 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleBodyType> AddBodyTypeAsync(string bodyType);
 
+        Task<Subscription> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId);
+
+        Task<Currency> AddCurrencyAsync(string currencyName);
+        
         Task<VehicleDrivetrainType> AddVehicleDrivetrainTypeAsync(string driveTrainType);
 
         Task<VehicleGearboxType> AddVehicleGearboxTypeAsync(string gearboxType);
@@ -37,6 +41,13 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleGearboxType> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox);
 
+        Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int limit);
+
+        Task<Currency> UpdateCurrencyAsync(int currencyId, string currencyName);
+
+        Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, string subscriptionName,
+            decimal price, int currencyId);
+        
         Task<Make> UpdateMakeAsync(int makeId, string newMake);
 
         Task<Model> UpdateModelAsync(int modelId, string newModel);
@@ -67,6 +78,8 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleOption> DeleteVehicleOptionAsync(int vehicleOptionId);
 
+        Task<Currency> DeleteCurrencyAsync(int currencyId);
+        
         Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId);
         
         Task<RegisterModeratorResponseDto> AddModeratorAsync(RegisterModeratorDto registerDTO);

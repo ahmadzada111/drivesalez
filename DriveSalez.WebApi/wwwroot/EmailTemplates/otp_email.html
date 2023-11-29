@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff; /* White background */
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #000000; /* Black text color */
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ff6666; /* Red background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #cc0000; /* Darker red */
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+        }
+        .otp-container {
+            border: 2px solid #cc0000; /* Darker red border */
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #cc0000; /* Darker red text */
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Thank you for choosing DriveSalez!</h2>
+        </div>
+        <div class="otp-container">
+            <p>To verify your identity, please use the following One-Time Password (OTP):</p>
+            <div style="font-weight: bold;">{otp}</div>
+        </div>
+        <p class="message">This OTP is valid for 3 minutes and is used to ensure the security of your account. Please do not share this OTP with anyone and avoid responding to any requests for it.</p>
+        <p class="footer">Best regards,<br>DriveSalez Team</p>
+    </div>
+</body>
+</html>

@@ -16,5 +16,5 @@ public class PaymentRequestDto
     
     public string LastName { get; set; }
     
-    public int SubscriptionId { get; set; }
+    public decimal Sum { get; set; }
 }

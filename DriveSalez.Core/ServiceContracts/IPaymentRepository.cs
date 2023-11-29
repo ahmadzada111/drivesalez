@@ -1,7 +1,13 @@
+using DriveSalez.Core.DTO;
+using DriveSalez.Core.Entities;
+
 namespace DriveSalez.Core.ServiceContracts;
 
 public interface IPaymentRepository
 {
-    Task<bool> RecordPaymentInDbAsync(Guid userId);
+    Task<bool> RecordBalanceTopUpInDbAsync(Guid userId, PaymentRequestDto request);
 
+    Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId);
+
+    Task<Subscription> GetSubscriptionFromDbAsync(int subscriptionId);
 }

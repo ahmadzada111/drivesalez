@@ -35,12 +35,13 @@ public class OtpController : Controller
         {
             string otp = _otpService.GenerateOtp();
             string subject = "DriveSalez - One-Time Password (OTP)";
-            string body = $"Thank you for choosing DriveSalez! " +
-                          $"To verify your personality, please use the following One-Time Password (OTP):" +
-                          $"\n\nYour OTP: {otp}\n\n" +
-                          $"This OTP is valid for a 3 minutes and is used to ensure the security of your account. " +
-                          $"Please do not share this OTP with anyone, and avoid responding to any requests for it." +
-                          $"\n\nBest regards,\nDriveSalez Team";
+            
+            string templatePath = Path.Combine("wwwroot", "EmailTemplates", "otp_email.html");
+            string htmlContent = System.IO.File.ReadAllText(templatePath);
+            htmlContent = htmlContent.Replace("{otp}", otp);
+            
+            string body = htmlContent;
+                
             
             var response = await _emailService.SendEmailAsync(email, subject, body);
 

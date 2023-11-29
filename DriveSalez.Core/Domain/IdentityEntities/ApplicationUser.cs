@@ -16,8 +16,11 @@ namespace DriveSalez.Core.IdentityEntities
         
         public DateTime? RefreshTokenExpiration { get; set; }
         
-        [JsonIgnore]
         public List<Announcement>? Announcements { get; set; } = new List<Announcement>();
+        
+        public int PremiumUploadLimit { get; set; }
+
+        public decimal AccountBalance { get; set; }
         
         public DateTimeOffset CreationDate { get; set; }
         

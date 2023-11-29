@@ -54,6 +54,32 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
+        public async Task<Subscription> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.SendNewSubscriptionToDbAsync(subscriptionName, price, currencyId);
+            return response;
+        }
+        
+        public async Task<Currency> AddCurrencyAsync(string currencyName)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.SendNewCurrencyToDbAsync(currencyName);
+            return response;
+        }
+        
         public async Task<Make> AddMakeAsync(string make)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
@@ -184,6 +210,45 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
+        public async Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int limit)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.UpdateAccountLimitInDbAsync(limitId, limit);
+            return response;
+        }
+        
+        public async Task<Currency> UpdateCurrencyAsync(int currencyId, string currencyName)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.UpdateCurrencyInDbAsync(currencyId, currencyName);
+            return response;
+        }
+        
+        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId,string subscriptionName, decimal price, int currencyId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, subscriptionName, price, currencyId);
+            return response;
+        }
+        
         public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
@@ -301,6 +366,32 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
+        public async Task<Currency> DeleteCurrencyAsync(int currencyId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.DeleteCurrencyFromDbAsync(currencyId);
+            return response;
+        }
+        
+        public async Task<Subscription> DeleteSubscriptionAsync(int subscriptionId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.DeleteSubscriptionFromDbAsync(subscriptionId);
+            return response;
+        }
+        
         public async Task<VehicleBodyType> DeleteVehicleBodyTypeAsync(int bodyTypeId)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
