@@ -26,8 +26,12 @@ public class AccountRepository : IAccountRepository
 
         user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
 
-        _dbContext.Update(user);
-        await _dbContext.SaveChangesAsync();
+        var response = _dbContext.Update(user);
+
+        if (response.State == EntityState.Modified)
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 
     public async Task<ApplicationUser>? FindUserByLoginInDbAsync(string login)
@@ -57,13 +61,16 @@ public class AccountRepository : IAccountRepository
             
         };
 
-        _dbContext.Users.Remove(user);
+        var removeResponse = _dbContext.Users.Remove(user);
+        var addResponse = await _dbContext.AddAsync(defaultAccount);
 
-        await _dbContext.AddAsync(defaultAccount);
+        if (removeResponse.State == EntityState.Deleted && addResponse.State == EntityState.Added)
+        {
+            await _dbContext.SaveChangesAsync();
+            return defaultAccount;
+        }
 
-        await _dbContext.SaveChangesAsync();
-        
-        return defaultAccount;
+        return null;
     }
     
     public async Task<ApplicationUser>? ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
@@ -94,13 +101,16 @@ public class AccountRepository : IAccountRepository
             AccountBalance = user.AccountBalance
         };
 
-        _dbContext.Users.Remove(user);
+        var removeResponse = _dbContext.Users.Remove(user);
+        var addResponse = await _dbContext.AddAsync(premiumAccount);
 
-        await _dbContext.AddAsync(premiumAccount);
+        if (removeResponse.State == EntityState.Deleted && addResponse.State == EntityState.Added)
+        {
+            await _dbContext.SaveChangesAsync();
+            return premiumAccount;
+        }
 
-        await _dbContext.SaveChangesAsync();
-        
-        return premiumAccount;
+        return null;
     }
 
     public async Task<ApplicationUser>? ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
@@ -131,12 +141,15 @@ public class AccountRepository : IAccountRepository
             AccountBalance = user.AccountBalance
         };
 
-        _dbContext.Users.Remove(user);
+        var removeResponse = _dbContext.Users.Remove(user);
+        var addResponse = await _dbContext.AddAsync(businessAccount);
 
-        await _dbContext.AddAsync(businessAccount);
+        if (removeResponse.State == EntityState.Deleted && addResponse.State == EntityState.Added)
+        {
+            await _dbContext.SaveChangesAsync();
+            return businessAccount;
+        }
 
-        await _dbContext.SaveChangesAsync();
-        
-        return businessAccount;
+        return null;
     }
 }

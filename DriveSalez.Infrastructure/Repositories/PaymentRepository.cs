@@ -28,7 +28,15 @@ public class PaymentRepository : IPaymentRepository
         }
         
         user.AccountBalance = request.Sum;
-        return true;
+        var response = _dbContext.Update(user);
+
+        if (response.State == EntityState.Modified)
+        {
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 
     public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
@@ -54,7 +62,15 @@ public class PaymentRepository : IPaymentRepository
         if (user.AccountBalance - premiumAnnouncementSubscription.Price.Price > 0)
         {
             user.AccountBalance -= announcementQuantity * premiumAnnouncementSubscription.Price.Price;
-            return true;
+            user.PremiumUploadLimit = announcementQuantity;
+
+            var response = _dbContext.Update(user);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
         }
 
         return false;

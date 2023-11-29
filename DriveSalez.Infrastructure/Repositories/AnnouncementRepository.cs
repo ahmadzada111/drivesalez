@@ -30,7 +30,6 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<int> GetUserLimitsFromDbAsync(Guid userId)
         {
             var user = await _dbContext.Users
-                .OfType<PaidUser>()
                 .Where(x => x.Id == userId)
                 .FirstOrDefaultAsync();
 
