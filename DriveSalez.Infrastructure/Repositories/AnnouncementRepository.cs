@@ -54,7 +54,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
             if (request.IsPremium)
             {
-                if (user.PremiumUploadLimit < 0 && request.IsFreePremiumToggleSwitched)
+                if (user.PremiumUploadLimit < 0)
                 {
                     return null;
                 }

@@ -90,9 +90,5 @@ namespace DriveSalez.Core.DTO
         
         [Required(ErrorMessage = "Is Premium cannot be blank!")]
         public bool IsPremium { get; set; }
-
-        public bool IsFreePremiumToggleSwitched { get; set; }
-        
-        public PaymentRequestDto PaymentRequest { get; set; }
     }
 }
