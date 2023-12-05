@@ -52,7 +52,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<int> GetUserLimitsAsync()
+    public async Task<LimitRequestDto> GetUserLimitsAsync()
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 

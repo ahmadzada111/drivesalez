@@ -142,19 +142,11 @@ namespace DriveSalez.Infrastructure.DbContext
 
                 Subscriptions.Add(new Subscription() { SubscriptionName = "Premium", Price = subPrice });
                 
-                PaidAccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 10, UserType = UserType.PremiumAccount});
-                PaidAccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 20, UserType = UserType.BusinessAccount});
+                AccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 0, RegularAnnouncementsLimit = 1, UserType = UserType.DefaultAccount});
+                AccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 10, RegularAnnouncementsLimit = 30, UserType = UserType.PremiumAccount});
+                AccountLimits.Add(new AccountLimit() { PremiumAnnouncementsLimit = 20, RegularAnnouncementsLimit = 50, UserType = UserType.BusinessAccount});
             }
         }
-        
-        // protected override void OnModelCreating(ModelBuilder modelBuilder)
-        // {
-        //     base.OnModelCreating(modelBuilder);
-        //
-        //     modelBuilder.Entity<DefaultAccount>().ToTable("DefaultAccounts");
-        //     modelBuilder.Entity<PremiumAccount>().ToTable("PremiumAccounts");
-        //     modelBuilder.Entity<BusinessAccount>().ToTable("BusinessAccounts");
-        // }
 
         public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
 
@@ -172,7 +164,7 @@ namespace DriveSalez.Infrastructure.DbContext
         
         public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
 
-        public DbSet<AccountLimit> PaidAccountLimits => Set<AccountLimit>();
+        public DbSet<AccountLimit> AccountLimits => Set<AccountLimit>();
 
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
         

@@ -20,6 +20,8 @@ namespace DriveSalez.Core.IdentityEntities
         
         public int PremiumUploadLimit { get; set; }
 
+        public int RegularUploadLimit { get; set; }
+        
         public decimal AccountBalance { get; set; }
         
         public DateTimeOffset CreationDate { get; set; }

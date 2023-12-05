@@ -17,6 +17,8 @@ public class AnnouncementResponseDto
       
     public decimal Price { get; set; }    
 
+    public bool IsPremium { get; set; }
+    
     public Currency Currency { get; set; }
 
     public AnnouncementState AnnouncementState { get; set; }
@@ -29,6 +31,8 @@ public class AnnouncementResponseDto
 
     public DateTimeOffset ExpirationDate { get; set; }
 
+    public int ViewCount { get; set; }
+    
     public Guid UserId { get; set; }
     
     public string UserName { get; set; }

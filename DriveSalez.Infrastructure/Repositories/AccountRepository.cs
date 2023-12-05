@@ -17,15 +17,16 @@ public class AccountRepository : IAccountRepository
         _dbContext = dbContext;
     }
     
-    public async Task AddPremiumLimitToPaidAccountInDbAsync(Guid userId, UserType userType)
+    public async Task AddLimitsToAccountInDbAsync(Guid userId, UserType userType)
     {
-        var user = (PaidUser) await _dbContext.Users.FindAsync(userId);
-        var limit = await _dbContext.PaidAccountLimits.
+        var user = await _dbContext.Users.FindAsync(userId);
+        var limit = await _dbContext.AccountLimits.
             Where(x => x.UserType == userType).
             FirstOrDefaultAsync();
-
+        
         user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
-
+        user.RegularUploadLimit = limit.RegularAnnouncementsLimit;
+            
         var response = _dbContext.Update(user);
 
         if (response.State == EntityState.Modified)
@@ -34,7 +35,7 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser>? FindUserByLoginInDbAsync(string login)
+    public async Task<ApplicationUser> FindUserByLoginInDbAsync(string login)
     {
         var user = await _dbContext.Users.
             Where(x => x.UserName == login).
@@ -43,7 +44,7 @@ public class AccountRepository : IAccountRepository
         return user;
     }
     
-    public async Task<ApplicationUser>? ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
     {
         var defaultAccount = new DefaultAccount
         {
@@ -73,14 +74,14 @@ public class AccountRepository : IAccountRepository
         return null;
     }
     
-    public async Task<ApplicationUser>? ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
     {
         if (user is PremiumAccount)
         {
             return new PremiumAccount();
         }
 
-        var limit = await _dbContext.PaidAccountLimits.
+        var limit = await _dbContext.AccountLimits.
             Where(x => x.UserType == UserType.PremiumAccount)
             .FirstOrDefaultAsync();
         
@@ -113,14 +114,14 @@ public class AccountRepository : IAccountRepository
         return null;
     }
 
-    public async Task<ApplicationUser>? ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
     {
         if (user is BusinessAccount)
         {
             return new BusinessAccount();
         }
         
-        var limit = await _dbContext.PaidAccountLimits.
+        var limit = await _dbContext.AccountLimits.
             Where(x => x.UserType == UserType.BusinessAccount)
             .FirstOrDefaultAsync();
         

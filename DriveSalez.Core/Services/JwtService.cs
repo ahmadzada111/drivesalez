@@ -63,6 +63,7 @@ public class JwtService : IJwtService
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            PhoneNumbers = user.PhoneNumbers,
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
             RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),

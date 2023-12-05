@@ -26,5 +26,5 @@ public interface IAnnouncementService
 
     Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdAsync(PagingParameters pagingParameters);
 
-    Task<int> GetUserLimitsAsync();
+    Task<LimitRequestDto> GetUserLimitsAsync();
 }

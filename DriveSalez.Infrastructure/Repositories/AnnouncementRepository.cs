@@ -27,7 +27,7 @@ namespace DriveSalez.Infrastructure.Repositories
             _fileService = fileService;
         }
 
-        public async Task<int> GetUserLimitsFromDbAsync(Guid userId)
+        public async Task<LimitRequestDto> GetUserLimitsFromDbAsync(Guid userId)
         {
             var user = await _dbContext.Users
                 .Where(x => x.Id == userId)
@@ -38,7 +38,12 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new UserNotFoundException("User not found");
             }
             
-            return user.PremiumUploadLimit;
+            return new LimitRequestDto()
+            {
+                PremiumLimit = user.PremiumUploadLimit,
+                RegularLimit = user.RegularUploadLimit,
+                AccountBalance = user.AccountBalance
+            };
         }
         
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
@@ -169,8 +174,18 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 throw new KeyNotFoundException();
             }
-            
-            return _mapper.Map<AnnouncementResponseDto>(response);
+
+            response.ViewCount++;
+
+            var result = _dbContext.Update(response);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(response);
+            }
+
+            return null;
         }
 
         public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
@@ -219,8 +234,28 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            var tmpAnnouncement = await GetAnnouncementByIdFromDb(announcementId);
-            var announcement = _mapper.Map<Announcement>(tmpAnnouncement);
+            var announcement = await _dbContext.Announcements.
+                Where(x => x.Id == announcementId).
+                Include(x => x.Owner).
+                Include(x => x.Owner.PhoneNumbers).
+                Include(x => x.Vehicle).
+                Include(x => x.Currency).
+                Include(x => x.ImageUrls).
+                Include(x => x.Vehicle.Year).
+                Include(x => x.Vehicle.Make).
+                Include(x => x.Vehicle.Model).
+                Include(x => x.Vehicle.FuelType).
+                Include(x => x.Vehicle.VehicleDetails).
+                Include(x => x.Vehicle.VehicleDetails.BodyType).
+                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
+                Include(x => x.Vehicle.VehicleDetails.GearboxType).
+                Include(x => x.Vehicle.VehicleDetails.Color).
+                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
+                Include(x => x.Vehicle.VehicleDetails.Options).
+                Include(x => x.Vehicle.VehicleDetails.Conditions).
+                Include(x => x.Country).
+                Include(x => x.City).
+                FirstOrDefaultAsync();
             
             announcement.Id = announcementId;
             announcement.Vehicle.Year = await _dbContext.ManufactureYears.FindAsync(request.YearId);

@@ -68,6 +68,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
 
+            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.PremiumAccount);
             return result;
         }
 
@@ -111,7 +112,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
             
-            await _accountRepository.AddPremiumLimitToPaidAccountInDbAsync(user.Id, UserType.PremiumAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.PremiumAccount);
             return result;
         }
 
@@ -156,7 +157,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
 
-            await _accountRepository.AddPremiumLimitToPaidAccountInDbAsync(user.Id, UserType.BusinessAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.DefaultAccount);
             return result;
         }
 

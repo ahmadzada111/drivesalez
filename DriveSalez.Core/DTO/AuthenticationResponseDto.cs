@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DriveSalez.Core.Entities;
+using Google.Type;
+using Microsoft.AspNetCore.Identity;
+using DateTime = System.DateTime;
 
 namespace DriveSalez.Core.DTO
 {
@@ -9,6 +12,8 @@ namespace DriveSalez.Core.DTO
         public string? LastName { get; set; }
         
         public string? Email { get; set; }
+        
+        public List<AccountPhoneNumber> PhoneNumbers { get; set; }
         
         public string? Token { get; set; }
 
