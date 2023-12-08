@@ -330,8 +330,10 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new UserNotFoundException("User not found");
             }
 
-            var announcement = await _dbContext.Announcements.Where(x =>
-                    x.Id == announcementId && x.AnnouncementState == AnnouncementState.Inactive && x.Owner.Id == userId)
+            var announcement = await _dbContext.Announcements
+                .Where(x => x.Id == announcementId && 
+                            x.AnnouncementState == AnnouncementState.Inactive && 
+                            x.Owner.Id == userId)
                 .FirstOrDefaultAsync();
 
             if (announcement == null)
@@ -447,21 +449,21 @@ namespace DriveSalez.Infrastructure.Repositories
                  .AsNoTracking()
              .Where(x => (x.Vehicle.Year.Id >= filterParameters.FromYearId
                           && x.Vehicle.Year.Id <= filterParameters.ToYearId) 
-                         || x.Vehicle.Make.Id == filterParameters.MakeId 
-                         || x.Vehicle.IsBrandNew == filterParameters.IsBrandNew
-                         || (x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower
+                         && x.Vehicle.Make.Id == filterParameters.MakeId 
+                         && x.Vehicle.IsBrandNew == filterParameters.IsBrandNew
+                         && (x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower
                              && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower) 
-                         || x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount
-                         || (x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume
+                         && x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount
+                         && (x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume
                             && x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume)
-                         || x.Vehicle.VehicleDetails.MileAge == filterParameters.Mileage
-                         || x.Vehicle.VehicleDetails.MileageType == filterParameters.DistanceUnit
-                         || x.Barter == filterParameters.Barter
-                         || x.OnCredit == filterParameters.OnCredit
-                         || x.Price >= filterParameters.FromPrice
-                         || x.Price <= filterParameters.ToPrice
-                         || x.Currency == filterParameters.Currency
-                         || x.Country.Id == filterParameters.CountryId
+                         && x.Vehicle.VehicleDetails.MileAge == filterParameters.Mileage
+                         && x.Vehicle.VehicleDetails.MileageType == filterParameters.DistanceUnit
+                         && x.Barter == filterParameters.Barter
+                         && x.OnCredit == filterParameters.OnCredit
+                         && x.Price >= filterParameters.FromPrice
+                         && x.Price <= filterParameters.ToPrice
+                         && x.Currency == filterParameters.Currency
+                         && x.Country.Id == filterParameters.CountryId
             ).
              Include(x => x.Owner).
              Include(x => x.Owner.PhoneNumbers).
