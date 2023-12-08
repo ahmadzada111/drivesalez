@@ -20,9 +20,9 @@ public class AccountRepository : IAccountRepository
     public async Task AddLimitsToAccountInDbAsync(Guid userId, UserType userType)
     {
         var user = await _dbContext.Users.FindAsync(userId);
-        var limit = await _dbContext.AccountLimits.
-            Where(x => x.UserType == userType).
-            FirstOrDefaultAsync();
+        var limit = await _dbContext.AccountLimits
+            .Where(x => x.UserType == userType)
+            .FirstOrDefaultAsync();
         
         user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
         user.RegularUploadLimit = limit.RegularAnnouncementsLimit;
@@ -37,9 +37,10 @@ public class AccountRepository : IAccountRepository
 
     public async Task<ApplicationUser> FindUserByLoginInDbAsync(string login)
     {
-        var user = await _dbContext.Users.
-            Where(x => x.UserName == login).
-            FirstOrDefaultAsync();
+        var user = await _dbContext.Users
+            .Where(x => x.UserName == login)
+            .Include(x => x.PhoneNumbers)
+            .FirstOrDefaultAsync();
         
         return user;
     }
@@ -81,8 +82,8 @@ public class AccountRepository : IAccountRepository
             return new PremiumAccount();
         }
 
-        var limit = await _dbContext.AccountLimits.
-            Where(x => x.UserType == UserType.PremiumAccount)
+        var limit = await _dbContext.AccountLimits
+            .Where(x => x.UserType == UserType.PremiumAccount)
             .FirstOrDefaultAsync();
         
         var premiumAccount = new PremiumAccount()
@@ -121,8 +122,8 @@ public class AccountRepository : IAccountRepository
             return new BusinessAccount();
         }
         
-        var limit = await _dbContext.AccountLimits.
-            Where(x => x.UserType == UserType.BusinessAccount)
+        var limit = await _dbContext.AccountLimits
+            .Where(x => x.UserType == UserType.BusinessAccount)
             .FirstOrDefaultAsync();
         
         var businessAccount = new BusinessAccount()

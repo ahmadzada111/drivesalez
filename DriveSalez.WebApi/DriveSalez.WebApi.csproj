@@ -21,4 +21,8 @@
       <ProjectReference Include="..\DriveSalez.Infrastructure\DriveSalez.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
 </Project>

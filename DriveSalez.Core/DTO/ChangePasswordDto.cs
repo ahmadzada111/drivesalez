@@ -15,5 +15,10 @@ public class ChangePasswordDto
     
     [Required(ErrorMessage = "New password cannot be blank!")]
     [DataType(DataType.Password)]
+    [Compare("ConfirmPassword")]
     public string NewPassword { get; set; }
+    
+    [Required(ErrorMessage = "Confirm password cannot be blank!")]
+    [DataType(DataType.Password)]
+    public string ConfirmPassword { get; set; }
 }

@@ -18,9 +18,9 @@ namespace DriveSalez.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
-        
+
         public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
-           IFileService fileService)
+            IFileService fileService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -37,7 +37,7 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 throw new UserNotFoundException("User not found");
             }
-            
+
             return new LimitRequestDto()
             {
                 PremiumLimit = user.PremiumUploadLimit,
@@ -45,7 +45,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 AccountBalance = user.AccountBalance
             };
         }
-        
+
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
             var user = await _dbContext.Users.
@@ -57,18 +57,8 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new UserNotFoundException("User not found");
             }
 
-            if (request.IsPremium)
-            {
-                if (user.PremiumUploadLimit < 0)
-                {
-                    return null;
-                }
-                
-                user.PremiumUploadLimit--;
-            }
-            
-            if(!await CheckAllRelationsInAnnouncement(request)) return null;
-            
+            if (!await CheckAllRelationsInAnnouncement(request)) return null;
+
             var announcement = new Announcement()
             {
                 Vehicle = new Vehicle()
@@ -78,7 +68,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     Model = await _dbContext.Models.FindAsync(request.ModelId),
                     FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
                     IsBrandNew = request.IsBrandNew,
-                    
+
                     VehicleDetails = new VehicleDetails()
                     {
                         BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
@@ -101,7 +91,7 @@ namespace DriveSalez.Infrastructure.Repositories
                         MileageType = request.MileageType
                     }
                 },
-                
+
                 ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
                 ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
@@ -115,7 +105,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 PremiumExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Owner = user
             };
-            
+
             user.Announcements.Add(announcement);
             var response = await _dbContext.Announcements.AddAsync(announcement);
 
@@ -127,7 +117,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
             return null;
         }
-        
+
         private async Task<bool> CheckAllRelationsInAnnouncement(CreateAnnouncementDto request)
         {
             var model = await _dbContext.Models.FindAsync(request.ModelId);
@@ -136,39 +126,40 @@ namespace DriveSalez.Infrastructure.Repositories
             var city = await _dbContext.Cities.FindAsync(request.CityId);
             var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
             var distanceUnit = request.MileageType;
-            
-            if (model.Make != make || country != city.Country || currency == null || distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
+
+            if (model.Make != make || country != city.Country || currency == null ||
+                distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
             {
                 return false;
             }
 
             return true;
         }
-        
+
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id)
         {
-            var response = await _dbContext.Announcements.
-                AsNoTracking().
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                FirstOrDefaultAsync(x => x.Id == id);
+            var response = await _dbContext.Announcements
+                .AsNoTracking()
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (response == null)
             {
@@ -188,75 +179,77 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter, AnnouncementState announcementState)
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter,
+            AnnouncementState announcementState)
         {
-            var announcements = await _dbContext.Announcements.
-                AsNoTracking().
-                Where(on => on.AnnouncementState == announcementState).
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                OrderBy(o => o.IsPremium).
-                Skip((parameter.PageNumber - 1) * parameter.PageSize).
-                Take(parameter.PageSize).
-                ToListAsync();
-            
+            var announcements = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(on => on.AnnouncementState == announcementState)
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .OrderBy(o => o.IsPremium)
+                .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                .Take(parameter.PageSize)
+                .ToListAsync();
+
             if (announcements == null)
             {
                 throw new KeyNotFoundException();
             }
-            
+
             return _mapper.Map<List<AnnouncementResponseDto>>(announcements);
         }
-        
-        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId, UpdateAnnouncementDto request)
+
+        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId,
+            UpdateAnnouncementDto request)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException("User not found");
             }
 
-            var announcement = await _dbContext.Announcements.
-                Where(x => x.Id == announcementId).
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                FirstOrDefaultAsync();
-            
+            var announcement = await _dbContext.Announcements
+                .Where(x => x.Id == announcementId)
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .FirstOrDefaultAsync();
+
             announcement.Id = announcementId;
             announcement.Vehicle.Year = await _dbContext.ManufactureYears.FindAsync(request.YearId);
             announcement.Vehicle.Make = await _dbContext.Makes.FindAsync(request.MakeId);
@@ -295,17 +288,19 @@ namespace DriveSalez.Infrastructure.Repositories
 
             return null;
         }
-        
-        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId, AnnouncementState announcementState)
+
+        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId,
+            AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException("User not found");
             }
 
-            var announcement = await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId && x.Owner == user);
+            var announcement =
+                await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId && x.Owner == user);
 
             if (announcement == null)
             {
@@ -325,18 +320,19 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, Guid announcementId)
+        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId,
+            Guid announcementId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException("User not found");
             }
 
-            var announcement = await _dbContext.Announcements.
-                Where(x => x.Id == announcementId && x.AnnouncementState == AnnouncementState.Inactive && x.Owner.Id == userId).
-                FirstOrDefaultAsync();
+            var announcement = await _dbContext.Announcements.Where(x =>
+                    x.Id == announcementId && x.AnnouncementState == AnnouncementState.Inactive && x.Owner.Id == userId)
+                .FirstOrDefaultAsync();
 
             if (announcement == null)
             {
@@ -354,163 +350,166 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState)
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId,
+            PagingParameters pagingParameters, AnnouncementState announcementState)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
             if (user == null)
             {
-                throw new KeyNotFoundException();
+                throw new UserNotFoundException("User not found");
             }
 
-            var announcement = await _dbContext.Announcements.
-                AsNoTracking().
-                Where(x => x.Owner.Id == userId
-                && x.AnnouncementState == announcementState).
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                OrderBy(o => o.IsPremium).
-                Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
-                Take(pagingParameters.PageSize).
-                ToListAsync();;
-
-            if (announcement == null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<List<AnnouncementResponseDto>>(announcement);
-        }
-        
-        public async Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters)
-        {
-            var user = await _dbContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            var announcement = await _dbContext.Announcements.
-                AsNoTracking().
-                Where(x => x.Owner.Id == userId).
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                OrderBy(o => o.IsPremium).
-                Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
-                Take(pagingParameters.PageSize).
-                ToListAsync();;
-
-            if (announcement == null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<List<AnnouncementResponseDto>>(announcement);
-        }
-        
-       public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
-        {
-            var filteredAnnouncement = await _dbContext.Announcements
+            var announcement = await _dbContext.Announcements
                 .AsNoTracking()
-                .Where(x => (x.Vehicle.Year.Id >= filterParameters.FromYearId
-                             && x.Vehicle.Year.Id <= filterParameters.ToYearId) 
-                            || x.Vehicle.Make.Id == filterParameters.MakeId 
-                            || x.Vehicle.Model.Id == filterParameters.ModelId 
-                            || x.Vehicle.FuelType.Id == filterParameters.FuelTypeId 
-                            || x.Vehicle.IsBrandNew == filterParameters.IsBrandNew
-                            || x.Vehicle.VehicleDetails.BodyType.Id == filterParameters.BodyTypeId 
-                            || x.Vehicle.VehicleDetails.Color.Id == filterParameters.ColorId 
-                            || (x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower
-                                && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower) 
-                            || x.Vehicle.VehicleDetails.GearboxType.Id == filterParameters.GearboxTypeId 
-                            || x.Vehicle.VehicleDetails.DrivetrainType.Id == filterParameters.DriveTrainTypeId
-                            || x.Vehicle.VehicleDetails.MarketVersion.Id == filterParameters.MarketVersionId
-                            || x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount
-                            || x.Vehicle.VehicleDetails.EngineVolume == filterParameters.EngineVolume
-                            || x.Vehicle.VehicleDetails.MileAge == filterParameters.Mileage
-                            || x.Vehicle.VehicleDetails.MileageType == filterParameters.DistanceUnit
-                            || x.Barter == filterParameters.Barter
-                            || x.OnCredit == filterParameters.OnCredit
-                            || x.Price >= filterParameters.FromPrice
-                            || x.Price <= filterParameters.ToPrice
-                            || x.Currency == filterParameters.Currency
-                            || x.Country.Id == filterParameters.CountryId
-                            || x.City.Id == filterParameters.CityId 
-                ).
-                Include(x => x.Owner).
-                Include(x => x.Owner.PhoneNumbers).
-                Include(x => x.Vehicle).
-                Include(x => x.Currency).
-                Include(x => x.ImageUrls).
-                Include(x => x.Vehicle.Year).
-                Include(x => x.Vehicle.Make).
-                Include(x => x.Vehicle.Model).
-                Include(x => x.Vehicle.FuelType).
-                Include(x => x.Vehicle.VehicleDetails).
-                Include(x => x.Vehicle.VehicleDetails.BodyType).
-                Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-                Include(x => x.Vehicle.VehicleDetails.GearboxType).
-                Include(x => x.Vehicle.VehicleDetails.Color).
-                Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-                Include(x => x.Vehicle.VehicleDetails.Options).
-                Include(x => x.Vehicle.VehicleDetails.Conditions).
-                Include(x => x.Country).
-                Include(x => x.City).
-                OrderBy(o => o.IsPremium).
-                Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
-                Take(pagingParameters.PageSize).
-                ToListAsync();
-            
-            filteredAnnouncement = filteredAnnouncement.
-                Where(x =>
-                    (filterParameters.OptionsIds == null || 
-                     filterParameters.OptionsIds.All(optId => x.Vehicle?.VehicleDetails?.Options?.Any(opt => opt.Id == optId) == true)) &&
-                    (filterParameters.ConditionsIds == null ||
-                     filterParameters.ConditionsIds.All(condId => x.Vehicle?.VehicleDetails?.Conditions?.Any(cond => cond.Id == condId) == true))
-                ).
-                ToList();
-            
-            if (filteredAnnouncement == null)
+                .Where(x => x.Owner.Id == userId && x.AnnouncementState == announcementState)
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .OrderBy(o => o.IsPremium)
+                .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
+                .Take(pagingParameters.PageSize)
+                .ToListAsync();
+
+            if (announcement == null)
             {
                 return null;
             }
+
+            return _mapper.Map<List<AnnouncementResponseDto>>(announcement);
+        }
+
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
+            PagingParameters pagingParameters)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            var announcement = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(x => x.Owner.Id == userId)
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .OrderBy(o => o.IsPremium)
+                .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
+                .Take(pagingParameters.PageSize)
+                .ToListAsync();
+
+            if (announcement == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<List<AnnouncementResponseDto>>(announcement);
+        }
+
+        public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(
+            FilterParameters filterParameters, PagingParameters pagingParameters)
+        {
+             var filteredAnnouncements = await _dbContext.Announcements
+                 .AsNoTracking()
+             .Where(x => (x.Vehicle.Year.Id >= filterParameters.FromYearId
+                          && x.Vehicle.Year.Id <= filterParameters.ToYearId) 
+                         || x.Vehicle.Make.Id == filterParameters.MakeId 
+                         || x.Vehicle.IsBrandNew == filterParameters.IsBrandNew
+                         || (x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower
+                             && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower) 
+                         || x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount
+                         || (x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume
+                            && x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume)
+                         || x.Vehicle.VehicleDetails.MileAge == filterParameters.Mileage
+                         || x.Vehicle.VehicleDetails.MileageType == filterParameters.DistanceUnit
+                         || x.Barter == filterParameters.Barter
+                         || x.OnCredit == filterParameters.OnCredit
+                         || x.Price >= filterParameters.FromPrice
+                         || x.Price <= filterParameters.ToPrice
+                         || x.Currency == filterParameters.Currency
+                         || x.Country.Id == filterParameters.CountryId
+            ).
+             Include(x => x.Owner).
+             Include(x => x.Owner.PhoneNumbers).
+             Include(x => x.Vehicle).
+             Include(x => x.Currency).
+             Include(x => x.ImageUrls).
+             Include(x => x.Vehicle.Year).
+             Include(x => x.Vehicle.Make).
+             Include(x => x.Vehicle.Model).
+             Include(x => x.Vehicle.FuelType).
+             Include(x => x.Vehicle.VehicleDetails).
+             Include(x => x.Vehicle.VehicleDetails.BodyType).
+             Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
+             Include(x => x.Vehicle.VehicleDetails.GearboxType).
+             Include(x => x.Vehicle.VehicleDetails.Color).
+             Include(x => x.Vehicle.VehicleDetails.MarketVersion).
+             Include(x => x.Vehicle.VehicleDetails.Options).
+             Include(x => x.Vehicle.VehicleDetails.Conditions).
+             Include(x => x.Country).
+             Include(x => x.City).
+             OrderBy(o => o.IsPremium).
+             Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
+             Take(pagingParameters.PageSize).
+             ToListAsync();
+
+             filteredAnnouncements = filteredAnnouncements.
+                 Where(x =>
+                     (filterParameters.OptionsIds == null || 
+                      filterParameters.OptionsIds.All(optId => x.Vehicle?.VehicleDetails?.Options?.Any(opt => opt.Id == optId) == true)) &&
+                     (filterParameters.ConditionsIds == null ||
+                      filterParameters.ConditionsIds.All(condId => x.Vehicle?.VehicleDetails?.Conditions?.Any(cond => cond.Id == condId) == true)) &&
+                     (filterParameters.ModelsIds == null || filterParameters.ModelsIds.Contains(x.Vehicle.Model.Id)) && 
+                     (filterParameters.FuelTypesIds == null || filterParameters.FuelTypesIds.Contains(x.Vehicle.FuelType.Id)) && 
+                     (filterParameters.BodyTypesIds == null || filterParameters.BodyTypesIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id)) && 
+                     (filterParameters.ColorsIds == null || filterParameters.ColorsIds.Contains(x.Vehicle.VehicleDetails.Color.Id)) &&
+                     (filterParameters.GearboxTypesIds == null || filterParameters.GearboxTypesIds.Contains(x.Vehicle.VehicleDetails.GearboxType.Id)) && 
+                     (filterParameters.DriveTrainTypesIds == null || filterParameters.DriveTrainTypesIds.Contains(x.Vehicle.VehicleDetails.DrivetrainType.Id)) &&
+                     (filterParameters.MarketVersionsIds == null || filterParameters.MarketVersionsIds.Contains(x.Vehicle.VehicleDetails.MarketVersion.Id)) && 
+                     (filterParameters.CitiesIds == null || filterParameters.CitiesIds.Contains(x.City.Id))
+                 ).
+                 ToList();
             
-            return _mapper.Map<List<AnnouncementResponseDto>>(filteredAnnouncement);
+             if (filteredAnnouncements == null)
+             {
+                 return null;
+             }
+            
+             return _mapper.Map<List<AnnouncementResponseDto>>(filteredAnnouncements);
         }
     }
 }

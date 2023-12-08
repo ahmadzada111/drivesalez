@@ -52,7 +52,7 @@ public class CheckAnnouncementExpirationJob : IJob
                           $"\n\nThank you for choosing DriveSalez. We appreciate your continued use of our platform." +
                           $"\n\nBest regards,\n\nDriveSalez Team";
 
-            _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
+            await _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
         }
         
         _dbContext.UpdateRange(expiredAnnouncements);

@@ -49,7 +49,7 @@ public class LookForExpiredPremiumAnnouncementsJob : IJob
                           "\n\nBest regards," +
                           "\n\nDriveSalez Team";
 
-            _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
+            await _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
         }
         
         _dbContext.UpdateRange(announcements);

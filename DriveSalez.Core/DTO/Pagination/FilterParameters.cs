@@ -16,34 +16,36 @@ namespace DriveSalez.Core.DTO.Pagination
         
         public int? MakeId { get; set; }
 
-        public int? ModelId { get; set; }
+        public List<int>? ModelsIds { get; set; }
 
-        public int? FuelTypeId { get; set; }
+        public List<int>? FuelTypesIds { get; set; }
 
         public bool? IsBrandNew { get; set; }
 
-        public int? BodyTypeId { get; set; }
+        public List<int>? BodyTypesIds { get; set; }
 
-        public int? ColorId { get; set; }
+        public List<int>? ColorsIds { get; set; }
         
         public int? FromHorsePower { get; set; }
         
         public int? ToHorsePower { get; set; }
         
-        public int? GearboxTypeId { get; set; }
+        public List<int>? GearboxTypesIds { get; set; }
 
-        public int? DriveTrainTypeId { get; set; }
+        public List<int>? DriveTrainTypesIds { get; set; }
 
         public List<int>? ConditionsIds { get; set; }
 
-        public int? MarketVersionId { get; set; }
+        public List<int>? MarketVersionsIds { get; set; }
 
         public int? SeatCount { get; set; }
 
         public List<int>? OptionsIds { get; set; }
 
-        public int? EngineVolume { get; set; }
+        public int? FromEngineVolume { get; set; }
 
+        public int? ToEngineVolume { get; set; }
+        
         public int? Mileage { get; set; }
 
         public DistanceUnit? DistanceUnit { get; set; }
@@ -60,6 +62,6 @@ namespace DriveSalez.Core.DTO.Pagination
 
         public int? CountryId { get; set; }
 
-        public int? CityId { get; set; }
+        public List<int>? CitiesIds { get; set; }
     }
 }

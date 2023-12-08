@@ -33,6 +33,21 @@ public class AnnouncementService : IAnnouncementService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
+        if (request.IsPremium)
+        {
+            if (user.PremiumUploadLimit <= 0)
+            {
+                return null;
+            }
+
+            user.PremiumUploadLimit--;
+        }
+
+        if (user.RegularUploadLimit <= 0)
+        {
+            return null;
+        }
+        
         var response = await _announcementRepository.CreateAnnouncementAsync(user.Id, request);
         
         return response;

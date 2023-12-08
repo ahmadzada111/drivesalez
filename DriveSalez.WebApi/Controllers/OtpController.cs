@@ -36,7 +36,7 @@ public class OtpController : Controller
             string otp = _otpService.GenerateOtp();
             string subject = "DriveSalez - One-Time Password (OTP)";
             
-            string templatePath = Path.Combine("wwwroot", "EmailTemplates", "otp_email.html");
+            string templatePath = Path.Combine("EmailTemplates", "otp_email.html");
             string htmlContent = System.IO.File.ReadAllText(templatePath);
             htmlContent = htmlContent.Replace("{otp}", otp);
             

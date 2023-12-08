@@ -18,9 +18,9 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<bool> RecordBalanceTopUpInDbAsync(Guid userId, PaymentRequestDto request)
     {
-        var user = await _dbContext.Users.
-            Where(x => x.Id == userId).
-            FirstOrDefaultAsync();
+        var user = await _dbContext.Users
+            .Where(x => x.Id == userId)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
@@ -41,11 +41,11 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
     {
-        var user = await _dbContext.Users.
-            Where(x => x.Id == userId).
-            FirstOrDefaultAsync();
-        var premiumAnnouncementSubscription = await _dbContext.Subscriptions.
-            Include(x => x.Price)
+        var user = await _dbContext.Users
+            .Where(x => x.Id == userId)
+            .FirstOrDefaultAsync();
+        var premiumAnnouncementSubscription = await _dbContext.Subscriptions
+            .Include(x => x.Price)
             .Where(x => x.Id == subscriptionId)
             .FirstOrDefaultAsync();
         
@@ -78,10 +78,10 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<Subscription> GetSubscriptionFromDbAsync(int subscriptionId)
     {
-        var subscription = await _dbContext.Subscriptions.
-            Include(x => x.Price).
-            Where(x => x.Id == subscriptionId).
-            FirstOrDefaultAsync();
+        var subscription = await _dbContext.Subscriptions
+            .Include(x => x.Price)
+            .Where(x => x.Id == subscriptionId)
+            .FirstOrDefaultAsync();
 
         if (subscription == null)
         {
