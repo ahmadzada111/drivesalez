@@ -364,4 +364,35 @@ public class AccountService : IAccountService
         
         return businessAccount;
     }
+    
+    public async Task CreateAdminAsync()
+    {
+        DefaultAccount user = new DefaultAccount()
+        {
+            Email = "admin",
+            UserName = "admin",
+            FirstName = "admin" ,
+            LastName = "admin"
+        };
+
+        IdentityResult result = await _userManager.CreateAsync(user, "admin");
+
+        if (result.Succeeded)
+        {
+            if (await _roleManager.FindByNameAsync(UserType.Admin.ToString()) == null)
+            {
+                ApplicationRole applicationRole = new ApplicationRole()
+                {
+                    Name = UserType.Admin.ToString()
+                };
+
+                await _roleManager.CreateAsync(applicationRole);
+                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
+            }
+        }
+    }
 }

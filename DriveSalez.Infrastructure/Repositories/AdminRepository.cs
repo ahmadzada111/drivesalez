@@ -4,6 +4,7 @@ using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace DriveSalez.Infrastructure.Repositories

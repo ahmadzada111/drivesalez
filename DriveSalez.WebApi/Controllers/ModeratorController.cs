@@ -2,19 +2,21 @@
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin, Moderator")]
     public class ModeratorController : Controller
     {
-        private readonly IModeratorService _moderatorService;
+        private readonly IAnnouncementService _announcementService;
 
-        public ModeratorController(IModeratorService moderatorService)
+        public ModeratorController( IAnnouncementService announcementService)
         {
-            _moderatorService = moderatorService;
+            _announcementService = announcementService;
         }
 
         [HttpPatch("confirm-announcement/{announcementId}")]
@@ -22,12 +24,16 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
+                var response = await _announcementService.MakeAnnouncementActiveAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
 
@@ -36,12 +42,16 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Inactive);
+                var response = await _announcementService.MakeAnnouncementInactiveAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
         
@@ -50,12 +60,16 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _moderatorService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Waiting);
+                var response = await _announcementService.MakeAnnouncementWaitingAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

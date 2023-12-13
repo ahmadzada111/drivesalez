@@ -48,9 +48,9 @@ namespace DriveSalez.Infrastructure.Repositories
 
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
-            var user = await _dbContext.Users.
-                Include(x => x.PhoneNumbers).
-                FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _dbContext.Users
+                .Include(x => x.PhoneNumbers)
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user == null)
             {
@@ -91,7 +91,7 @@ namespace DriveSalez.Infrastructure.Repositories
                         MileageType = request.MileageType
                     }
                 },
-
+                ViewCount = 0,
                 ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
                 ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                 Barter = request.Barter,
@@ -289,8 +289,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid announcementId,
-            AnnouncementState announcementState)
+        public async Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
 
@@ -300,14 +299,22 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var announcement =
-                await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == announcementId && x.Owner == user);
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.Owner == user &&
+                                              x.AnnouncementState != AnnouncementState.Active);
 
             if (announcement == null)
             {
                 return null;
             }
 
-            announcement.AnnouncementState = announcementState;
+            if (announcement.AnnouncementState == AnnouncementState.Active)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Active;
             announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
 
             var result = _dbContext.Announcements.Update(announcement);
@@ -320,6 +327,70 @@ namespace DriveSalez.Infrastructure.Repositories
             return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
+        public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid announcementId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            var announcement =
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.Owner == user && 
+                                              x.AnnouncementState != AnnouncementState.Waiting);
+
+            if (announcement == null)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Waiting;
+
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
+        }
+        
+        public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            var announcement =
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.Owner == user && 
+                                              x.AnnouncementState != AnnouncementState.Inactive);
+
+            if (announcement == null)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Inactive;
+
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
+        }
+        
         public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId,
             Guid announcementId)
         {

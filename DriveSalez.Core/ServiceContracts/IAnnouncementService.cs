@@ -13,8 +13,12 @@ public interface IAnnouncementService
 
     Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId);
 
-    Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState);
+    Task<AnnouncementResponseDto> MakeAnnouncementActiveAsync(Guid announcementId);
 
+    Task<AnnouncementResponseDto> MakeAnnouncementWaitingAsync(Guid announcementId);
+
+    Task<AnnouncementResponseDto> MakeAnnouncementInactiveAsync(Guid announcementId);
+    
     Task<AnnouncementResponseDto> GetAnnouncementByIdAsync(Guid id);
 
     Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState);

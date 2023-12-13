@@ -115,7 +115,7 @@ public class AnnouncementController : Controller
     {
         try
         {
-            var response = await _announcementService.ChangeAnnouncementStateAsync(announcementId, AnnouncementState.Active);
+            var response = await _announcementService.MakeAnnouncementActiveAsync(announcementId);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)

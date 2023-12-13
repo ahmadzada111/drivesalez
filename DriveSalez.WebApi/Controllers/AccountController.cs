@@ -218,5 +218,19 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized(e.Message);
             }
         }
+        
+        [HttpPost("create-admin")]
+        public async Task<ActionResult> CreateAdmin()
+        {
+            try
+            {
+                await _accountService.CreateAdminAsync();
+                return Ok();
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
     }
 }

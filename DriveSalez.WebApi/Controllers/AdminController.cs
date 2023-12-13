@@ -10,7 +10,7 @@ namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
@@ -189,8 +189,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
 
-        [HttpPut("update-color/{colorId}")]
-        public async Task<ActionResult> UpdateVehicleColor([FromRoute] int colorId, [FromBody] string newColor)
+        [HttpPut("update-color")]
+        public async Task<ActionResult> UpdateVehicleColor([FromBody] int colorId, string newColor)
         {
             try
             {
@@ -203,8 +203,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-body/{bodyTypeId}")]
-        public async Task<ActionResult> UpdateVehicleBodyType([FromRoute] int bodyTypeId, [FromBody] string newBodyType)
+        [HttpPut("update-body")]
+        public async Task<ActionResult> UpdateVehicleBodyType([FromBody] int bodyTypeId, string newBodyType)
         {
             try
             {
@@ -217,8 +217,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-account-limit/{limitId}")]
-        public async Task<ActionResult> UpdateVehicleBodyType([FromRoute] int limitId, [FromBody] int limit)
+        [HttpPut("update-account-limit")]
+        public async Task<ActionResult> UpdateVehicleBodyType([FromBody] int limitId, int limit)
         {
             try
             {
@@ -231,8 +231,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-currency/{currencyId}")]
-        public async Task<ActionResult> UpdateCurrency([FromRoute] int currencyId, [FromBody] string currencyName )
+        [HttpPut("update-currency")]
+        public async Task<ActionResult> UpdateCurrency([FromBody] int currencyId, string currencyName )
         {
             try
             {
@@ -245,8 +245,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-subscription/{subscriptionId}")]
-        public async Task<ActionResult> UpdateCurrency([FromRoute] int subscriptionId, [FromBody] string subscriptionName, 
+        [HttpPut("update-subscription")]
+        public async Task<ActionResult> UpdateCurrency([FromBody] int subscriptionId, string subscriptionName, 
             decimal price, 
             int currencyId)
         {
@@ -261,8 +261,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-drivetrain/{drivetrainId}")]
-        public async Task<ActionResult> UpdateVehicleDriveTrainType([FromRoute] int drivetrainId, [FromBody] string drivetrain)
+        [HttpPut("update-drivetrain")]
+        public async Task<ActionResult> UpdateVehicleDriveTrainType([FromBody] int drivetrainId, string drivetrain)
         {
             try
             {
@@ -275,8 +275,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-gearbox/{gearboxId}")]
-        public async Task<ActionResult> UpdateVehicleGearboxType([FromRoute] int gearboxId, [FromBody] string newGearbox)
+        [HttpPut("update-gearbox")]
+        public async Task<ActionResult> UpdateVehicleGearboxType([FromBody] int gearboxId, string newGearbox)
         {
             try
             {
@@ -289,8 +289,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-make/{makeId}")]
-        public async Task<ActionResult> UpdateMake([FromRoute] int makeId, [FromBody] string newMake)
+        [HttpPut("update-make")]
+        public async Task<ActionResult> UpdateMake([FromBody] int makeId, string newMake)
         {
             try
             {
@@ -303,8 +303,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-model/{modelId}")]
-        public async Task<ActionResult> UpdateModel([FromRoute] int modelId, [FromBody] string newModel)
+        [HttpPut("update-model")]
+        public async Task<ActionResult> UpdateModel([FromBody] int modelId, string newModel)
         {
             try
             {
@@ -317,8 +317,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-fuel/{fuelTypeId}")]
-        public async Task<ActionResult> UpdateFuelType([FromRoute] int fuelTypeId, [FromBody] string newFuelType)
+        [HttpPut("update-fuel")]
+        public async Task<ActionResult> UpdateFuelType([FromBody] int fuelTypeId, string newFuelType)
         {
             try
             {
@@ -331,8 +331,8 @@ namespace DriveSalez.WebApi.Controllers
             } 
         }
         
-        [HttpPut("update-condition/{vehicleConditionId}")]
-        public async Task<ActionResult> UpdateVehicleCondition([FromRoute] int vehicleConditionId, [FromBody] string newVehicleCondition)
+        [HttpPut("update-condition")]
+        public async Task<ActionResult> UpdateVehicleCondition([FromBody] int vehicleConditionId, string newVehicleCondition)
         {
             try
             {
@@ -345,8 +345,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-option/{vehicleOptionId}")]
-        public async Task<ActionResult> UpdateVehicleOption([FromRoute] int vehicleConditionId, [FromBody] string newVehicleOption)
+        [HttpPut("update-option")]
+        public async Task<ActionResult> UpdateVehicleOption([FromBody] int vehicleConditionId, string newVehicleOption)
         {
             try
             {
@@ -359,8 +359,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPut("update-market-version/{marketVersionId}")]
-        public async Task<ActionResult> UpdateVehicleMarketVersion([FromRoute] int marketVersionId, [FromBody] string newMarketVersion)
+        [HttpPut("update-market-version")]
+        public async Task<ActionResult> UpdateVehicleMarketVersion([FromBody] int marketVersionId, string newMarketVersion)
         {
             try
             {
@@ -373,8 +373,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-color/{colorId}")]
-        public async Task<ActionResult> DeleteVehicleColor([FromRoute] int colorId)
+        [HttpDelete("delete-color")]
+        public async Task<ActionResult> DeleteVehicleColor([FromBody] int colorId)
         {
             try
             {
@@ -387,8 +387,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-currency/{currencyId}")]
-        public async Task<ActionResult> DeleteCurrency([FromRoute] int currencyId)
+        [HttpDelete("delete-currency")]
+        public async Task<ActionResult> DeleteCurrency([FromBody] int currencyId)
         {
             try
             {
@@ -401,8 +401,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-body/{bodyTypeId}")]
-        public async Task<ActionResult> DeleteVehicleBodyType([FromRoute] int bodyTypeId)
+        [HttpDelete("delete-body")]
+        public async Task<ActionResult> DeleteVehicleBodyType([FromBody] int bodyTypeId)
         {
             try
             {
@@ -415,8 +415,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-drivetrain/{drivetrainId}")]
-        public async Task<ActionResult> DeleteVehicleDriveTrainType([FromRoute] int drivetrainId)
+        [HttpDelete("delete-drivetrain")]
+        public async Task<ActionResult> DeleteVehicleDriveTrainType([FromBody] int drivetrainId)
         {
             try
             {
@@ -429,8 +429,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-gearbox/{gearboxId}")]
-        public async Task<ActionResult> DeleteVehicleGearboxType([FromRoute] int gearboxId)
+        [HttpDelete("delete-gearbox")]
+        public async Task<ActionResult> DeleteVehicleGearboxType([FromBody] int gearboxId)
         {
             try
             {
@@ -443,8 +443,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-make/{makeId}")]
-        public async Task<ActionResult> DeleteMake([FromRoute] int makeId)
+        [HttpDelete("delete-make")]
+        public async Task<ActionResult> DeleteMake([FromBody] int makeId)
         {
             try
             {
@@ -457,8 +457,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-model/{modelId}")]
-        public async Task<ActionResult> DeleteModel([FromRoute] int modelId)
+        [HttpDelete("delete-model")]
+        public async Task<ActionResult> DeleteModel([FromBody] int modelId)
         {
             try
             {
@@ -471,8 +471,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-fuel/{fuelTypeId}")]
-        public async Task<ActionResult> DeleteFuelType([FromRoute] int fuelTypeId)
+        [HttpDelete("delete-fuel")]
+        public async Task<ActionResult> DeleteFuelType([FromBody] int fuelTypeId)
         {
             try
             {
@@ -485,8 +485,8 @@ namespace DriveSalez.WebApi.Controllers
             } 
         }
         
-        [HttpDelete("delete-condition/{vehicleConditionId}")]
-        public async Task<ActionResult> DeleteVehicleCondition([FromRoute] int vehicleConditionId)
+        [HttpDelete("delete-condition")]
+        public async Task<ActionResult> DeleteVehicleCondition([FromBody] int vehicleConditionId)
         {
             try
             {
@@ -499,8 +499,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-option/{vehicleOptionId}")]
-        public async Task<ActionResult> DeleteVehicleOption([FromRoute] int vehicleConditionId)
+        [HttpDelete("delete-option")]
+        public async Task<ActionResult> DeleteVehicleOption([FromBody] int vehicleConditionId)
         {
             try
             {
@@ -513,8 +513,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpDelete("delete-market-version/{marketVersionId}")]
-        public async Task<ActionResult> DeleteVehicleMarketVersion([FromRoute] int marketVersionId)
+        [HttpDelete("delete-market-version")]
+        public async Task<ActionResult> DeleteVehicleMarketVersion([FromBody] int marketVersionId)
         {
             try
             {

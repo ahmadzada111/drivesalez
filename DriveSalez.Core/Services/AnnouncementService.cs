@@ -106,7 +106,7 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> ChangeAnnouncementStateAsync(Guid announcementId, AnnouncementState announcementState)
+    public async Task<AnnouncementResponseDto> MakeAnnouncementActiveAsync(Guid announcementId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
         
@@ -115,7 +115,35 @@ public class AnnouncementService : IAnnouncementService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _announcementRepository.ChangeAnnouncementStateInDbAsync(user.Id, announcementId, announcementState);
+        var response = await _announcementRepository.MakeAnnouncementActiveInDbAsync(user.Id, announcementId);
+
+        return response;
+    }
+    
+    public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveAsync(Guid announcementId)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+        
+        var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
+
+        return response;
+    }
+    
+    public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingAsync(Guid announcementId)
+    {
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        
+        if (user == null)
+        {
+            throw new UserNotAuthorizedException("User is not authorized!");
+        }
+        
+        var response = await _announcementRepository.MakeAnnouncementWaitingInDbAsync(user.Id, announcementId);
 
         return response;
     }

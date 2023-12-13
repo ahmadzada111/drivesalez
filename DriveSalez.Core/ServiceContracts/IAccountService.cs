@@ -29,4 +29,6 @@ public interface IAccountService
     Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user);
 
     Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
+
+    Task CreateAdminAsync();
 }

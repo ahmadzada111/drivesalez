@@ -13,8 +13,12 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId, Guid announcementId);
 
-        Task<AnnouncementResponseDto> ChangeAnnouncementStateInDbAsync(Guid userId, Guid annoucementId, AnnouncementState announcementState);
+        Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid annoucementId);
 
+        Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid annoucementId);
+
+        Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid annoucementId);
+        
         Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id);
 
         Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
