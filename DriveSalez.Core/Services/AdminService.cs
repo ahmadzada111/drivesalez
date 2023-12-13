@@ -106,7 +106,7 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleCondition> AddVehicleConditionAsync(string condition)
+        public async Task<VehicleCondition> AddVehicleConditionAsync(string condition, string description)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -115,7 +115,7 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            var response = await _adminRepository.SendNewVehicleDetailsConditionToDbAsync(condition);
+            var response = await _adminRepository.SendNewVehicleDetailsConditionToDbAsync(condition, description);
             return response;
         }
 

@@ -27,7 +27,7 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleFuelType> AddVehicleFuelTypeAsync(string fuelType);
 
-        Task<VehicleCondition> AddVehicleConditionAsync(string condition);
+        Task<VehicleCondition> AddVehicleConditionAsync(string condition, string description);
 
         Task<VehicleMarketVersion> AddVehicleMarketVersionAsync(string marketVersion);
 

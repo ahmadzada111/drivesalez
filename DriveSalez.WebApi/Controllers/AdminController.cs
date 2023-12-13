@@ -148,11 +148,11 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("add-new-condition")]
-        public async Task<ActionResult> AddNewVehicleCondition([FromBody] string condition)
+        public async Task<ActionResult> AddNewVehicleCondition([FromBody] string condition, string description)
         {
             try
             {
-                var response = await _adminService.AddVehicleConditionAsync(condition);
+                var response = await _adminService.AddVehicleConditionAsync(condition, description);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)

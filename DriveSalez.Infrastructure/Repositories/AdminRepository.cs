@@ -144,14 +144,18 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition)
+        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition, string description)
         {
             if (string.IsNullOrEmpty(condition))
             {
                 return null;
             }
 
-            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition() { Condition = condition });
+            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition()
+            {
+                Condition = condition, 
+                Description = description
+            });
             
             if (response.State == EntityState.Added)
             {
