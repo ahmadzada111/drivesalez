@@ -119,6 +119,32 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [HttpPost("login-admin")]
+        public async Task<ActionResult<AuthenticationResponseDto>> LoginAdmin([FromBody] LoginDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+
+            try
+            {
+                var response = await _accountService.LoginAdminAsync(request);
+
+                if (response == null)
+                {
+                    return Unauthorized("Email or password is invalid");
+                }
+
+                return Ok(response);
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        
         [HttpGet("logout")]
         public async Task<ActionResult> LogOut()
         {

@@ -194,6 +194,31 @@ public class AccountService : IAccountService
         return null;
     }
 
+    public async Task<AuthenticationResponseDto> LoginAdminAsync(LoginDto request)
+    {
+        SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
+
+        if (result.Succeeded)
+        {
+            ApplicationUser user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found!");
+            }
+            
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            var response = await _jwtService.GenerateSecurityTokenAsync(user);
+            user.RefreshToken = response.RefreshToken;
+            user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+            await _userManager.UpdateAsync(user);
+
+            return response;
+        }
+        
+        return null;
+    }
+    
     public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
     {
         ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);

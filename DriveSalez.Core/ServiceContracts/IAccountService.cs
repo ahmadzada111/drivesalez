@@ -13,6 +13,8 @@ public interface IAccountService
     Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request);
 
     Task<AuthenticationResponseDto> LoginAsync(LoginDto request);
+
+    Task<AuthenticationResponseDto> LoginAdminAsync(LoginDto request);
     
     Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 
