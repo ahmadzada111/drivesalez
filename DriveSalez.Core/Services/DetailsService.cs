@@ -57,6 +57,12 @@ public class DetailsService : IDetailsService
         return response;
     }
 
+    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    {
+        var response = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
+        return response;
+    }
+    
     public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();

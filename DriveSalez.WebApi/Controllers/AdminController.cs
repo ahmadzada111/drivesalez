@@ -90,6 +90,34 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
 
+        [HttpPost("add-new-country")]
+        public async Task<ActionResult> AddNewCountryType([FromBody] string country)
+        {
+            try
+            {
+                var response = await _adminService.AddCountryAsync(country);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPost("add-new-city")]
+        public async Task<ActionResult> AddNewCityType([FromBody] string city, int countryId)
+        {
+            try
+            {
+                var response = await _adminService.AddCityAsync(city, countryId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
         [HttpPost("add-new-gearbox")]
         public async Task<ActionResult> AddNewGearboxType([FromBody] string gearboxType)
         {
@@ -218,11 +246,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-account-limit")]
-        public async Task<ActionResult> UpdateVehicleBodyType([FromBody] int limitId, int limit)
+        public async Task<ActionResult> UpdateUserLimit([FromBody] int limitId, int premiumLimit, int regularLimit)
         {
             try
             {
-                var response = await _adminService.UpdateAccountLimitAsync(limitId, limit);
+                var response = await _adminService.UpdateAccountLimitAsync(limitId, premiumLimit, regularLimit);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -246,13 +274,41 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-subscription")]
-        public async Task<ActionResult> UpdateCurrency([FromBody] int subscriptionId, string subscriptionName, 
+        public async Task<ActionResult> UpdateSubscription([FromBody] int subscriptionId, string subscriptionName, 
             decimal price, 
             int currencyId)
         {
             try
             {
                 var response = await _adminService.UpdateSubscriptionAsync(subscriptionId, subscriptionName, price, currencyId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPut("update-city")]
+        public async Task<ActionResult> UpdateCity([FromBody] int cityId, string newCity)
+        {
+            try
+            {
+                var response = await _adminService.UpdateCityAsync(cityId, newCity);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpPut("update-country")]
+        public async Task<ActionResult> UpdateCountry([FromBody] int countryId, string newCountry)
+        {
+            try
+            {
+                var response = await _adminService.UpdateCountryAsync(countryId, newCountry);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -407,6 +463,34 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var response = await _adminService.DeleteVehicleBodyTypeAsync(bodyTypeId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpDelete("delete-country")]
+        public async Task<ActionResult> DeleteCountry([FromBody] int countryId)
+        {
+            try
+            {
+                var response = await _adminService.DeleteCountryAsync(countryId);
+                return response != null ? Ok(response) : BadRequest(response);
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpDelete("delete-city")]
+        public async Task<ActionResult> DeleteCity([FromBody] int cityId)
+        {
+            try
+            {
+                var response = await _adminService.DeleteCityAsync(cityId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)

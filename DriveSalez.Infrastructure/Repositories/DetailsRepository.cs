@@ -56,6 +56,11 @@ public class DetailsRepository : IDetailsRepository
         return await _dbContext.VehicleDetailsConditions.ToListAsync();
     }
 
+    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync()
+    {
+        return await _dbContext.Subscriptions.ToListAsync();
+    }
+    
     public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync()
     {
         return await _dbContext.VehicleMarketVersions.ToListAsync();

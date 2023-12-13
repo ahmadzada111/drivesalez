@@ -35,4 +35,6 @@ public interface IDetailsRepository
     Task<IEnumerable<City>> GetAllCitiesFromDbAsync();
 
     Task<IEnumerable<Currency>> GetAllCurrenciesFromDbAsync();
+
+    Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync();
 }

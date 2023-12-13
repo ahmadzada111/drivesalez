@@ -200,6 +200,38 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [HttpPost("change-email")]
+        public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                string errorMessage = string.Join(" | ",
+                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                return Problem(errorMessage);
+            }
+
+            try
+            {
+                var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
+
+                if (response)
+                {
+                    var result = await _accountService.ChangeEmailAsync(request.ValidateRequest.Email, request.NewMail);
+            
+                    if (result)
+                    {
+                        return Ok("Password was successfully changed");
+                    }
+                }
+
+                return BadRequest("Cannot validate OTP");
+            }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        
         [HttpDelete("delete-user")]
         public async Task<ActionResult> DeleteUser([FromBody] string password)
         {

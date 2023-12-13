@@ -18,14 +18,17 @@ namespace DriveSalez.Core.Services
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-
+        private readonly IDetailsRepository _detailsRepository;
+        
         public AdminService(IAdminRepository adminRepository, IHttpContextAccessor contextAccessor, 
-            UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+            UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
+            IDetailsRepository detailsRepository)
         {
             _adminRepository = adminRepository;
             _contextAccessor = contextAccessor;
             _userManager = userManager;
             _roleManager = roleManager;
+            _detailsRepository = detailsRepository;
         }
 
         public async Task<VehicleBodyType> AddBodyTypeAsync(string bodyType)
@@ -35,6 +38,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
+
+            if (bodyTypes.Any(x => x.BodyType == bodyType))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewBodyTypeToDbAsync(bodyType);
@@ -49,6 +59,13 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var colors = await _detailsRepository.GetAllColorsFromDbAsync();
+
+            if (colors.Any(x => x.Color == color))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewColorToDbAsync(color);
             return response;
@@ -61,6 +78,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var subscription = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
+
+            if (subscription.Any(x => x.SubscriptionName == subscriptionName))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewSubscriptionToDbAsync(subscriptionName, price, currencyId);
@@ -75,6 +99,13 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var currencies = await _detailsRepository.GetAllCurrenciesFromDbAsync();
+
+            if (currencies.Any(x => x.CurrencyName == currencyName))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewCurrencyToDbAsync(currencyName);
             return response;
@@ -87,6 +118,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var makes = await _detailsRepository.GetAllMakesFromDbAsync();
+
+            if (makes.Any(x => x.MakeName == make))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewMakeToDbAsync(make);
@@ -101,6 +139,13 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var models = await _detailsRepository.GetAllModelsFromDbAsync();
+
+            if (models.Any(x => x.ModelName == model))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewModelToDbAsync(makeId, model);
             return response;
@@ -113,6 +158,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var vehicleConditions = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
+
+            if (vehicleConditions.Any(x => x.Condition == condition || x.Description == description))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewVehicleDetailsConditionToDbAsync(condition, description);
@@ -127,6 +179,13 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var vehicleOptions = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
+
+            if (vehicleOptions.Any(x => x.Option == option))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewVehicleDetailsOptionsToDbAsync(option);
             return response;
@@ -139,6 +198,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var drivetrains = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
+
+            if (drivetrains.Any(x => x.DrivetrainType == driveTrainType))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewVehicleDrivetrainTypeToDbAsync(driveTrainType);
@@ -153,6 +219,13 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
+
+            if (fuelTypes.Any(x => x.FuelType == fuelType))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewVehicleFuelTypeToDbAsync(fuelType);
             return response;
@@ -166,11 +239,58 @@ namespace DriveSalez.Core.Services
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
+
+            var gearboxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
+
+            if (gearboxes.Any(x => x.GearboxType == gearboxType))
+            {
+                return null;
+            }
             
             var response = await _adminRepository.SendNewVehicleGearboxTypeToDbAsync(gearboxType);
             return response;
         }
 
+        public async Task<Country> AddCountryAsync(string country)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
+
+            if (countries.Any(x => x.CountryName == country))
+            {
+                return null;
+            }
+            
+            var response = await _adminRepository.SendNewCountryToDbAsync(country);
+            return response;
+        }
+        
+        public async Task<City> AddCityAsync(string city, int countryId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
+
+            if (cities.Any(x => x.CityName == city))
+            {
+                return null;
+            }
+            
+            var response = await _adminRepository.SendNewCityToDbAsync(city, countryId);
+            return response;
+        }
+        
         public async Task<VehicleMarketVersion> AddVehicleMarketVersionAsync(string marketVersion)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
@@ -178,6 +298,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var marketVersions = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
+
+            if (marketVersions.Any(x => x.MarketVersion == marketVersion))
+            {
+                return null;
             }
             
             var response = await _adminRepository.SendNewVehicleMarketVersionToDbAsync(marketVersion);
@@ -193,6 +320,13 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var colors = await _detailsRepository.GetAllColorsFromDbAsync();
+
+            if (colors.Any(x => x.Color == newColor))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateVehicleColorInDbAsync(colorId, newColor);
             return response;
         }
@@ -206,11 +340,18 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
+
+            if (bodyTypes.Any(x => x.BodyType == newBodyType))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateVehicleBodyTypeInDbAsync(bodyTypeId, newBodyType);
             return response;
         }
         
-        public async Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int limit)
+        public async Task<Country> UpdateCountryAsync(int countryId, string newCountry)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -219,7 +360,48 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            var response = await _adminRepository.UpdateAccountLimitInDbAsync(limitId, limit);
+            var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
+
+            if (countries.Any(x => x.CountryName == newCountry))
+            {
+                return null;
+            }
+            
+            var response = await _adminRepository.UpdateCountryInDbAsync(countryId, newCountry);
+            return response;
+        }
+        
+        public async Task<City> UpdateCityAsync(int cityId, string newCity)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
+
+            if (cities.Any(x => x.CityName == newCity))
+            {
+                return null;
+            }
+            
+            var response = await _adminRepository.UpdateCityInDbAsync(cityId, newCity);
+            return response;
+        }
+        
+        //CHECK!
+        public async Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.UpdateAccountLimitInDbAsync(limitId, premiumLimit, regularLimit);
             return response;
         }
         
@@ -232,17 +414,31 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var currencies = await _detailsRepository.GetAllCurrenciesFromDbAsync();
+
+            if (currencies.Any(x => x.CurrencyName == currencyName))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateCurrencyInDbAsync(currencyId, currencyName);
             return response;
         }
         
-        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId,string subscriptionName, decimal price, int currencyId)
+        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, string subscriptionName, decimal price, int currencyId)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var subscriptions = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
+
+            if (subscriptions.Any(x => x.SubscriptionName == subscriptionName))
+            {
+                return null;
             }
             
             var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, subscriptionName, price, currencyId);
@@ -258,6 +454,13 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var drivetrainTypes = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
+
+            if (drivetrainTypes.Any(x => x.DrivetrainType == newDrivetrain))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateVehicleDrivetrainTypeInDbAsync(drivetrainId, newDrivetrain);
             return response;
         }
@@ -269,6 +472,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var gearBoxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
+
+            if (gearBoxes.Any(x => x.GearboxType == newGearbox))
+            {
+                return null;
             }
             
             var response = await _adminRepository.UpdateVehicleGearboxTypeInDbAsync(gearboxId, newGearbox);
@@ -284,6 +494,13 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var makes = await _detailsRepository.GetAllMakesFromDbAsync();
+
+            if (makes.Any(x => x.MakeName == newMake))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateMakeInDbAsync(makeId, newMake);
             return response;
         }
@@ -295,6 +512,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var models = await _detailsRepository.GetAllModelsFromDbAsync();
+
+            if (models.Any(x => x.ModelName == newModel))
+            {
+                return null;
             }
             
             var response = await _adminRepository.UpdateModelInDbAsync(modelId, newModel);
@@ -310,6 +534,13 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
+
+            if (fuelTypes.Any(x => x.FuelType == newFuelType))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateFuelTypeInDbAsync(fuelTypeId, newFuelType);
             return response;
         }
@@ -321,6 +552,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var vehicleConditions = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
+
+            if (vehicleConditions.Any(x => x.Condition == newVehicleCondition))
+            {
+                return null;
             }
             
             var response = await _adminRepository.UpdateVehicleConditionInDbAsync(vehicleConditionId, newVehicleCondition);
@@ -336,6 +574,13 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
+            var vehicleOptions = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
+
+            if (vehicleOptions.Any(x => x.Option == newVehicleOption))
+            {
+                return null;
+            }
+            
             var response = await _adminRepository.UpdateVehicleOptionInDbAsync(vehicleOptionId, newVehicleOption);
             return response;
         }
@@ -347,6 +592,13 @@ namespace DriveSalez.Core.Services
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var marketVersions = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
+
+            if (marketVersions.Any(x => x.MarketVersion == newMarketVersion))
+            {
+                return null;
             }
             
             var response = await _adminRepository.UpdateVehicleMarketVersionInDbAsync(marketVersionId, newMarketVersion);
@@ -366,6 +618,32 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
+        public async Task<Country> DeleteCountryAsync(int countryId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.DeleteCountryFromDbAsync(countryId);
+            return response;
+        }
+        
+        public async Task<City> DeleteCityAsync(int cityId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.DeleteCityFromDbAsync(cityId);
+            return response;
+        }
+        
         public async Task<Currency> DeleteCurrencyAsync(int currencyId)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);

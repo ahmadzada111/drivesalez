@@ -279,6 +279,28 @@ public class AccountService : IAccountService
 
         return false;
     }
+
+    public async Task<bool> ChangeEmailAsync(string email, string newMail)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        
+        if (user == null)
+        {
+            throw new UserNotFoundException("User is not found!");
+        }
+
+        user.Email = newMail;
+        user.UserName = newMail;
+        
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return true;
+        }
+        
+        return false;
+    }
     
     public async Task LogOutAsync()
     {

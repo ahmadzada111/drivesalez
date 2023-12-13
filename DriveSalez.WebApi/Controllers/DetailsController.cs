@@ -120,4 +120,11 @@ public class DetailsController : Controller
         var response = await _detailsService.GetAllCurrenciesAsync();
         return response != null ? Ok(response) : BadRequest(response);
     }
+
+    [HttpGet("get-all-subscriptions")]
+    public async Task<ActionResult> GetAllSubscriptions()
+    {
+        var response = await _detailsService.GetAllSubscriptionsAsync();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
 }

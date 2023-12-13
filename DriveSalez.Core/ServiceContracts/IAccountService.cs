@@ -30,5 +30,7 @@ public interface IAccountService
 
     Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
 
+    Task<bool> ChangeEmailAsync(string email, string newMail);
+    
     Task CreateAdminAsync();
 }

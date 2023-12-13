@@ -36,6 +36,24 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<Country> SendNewCountryToDbAsync(string country)
+        {
+            if (string.IsNullOrEmpty(country))
+            {
+                return null;
+            }
+
+            var response = await _dbContext.Countries.AddAsync(new Country() { CountryName = country });
+
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
+        }
+        
         public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
         {
             if (string.IsNullOrEmpty(bodyType))
@@ -90,6 +108,28 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<City> SendNewCityToDbAsync(string city, int countryId)
+        {
+            if (string.IsNullOrEmpty(city))
+            {
+                return null;
+            }
+
+            var response = await _dbContext.Cities.AddAsync(new City()
+            {
+                CityName = city,
+                Country = await _dbContext.FindAsync<Country>(countryId)
+            });
+            
+            if (response.State == EntityState.Added)
+            {
+                await _dbContext.SaveChangesAsync();
+                return response.Entity;
+            }
+
+            return null;
+        }
+        
         public async Task<Make> SendNewMakeToDbAsync(string make)
         {
             if (string.IsNullOrEmpty(make))
@@ -287,6 +327,48 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry)
+        {
+            if (string.IsNullOrEmpty(newCountry))
+            {
+                return null;
+            }
+
+            var country = await _dbContext.FindAsync<Country>(countryId);
+            country.CountryName = newCountry;
+            
+            var response = _dbContext.Update(country);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return country;
+            }
+
+            return null;
+        }
+        
+        public async Task<City> UpdateCityInDbAsync(int cityId, string newCity)
+        {
+            if (string.IsNullOrEmpty(newCity))
+            {
+                return null;
+            }
+
+            var city = await _dbContext.FindAsync<City>(cityId);
+            city.CityName = newCity;
+            
+            var response = _dbContext.Update(city);
+
+            if (response.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return city;
+            }
+
+            return null;
+        }
+        
         public async Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
         {
             if (string.IsNullOrEmpty(currencyName))
@@ -410,15 +492,17 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int limit)
+        public async Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
         {
-            if (limitId == null || limit == null)
+            if (limitId == null || premiumLimit < 0 || regularLimit < 0)
             {
                 return null;
             }
 
             var accountLimit = await _dbContext.FindAsync<AccountLimit>(limitId);
-            accountLimit.PremiumAnnouncementsLimit = limit;
+            accountLimit.PremiumAnnouncementsLimit = premiumLimit;
+            accountLimit.RegularAnnouncementsLimit = regularLimit;
+            
             var response = _dbContext.Update(accountLimit);
 
             if (response.State == EntityState.Modified)
@@ -556,6 +640,29 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<Country> DeleteCountryFromDbAsync(int countryId)
+        {
+            if (countryId == null)
+            {
+                return null;
+            }
+
+            var country = await _dbContext.FindAsync<Country>(countryId);
+            
+            if (country != null)
+            {
+                var response = _dbContext.Remove(country);
+                
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return country;
+                }
+            }
+            
+            return null;
+        }
+        
         public async Task<Currency> DeleteCurrencyFromDbAsync(int currencyId)
         {
             if (currencyId == null)
@@ -671,6 +778,29 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
+        public async Task<City> DeleteCityFromDbAsync(int cityId)
+        {
+            if (cityId == null)
+            {
+                return null;
+            }
+
+            var city = await _dbContext.FindAsync<City>(cityId);
+            
+            if (city != null)
+            {
+                var response = _dbContext.Remove(city);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return city;
+                }
+            }
+            
+            return null;
+        }
+        
         public async Task<Model> DeleteModelFromDbAsync(int modelId)
         {
             if (modelId == null)

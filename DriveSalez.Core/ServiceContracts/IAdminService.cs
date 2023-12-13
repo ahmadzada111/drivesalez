@@ -15,6 +15,10 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<Subscription> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId);
 
+        Task<Country> AddCountryAsync(string country);
+
+        Task<City> AddCityAsync(string city, int countryId);
+        
         Task<Currency> AddCurrencyAsync(string currencyName);
         
         Task<VehicleDrivetrainType> AddVehicleDrivetrainTypeAsync(string driveTrainType);
@@ -41,7 +45,7 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleGearboxType> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox);
 
-        Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int limit);
+        Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit);
 
         Task<Currency> UpdateCurrencyAsync(int currencyId, string currencyName);
 
@@ -56,6 +60,10 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition);
 
+        Task<Country> UpdateCountryAsync(int countryId, string newCountry);
+
+        Task<City> UpdateCityAsync(int cityId, string newCity);
+        
         Task<VehicleOption> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption);
 
         Task<VehicleMarketVersion> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion);
@@ -79,6 +87,10 @@ namespace DriveSalez.Core.ServiceContracts
         Task<VehicleOption> DeleteVehicleOptionAsync(int vehicleOptionId);
 
         Task<Currency> DeleteCurrencyAsync(int currencyId);
+
+        Task<Country> DeleteCountryAsync(int countryId);
+
+        Task<City> DeleteCityAsync(int cityId);
         
         Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId);
         
