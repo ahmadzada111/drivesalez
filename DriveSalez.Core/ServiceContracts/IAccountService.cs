@@ -32,5 +32,5 @@ public interface IAccountService
 
     Task<bool> ChangeEmailAsync(string email, string newMail);
     
-    Task CreateAdminAsync();
+    Task<bool>  CreateAdminAsync();
 }

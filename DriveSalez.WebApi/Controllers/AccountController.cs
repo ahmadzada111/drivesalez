@@ -256,8 +256,8 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                await _accountService.CreateAdminAsync();
-                return Ok();
+                var result = await _accountService.CreateAdminAsync();
+                return result ? Ok() : BadRequest();
             }
             catch (UserNotAuthorizedException e)
             {

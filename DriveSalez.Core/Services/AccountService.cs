@@ -387,7 +387,7 @@ public class AccountService : IAccountService
         return businessAccount;
     }
     
-    public async Task CreateAdminAsync()
+    public async Task<bool> CreateAdminAsync()
     {
         DefaultAccount user = new DefaultAccount()
         {
@@ -397,7 +397,7 @@ public class AccountService : IAccountService
             LastName = "admin"
         };
 
-        IdentityResult result = await _userManager.CreateAsync(user, "admin");
+        IdentityResult result = await _userManager.CreateAsync(user, "Admin1234!");
 
         if (result.Succeeded)
         {
@@ -415,6 +415,10 @@ public class AccountService : IAccountService
             {
                 await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
             }
+
+            return true;
         }
+
+        return false;
     }
 }
