@@ -58,7 +58,7 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<VehicleFuelType> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType);
 
-        Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition);
+        Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
 
         Task<Country> UpdateCountryAsync(int countryId, string newCountry);
 

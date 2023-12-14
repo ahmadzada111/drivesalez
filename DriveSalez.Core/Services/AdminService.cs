@@ -545,7 +545,7 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition)
+        public async Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -561,7 +561,7 @@ namespace DriveSalez.Core.Services
                 return null;
             }
             
-            var response = await _adminRepository.UpdateVehicleConditionInDbAsync(vehicleConditionId, newVehicleCondition);
+            var response = await _adminRepository.UpdateVehicleConditionInDbAsync(vehicleConditionId, newVehicleCondition, newDescription);
             return response;
         }
         

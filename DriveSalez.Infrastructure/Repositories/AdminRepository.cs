@@ -534,15 +534,17 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition)
+        public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
         {
-            if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition))
+            if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition) || string.IsNullOrEmpty(newDescription))
             {
                 return null;
             }
 
             var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
             vehicleCondition.Condition = newVehicleCondition;
+            vehicleCondition.Description = newDescription;
+            
             var response = _dbContext.Update(vehicleCondition);
 
             if (response.State == EntityState.Modified)

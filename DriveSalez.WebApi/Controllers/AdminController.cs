@@ -49,11 +49,11 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("add-new-subscription")]
-        public async Task<ActionResult> AddNewSubscription([FromBody] string subscriptionName, decimal price, int currencyId)
+        public async Task<ActionResult> AddNewSubscription([FromBody] AddNewSubscriptionDto request)
         {
             try
             {
-                var response = await _adminService.AddSubscriptionAsync(subscriptionName, price, currencyId);
+                var response = await _adminService.AddSubscriptionAsync(request.SubscriptionName, request.Price, request.CurrencyId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -105,11 +105,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPost("add-new-city")]
-        public async Task<ActionResult> AddNewCityType([FromBody] string city, int countryId)
+        public async Task<ActionResult> AddNewCityType([FromBody] AddNewCityDto request)
         {
             try
             {
-                var response = await _adminService.AddCityAsync(city, countryId);
+                var response = await _adminService.AddCityAsync(request.City, request.CountryId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -176,11 +176,11 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("add-new-condition")]
-        public async Task<ActionResult> AddNewVehicleCondition([FromBody] string condition, string description)
+        public async Task<ActionResult> AddNewVehicleCondition([FromBody] AddNewConditionDto request)
         {
             try
             {
-                var response = await _adminService.AddVehicleConditionAsync(condition, description);
+                var response = await _adminService.AddVehicleConditionAsync(request.Condition, request.Description);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -218,11 +218,11 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPut("update-color")]
-        public async Task<ActionResult> UpdateVehicleColor([FromBody] int colorId, string newColor)
+        public async Task<ActionResult> UpdateVehicleColor([FromBody] UpdateColorDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleColorAsync(colorId, newColor);
+                var response = await _adminService.UpdateVehicleColorAsync(request.ColorId, request.NewColor);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -232,11 +232,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-body")]
-        public async Task<ActionResult> UpdateVehicleBodyType([FromBody] int bodyTypeId, string newBodyType)
+        public async Task<ActionResult> UpdateVehicleBodyType([FromBody] UpdateBodyTypeDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleBodyTypeAsync(bodyTypeId, newBodyType);
+                var response = await _adminService.UpdateVehicleBodyTypeAsync(request.BodyTypeId, request.NewBodyType);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -246,11 +246,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-account-limit")]
-        public async Task<ActionResult> UpdateUserLimit([FromBody] int limitId, int premiumLimit, int regularLimit)
+        public async Task<ActionResult> UpdateUserLimit([FromBody] UpdateUserLimitDto request)
         {
             try
             {
-                var response = await _adminService.UpdateAccountLimitAsync(limitId, premiumLimit, regularLimit);
+                var response = await _adminService.UpdateAccountLimitAsync(request.LimitId, request.PremiumLimit, request.RegularLimit);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -260,11 +260,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-currency")]
-        public async Task<ActionResult> UpdateCurrency([FromBody] int currencyId, string currencyName )
+        public async Task<ActionResult> UpdateCurrency([FromBody] UpdateCurrencyDto request)
         {
             try
             {
-                var response = await _adminService.UpdateCurrencyAsync(currencyId, currencyName);
+                var response = await _adminService.UpdateCurrencyAsync(request.CurrencyId, request.NewCurrencyName);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -274,13 +274,12 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-subscription")]
-        public async Task<ActionResult> UpdateSubscription([FromBody] int subscriptionId, string subscriptionName, 
-            decimal price, 
-            int currencyId)
+        public async Task<ActionResult> UpdateSubscription([FromBody] UpdateSubscriptionDto request)
         {
             try
             {
-                var response = await _adminService.UpdateSubscriptionAsync(subscriptionId, subscriptionName, price, currencyId);
+                var response = await _adminService.UpdateSubscriptionAsync(request.SubscriptionId, request.NewSubscriptionName,
+                    request.Price, request.CurrencyId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -290,11 +289,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-city")]
-        public async Task<ActionResult> UpdateCity([FromBody] int cityId, string newCity)
+        public async Task<ActionResult> UpdateCity([FromBody] UpdateCityDto request)
         {
             try
             {
-                var response = await _adminService.UpdateCityAsync(cityId, newCity);
+                var response = await _adminService.UpdateCityAsync(request.CityId, request.NewCity);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -304,11 +303,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-country")]
-        public async Task<ActionResult> UpdateCountry([FromBody] int countryId, string newCountry)
+        public async Task<ActionResult> UpdateCountry([FromBody] UpdateCoutryDto request)
         {
             try
             {
-                var response = await _adminService.UpdateCountryAsync(countryId, newCountry);
+                var response = await _adminService.UpdateCountryAsync(request.CountryId, request.NewCountry);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -318,11 +317,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-drivetrain")]
-        public async Task<ActionResult> UpdateVehicleDriveTrainType([FromBody] int drivetrainId, string drivetrain)
+        public async Task<ActionResult> UpdateVehicleDriveTrainType([FromBody] UpdateDrivetrainDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleDrivetrainTypeAsync(drivetrainId, drivetrain);
+                var response = await _adminService.UpdateVehicleDrivetrainTypeAsync(request.DrivetrainId, request.NewDrivetrain);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -332,11 +331,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-gearbox")]
-        public async Task<ActionResult> UpdateVehicleGearboxType([FromBody] int gearboxId, string newGearbox)
+        public async Task<ActionResult> UpdateVehicleGearboxType([FromBody] UpdateGearboxDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleGearboxTypeAsync(gearboxId, newGearbox);
+                var response = await _adminService.UpdateVehicleGearboxTypeAsync(request.GearboxId, request.NewGearbox);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -346,11 +345,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-make")]
-        public async Task<ActionResult> UpdateMake([FromBody] int makeId, string newMake)
+        public async Task<ActionResult> UpdateMake([FromBody] UpdateMakeDto request)
         {
             try
             {
-                var response = await _adminService.UpdateMakeAsync(makeId, newMake);
+                var response = await _adminService.UpdateMakeAsync(request.MakeId, request.NewMake);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -360,11 +359,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-model")]
-        public async Task<ActionResult> UpdateModel([FromBody] int modelId, string newModel)
+        public async Task<ActionResult> UpdateModel([FromBody] UpdateModelDto request)
         {
             try
             {
-                var response = await _adminService.UpdateModelAsync(modelId, newModel);
+                var response = await _adminService.UpdateModelAsync(request.ModelId, request.NewModel);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -374,11 +373,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-fuel")]
-        public async Task<ActionResult> UpdateFuelType([FromBody] int fuelTypeId, string newFuelType)
+        public async Task<ActionResult> UpdateFuelType([FromBody] UpdateFuelTypeDto request)
         {
             try
             {
-                var response = await _adminService.UpdateFuelTypeAsync(fuelTypeId, newFuelType);
+                var response = await _adminService.UpdateFuelTypeAsync(request.FuelTypeId, request.NewFuelType);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -388,11 +387,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-condition")]
-        public async Task<ActionResult> UpdateVehicleCondition([FromBody] int vehicleConditionId, string newVehicleCondition)
+        public async Task<ActionResult> UpdateVehicleCondition([FromBody] UpdateVehicleConditionDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleConditionAsync(vehicleConditionId, newVehicleCondition);
+                var response = await _adminService.UpdateVehicleConditionAsync(request.VehicleConditionId, request.NewVehicleCondition, request.NewDescription);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -402,11 +401,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-option")]
-        public async Task<ActionResult> UpdateVehicleOption([FromBody] int vehicleConditionId, string newVehicleOption)
+        public async Task<ActionResult> UpdateVehicleOption([FromBody] UpdateVehicleOptionDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleOptionAsync(vehicleConditionId, newVehicleOption);
+                var response = await _adminService.UpdateVehicleOptionAsync(request.VehicleOptionId, request.NewVehicleOption);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -416,11 +415,11 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpPut("update-market-version")]
-        public async Task<ActionResult> UpdateVehicleMarketVersion([FromBody] int marketVersionId, string newMarketVersion)
+        public async Task<ActionResult> UpdateVehicleMarketVersion([FromBody] UpdateMarketVersionDto request)
         {
             try
             {
-                var response = await _adminService.UpdateVehicleMarketVersionAsync(marketVersionId, newMarketVersion);
+                var response = await _adminService.UpdateVehicleMarketVersionAsync(request.MarketVersionId, request.NewMarketVersion);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -500,7 +499,7 @@ namespace DriveSalez.WebApi.Controllers
         }
         
         [HttpDelete("delete-drivetrain")]
-        public async Task<ActionResult> DeleteVehicleDriveTrainType([FromBody] int drivetrainId)
+        public async Task<ActionResult> DeleteVehicleDrivetrainType([FromBody] int drivetrainId)
         {
             try
             {

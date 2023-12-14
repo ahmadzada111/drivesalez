@@ -201,7 +201,7 @@ public class AccountService : IAccountService
         if (result.Succeeded)
         {
             ApplicationUser user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
-
+            
             if (user == null)
             {
                 throw new UserNotFoundException("User not found!");
