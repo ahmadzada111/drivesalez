@@ -2,12 +2,6 @@
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.IdentityEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DriveSalez.Core.RepositoryContracts
 {
@@ -98,5 +92,7 @@ namespace DriveSalez.Core.RepositoryContracts
         Task<VehicleOption> DeleteVehicleOptionFromDbAsync(int vehicleOptionId);
 
         Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
+
+        Task<GetModeratorDto> DeleteModeratorFromDbAsync(Guid moderatorId);
     }
 }

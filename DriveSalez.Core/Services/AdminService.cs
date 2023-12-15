@@ -833,5 +833,36 @@ namespace DriveSalez.Core.Services
 
             return null;
         }
+
+        public async Task<List<GetModeratorDto>> GetAllModeratorsAsync()
+        {
+            var moderators = await _userManager.GetUsersInRoleAsync(UserType.Moderator.ToString());
+            List<GetModeratorDto> result = new List<GetModeratorDto>();
+            
+            foreach (var moderator in moderators)
+            {
+                result.Add(new GetModeratorDto()
+                {
+                    Name = moderator.FirstName,
+                    Surname = moderator.LastName,
+                    Email = moderator.UserName
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<GetModeratorDto> DeleteModeratorAsync(Guid moderatorId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var response = await _adminRepository.DeleteModeratorFromDbAsync(moderatorId);
+            return response;
+        }
     }
 }

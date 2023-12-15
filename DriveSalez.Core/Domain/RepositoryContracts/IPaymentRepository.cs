@@ -1,7 +1,7 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Entities;
 
-namespace DriveSalez.Core.ServiceContracts;
+namespace DriveSalez.Core.RepositoryContracts;
 
 public interface IPaymentRepository
 {

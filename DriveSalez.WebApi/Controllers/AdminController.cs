@@ -10,7 +10,7 @@ namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
@@ -611,7 +611,7 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("create-moderator")]
-        public async Task<ActionResult<ApplicationUser>> CreateModerator([FromBody] RegisterModeratorDto request)
+        public async Task<ActionResult> CreateModerator([FromBody] RegisterModeratorDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -622,6 +622,34 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var result = await _adminService.AddModeratorAsync(request);
+                return result != null ? Ok() : BadRequest();
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+
+        [HttpDelete("delete-moderator")]
+        public async Task<ActionResult> DeleteModerator([FromBody] Guid moderatorId)
+        {
+            try
+            {
+                var result = await _adminService.DeleteModeratorAsync(moderatorId);
+                return result != null ? Ok() : BadRequest();
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+        
+        [HttpGet("get-all-moderators")]
+        public async Task<ActionResult> GetAllModerators()
+        {
+            try
+            {
+                var result = await _adminService.GetAllModeratorsAsync();
                 return result != null ? Ok() : BadRequest();
             }
             catch (UserNotAuthorizedException e)

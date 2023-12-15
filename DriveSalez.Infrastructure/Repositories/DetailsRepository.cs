@@ -60,7 +60,14 @@ public class DetailsRepository : IDetailsRepository
     {
         return await _dbContext.Subscriptions.ToListAsync();
     }
-    
+
+    public async Task<IEnumerable<City>> GetAllCitiesByCountryIdFromDbAsync(int countryId)
+    {
+        return await _dbContext.Cities
+            .Where(x => x.Country.Id == countryId)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync()
     {
         return await _dbContext.VehicleMarketVersions.ToListAsync();

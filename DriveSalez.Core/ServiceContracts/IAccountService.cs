@@ -14,7 +14,7 @@ public interface IAccountService
 
     Task<AuthenticationResponseDto> LoginAsync(LoginDto request);
 
-    Task<AuthenticationResponseDto> LoginAdminAsync(LoginDto request);
+    Task<AuthenticationResponseDto> LoginStaffAsync(LoginDto request);
     
     Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 

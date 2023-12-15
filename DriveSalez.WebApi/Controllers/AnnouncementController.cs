@@ -103,13 +103,29 @@ public class AnnouncementController : Controller
     }
     
     [AllowAnonymous]
-    [HttpGet("get-announcements")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncements([FromQuery] PagingParameters parameters, AnnouncementState announcementState)
+    [HttpGet("get-all-inactive-announcements")]
+    public async Task<ActionResult<AnnouncementResponseDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
     {
-        var response = await _announcementService.GetAnnouncements(parameters, announcementState);
+        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest();
     }
 
+    [AllowAnonymous]
+    [HttpGet("get-all-waiting-announcements")]
+    public async Task<ActionResult<AnnouncementResponseDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
+    {
+        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Waiting);
+        return response != null ? Ok(response) : BadRequest();
+    }
+    
+    [AllowAnonymous]
+    [HttpGet("get-all-active-announcements")]
+    public async Task<ActionResult<AnnouncementResponseDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
+    {
+        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Active);
+        return response != null ? Ok(response) : BadRequest();
+    }
+    
     [HttpPost("reactivate-announcement/{announcementId}")]
     public async Task<ActionResult> ReactivateAnnouncement([FromRoute] Guid announcementId)
     {

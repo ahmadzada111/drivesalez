@@ -95,5 +95,9 @@ namespace DriveSalez.Core.ServiceContracts
         Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId);
         
         Task<RegisterModeratorResponseDto> AddModeratorAsync(RegisterModeratorDto registerDTO);
+        
+        Task<List<GetModeratorDto>> GetAllModeratorsAsync();
+
+        Task<GetModeratorDto> DeleteModeratorAsync(Guid moderatorId);
     }
 }

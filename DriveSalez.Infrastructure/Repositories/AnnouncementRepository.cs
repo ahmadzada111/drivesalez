@@ -136,6 +136,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return true;
         }
 
+        //CHECK!
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id)
         {
             var response = await _dbContext.Announcements
@@ -166,17 +167,18 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            response.ViewCount++;
+            // response.ViewCount++;
+            
+            // var result = _dbContext.Update(response);
+            
+            // if (result.State == EntityState.Modified)
+            // {
+            //     await _dbContext.SaveChangesAsync();
+            //     return _mapper.Map<AnnouncementResponseDto>(response);
+            // }
 
-            var result = _dbContext.Update(response);
-
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return _mapper.Map<AnnouncementResponseDto>(response);
-            }
-
-            return null;
+            // await _dbContext.SaveChangesAsync();
+            return _mapper.Map<AnnouncementResponseDto>(response);
         }
 
         public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter,

@@ -127,4 +127,11 @@ public class DetailsController : Controller
         var response = await _detailsService.GetAllSubscriptionsAsync();
         return response != null ? Ok(response) : BadRequest(response);
     }
+    
+    [HttpGet("get-all-cities-by-country-id")]
+    public async Task<ActionResult> GetAllCitiesByCountryId()
+    {
+        var response = await _detailsService.GetAllSubscriptionsAsync();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
 }

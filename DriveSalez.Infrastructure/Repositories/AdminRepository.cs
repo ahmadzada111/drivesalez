@@ -650,10 +650,14 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var country = await _dbContext.FindAsync<Country>(countryId);
+            var cities = await _dbContext.Cities
+                .Where(x => x.Country.Id == countryId)
+                .ToListAsync();
             
             if (country != null)
             {
-                var response = _dbContext.Remove(country);
+                _dbContext.Cities.RemoveRange(cities);
+                var response = _dbContext.Countries.Remove(country);
                 
                 if (response.State == EntityState.Deleted)
                 {
@@ -912,6 +916,36 @@ namespace DriveSalez.Infrastructure.Repositories
                 {
                     await _dbContext.SaveChangesAsync();
                     return marketVersion;
+                }
+            }
+            
+            return null;
+        }
+
+        public async Task<GetModeratorDto> DeleteModeratorFromDbAsync(Guid moderatorId)
+        {
+            if (moderatorId == null)
+            {
+                return null;
+            }
+
+            var moderator = await _dbContext.Users
+                .Where(x => x.Id == moderatorId)
+                .FirstOrDefaultAsync();
+            
+            if (moderator != null)
+            {
+                var response = _dbContext.Remove(moderator);
+
+                if (response.State == EntityState.Deleted)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return new GetModeratorDto()
+                    {
+                        Name = moderator.FirstName,
+                        Surname = moderator.LastName,
+                        Email = moderator.UserName
+                    };
                 }
             }
             

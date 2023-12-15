@@ -1,7 +1,7 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.ServiceContracts;
+using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 

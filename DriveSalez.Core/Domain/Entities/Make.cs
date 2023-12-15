@@ -12,6 +12,6 @@ namespace DriveSalez.Core.Entities
         public string MakeName { get; set; }
 
         [JsonIgnore]
-        public List<Vehicle> Vehicles { get; set; }  //EF CORE FOREIGN KEY
+        public List<Vehicle> Vehicles { get; set; } 
     }
 }

@@ -194,7 +194,7 @@ public class AccountService : IAccountService
         return null;
     }
 
-    public async Task<AuthenticationResponseDto> LoginAdminAsync(LoginDto request)
+    public async Task<AuthenticationResponseDto> LoginStaffAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -363,7 +363,7 @@ public class AccountService : IAccountService
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
 
-        var defaultAccount = await _accountRepository.ChangeUserTypeToBusinessInDbAsync(user);
+        var defaultAccount = await _accountRepository.ChangeUserTypeToDefaultAccountInDbAsync(user);
         
         if (defaultAccount == null)
         {
@@ -381,7 +381,7 @@ public class AccountService : IAccountService
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
 
-        var premiumAccount = await _accountRepository.ChangeUserTypeToBusinessInDbAsync(user);
+        var premiumAccount = await _accountRepository.ChangeUserTypeToPremiumInDbAsync(user);
         
         if (premiumAccount == null)
         {

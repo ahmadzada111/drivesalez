@@ -119,8 +119,8 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
-        [HttpPost("login-admin")]
-        public async Task<ActionResult<AuthenticationResponseDto>> LoginAdmin([FromBody] LoginDto request)
+        [HttpPost("login-staff")]
+        public async Task<ActionResult<AuthenticationResponseDto>> LoginStaff([FromBody] LoginDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -130,7 +130,7 @@ namespace DriveSalez.WebApi.Controllers
 
             try
             {
-                var response = await _accountService.LoginAdminAsync(request);
+                var response = await _accountService.LoginStaffAsync(request);
 
                 if (response == null)
                 {

@@ -2,9 +2,11 @@ DriveSalez.Core/bin/
 DriveSalez.Core/obj/
 DriveSalez.Infrastructure/obj/
 DriveSalez.Infrastructure/bin/
+DriveSalez.Infrastructure/Migrations/
 DriveSalez.WebApi/obj/
 DriveSalez.WebApi/bin/
 DriveSalez.WebApi/appsettings.Secrets.json
 DriveSalez.WebApi/vision-ai-credentials.json
 .DS_Store
+
 .idea/
