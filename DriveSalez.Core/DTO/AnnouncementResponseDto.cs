@@ -1,4 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using DriveSalez.Core.Entities;
+using DriveSalez.Core.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Core.Enums;
 
 namespace DriveSalez.Core.DTO;
@@ -7,7 +10,43 @@ public class AnnouncementResponseDto
 {
     public Guid Id { get; set; }
     
-    public Vehicle Vehicle { get; set; }
+    public ManufactureYear? Year { get; set; }   // 2009
+
+    public Make? Make { get; set; }
+
+    public Model? Model { get; set; }
+    
+    public VehicleFuelType? FuelType { get; set; }
+    
+    public VehicleBodyType BodyType { get; set; }    // Sedan,Pick-up, Truck, Roadster     
+
+    public VehicleColor Color { get; set; }       // Red
+
+    public int HorsePower { get; set; }     // 150 hp
+
+    public VehicleGearboxType GearboxType { get; set; }     // Manual
+
+    public VehicleDrivetrainType DrivetrainType { get; set; }  // FWD
+
+    public List<VehicleCondition> Conditions { get; set; }  //No Damage, No Color
+
+    public VehicleMarketVersion MarketVersion { get; set; }      // US
+
+    public int? OwnerQuantity { get; set; }
+
+    public int? SeatCount { get; set; }
+
+    public string? VinCode { get; set; }
+
+    public List<VehicleOption> Options { get; set; }      // ABS, REAR CAMERA, FRONT RADAR
+
+    public int? EngineVolume { get; set; }     //6200 CC
+
+    public int MileAge { get; set; }    //149000 km
+
+    public string MileageType { get; set; }
+    
+    public bool? IsBrandNew { get; set; }       //NEW Or USED
 
     public bool? Barter { get; set; }
 

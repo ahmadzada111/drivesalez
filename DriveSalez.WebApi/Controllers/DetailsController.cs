@@ -129,9 +129,9 @@ public class DetailsController : Controller
     }
     
     [HttpGet("get-all-cities-by-country-id")]
-    public async Task<ActionResult> GetAllCitiesByCountryId()
+    public async Task<ActionResult> GetAllCitiesByCountryId([FromQuery] int countryId)
     {
-        var response = await _detailsService.GetAllSubscriptionsAsync();
+        var response = await _detailsService.GetAllCitiesByCountryIdAsync(countryId);
         return response != null ? Ok(response) : BadRequest(response);
     }
 }

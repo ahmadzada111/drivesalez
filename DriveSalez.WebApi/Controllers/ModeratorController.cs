@@ -9,7 +9,7 @@ namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, Moderator")]
+    // [Authorize(Roles = "Admin, Moderator")]
     public class ModeratorController : Controller
     {
         private readonly IAnnouncementService _announcementService;

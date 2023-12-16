@@ -650,14 +650,10 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var country = await _dbContext.FindAsync<Country>(countryId);
-            var cities = await _dbContext.Cities
-                .Where(x => x.Country.Id == countryId)
-                .ToListAsync();
             
             if (country != null)
             {
-                _dbContext.Cities.RemoveRange(cities);
-                var response = _dbContext.Countries.Remove(country);
+                var response = _dbContext.Remove(country);
                 
                 if (response.State == EntityState.Deleted)
                 {

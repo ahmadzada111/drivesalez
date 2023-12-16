@@ -5,7 +5,6 @@ using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
