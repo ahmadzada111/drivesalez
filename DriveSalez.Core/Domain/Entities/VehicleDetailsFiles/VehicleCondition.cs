@@ -11,8 +11,6 @@ namespace DriveSalez.Core.Entities.VehicleDetailsFiles
 {
     public class VehicleCondition
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
         public string Condition { get; set; }

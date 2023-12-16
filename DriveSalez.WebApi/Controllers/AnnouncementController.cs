@@ -140,12 +140,40 @@ public class AnnouncementController : Controller
         }
     }
 
-    [HttpGet("get-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAnnouncementsByUserId(PagingParameters pagingParameters, AnnouncementState announcementState)
+    [HttpGet("get-all-active-announcements-by-user-id")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllActiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, announcementState);
+            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Active);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
+    [HttpGet("get-all-inactive-announcements-by-user-id")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    {
+        try
+        {
+            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Inactive);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
+    [HttpGet("get-all-waiting-announcements-by-user-id")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllWaitingAnnouncementsByUserId(PagingParameters pagingParameters)
+    {
+        try
+        {
+            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Waiting);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
