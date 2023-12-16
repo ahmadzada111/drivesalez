@@ -843,6 +843,7 @@ namespace DriveSalez.Core.Services
             {
                 result.Add(new GetModeratorDto()
                 {
+                    Id = moderator.Id,
                     Name = moderator.FirstName,
                     Surname = moderator.LastName,
                     Email = moderator.UserName

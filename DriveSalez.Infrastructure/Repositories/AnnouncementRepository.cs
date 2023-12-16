@@ -140,7 +140,6 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id)
         {
             var response = await _dbContext.Announcements
-                .AsNoTracking()
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
@@ -167,18 +166,17 @@ namespace DriveSalez.Infrastructure.Repositories
                 throw new KeyNotFoundException();
             }
 
-            // response.ViewCount++;
+            response.ViewCount++;
             
-            // var result = _dbContext.Update(response);
+            var result = _dbContext.Update(response);
             
-            // if (result.State == EntityState.Modified)
-            // {
-            //     await _dbContext.SaveChangesAsync();
-            //     return _mapper.Map<AnnouncementResponseDto>(response);
-            // }
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(response);
+            }
 
-            // await _dbContext.SaveChangesAsync();
-            return _mapper.Map<AnnouncementResponseDto>(response);
+            return null;
         }
 
         public async Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameter,

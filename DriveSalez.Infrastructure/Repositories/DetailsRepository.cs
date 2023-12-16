@@ -58,7 +58,10 @@ public class DetailsRepository : IDetailsRepository
 
     public async Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync()
     {
-        return await _dbContext.Subscriptions.ToListAsync();
+        return await _dbContext.Subscriptions
+            .Include(x => x.Price)
+            .ThenInclude(x => x.Currency)
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<City>> GetAllCitiesByCountryIdFromDbAsync(int countryId)

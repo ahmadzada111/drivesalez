@@ -144,7 +144,6 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
-            
         }
 
         [HttpPost("add-new-model")]
@@ -636,7 +635,7 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var result = await _adminService.DeleteModeratorAsync(moderatorId);
-                return result != null ? Ok() : BadRequest();
+                return result != null ? Ok(result) : BadRequest(result);
             }
             catch (UserNotAuthorizedException e)
             {
@@ -650,7 +649,7 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var result = await _adminService.GetAllModeratorsAsync();
-                return result != null ? Ok() : BadRequest();
+                return result != null ? Ok(result) : BadRequest(result);
             }
             catch (UserNotAuthorizedException e)
             {

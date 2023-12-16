@@ -942,6 +942,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return new GetModeratorDto()
                     {
+                        Id = moderator.Id,
                         Name = moderator.FirstName,
                         Surname = moderator.LastName,
                         Email = moderator.UserName
