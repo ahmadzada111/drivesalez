@@ -6,7 +6,7 @@ public interface IPaymentService
 {
     Task<bool> TopUpBalance(PaymentRequestDto request);
 
-    Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId);
+    Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId);
 
     Task<bool> BuyPremiumAccount(int subscriptionId);
 

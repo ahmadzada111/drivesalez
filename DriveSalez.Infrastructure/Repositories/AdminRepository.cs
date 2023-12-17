@@ -389,15 +389,10 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, string subscriptionName, decimal price, int currencyId)
+        public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId)
         {
-            if (string.IsNullOrEmpty(subscriptionName))
-            {
-                return null;
-            }
-
             var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
-            subscription.SubscriptionName = subscriptionName;
+
             subscription.Price.Price = price;
             subscription.Price.Currency = await _dbContext.Currencies.FindAsync(currencyId);
             

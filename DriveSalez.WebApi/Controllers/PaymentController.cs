@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class PaymentController : Controller
 {
     private readonly IPaymentService _paymentService;
@@ -39,12 +41,12 @@ public class PaymentController : Controller
     }
     
     [Authorize]
-    [HttpPost("add-premium-announcement-limit")]
-    public async Task<ActionResult> AddPremiumAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
+    [HttpPost("add-announcement-limit")]
+    public async Task<ActionResult> AddAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     {
         try
         {
-            var result = await _paymentService.AddPremiumAnnouncementLimit(announcementQuantity, subscriptionId);
+            var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
             return result ? Ok() : BadRequest();
         }
         catch (UserNotAuthorizedException e)

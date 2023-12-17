@@ -45,7 +45,7 @@ namespace DriveSalez.Core.RepositoryContracts
         
         Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName);
 
-        Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId,string subscriptionName, decimal price, int currencyId);
+        Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId);
         
         Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
 

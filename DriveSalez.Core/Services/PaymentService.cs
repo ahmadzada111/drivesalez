@@ -45,7 +45,7 @@ public class PaymentService : IPaymentService
         return true;
     }
 
-    public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -54,7 +54,7 @@ public class PaymentService : IPaymentService
             throw new UserNotAuthorizedException("User is not Authorized");
         }
 
-        var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
+        var result = await _paymentRepository.AddAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
 
         if (!result)
         {

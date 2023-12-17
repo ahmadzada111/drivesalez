@@ -46,9 +46,11 @@ namespace DriveSalez.Core.DTO.Pagination
 
         public int? ToEngineVolume { get; set; }
         
-        public int? Mileage { get; set; }
+        public int? FromMileage { get; set; }
 
-        public DistanceUnit? DistanceUnit { get; set; }
+        public int? ToMileage { get; set; }
+        
+        public DistanceUnit? MileageType { get; set; }
 
         public bool? Barter { get; set; }
 
@@ -58,7 +60,7 @@ namespace DriveSalez.Core.DTO.Pagination
        
         public decimal? ToPrice { get; set; }
 
-        public Currency? Currency { get; set; }
+        public int? CurrencyId { get; set; }
 
         public int? CountryId { get; set; }
 

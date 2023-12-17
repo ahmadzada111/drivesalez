@@ -425,7 +425,7 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, string subscriptionName, decimal price, int currencyId)
+        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, decimal price, int currencyId)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
@@ -435,13 +435,8 @@ namespace DriveSalez.Core.Services
             }
             
             var subscriptions = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
-
-            if (subscriptions.Any(x => x.SubscriptionName == subscriptionName))
-            {
-                return null;
-            }
             
-            var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, subscriptionName, price, currencyId);
+            var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price, currencyId);
             return response;
         }
         

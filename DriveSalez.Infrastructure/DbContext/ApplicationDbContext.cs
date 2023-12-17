@@ -146,7 +146,10 @@ namespace DriveSalez.Infrastructure.DbContext
 
                 var subPrice = SubscriptionPrices.Add(new SubscriptionPrice() { Price = 5, Currency = azn}).Entity;
 
-                Subscriptions.Add(new Subscription() { SubscriptionName = "Premium", Price = subPrice });
+                Subscriptions.Add(new Subscription() { SubscriptionName = "Premium Account", Price = subPrice });
+                Subscriptions.Add(new Subscription() { SubscriptionName = "Business Account", Price = subPrice });
+                Subscriptions.Add(new Subscription() { SubscriptionName = "Premium Announcement", Price = subPrice });
+                Subscriptions.Add(new Subscription() { SubscriptionName = "Regular Announcement", Price = subPrice });
                 
                 AccountLimits.Add(new AccountLimit()
                 {

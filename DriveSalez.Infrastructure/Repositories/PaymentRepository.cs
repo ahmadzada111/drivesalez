@@ -27,7 +27,7 @@ public class PaymentRepository : IPaymentRepository
             throw new UserNotFoundException("User not found");
         }
         
-        user.AccountBalance = request.Sum;
+        user.AccountBalance += request.Sum;
         var response = _dbContext.Update(user);
 
         if (response.State == EntityState.Modified)
@@ -39,12 +39,13 @@ public class PaymentRepository : IPaymentRepository
         return false;
     }
 
-    public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
     {
         var user = await _dbContext.Users
             .Where(x => x.Id == userId)
             .FirstOrDefaultAsync();
-        var premiumAnnouncementSubscription = await _dbContext.Subscriptions
+        
+        var announcementSubscription = await _dbContext.Subscriptions
             .Include(x => x.Price)
             .Where(x => x.Id == subscriptionId)
             .FirstOrDefaultAsync();
@@ -54,22 +55,41 @@ public class PaymentRepository : IPaymentRepository
             throw new UserNotFoundException("User not found");
         }
 
-        if (premiumAnnouncementSubscription == null)
+        if (announcementSubscription == null)
         {
             throw new KeyNotFoundException();
         }
 
-        if (user.AccountBalance - premiumAnnouncementSubscription.Price.Price > 0)
+        if (announcementSubscription.SubscriptionName == "Premium Announcement")
         {
-            user.AccountBalance -= announcementQuantity * premiumAnnouncementSubscription.Price.Price;
-            user.PremiumUploadLimit = announcementQuantity;
-
-            var response = _dbContext.Update(user);
-
-            if (response.State == EntityState.Modified)
+            if (user.AccountBalance - announcementSubscription.Price.Price > 0)
             {
-                await _dbContext.SaveChangesAsync();
-                return true;
+                user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                user.PremiumUploadLimit += announcementQuantity;
+
+                var response = _dbContext.Update(user);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+            }
+        }
+        else if(announcementSubscription.SubscriptionName == "Regular Announcement")
+        {
+            if (user.AccountBalance - announcementSubscription.Price.Price > 0)
+            {
+                user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                user.RegularUploadLimit += announcementQuantity;
+
+                var response = _dbContext.Update(user);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
             }
         }
 

@@ -47,20 +47,6 @@ namespace DriveSalez.WebApi.Controllers
                 return Unauthorized(e.Message);
             }
         }
-
-        [HttpPost("add-new-subscription")]
-        public async Task<ActionResult> AddNewSubscription([FromBody] AddNewSubscriptionDto request)
-        {
-            try
-            {
-                var response = await _adminService.AddSubscriptionAsync(request.SubscriptionName, request.Price, request.CurrencyId);
-                return response != null ? Ok(response) : BadRequest(response);
-            }
-            catch (UserNotAuthorizedException e)
-            {
-                return Unauthorized(e.Message);
-            }
-        }
         
         [HttpPost("add-new-currency")]
         public async Task<ActionResult> AddNewCurrency([FromBody] string currencyName)
@@ -277,7 +263,7 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _adminService.UpdateSubscriptionAsync(request.SubscriptionId, request.NewSubscriptionName,
+                var response = await _adminService.UpdateSubscriptionAsync(request.SubscriptionId,
                     request.Price, request.CurrencyId);
                 return response != null ? Ok(response) : BadRequest(response);
             }

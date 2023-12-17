@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
@@ -515,67 +516,174 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters)
         {
-             var filteredAnnouncements = await _dbContext.Announcements
-                 .AsNoTracking()
-             .Where(x => (x.Vehicle.Year.Id >= filterParameters.FromYearId
-                          && x.Vehicle.Year.Id <= filterParameters.ToYearId) 
-                         && x.Vehicle.Make.Id == filterParameters.MakeId 
-                         && x.Vehicle.IsBrandNew == filterParameters.IsBrandNew
-                         && (x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower
-                             && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower) 
-                         && x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount
-                         && (x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume
-                            && x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume)
-                         && x.Vehicle.VehicleDetails.MileAge == filterParameters.Mileage
-                         && x.Vehicle.VehicleDetails.MileageType == filterParameters.DistanceUnit
-                         && x.Barter == filterParameters.Barter
-                         && x.OnCredit == filterParameters.OnCredit
-                         && x.Price >= filterParameters.FromPrice
-                         && x.Price <= filterParameters.ToPrice
-                         && x.Currency == filterParameters.Currency
-                         && x.Country.Id == filterParameters.CountryId
-            ).
-             Include(x => x.Owner).
-             Include(x => x.Owner.PhoneNumbers).
-             Include(x => x.Vehicle).
-             Include(x => x.Currency).
-             Include(x => x.ImageUrls).
-             Include(x => x.Vehicle.Year).
-             Include(x => x.Vehicle.Make).
-             Include(x => x.Vehicle.Model).
-             Include(x => x.Vehicle.FuelType).
-             Include(x => x.Vehicle.VehicleDetails).
-             Include(x => x.Vehicle.VehicleDetails.BodyType).
-             Include(x => x.Vehicle.VehicleDetails.DrivetrainType).
-             Include(x => x.Vehicle.VehicleDetails.GearboxType).
-             Include(x => x.Vehicle.VehicleDetails.Color).
-             Include(x => x.Vehicle.VehicleDetails.MarketVersion).
-             Include(x => x.Vehicle.VehicleDetails.Options).
-             Include(x => x.Vehicle.VehicleDetails.Conditions).
-             Include(x => x.Country).
-             Include(x => x.City).
-             OrderBy(o => o.IsPremium).
-             Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize).
-             Take(pagingParameters.PageSize).
-             ToListAsync();
+            var filteredAnnouncements = _dbContext.Announcements
+                .AsNoTracking()
+                .Include(x => x.Owner)
+                .Include(x => x.Owner.PhoneNumbers)
+                .Include(x => x.Vehicle)
+                .Include(x => x.Currency)
+                .Include(x => x.ImageUrls)
+                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.Make)
+                .Include(x => x.Vehicle.Model)
+                .Include(x => x.Vehicle.FuelType)
+                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                .Include(x => x.Vehicle.VehicleDetails.Color)
+                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                .Include(x => x.Vehicle.VehicleDetails.Options)
+                .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                .Include(x => x.Country)
+                .Include(x => x.City)
+                .OrderBy(o => o.IsPremium)
+                .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
+                .Take(pagingParameters.PageSize);
+             
+             if (filterParameters.FromYearId != null && filterParameters.ToYearId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Year.Id >= filterParameters.FromYearId && x.Vehicle.Year.Id <= filterParameters.ToYearId);
+             }
 
-             filteredAnnouncements = filteredAnnouncements.
-                 Where(x =>
-                     (filterParameters.OptionsIds == null || 
-                      filterParameters.OptionsIds.All(optId => x.Vehicle?.VehicleDetails?.Options?.Any(opt => opt.Id == optId) == true)) &&
-                     (filterParameters.ConditionsIds == null ||
-                      filterParameters.ConditionsIds.All(condId => x.Vehicle?.VehicleDetails?.Conditions?.Any(cond => cond.Id == condId) == true)) &&
-                     (filterParameters.ModelsIds == null || filterParameters.ModelsIds.Contains(x.Vehicle.Model.Id)) && 
-                     (filterParameters.FuelTypesIds == null || filterParameters.FuelTypesIds.Contains(x.Vehicle.FuelType.Id)) && 
-                     (filterParameters.BodyTypesIds == null || filterParameters.BodyTypesIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id)) && 
-                     (filterParameters.ColorsIds == null || filterParameters.ColorsIds.Contains(x.Vehicle.VehicleDetails.Color.Id)) &&
-                     (filterParameters.GearboxTypesIds == null || filterParameters.GearboxTypesIds.Contains(x.Vehicle.VehicleDetails.GearboxType.Id)) && 
-                     (filterParameters.DriveTrainTypesIds == null || filterParameters.DriveTrainTypesIds.Contains(x.Vehicle.VehicleDetails.DrivetrainType.Id)) &&
-                     (filterParameters.MarketVersionsIds == null || filterParameters.MarketVersionsIds.Contains(x.Vehicle.VehicleDetails.MarketVersion.Id)) && 
-                     (filterParameters.CitiesIds == null || filterParameters.CitiesIds.Contains(x.City.Id))
-                 ).
-                 ToList();
-            
+             if (filterParameters.MakeId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
+             }
+             
+             if (filterParameters.IsBrandNew != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.IsBrandNew == filterParameters.IsBrandNew);
+             }
+             
+             if (filterParameters.MakeId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
+             }
+             
+             if (filterParameters.FromHorsePower != null && filterParameters.ToHorsePower != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower 
+                                                                          && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower);
+             }
+             
+             if (filterParameters.SeatCount != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount);
+             }
+             
+             if (filterParameters.FromEngineVolume != null && filterParameters.ToEngineVolume != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume 
+                                                                          && x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume);
+             }
+             
+             if (filterParameters.FromMileage != null && filterParameters.ToMileage != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.MileAge >= filterParameters.FromMileage
+                                                                        && x.Vehicle.VehicleDetails.MileAge <= filterParameters.ToMileage);
+             }
+             
+             if (filterParameters.MileageType != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.MileageType == filterParameters.MileageType);
+             }
+
+             if (filterParameters.Barter != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Barter == filterParameters.Barter);
+             }
+             
+             if (filterParameters.OnCredit != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.OnCredit == filterParameters.OnCredit);
+             }
+             
+             if (filterParameters.FromPrice != null && filterParameters.ToPrice != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Price >= filterParameters.FromPrice
+                                                                          && x.Price <= filterParameters.ToPrice);
+             }
+             
+             if (filterParameters.OnCredit != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.OnCredit == filterParameters.OnCredit);
+             }
+             
+             if (filterParameters.CurrencyId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Currency.Id == filterParameters.CurrencyId);
+             }
+             
+             if (filterParameters.CountryId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Country.Id == filterParameters.CountryId);
+             }
+
+             if (filterParameters.ModelsIds != null && filterParameters.ModelsIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.ModelsIds.Contains(x.Vehicle.Model.Id));
+             }
+             
+             if (filterParameters.FuelTypesIds != null && filterParameters.FuelTypesIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.FuelTypesIds.Contains(x.Vehicle.FuelType.Id));
+             }
+             
+             if (filterParameters.BodyTypesIds != null && filterParameters.BodyTypesIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.BodyTypesIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id));
+             }
+             
+             if (filterParameters.ColorsIds != null && filterParameters.ColorsIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.ColorsIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id));
+             }
+             
+             if (filterParameters.GearboxTypesIds != null && filterParameters.GearboxTypesIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.GearboxTypesIds.Contains(x.Vehicle.VehicleDetails.GearboxType.Id));
+             }
+             
+             if (filterParameters.DriveTrainTypesIds != null && filterParameters.DriveTrainTypesIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.DriveTrainTypesIds.Contains(x.Vehicle.VehicleDetails.DrivetrainType.Id));
+             }
+             
+             if (filterParameters.MarketVersionsIds != null && filterParameters.MarketVersionsIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.MarketVersionsIds.Contains(x.Vehicle.VehicleDetails.MarketVersion.Id));
+             }
+             
+             if (filterParameters.CitiesIds != null && filterParameters.CitiesIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => filterParameters.CitiesIds.Contains(x.City.Id));
+             }
+             
+             if (filterParameters.OptionsIds != null && filterParameters.OptionsIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => x.Vehicle.VehicleDetails.Options
+                         .All(option => filterParameters.OptionsIds.Contains(option.Id)));
+             }
+             
+             if (filterParameters.ConditionsIds != null && filterParameters.ConditionsIds.Any())
+             {
+                 filteredAnnouncements = filteredAnnouncements
+                     .Where(x => x.Vehicle.VehicleDetails.Conditions
+                         .All(condition => filterParameters.ConditionsIds.Contains(condition.Id)));
+             }
+             
+             await filteredAnnouncements.ToListAsync();
+             
              if (filteredAnnouncements == null)
              {
                  return null;

@@ -49,8 +49,7 @@ namespace DriveSalez.Core.ServiceContracts
 
         Task<Currency> UpdateCurrencyAsync(int currencyId, string currencyName);
 
-        Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, string subscriptionName,
-            decimal price, int currencyId);
+        Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, decimal price, int currencyId);
         
         Task<Make> UpdateMakeAsync(int makeId, string newMake);
 
