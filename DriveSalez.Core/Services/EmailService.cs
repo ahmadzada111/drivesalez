@@ -44,7 +44,7 @@ public class EmailService : IEmailService
             Body = body
         };
 
-        message.IsBodyHtml = true;
+        // message.IsBodyHtml = true;
         message.From = new MailAddress(_emailConfig["Email:CompanyEmail"], "DriveSalez");
         message.To.Add(new MailAddress(toEmail));
 

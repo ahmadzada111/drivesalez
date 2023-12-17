@@ -9,14 +9,14 @@ namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Roles = "Admin, Moderator")]
+    [Authorize(Roles = "Admin, Moderator")]
     public class ModeratorController : Controller
     {
-        private readonly IAnnouncementService _announcementService;
+        private readonly IModeratorService _moderatorService;
 
-        public ModeratorController( IAnnouncementService announcementService)
+        public ModeratorController(IModeratorService moderatorService)
         {
-            _announcementService = announcementService;
+            _moderatorService = moderatorService;
         }
 
         [HttpPatch("confirm-announcement/{announcementId}")]
@@ -24,7 +24,7 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _announcementService.MakeAnnouncementActiveAsync(announcementId);
+                var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -42,7 +42,7 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _announcementService.MakeAnnouncementInactiveAsync(announcementId);
+                var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)
@@ -60,7 +60,7 @@ namespace DriveSalez.WebApi.Controllers
         {
             try
             {
-                var response = await _announcementService.MakeAnnouncementWaitingAsync(announcementId);
+                var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);
                 return response != null ? Ok(response) : BadRequest(response);
             }
             catch (UserNotAuthorizedException e)

@@ -1,6 +1,7 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
@@ -14,6 +15,7 @@ public class PaymentController : Controller
         _paymentService = paymentService;
     }
     
+    [Authorize]
     [HttpPost("top-up-balance")]
     public async Task<ActionResult> TopUpBalance([FromBody] PaymentRequestDto request)
     {
@@ -35,7 +37,8 @@ public class PaymentController : Controller
             return Problem();
         }
     }
-
+    
+    [Authorize]
     [HttpPost("add-premium-announcement-limit")]
     public async Task<ActionResult> AddPremiumAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     {

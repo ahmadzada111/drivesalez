@@ -173,6 +173,7 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [Authorize]
         [HttpPost("change-password")]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)
         {
@@ -226,6 +227,7 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [Authorize]
         [HttpPost("change-email")]
         public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto request)
         {
@@ -258,6 +260,7 @@ namespace DriveSalez.WebApi.Controllers
             }
         }
         
+        [Authorize]
         [HttpDelete("delete-user")]
         public async Task<ActionResult> DeleteUser([FromBody] string password)
         {

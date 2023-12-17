@@ -4,6 +4,7 @@ using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace DriveSalez.WebApi.Controllers;
 
@@ -15,12 +16,14 @@ public class OtpController : Controller
     private readonly IEmailService _emailService;
     private readonly IOtpService _otpService;
     private readonly IMemoryCache _cache;
+    private readonly IHostEnvironment _hostEnvironment;
     
-    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache)
+    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache, IHostEnvironment hostEnvironment)
     {
         _emailService = emailService;
         _otpService = otpService;
         _cache = cache;
+        _hostEnvironment = hostEnvironment;
     }
     
     [HttpPost("send")]
@@ -36,11 +39,11 @@ public class OtpController : Controller
             string otp = _otpService.GenerateOtp();
             string subject = "DriveSalez - One-Time Password (OTP)";
             
-            string templatePath = Path.Combine("EmailTemplates", "otp_email.html");
-            string htmlContent = System.IO.File.ReadAllText(templatePath);
-            htmlContent = htmlContent.Replace("{otp}", otp);
-            
-            string body = htmlContent;
+            string body = $"Thank you for choosing DriveSalez!\n\n" +
+                          $"To verify your identity, please use the following One-Time Password (OTP):\n{otp}\n\n" +
+                          $"This OTP is valid for 3 minutes and is used to ensure the security of your account.\n\n" +
+                          $"Please do not share this OTP with anyone and avoid responding to any requests for it.\n\n" +
+                          $"Best regards, DriveSalez Team";
                 
             
             var response = await _emailService.SendEmailAsync(email, subject, body);

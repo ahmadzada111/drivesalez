@@ -102,7 +102,7 @@ public class AnnouncementController : Controller
         }
     }
     
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin, Moderator")]
     [HttpGet("get-all-inactive-announcements")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
     {
@@ -110,7 +110,7 @@ public class AnnouncementController : Controller
         return response != null ? Ok(response) : BadRequest();
     }
 
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin, Moderator")]
     [HttpGet("get-all-waiting-announcements")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
     {
@@ -118,7 +118,7 @@ public class AnnouncementController : Controller
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin, Moderator")]
     [HttpGet("get-all-active-announcements")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
     {
@@ -196,6 +196,7 @@ public class AnnouncementController : Controller
         }
     }
     
+    [AllowAnonymous]
     [HttpGet("filter-announcements")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
