@@ -42,7 +42,7 @@ public class AnnouncementResponseDto
 
     public int? EngineVolume { get; set; }     //6200 CC
 
-    public int MileAge { get; set; }    //149000 km
+    public int Mileage { get; set; }    //149000 km
 
     public string MileageType { get; set; }
     

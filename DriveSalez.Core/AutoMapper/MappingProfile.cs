@@ -8,6 +8,17 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        
+        CreateMap<Announcement, AnnouncementResponseMiniDto>()
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls[0]))
+            .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.Year))
+            .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
+            .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model))
+            .ForMember(dest => dest.FuelType, opt => opt.MapFrom(src => src.Vehicle.FuelType))
+            .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.EngineVolume))
+            .ForMember(dest => dest.Mileage, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileAge))
+            .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileageType));
+        
        CreateMap<Announcement, AnnouncementResponseDto>()
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
@@ -26,7 +37,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.VinCode, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.VinCode))
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.Options))
             .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.EngineVolume))
-            .ForMember(dest => dest.MileAge, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileAge))
+            .ForMember(dest => dest.Mileage, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileAge))
             .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileageType))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Owner.Id))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Owner.UserName))

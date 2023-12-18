@@ -16,19 +16,19 @@ namespace DriveSalez.Core.RepositoryContracts
         Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid annoucementId);
 
         Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid annoucementId);
-
-        Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid annoucementId);
         
-        Task<AnnouncementResponseDto> GetAnnouncementByIdFromDb(Guid id);
+        Task<AnnouncementResponseDto> GetAnnouncementByIdFromDbAsync(Guid id);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsFromDb(PagingParameters parameters, AnnouncementState announcementState);
+        Task<AnnouncementResponseDto> GetActiveAnnouncementByIdFromDbAsync(Guid id);
+        
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsFromDbAsync(PagingParameters parameters, AnnouncementState announcementState);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetFilteredAnnouncementsFromDbAsync(
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState);
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId, PagingParameters pagingParameters, AnnouncementState announcementState);
 
-        Task<IEnumerable<AnnouncementResponseDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
             PagingParameters pagingParameters);
 
         Task<LimitRequestDto> GetUserLimitsFromDbAsync(Guid userId);

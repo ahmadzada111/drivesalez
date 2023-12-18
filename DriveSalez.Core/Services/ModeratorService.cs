@@ -10,15 +10,15 @@ namespace DriveSalez.Core.Services;
 
 public class ModeratorService : IModeratorService
 {
-    private readonly IAnnouncementRepository _announcementRepository;
+    private readonly IModeratorRepository _moderatorRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public ModeratorService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IAnnouncementRepository announcementRepository)
+    public ModeratorService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IModeratorRepository moderatorRepository)
     {
         _contextAccessor = accessor;
         _userManager = userManager;
-        _announcementRepository = announcementRepository;
+        _moderatorRepository = moderatorRepository;
     }
     
     public async Task<AnnouncementResponseDto> MakeAnnouncementActiveAsync(Guid announcementId)
@@ -30,7 +30,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementActiveInDbAsync(user.Id, announcementId);
 
         return response;
     }
@@ -44,7 +44,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
 
         return response;
     }
@@ -58,7 +58,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementWaitingInDbAsync(user.Id, announcementId);
 
         return response;
     }

@@ -72,8 +72,7 @@ public class AnnouncementController : Controller
             return Unauthorized(e.Message);
         }
     }
-
-    [AllowAnonymous]
+    
     [HttpGet("get-announcement-by-id/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncementById([FromRoute] Guid announcementId)
     {
@@ -88,6 +87,20 @@ public class AnnouncementController : Controller
         }
     }
 
+    [HttpGet("get-active-announcement-by-id/{announcementId}")]
+    public async Task<ActionResult<AnnouncementResponseDto>> GetActiveAnnouncementById([FromRoute] Guid announcementId)
+    {
+        try
+        {
+            var response = await _announcementService.GetActiveAnnouncementByIdAsync(announcementId);
+            return response != null ? Ok(response) : BadRequest();
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
     [HttpDelete("delete-announcement/{announcementId}")]
     public async Task<IActionResult> DeleteAnnouncement([FromRoute] Guid announcementId)
     {
@@ -104,7 +117,7 @@ public class AnnouncementController : Controller
     
     [Authorize(Roles = "Admin, Moderator")]
     [HttpGet("get-all-inactive-announcements")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
+    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
     {
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest();
@@ -112,15 +125,15 @@ public class AnnouncementController : Controller
 
     [Authorize(Roles = "Admin, Moderator")]
     [HttpGet("get-all-waiting-announcements")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
+    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
     {
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Waiting);
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [Authorize(Roles = "Admin, Moderator")]
+    [AllowAnonymous]
     [HttpGet("get-all-active-announcements")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
+    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
     {
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Active);
         return response != null ? Ok(response) : BadRequest();
@@ -140,8 +153,22 @@ public class AnnouncementController : Controller
         }
     }
 
+    [HttpPost("make-announcement-inactive/{announcementId}")]
+    public async Task<ActionResult> MakeAnnouncementInactiveByUserId([FromRoute] Guid announcementId)
+    {
+        try
+        {
+            var response = await _announcementService.MakeAnnouncementInactiveAsync(announcementId);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+    }
+    
     [HttpGet("get-all-active-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllActiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         try
         {
@@ -155,7 +182,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-inactive-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         try
         {
@@ -169,7 +196,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-waiting-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllWaitingAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllWaitingAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         try
         {
@@ -183,7 +210,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> GetAllAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         try
         {
@@ -198,7 +225,7 @@ public class AnnouncementController : Controller
     
     [AllowAnonymous]
     [HttpGet("filter-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         try
         {
