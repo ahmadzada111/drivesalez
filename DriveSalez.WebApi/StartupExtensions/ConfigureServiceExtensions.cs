@@ -26,6 +26,8 @@ public static class ConfigureServiceExtensions
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
         services.AddSingleton<IImageAnnotatorClientProvider, ImageAnnotatorClientProvider>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IModeratorService, ModeratorService>();
+        services.AddScoped<IModeratorRepository, ModeratorRepository>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IComputerVisionService, ComputerVisionService>();
         services.AddScoped<IFileService, FileService>();

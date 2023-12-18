@@ -86,7 +86,8 @@ public class AnnouncementController : Controller
             return Unauthorized(e.Message);
         }
     }
-
+    
+    [AllowAnonymous]
     [HttpGet("get-active-announcement-by-id/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetActiveAnnouncementById([FromRoute] Guid announcementId)
     {

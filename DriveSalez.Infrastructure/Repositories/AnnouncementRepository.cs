@@ -368,9 +368,10 @@ namespace DriveSalez.Infrastructure.Repositories
             if (result.State == EntityState.Modified)
             {
                 await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
             }
 
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            return null;
         }
         
         public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
@@ -400,9 +401,10 @@ namespace DriveSalez.Infrastructure.Repositories
             if (result.State == EntityState.Modified)
             {
                 await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
             }
 
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            return null;
         }
         
         public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId,

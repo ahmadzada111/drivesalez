@@ -10,10 +10,10 @@ namespace DriveSalez.Infrastructure.Repositories;
 
 public class ModeratorRepository : IModeratorRepository
 {
-    private readonly Mapper _mapper;
+    private readonly IMapper _mapper;
     private readonly ApplicationDbContext _dbContext;
     
-    public ModeratorRepository(Mapper mapper, ApplicationDbContext dbContext)
+    public ModeratorRepository(IMapper mapper, ApplicationDbContext dbContext)
     {
         _mapper = mapper;
         _dbContext = dbContext;
@@ -45,9 +45,10 @@ public class ModeratorRepository : IModeratorRepository
         if (result.State == EntityState.Modified)
         {
             await _dbContext.SaveChangesAsync();
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        return _mapper.Map<AnnouncementResponseDto>(announcement);
+        return null;
     }
 
     public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
@@ -76,9 +77,10 @@ public class ModeratorRepository : IModeratorRepository
         if (result.State == EntityState.Modified)
         {
             await _dbContext.SaveChangesAsync();
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        return _mapper.Map<AnnouncementResponseDto>(announcement);
+        return null;
     }
 
     public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid announcementId)
@@ -107,8 +109,9 @@ public class ModeratorRepository : IModeratorRepository
         if (result.State == EntityState.Modified)
         {
             await _dbContext.SaveChangesAsync();
+            return _mapper.Map<AnnouncementResponseDto>(announcement);
         }
 
-        return _mapper.Map<AnnouncementResponseDto>(announcement);
+        return null;
     }
 }
