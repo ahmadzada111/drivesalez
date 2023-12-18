@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
@@ -148,8 +149,8 @@ namespace DriveSalez.Infrastructure.DbContext
 
                 Subscriptions.Add(new Subscription() { SubscriptionName = "Premium Account", Price = subPrice });
                 Subscriptions.Add(new Subscription() { SubscriptionName = "Business Account", Price = subPrice });
-                Subscriptions.Add(new Subscription() { SubscriptionName = "Premium Announcement", Price = subPrice });
-                Subscriptions.Add(new Subscription() { SubscriptionName = "Regular Announcement", Price = subPrice });
+                AnnouncementPricing.Add(new AnnouncementTypePricing() { PricingName = "Premium Announcement", Price = subPrice });
+                AnnouncementPricing.Add(new AnnouncementTypePricing() { PricingName = "Regular Announcement", Price = subPrice });
                 
                 AccountLimits.Add(new AccountLimit()
                 {
@@ -191,6 +192,8 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<AccountLimit> AccountLimits => Set<AccountLimit>();
 
         public DbSet<Subscription> Subscriptions => Set<Subscription>();
+
+        public DbSet<AnnouncementTypePricing> AnnouncementPricing => Set<AnnouncementTypePricing>();
         
         public DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
         

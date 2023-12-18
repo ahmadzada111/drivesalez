@@ -1,3 +1,4 @@
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
@@ -15,6 +16,8 @@ public interface IDetailsService
     Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesAsync();
 
     Task<IEnumerable<Make>> GetAllMakesAsync();
+
+    Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementPricingsAsync();
 
     Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id);
 

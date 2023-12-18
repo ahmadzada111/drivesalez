@@ -1,3 +1,4 @@
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
@@ -64,6 +65,14 @@ public class DetailsRepository : IDetailsRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementTypePricingsFromDbAsync()
+    {
+        return await _dbContext.AnnouncementPricing
+            .Include(x => x.Price)
+            .ThenInclude(x => x.Currency)
+            .ToListAsync();
+    }
+    
     public async Task<IEnumerable<City>> GetAllCitiesByCountryIdFromDbAsync(int countryId)
     {
         return await _dbContext.Cities

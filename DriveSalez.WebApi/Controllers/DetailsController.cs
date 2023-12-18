@@ -128,6 +128,13 @@ public class DetailsController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
     
+    [HttpGet("get-all-announcement-pricings")]
+    public async Task<ActionResult> GetAllAnnouncementPricings()
+    {
+        var response = await _detailsService.GetAllAnnouncementPricingsAsync();
+        return response != null ? Ok(response) : BadRequest(response);
+    }
+    
     [HttpGet("get-all-cities-by-country-id")]
     public async Task<ActionResult> GetAllCitiesByCountryId([FromQuery] int countryId)
     {

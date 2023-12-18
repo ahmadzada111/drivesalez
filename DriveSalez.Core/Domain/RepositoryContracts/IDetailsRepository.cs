@@ -1,3 +1,4 @@
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
@@ -27,6 +28,8 @@ public interface IDetailsRepository
     Task<IEnumerable<Model>> GetAllModelsFromDbAsync();
 
     Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDbAsync(int id);
+
+    Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementTypePricingsFromDbAsync();
 
     Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDbAsync();
 

@@ -45,7 +45,7 @@ public class PaymentRepository : IPaymentRepository
             .Where(x => x.Id == userId)
             .FirstOrDefaultAsync();
         
-        var announcementSubscription = await _dbContext.Subscriptions
+        var announcementSubscription = await _dbContext.AnnouncementPricing
             .Include(x => x.Price)
             .Where(x => x.Id == subscriptionId)
             .FirstOrDefaultAsync();
@@ -60,7 +60,7 @@ public class PaymentRepository : IPaymentRepository
             throw new KeyNotFoundException();
         }
 
-        if (announcementSubscription.SubscriptionName == "Premium Announcement")
+        if (announcementSubscription.PricingName == "Premium Announcement")
         {
             if (user.AccountBalance - announcementSubscription.Price.Price > 0)
             {
@@ -76,7 +76,7 @@ public class PaymentRepository : IPaymentRepository
                 }
             }
         }
-        else if(announcementSubscription.SubscriptionName == "Regular Announcement")
+        else if(announcementSubscription.PricingName == "Regular Announcement")
         {
             if (user.AccountBalance - announcementSubscription.Price.Price > 0)
             {
