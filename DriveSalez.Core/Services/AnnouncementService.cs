@@ -32,7 +32,7 @@ public class AnnouncementService : IAnnouncementService
         {
             throw new UserNotAuthorizedException("User is not authorized!");
         }
-        
+
         if (request.IsPremium)
         {
             if (user.PremiumUploadLimit <= 0)
@@ -42,8 +42,11 @@ public class AnnouncementService : IAnnouncementService
 
             user.PremiumUploadLimit--;
         }
-
-        if (user.RegularUploadLimit <= 0)
+        else if (!request.IsPremium && user.RegularUploadLimit > 0)
+        {
+            user.PremiumUploadLimit--;
+        }
+        else
         {
             return null;
         }

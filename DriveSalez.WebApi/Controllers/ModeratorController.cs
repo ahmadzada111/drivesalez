@@ -13,15 +13,19 @@ namespace DriveSalez.WebApi.Controllers
     public class ModeratorController : Controller
     {
         private readonly IModeratorService _moderatorService;
-
-        public ModeratorController(IModeratorService moderatorService)
+        private readonly ILogger _logger;
+        
+        public ModeratorController(IModeratorService moderatorService, ILogger<ModeratorController> logger)
         {
             _moderatorService = moderatorService;
+            _logger = logger;
         }
 
         [HttpPatch("confirm-announcement/{announcementId}")]
         public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] Guid announcementId)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             try
             {
                 var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
@@ -40,6 +44,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPatch("make-announcement-inactive/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] Guid announcementId)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             try
             {
                 var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
@@ -58,6 +64,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPatch("make-announcement-waiting/{announcementId}")]
         public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] Guid announcementId)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             try
             {
                 var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);

@@ -11,16 +11,20 @@ namespace DriveSalez.WebApi.Controllers;
 public class PaymentController : Controller
 {
     private readonly IPaymentService _paymentService;
- 
-    public PaymentController(IPaymentService paymentService)
+    private readonly ILogger _logger;
+    
+    public PaymentController(IPaymentService paymentService, ILogger<PaymentController> logger)
     {
         _paymentService = paymentService;
+        _logger = logger;
     }
     
     [Authorize]
     [HttpPost("top-up-balance")]
     public async Task<ActionResult> TopUpBalance([FromBody] PaymentRequestDto request)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var result = await _paymentService.TopUpBalance(request);
@@ -44,6 +48,8 @@ public class PaymentController : Controller
     [HttpPost("add-announcement-limit")]
     public async Task<ActionResult> AddAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
@@ -66,6 +72,8 @@ public class PaymentController : Controller
     [HttpPost("buy-premium-account")]
     public async Task<ActionResult> BuyPremiumAccount(int subscriptionId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var result = await _paymentService.BuyPremiumAccount(subscriptionId);
@@ -88,6 +96,8 @@ public class PaymentController : Controller
     [HttpPost("buy-business-account")]
     public async Task<ActionResult> BuyBusinessAccount(int subscriptionId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var result = await _paymentService.BuyBusinessAccount(subscriptionId);

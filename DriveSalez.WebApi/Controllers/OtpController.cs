@@ -17,18 +17,23 @@ public class OtpController : Controller
     private readonly IOtpService _otpService;
     private readonly IMemoryCache _cache;
     private readonly IHostEnvironment _hostEnvironment;
+    private readonly ILogger _logger;
     
-    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache, IHostEnvironment hostEnvironment)
+    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache, 
+        IHostEnvironment hostEnvironment, ILogger<OtpController> logger)
     {
         _emailService = emailService;
         _otpService = otpService;
         _cache = cache;
         _hostEnvironment = hostEnvironment;
+        _logger = logger;
     }
     
     [HttpPost("send")]
     public async Task<ActionResult> SendOtpByEmail([FromBody] string email)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         if (_cache.TryGetValue(email, out string cachedOtp))
         {
             _cache.Remove(email);    
@@ -69,6 +74,8 @@ public class OtpController : Controller
     [HttpPost("verify-email")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response =  await _otpService.ValidateOtpAsync(_cache, request);

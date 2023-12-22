@@ -10,6 +10,7 @@ using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
@@ -18,164 +19,212 @@ namespace DriveSalez.Infrastructure.Repositories
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
-
+        private readonly ILogger _logger;
+        
         public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
-            IFileService fileService)
+            IFileService fileService, ILogger logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _fileService = fileService;
+            _logger = logger;
         }
 
         public async Task<LimitRequestDto> GetUserLimitsFromDbAsync(Guid userId)
         {
-            var user = await _dbContext.Users
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync();
-
-            if (user == null)
+            try
             {
-                throw new UserNotFoundException("User not found");
+                _logger.LogInformation($"Getting user limits from DB for user with ID: {userId}");
+
+                var user = await _dbContext.Users
+                    .Where(x => x.Id == userId)
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"User not found with ID: {userId}");
+                    throw new UserNotFoundException("User not found");
+                }
+
+                return new LimitRequestDto()
+                {
+                    PremiumLimit = user.PremiumUploadLimit,
+                    RegularLimit = user.RegularUploadLimit,
+                    AccountBalance = user.AccountBalance
+                };
             }
-
-            return new LimitRequestDto()
+            catch (Exception ex)
             {
-                PremiumLimit = user.PremiumUploadLimit,
-                RegularLimit = user.RegularUploadLimit,
-                AccountBalance = user.AccountBalance
-            };
+                _logger.LogError(ex, $"Error getting user limits from DB for user with ID: {userId}");
+                throw; 
+            }
         }
 
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
-            var user = await _dbContext.Users
+            try
+            {
+                _logger.LogInformation($"Creating announcement for user with ID: {userId}");
+
+                var user = await _dbContext.Users
                 .Include(x => x.PhoneNumbers)
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
-
-            if (!await CheckAllRelationsInAnnouncement(request)) return null;
-
-            var announcement = new Announcement()
-            {
-                Vehicle = new Vehicle()
+                if (user == null)
                 {
-                    Year = await _dbContext.ManufactureYears.FindAsync(request.YearId),
-                    Make = await _dbContext.Makes.FindAsync(request.MakeId),
-                    Model = await _dbContext.Models.FindAsync(request.ModelId),
-                    FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
-                    IsBrandNew = request.IsBrandNew,
+                    _logger.LogWarning($"User not found with ID: {userId}");
+                    throw new UserNotFoundException("User not found");
+                }
 
-                    VehicleDetails = new VehicleDetails()
+                if (!await CheckAllRelationsInAnnouncement(request)) return null;
+
+                var announcement = new Announcement()
+                {
+                    Vehicle = new Vehicle()
                     {
-                        BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
-                        Color = await _dbContext.VehicleColors.FindAsync(request.ColorId),
-                        HorsePower = request.HorsePower,
-                        GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
-                        DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId),
-                        MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId),
-                        OwnerQuantity = request.OwnerQuantity,
-                        Options = await _dbContext.VehicleDetailsOptions
-                            .Where(option => request.OptionsIds.Contains(option.Id))
-                            .ToListAsync(),
-                        Conditions = await _dbContext.VehicleDetailsConditions
-                            .Where(condition => request.ConditionsIds.Contains(condition.Id))
-                            .ToListAsync(),
-                        SeatCount = request.SeatCount,
-                        VinCode = request.VinCode,
-                        EngineVolume = request.EngineVolume,
-                        MileAge = request.Mileage,
-                        MileageType = request.MileageType
-                    }
-                },
-                ViewCount = 0,
-                ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
-                ExpirationDate = DateTimeOffset.Now.AddMonths(1),
-                Barter = request.Barter,
-                OnCredit = request.OnCredit,
-                Description = request.Description,
-                Price = request.Price,
-                Currency = await _dbContext.Currencies.FindAsync(request.CurrencyId),
-                Country = await _dbContext.Countries.FindAsync(request.CountryId),
-                City = await _dbContext.Cities.FindAsync(request.CityId),
-                IsPremium = request.IsPremium,
-                PremiumExpirationDate = DateTimeOffset.Now.AddMonths(1),
-                Owner = user
-            };
+                        Year = await _dbContext.ManufactureYears.FindAsync(request.YearId),
+                        Make = await _dbContext.Makes.FindAsync(request.MakeId),
+                        Model = await _dbContext.Models.FindAsync(request.ModelId),
+                        FuelType = await _dbContext.VehicleFuelTypes.FindAsync(request.FuelTypeId),
+                        IsBrandNew = request.IsBrandNew,
 
-            user.Announcements.Add(announcement);
-            var response = await _dbContext.Announcements.AddAsync(announcement);
+                        VehicleDetails = new VehicleDetails()
+                        {
+                            BodyType = await _dbContext.VehicleBodyTypes.FindAsync(request.BodyTypeId),
+                            Color = await _dbContext.VehicleColors.FindAsync(request.ColorId),
+                            HorsePower = request.HorsePower,
+                            GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
+                            DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId),
+                            MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId),
+                            OwnerQuantity = request.OwnerQuantity,
+                            Options = await _dbContext.VehicleDetailsOptions
+                                .Where(option => request.OptionsIds.Contains(option.Id))
+                                .ToListAsync(),
+                            Conditions = await _dbContext.VehicleDetailsConditions
+                                .Where(condition => request.ConditionsIds.Contains(condition.Id))
+                                .ToListAsync(),
+                            SeatCount = request.SeatCount,
+                            VinCode = request.VinCode,
+                            EngineVolume = request.EngineVolume,
+                            MileAge = request.Mileage,
+                            MileageType = request.MileageType
+                        }
+                    },
+                    ViewCount = 0,
+                    ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
+                    ExpirationDate = DateTimeOffset.Now.AddMonths(1),
+                    Barter = request.Barter,
+                    OnCredit = request.OnCredit,
+                    Description = request.Description,
+                    Price = request.Price,
+                    Currency = await _dbContext.Currencies.FindAsync(request.CurrencyId),
+                    Country = await _dbContext.Countries.FindAsync(request.CountryId),
+                    City = await _dbContext.Cities.FindAsync(request.CityId),
+                    IsPremium = request.IsPremium,
+                    PremiumExpirationDate = DateTimeOffset.Now.AddMonths(1),
+                    Owner = user
+                };
 
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return _mapper.Map<AnnouncementResponseDto>(announcement);
+                user.Announcements.Add(announcement);
+                var response = await _dbContext.Announcements.AddAsync(announcement);
+
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return _mapper.Map<AnnouncementResponseDto>(announcement);
+                }
+
+                return null;
             }
-
-            return null;
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting user limits from DB for user with ID: {userId}");
+                throw;
+            }
         }
 
         private async Task<bool> CheckAllRelationsInAnnouncement(CreateAnnouncementDto request)
         {
-            var model = await _dbContext.Models.FindAsync(request.ModelId);
-            var make = await _dbContext.Makes.FindAsync(request.MakeId);
-            var country = await _dbContext.Countries.FindAsync(request.CountryId);
-            var city = await _dbContext.Cities.FindAsync(request.CityId);
-            var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
-            var distanceUnit = request.MileageType;
-
-            if (model.Make != make || country != city.Country || currency == null ||
-                distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
+            try
             {
-                return false;
-            }
+                _logger.LogInformation("Checking relations in announcement...");
 
-            return true;
+                var model = await _dbContext.Models.FindAsync(request.ModelId);
+                var make = await _dbContext.Makes.FindAsync(request.MakeId);
+                var country = await _dbContext.Countries.FindAsync(request.CountryId);
+                var city = await _dbContext.Cities.FindAsync(request.CityId);
+                var currency = await _dbContext.Currencies.FindAsync(request.CurrencyId);
+                var distanceUnit = request.MileageType;
+
+                if (model.Make != make || country != city.Country || currency == null ||
+                    distanceUnit != DistanceUnit.KM && distanceUnit != DistanceUnit.MI)
+                {
+                    _logger.LogWarning("Relation check failed");
+                    return false;
+                }
+
+                _logger.LogInformation("All relations in announcement are valid.");
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error checking relations in announcement.");
+                throw;
+            }
         }
+
         
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDbAsync(Guid id)
         {
-            var response = await _dbContext.Announcements
-                .Include(x => x.Owner)
-                .Include(x => x.Owner.PhoneNumbers)
-                .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
-                .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
-                .Include(x => x.Vehicle.Make)
-                .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails.Color)
-                .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails.Options)
-                .Include(x => x.Vehicle.VehicleDetails.Conditions)
-                .Include(x => x.Country)
-                .Include(x => x.City)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (response == null)
+            try
             {
-                throw new KeyNotFoundException();
-            }
+                _logger.LogInformation($"Getting announcement from DB with ID: {id}");
 
-            response.ViewCount++;
+                var response = await _dbContext.Announcements
+                    .Include(x => x.Owner)
+                    .Include(x => x.Owner.PhoneNumbers)
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Currency)
+                    .Include(x => x.ImageUrls)
+                    .Include(x => x.Vehicle.Year)
+                    .Include(x => x.Vehicle.Make)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.Vehicle.FuelType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails.Color)
+                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails.Options)
+                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                    .Include(x => x.Country)
+                    .Include(x => x.City)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (response == null)
+                {
+                    _logger.LogWarning($"Announcement not found with ID: {id}");
+                    throw new KeyNotFoundException();
+                }
+
+                response.ViewCount++;
             
-            var result = _dbContext.Update(response);
+                var result = _dbContext.Update(response);
             
-            if (result.State == EntityState.Modified)
+                if (result.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return _mapper.Map<AnnouncementResponseDto>(response);
+                }
+
+                return null;
+            }
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return _mapper.Map<AnnouncementResponseDto>(response);
+                _logger.LogError(e, $"Error getting announcement from DB with ID: {id}");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<AnnouncementResponseDto> GetActiveAnnouncementByIdFromDbAsync(Guid id)
@@ -534,6 +583,7 @@ namespace DriveSalez.Infrastructure.Repositories
         {
             var filteredAnnouncements = _dbContext.Announcements
                 .AsNoTracking()
+                .Where(x => x.AnnouncementState == AnnouncementState.Active)
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
@@ -557,11 +607,16 @@ namespace DriveSalez.Infrastructure.Repositories
                 .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
                 .Take(pagingParameters.PageSize);
              
-             if (filterParameters.FromYearId != null && filterParameters.ToYearId != null)
+             if (filterParameters.FromYearId != null)
              {
-                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Year.Id >= filterParameters.FromYearId && x.Vehicle.Year.Id <= filterParameters.ToYearId);
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Year.Id >= filterParameters.FromYearId);
              }
 
+             if (filterParameters.ToYearId != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Year.Id <= filterParameters.ToYearId);
+             }
+             
              if (filterParameters.MakeId != null)
              {
                  filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
@@ -577,10 +632,14 @@ namespace DriveSalez.Infrastructure.Repositories
                  filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
              }
              
-             if (filterParameters.FromHorsePower != null && filterParameters.ToHorsePower != null)
+             if (filterParameters.FromHorsePower != null)
              {
-                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower 
-                                                                          && x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower);
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower);
+             }
+             
+             if (filterParameters.ToHorsePower != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower);
              }
              
              if (filterParameters.SeatCount != null)
@@ -588,16 +647,24 @@ namespace DriveSalez.Infrastructure.Repositories
                  filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount);
              }
              
-             if (filterParameters.FromEngineVolume != null && filterParameters.ToEngineVolume != null)
+             if (filterParameters.FromEngineVolume != null)
              {
-                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume 
-                                                                          && x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume);
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume);
              }
              
-             if (filterParameters.FromMileage != null && filterParameters.ToMileage != null)
+             if (filterParameters.ToEngineVolume != null)
              {
-                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.MileAge >= filterParameters.FromMileage
-                                                                        && x.Vehicle.VehicleDetails.MileAge <= filterParameters.ToMileage);
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume);
+             }
+             
+             if (filterParameters.FromMileage != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.MileAge >= filterParameters.FromMileage);
+             }
+             
+             if (filterParameters.ToMileage != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Vehicle.VehicleDetails.MileAge <= filterParameters.ToMileage);
              }
              
              if (filterParameters.MileageType != null)
@@ -615,10 +682,14 @@ namespace DriveSalez.Infrastructure.Repositories
                  filteredAnnouncements = filteredAnnouncements.Where(x => x.OnCredit == filterParameters.OnCredit);
              }
              
-             if (filterParameters.FromPrice != null && filterParameters.ToPrice != null)
+             if (filterParameters.FromPrice != null)
              {
-                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Price >= filterParameters.FromPrice
-                                                                          && x.Price <= filterParameters.ToPrice);
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Price >= filterParameters.FromPrice);
+             }
+             
+             if (filterParameters.ToPrice != null)
+             {
+                 filteredAnnouncements = filteredAnnouncements.Where(x => x.Price <= filterParameters.ToPrice);
              }
              
              if (filterParameters.OnCredit != null)

@@ -14,15 +14,19 @@ namespace DriveSalez.WebApi.Controllers;
 public class AnnouncementController : Controller
 {
     private readonly IAnnouncementService _announcementService;
-
-    public AnnouncementController(IAnnouncementService announcementService)
+    private readonly ILogger _logger;
+    
+    public AnnouncementController(IAnnouncementService announcementService, ILogger<AnnouncementController> logger)
     {
         _announcementService = announcementService;
+        _logger = logger;
     }
 
     [HttpPost("create-announcement")]
     public async Task<IActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         if (!ModelState.IsValid)
         {
             string errorMessage = string.Join(" | ",
@@ -48,6 +52,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-user-limit")]
     public async Task<ActionResult> GetUserLimits()
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetUserLimitsAsync();
@@ -62,6 +68,8 @@ public class AnnouncementController : Controller
     [HttpPatch("update-announcement/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.UpdateAnnouncementAsync(announcementId, createAnnouncement);
@@ -76,6 +84,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-announcement-by-id/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncementById([FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetAnnouncementByIdAsync(announcementId);
@@ -91,6 +101,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-active-announcement-by-id/{announcementId}")]
     public async Task<ActionResult<AnnouncementResponseDto>> GetActiveAnnouncementById([FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetActiveAnnouncementByIdAsync(announcementId);
@@ -105,6 +117,8 @@ public class AnnouncementController : Controller
     [HttpDelete("delete-announcement/{announcementId}")]
     public async Task<IActionResult> DeleteAnnouncement([FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.DeleteDeactivateAnnouncementAsync(announcementId);
@@ -120,6 +134,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-inactive-announcements")]
     public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest();
     }
@@ -128,6 +144,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-waiting-announcements")]
     public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Waiting);
         return response != null ? Ok(response) : BadRequest();
     }
@@ -136,6 +154,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-active-announcements")]
     public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Active);
         return response != null ? Ok(response) : BadRequest();
     }
@@ -143,6 +163,8 @@ public class AnnouncementController : Controller
     [HttpPost("reactivate-announcement/{announcementId}")]
     public async Task<ActionResult> ReactivateAnnouncement([FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.MakeAnnouncementActiveAsync(announcementId);
@@ -157,6 +179,8 @@ public class AnnouncementController : Controller
     [HttpPost("make-announcement-inactive/{announcementId}")]
     public async Task<ActionResult> MakeAnnouncementInactiveByUserId([FromRoute] Guid announcementId)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.MakeAnnouncementInactiveAsync(announcementId);
@@ -171,6 +195,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-active-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Active);
@@ -185,6 +211,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-inactive-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Inactive);
@@ -199,6 +227,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-waiting-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllWaitingAnnouncementsByUserId(PagingParameters pagingParameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Waiting);
@@ -213,6 +243,8 @@ public class AnnouncementController : Controller
     [HttpGet("get-all-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllAnnouncementsByUserId(PagingParameters pagingParameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetAllAnnouncementsByUserIdAsync(pagingParameters);
@@ -228,6 +260,8 @@ public class AnnouncementController : Controller
     [HttpGet("filter-announcements")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
         try
         {
             var response = await _announcementService.GetFilteredAnnouncementsAsync(filterParameters, pagingParameters);

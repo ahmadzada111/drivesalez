@@ -14,15 +14,19 @@ namespace DriveSalez.WebApi.Controllers
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
-
-        public AdminController(IAdminService adminService)
+        private readonly ILogger _logger;
+        
+        public AdminController(IAdminService adminService, ILogger<AdminController> logger)
         {
             _adminService = adminService;
+            _logger = logger;
         }
 
         [HttpPost("add-new-color")]
         public async Task<ActionResult> AddNewColor([FromBody] string color)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             try
             {
                 var response = await _adminService.AddColorAsync(color);

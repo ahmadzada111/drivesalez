@@ -16,17 +16,22 @@ namespace DriveSalez.WebApi.Controllers
         private readonly IAccountService _accountService;
         private readonly IOtpService _otpService;
         private readonly IMemoryCache _cache;
+        private readonly ILogger _logger;
         
-        public AccountController(IAccountService accountService, IOtpService otpService, IMemoryCache cache)
+        public AccountController(IAccountService accountService, IOtpService otpService, IMemoryCache cache, 
+            ILogger<AccountController> logger)
         {
             _accountService = accountService;
             _otpService = otpService;
             _cache = cache;
+            _logger = logger;
         }
 
         [HttpPost("register-default-account")]
         public async Task<ActionResult> RegisterDefaultAccount([FromBody] RegisterDefaultAccountDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -47,6 +52,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("register-premium-account")]
         public async Task<ActionResult> RegisterPremiumAccount([FromBody] RegisterPaidAccountDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -67,6 +74,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("register-business-account")]
         public async Task<ActionResult> RegisterBusinessAccount([FromBody] RegisterPaidAccountDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -87,6 +96,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthenticationResponseDto>> Login([FromBody] LoginDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
@@ -122,6 +133,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("login-staff")]
         public async Task<ActionResult<AuthenticationResponseDto>> LoginStaff([FromBody] LoginDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
@@ -148,6 +161,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpGet("logout")]
         public async Task<ActionResult> LogOut()
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             await _accountService.LogOutAsync();
             return NoContent();
         }
@@ -155,6 +170,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult<AuthenticationResponseDto>> Refresh([FromBody] RefreshJwtDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -177,6 +194,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("change-password")]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -198,6 +217,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("reset-password")]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -231,6 +252,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("change-email")]
         public async Task<ActionResult> ChangeEmail([FromBody] ChangeEmailDto request)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (!ModelState.IsValid)
             {
                 string errorMessage = string.Join(" | ",
@@ -264,6 +287,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpDelete("delete-user")]
         public async Task<ActionResult> DeleteUser([FromBody] string password)
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             if (string.IsNullOrEmpty(password))
             {
                 return Unauthorized("Password is invalid");
@@ -283,6 +308,8 @@ namespace DriveSalez.WebApi.Controllers
         [HttpPost("create-admin")]
         public async Task<ActionResult> CreateAdmin()
         {
+            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
             try
             {
                 var result = await _accountService.CreateAdminAsync();
