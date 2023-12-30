@@ -106,7 +106,7 @@ public static class ConfigureServiceExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(
-            options => { options.UseSqlServer(configuration.GetConnectionString("MacConnection")); }
+            options => { options.UseSqlServer(configuration.GetConnectionString("AzureDbConnection")); }
         );
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -159,10 +159,9 @@ public static class ConfigureServiceExtensions
         {
             options.AddPolicy("DriveSalezCorsPolicy", builder =>
             {
-                builder.WithOrigins("http://drivesalez.site:5073")
+                builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+                    .AllowAnyHeader();
             });
         });
 

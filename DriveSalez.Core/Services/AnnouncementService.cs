@@ -44,7 +44,7 @@ public class AnnouncementService : IAnnouncementService
         }
         else if (!request.IsPremium && user.RegularUploadLimit > 0)
         {
-            user.PremiumUploadLimit--;
+            user.RegularUploadLimit--;
         }
         else
         {
