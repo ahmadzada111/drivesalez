@@ -44,7 +44,8 @@ public class AccountService : IAccountService
             LastName = request.LastName,
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
-            LastUpdateDate = DateTimeOffset.Now
+            LastUpdateDate = DateTimeOffset.Now,
+            SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);

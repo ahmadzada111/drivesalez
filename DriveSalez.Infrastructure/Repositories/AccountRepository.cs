@@ -85,8 +85,8 @@ public class AccountRepository : IAccountRepository
                 EmailConfirmed = true,
                 SecurityStamp = user.SecurityStamp,
                 CreationDate = user.CreationDate,
-                LastUpdateDate = user.LastUpdateDate
-            
+                LastUpdateDate = user.LastUpdateDate,
+                SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
             };
 
             var removeResponse = _dbContext.Users.Remove(user);
@@ -136,7 +136,8 @@ public class AccountRepository : IAccountRepository
                 CreationDate = user.CreationDate,
                 LastUpdateDate = user.LastUpdateDate,
                 PremiumUploadLimit = limit.PremiumAnnouncementsLimit + user.PremiumUploadLimit,
-                AccountBalance = user.AccountBalance
+                AccountBalance = user.AccountBalance,
+                SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
             };
 
             var removeResponse = _dbContext.Users.Remove(user);
@@ -186,7 +187,8 @@ public class AccountRepository : IAccountRepository
                 CreationDate = user.CreationDate,
                 LastUpdateDate = user.LastUpdateDate,
                 PremiumUploadLimit = limit.PremiumAnnouncementsLimit + user.PremiumUploadLimit,
-                AccountBalance = user.AccountBalance
+                AccountBalance = user.AccountBalance,
+                SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
             };
 
             var removeResponse = _dbContext.Users.Remove(user);
