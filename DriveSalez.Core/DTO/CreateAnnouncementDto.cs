@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using Microsoft.AspNetCore.Http;
@@ -59,6 +60,7 @@ namespace DriveSalez.Core.DTO
         public int Mileage { get; set; }    
 
         [Required(ErrorMessage = "Mileage type cannot be blank!")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public DistanceUnit MileageType { get; set; }
 
         [Required(ErrorMessage = "Engine volume cannot be blank!")]

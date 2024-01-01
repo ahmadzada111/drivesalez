@@ -167,7 +167,7 @@ namespace DriveSalez.Core.Services
                 return null;
             }
             
-            var response = await _adminRepository.SendNewVehicleDetailsConditionToDbAsync(condition, description);
+            var response = await _adminRepository.SendNewVehicleConditionToDbAsync(condition, description);
             return response;
         }
 
@@ -187,7 +187,7 @@ namespace DriveSalez.Core.Services
                 return null;
             }
             
-            var response = await _adminRepository.SendNewVehicleDetailsOptionsToDbAsync(option);
+            var response = await _adminRepository.SendNewVehicleOptionToDbAsync(option);
             return response;
         }
 

@@ -5,6 +5,7 @@ using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DriveSalez.Infrastructure.Repositories;
 
@@ -12,106 +13,138 @@ public class ModeratorRepository : IModeratorRepository
 {
     private readonly IMapper _mapper;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger _logger;
     
-    public ModeratorRepository(IMapper mapper, ApplicationDbContext dbContext)
+    public ModeratorRepository(IMapper mapper, ApplicationDbContext dbContext, ILogger<ModeratorRepository> logger)
     {
         _mapper = mapper;
         _dbContext = dbContext;
+        _logger = logger;
     }
     
     public async Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
     {
-        var user = await _dbContext.Users.FindAsync(userId);
-
-        if (user == null)
+        try
         {
-            throw new UserNotFoundException("User not found");
-        }
+            _logger.LogInformation($"Making announcement with ID {announcementId} active in DB by moderator");
+            
+            var user = await _dbContext.Users.FindAsync(userId);
 
-        var announcement =
-            await _dbContext.Announcements
-                .FirstOrDefaultAsync(x => x.Id == announcementId && 
-                                          x.AnnouncementState != AnnouncementState.Active);
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
 
-        if (announcement == null)
-        {
+            var announcement =
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.AnnouncementState != AnnouncementState.Active);
+
+            if (announcement == null)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Active;
+
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
+            }
+
             return null;
         }
-            
-        announcement.AnnouncementState = AnnouncementState.Active;
-
-        var result = _dbContext.Announcements.Update(announcement);
-
-        if (result.State == EntityState.Modified)
+        catch (Exception e)
         {
-            await _dbContext.SaveChangesAsync();
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            _logger.LogError(e, $"Error making announcement with ID {announcementId} active in DB by moderator");
+            throw;
         }
-
-        return null;
     }
 
     public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
     {
-        var user = await _dbContext.Users.FindAsync(userId);
-
-        if (user == null)
+        try
         {
-            throw new UserNotFoundException("User not found");
-        }
+            _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB by moderator");
+            
+            var user = await _dbContext.Users.FindAsync(userId);
 
-        var announcement =
-            await _dbContext.Announcements
-                .FirstOrDefaultAsync(x => x.Id == announcementId && 
-                                          x.AnnouncementState != AnnouncementState.Inactive);
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
 
-        if (announcement == null)
-        {
+            var announcement =
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.AnnouncementState != AnnouncementState.Inactive);
+
+            if (announcement == null)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Inactive;
+
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
+            }
+
             return null;
         }
-            
-        announcement.AnnouncementState = AnnouncementState.Inactive;
-
-        var result = _dbContext.Announcements.Update(announcement);
-
-        if (result.State == EntityState.Modified)
+        catch (Exception e)
         {
-            await _dbContext.SaveChangesAsync();
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            _logger.LogError(e, $"Error making announcement with ID {announcementId} inactive in DB by moderator");
+            throw;
         }
-
-        return null;
     }
 
     public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid announcementId)
     {
-        var user = await _dbContext.Users.FindAsync(userId);
-
-        if (user == null)
+        try
         {
-            throw new UserNotFoundException("User not found");
-        }
+            _logger.LogInformation($"Making announcement with ID {announcementId} waiting in DB by moderator");
 
-        var announcement =
-            await _dbContext.Announcements
-                .FirstOrDefaultAsync(x => x.Id == announcementId && 
-                                          x.AnnouncementState != AnnouncementState.Waiting);
+            var user = await _dbContext.Users.FindAsync(userId);
 
-        if (announcement == null)
-        {
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            var announcement =
+                await _dbContext.Announcements
+                    .FirstOrDefaultAsync(x => x.Id == announcementId && 
+                                              x.AnnouncementState != AnnouncementState.Waiting);
+
+            if (announcement == null)
+            {
+                return null;
+            }
+            
+            announcement.AnnouncementState = AnnouncementState.Waiting;
+
+            var result = _dbContext.Announcements.Update(announcement);
+
+            if (result.State == EntityState.Modified)
+            {
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<AnnouncementResponseDto>(announcement);
+            }
+
             return null;
         }
-            
-        announcement.AnnouncementState = AnnouncementState.Waiting;
-
-        var result = _dbContext.Announcements.Update(announcement);
-
-        if (result.State == EntityState.Modified)
+        catch (Exception e)
         {
-            await _dbContext.SaveChangesAsync();
-            return _mapper.Map<AnnouncementResponseDto>(announcement);
+            _logger.LogError(e, $"Error making announcement with ID {announcementId} inactive in DB by moderator");
+            throw;
         }
-
-        return null;
     }
 }

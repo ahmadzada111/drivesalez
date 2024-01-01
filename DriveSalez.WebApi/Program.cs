@@ -1,3 +1,4 @@
+using System.Text.Json;
 using DriveSalez.WebApi.StartupExtensions;
 using System.Text.Json.Serialization;
 using DriveSalez.WebApi.Middleware;
@@ -10,7 +11,13 @@ namespace DriveSalez.WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             

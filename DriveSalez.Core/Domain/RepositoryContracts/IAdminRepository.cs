@@ -25,11 +25,11 @@ namespace DriveSalez.Core.RepositoryContracts
 
         Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
 
-        Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition, string description);
+        Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description);
 
         Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
 
-        Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option);
+        Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option);
 
         Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId);
         

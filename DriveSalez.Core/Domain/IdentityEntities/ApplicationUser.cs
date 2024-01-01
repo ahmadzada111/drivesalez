@@ -18,6 +18,8 @@ namespace DriveSalez.Core.IdentityEntities
         
         public List<Announcement>? Announcements { get; set; } = new List<Announcement>();
         
+        public DateTimeOffset SubscriptionExpirationDate { get; set; }
+
         public int PremiumUploadLimit { get; set; }
 
         public int RegularUploadLimit { get; set; }

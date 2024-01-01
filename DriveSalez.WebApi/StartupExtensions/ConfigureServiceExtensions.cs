@@ -234,6 +234,16 @@ public static class ConfigureServiceExtensions
                 .WithIdentity("NotifyUserAboutSubscriptionCancellation-trigger")
                 .WithCronSchedule("0 * * * * ?")
                 .StartNow());
+            
+            var renewLimitsForDefaultUser = new JobKey("RenewLimitsForDefaultUser");
+            q.AddJob<RenewLimitsForDefaultUserJob>(opts => opts.WithIdentity(renewLimitsForDefaultUser)
+                .StoreDurably());
+            
+            q.AddTrigger(opts => opts
+                .ForJob(renewLimitsForDefaultUser)
+                .WithIdentity("RenewLimitsForDefaultUser-trigger")
+                .WithCronSchedule("0 * * * * ?")
+                .StartNow());
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

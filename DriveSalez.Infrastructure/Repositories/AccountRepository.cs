@@ -102,7 +102,7 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error updating user with ID {user.Id} to DefaultAccount in DB");
+            _logger.LogError(e, $"Error updating user with ID {user.Id} to DefaultAccount in DB");
             throw;
         }
     }
@@ -152,7 +152,7 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error updating user with ID {user.Id} to Premium in DB");
+            _logger.LogError(e, $"Error updating user with ID {user.Id} to Premium in DB");
             throw;
         }
     }
@@ -202,7 +202,7 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error updating user with ID {user.Id} to Business in DB");
+            _logger.LogError(e, $"Error updating user with ID {user.Id} to Business in DB");
             throw;
         }
     }

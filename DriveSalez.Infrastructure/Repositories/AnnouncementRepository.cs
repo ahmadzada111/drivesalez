@@ -53,9 +53,9 @@ namespace DriveSalez.Infrastructure.Repositories
                     AccountBalance = user.AccountBalance
                 };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, $"Error getting user limits from DB for user with ID: {userId}");
+                _logger.LogError(e, $"Error getting user limits from DB for user with ID: {userId}");
                 throw;
             }
         }
@@ -94,8 +94,7 @@ namespace DriveSalez.Infrastructure.Repositories
                             Color = await _dbContext.VehicleColors.FindAsync(request.ColorId),
                             HorsePower = request.HorsePower,
                             GearboxType = await _dbContext.VehicleGearboxTypes.FindAsync(request.GearboxId),
-                            DrivetrainType =
-                                await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId),
+                            DrivetrainType = await _dbContext.VehicleDriveTrainTypes.FindAsync(request.DrivetrainTypeId),
                             MarketVersion = await _dbContext.VehicleMarketVersions.FindAsync(request.MarketVersionId),
                             OwnerQuantity = request.OwnerQuantity,
                             Options = await _dbContext.VehicleDetailsOptions
@@ -174,7 +173,6 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-
         public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDbAsync(Guid id)
         {
             try
@@ -209,17 +207,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     throw new KeyNotFoundException();
                 }
 
-                response.ViewCount++;
-
-                var result = _dbContext.Update(response);
-
-                if (result.State == EntityState.Modified)
-                {
-                    await _dbContext.SaveChangesAsync();
-                    return _mapper.Map<AnnouncementResponseDto>(response);
-                }
-
-                return null;
+                return _mapper.Map<AnnouncementResponseDto>(response);
             }
             catch (Exception e)
             {

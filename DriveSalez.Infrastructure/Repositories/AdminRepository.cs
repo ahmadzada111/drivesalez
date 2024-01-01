@@ -6,425 +6,638 @@ using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
     public class AdminRepository : IAdminRepository
     {
         private readonly ApplicationDbContext _dbContext;
-
-        public AdminRepository(ApplicationDbContext dbContext)
+        private readonly ILogger _logger;
+        
+        public AdminRepository(ApplicationDbContext dbContext, ILogger<AdminRepository> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<VehicleColor> SendNewColorToDbAsync(string color)
         {
-            if (string.IsNullOrEmpty(color))
+            try
             {
+                _logger.LogInformation($"Sending new color to DB");
+
+                if (string.IsNullOrEmpty(color))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Color = color });
+
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Color = color });
-
-            if (response.State == EntityState.Added)
+            catch (Exception ex)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(ex, $"Error sending new color to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Country> SendNewCountryToDbAsync(string country)
         {
-            if (string.IsNullOrEmpty(country))
+            try
             {
+                _logger.LogInformation("Sending new country to DB");
+                
+                if (string.IsNullOrEmpty(country))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Countries.AddAsync(new Country() { CountryName = country });
+
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Countries.AddAsync(new Country() { CountryName = country });
-
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new country to DB");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
         {
-            if (string.IsNullOrEmpty(bodyType))
+            try
             {
+                _logger.LogInformation($"Sending new body type to DB");
+                
+                if (string.IsNullOrEmpty(bodyType))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
+
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
-
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, $"Error sending new body type to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
         {
-            if (string.IsNullOrEmpty(driveTrainType))
+            try
             {
+                _logger.LogInformation($"Sending new vehicle drivetrain type to DB");
+                
+                if (string.IsNullOrEmpty(driveTrainType))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { DrivetrainType = driveTrainType });
+           
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { DrivetrainType = driveTrainType });
-           
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, $"Error sending new vehicle drivetrain type to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
         {
-            if (string.IsNullOrEmpty(gearboxType))
+            try
             {
+                _logger.LogInformation("Sending new vehicle gearbox type to DB");
+                
+                if (string.IsNullOrEmpty(gearboxType))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { GearboxType = gearboxType });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { GearboxType = gearboxType });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new vehicle gearbox type to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<City> SendNewCityToDbAsync(string city, int countryId)
         {
-            if (string.IsNullOrEmpty(city))
+            try
             {
+                _logger.LogInformation("Sending new city to DB");
+                
+                if (string.IsNullOrEmpty(city))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Cities.AddAsync(new City()
+                {
+                    CityName = city,
+                    Country = await _dbContext.FindAsync<Country>(countryId)
+                });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Cities.AddAsync(new City()
+            catch (Exception e)
             {
-                CityName = city,
-                Country = await _dbContext.FindAsync<Country>(countryId)
-            });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new city to DB");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<Make> SendNewMakeToDbAsync(string make)
         {
-            if (string.IsNullOrEmpty(make))
+            try
             {
+                _logger.LogInformation("Sending new make to DB");
+                
+                if (string.IsNullOrEmpty(make))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Makes.AddAsync(new Make() { MakeName = make });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Makes.AddAsync(new Make() { MakeName = make });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new make to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Model> SendNewModelToDbAsync(int makeId, string model)
         {
-            if (string.IsNullOrEmpty(model))
+            try
             {
+                _logger.LogInformation("Sending new model to DB");
+                
+                if (string.IsNullOrEmpty(model))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
+
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
-
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new model to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
         {
-            if (string.IsNullOrEmpty(fuelType))
+            try
             {
+                _logger.LogInformation("Sending new vehicle fuel type to DB");
+                
+                if (string.IsNullOrEmpty(fuelType))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleFuelTypes.AddAsync(new VehicleFuelType() { FuelType = fuelType });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleFuelTypes.AddAsync(new VehicleFuelType() { FuelType = fuelType });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new vehicle fuel type to DB");
+                throw;
             }
-
-            return null;
         }
 
-        public async Task<VehicleCondition> SendNewVehicleDetailsConditionToDbAsync(string condition, string description)
+        public async Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description)
         {
-            if (string.IsNullOrEmpty(condition))
+            try
             {
+                _logger.LogInformation("Sending new vehicle condition to DB");
+                
+                if (string.IsNullOrEmpty(condition))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition()
+                {
+                    Condition = condition, 
+                    Description = description
+                });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition()
+            catch (Exception e)
             {
-                Condition = condition, 
-                Description = description
-            });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new vehicle condition to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
         {
-            if (string.IsNullOrEmpty(marketVersion))
+            try
             {
+                _logger.LogInformation("Sending new vehicle market version to DB");
+                
+                if (string.IsNullOrEmpty(marketVersion))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { MarketVersion = marketVersion });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { MarketVersion = marketVersion });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new vehicle market version to DB");
+                throw;
             }
-
-            return null;
         }
 
-        public async Task<VehicleOption> SendNewVehicleDetailsOptionsToDbAsync(string option)
+        public async Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option)
         {
-            if (string.IsNullOrEmpty(option))
+            try
             {
+                _logger.LogInformation("Sending new vehicle option to DB");
+                
+                if (string.IsNullOrEmpty(option))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.VehicleDetailsOptions.AddAsync(new VehicleOption() { Option = option });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.VehicleDetailsOptions.AddAsync(new VehicleOption() { Option = option });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new vehicle option to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId)
         {
-            if (string.IsNullOrEmpty(subscriptionName))
+            try
             {
+                _logger.LogInformation("Sending new subscription to DB");
+                
+                if (string.IsNullOrEmpty(subscriptionName))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Subscriptions.AddAsync(new Subscription()
+                {
+                    SubscriptionName = subscriptionName,
+                    Price = new SubscriptionPrice()
+                    {
+                        Price = price,
+                        Currency = await _dbContext.FindAsync<Currency>(currencyId)
+                    }
+                });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Subscriptions.AddAsync(new Subscription()
+            catch (Exception e)
             {
-                SubscriptionName = subscriptionName,
-                Price = new SubscriptionPrice()
-                {
-                    Price = price,
-                    Currency = await _dbContext.FindAsync<Currency>(currencyId)
-                }
-            });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new subscription to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Currency> SendNewCurrencyToDbAsync(string currencyName)
         {
-            if (string.IsNullOrEmpty(currencyName))
+            try
             {
+                _logger.LogInformation("Sending new currency to DB");
+                
+                if (string.IsNullOrEmpty(currencyName))
+                {
+                    return null;
+                }
+
+                var response = await _dbContext.Currencies.AddAsync(new Currency() { CurrencyName = currencyName });
+            
+                if (response.State == EntityState.Added)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return response.Entity;
+                }
+
                 return null;
             }
-
-            var response = await _dbContext.Currencies.AddAsync(new Currency() { CurrencyName = currencyName });
-            
-            if (response.State == EntityState.Added)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
+                _logger.LogError(e, "Error sending new currency to DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor)
         {
-            if (string.IsNullOrEmpty(newColor))
+            try
             {
+                _logger.LogInformation($"Updating color with ID {colorId} to new value {newColor} in DB");
+                
+                if (string.IsNullOrEmpty(newColor))
+                {
+                    return null;
+                }
+
+                var color = await _dbContext.FindAsync<VehicleColor>(colorId);
+                color.Color = newColor;
+            
+                var response = _dbContext.Update(color);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return color;
+                }
+
                 return null;
             }
-
-            var color = await _dbContext.FindAsync<VehicleColor>(colorId);
-            color.Color = newColor;
-            
-            var response = _dbContext.Update(color);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return color;
+                _logger.LogError(e, $"Error updating color with ID {colorId} to new value {newColor} in DB");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
         {
-            if (string.IsNullOrEmpty(newBodyType))
+            try
             {
+                _logger.LogInformation($"Updating body type with ID {bodyTypeId} to new value {newBodyType} in DB");
+                
+                if (string.IsNullOrEmpty(newBodyType))
+                {
+                    return null;
+                }
+
+                var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
+                bodyType.BodyType = newBodyType;
+                var response = _dbContext.Update(bodyType);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return bodyType;
+                }
+
                 return null;
             }
-
-            var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
-            bodyType.BodyType = newBodyType;
-            var response = _dbContext.Update(bodyType);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return bodyType;
+                _logger.LogError(e, $"Error updating body type with ID {bodyTypeId} to new value {newBodyType} in DB");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry)
         {
-            if (string.IsNullOrEmpty(newCountry))
+            try
             {
+                _logger.LogInformation($"Updating country with ID {countryId} to new value {newCountry} in DB");
+                
+                if (string.IsNullOrEmpty(newCountry))
+                {
+                    return null;
+                }
+
+                var country = await _dbContext.FindAsync<Country>(countryId);
+                country.CountryName = newCountry;
+            
+                var response = _dbContext.Update(country);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return country;
+                }
+
                 return null;
             }
-
-            var country = await _dbContext.FindAsync<Country>(countryId);
-            country.CountryName = newCountry;
-            
-            var response = _dbContext.Update(country);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return country;
+                _logger.LogError(e, $"Error updating country with ID {countryId} to new value {newCountry} in DB");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<City> UpdateCityInDbAsync(int cityId, string newCity)
         {
-            if (string.IsNullOrEmpty(newCity))
+            try
             {
+                _logger.LogInformation($"Updating city with ID {cityId} to new value {newCity} in DB");
+                
+                if (string.IsNullOrEmpty(newCity))
+                {
+                    return null;
+                }
+
+                var city = await _dbContext.FindAsync<City>(cityId);
+                city.CityName = newCity;
+            
+                var response = _dbContext.Update(city);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return city;
+                }
+
                 return null;
             }
-
-            var city = await _dbContext.FindAsync<City>(cityId);
-            city.CityName = newCity;
-            
-            var response = _dbContext.Update(city);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return city;
+                _logger.LogError(e, $"Error updating city with ID {cityId} to new value {newCity} in DB");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
         {
-            if (string.IsNullOrEmpty(currencyName))
+            try
             {
+                _logger.LogInformation($"Updating currency with ID {currencyId} to new value {currencyName}");
+                
+                if (string.IsNullOrEmpty(currencyName))
+                {
+                    return null;
+                }
+
+                var currency = await _dbContext.FindAsync<Currency>(currencyId);
+                currency.CurrencyName = currencyName;
+                var response = _dbContext.Update(currency);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return currency;
+                }
+
                 return null;
             }
-
-            var currency = await _dbContext.FindAsync<Currency>(currencyId);
-            currency.CurrencyName = currencyName;
-            var response = _dbContext.Update(currency);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return currency;
+                _logger.LogError(e, $"Error updating currency with ID {currencyId} to new value {currencyName}");
+                throw;
             }
-
-            return null;
         }
 
         public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId)
         {
-            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
-
-            subscription.Price.Price = price;
-            subscription.Price.Currency = await _dbContext.Currencies.FindAsync(currencyId);
-            
-            var response = _dbContext.Update(subscription);
-
-            if (response.State == EntityState.Modified)
+            try
             {
-                await _dbContext.SaveChangesAsync();
-                return subscription;
-            }
+                _logger.LogInformation($"Updating subscription with ID {subscriptionId} in DB");
+                
+                var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
 
-            return null;
+                subscription.Price.Price = price;
+                subscription.Price.Currency = await _dbContext.Currencies.FindAsync(currencyId);
+            
+                var response = _dbContext.Update(subscription);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return subscription;
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error updating subscription with ID {subscriptionId} in DB");
+                throw;
+            }
         }
 
         public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
         {
-            if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
+            try
             {
+                _logger.LogInformation($"Updating drivetrain with ID {driveTrainId} to new value {newDrivetrain} in DB");
+                
+                if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
+                {
+                    return null;
+                }
+
+                var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
+                drivetrain.DrivetrainType = newDrivetrain;
+                var response = _dbContext.Update(drivetrain);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return drivetrain;
+                }
+
                 return null;
             }
-
-            var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
-            drivetrain.DrivetrainType = newDrivetrain;
-            var response = _dbContext.Update(drivetrain);
-
-            if (response.State == EntityState.Modified)
+            catch (Exception e)
             {
-                await _dbContext.SaveChangesAsync();
-                return drivetrain;
+                _logger.LogError(e, $"Error updating drivetrain with ID {driveTrainId} to new value {newDrivetrain}");
+                throw;
             }
-
-            return null;
         }
         
         public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
