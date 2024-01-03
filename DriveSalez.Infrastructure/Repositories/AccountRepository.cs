@@ -136,7 +136,7 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error deleting user with ID {userId} from DB");
+            _logger.LogError(e, $"Error deleting user with ID {userId} from DB");
             throw;
         }
     }
