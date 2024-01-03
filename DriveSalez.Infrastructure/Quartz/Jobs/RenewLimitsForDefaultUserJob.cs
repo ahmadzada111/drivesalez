@@ -1,6 +1,5 @@
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
-using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -35,6 +34,7 @@ public class RenewLimitsForDefaultUserJob : IJob
         {
             user.RegularUploadLimit = limit.RegularAnnouncementsLimit;
             user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
+            user.SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1);
         }
         
         _dbContext.UpdateRange(users);

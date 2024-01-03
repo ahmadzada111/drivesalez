@@ -106,6 +106,29 @@ public class AccountRepository : IAccountRepository
             throw;
         }
     }
+
+    public async Task<ApplicationUser> DeleteUserFromDbAsync(Guid userId)
+    {
+        try
+        {
+            _logger.LogInformation($"Deleting user with ID {userId} from DB");
+
+            var user = await _dbContext.Users
+                .Where(x => x.Id == userId)
+                .Include(x => x.PhoneNumbers)
+                .FirstOrDefaultAsync();
+            
+            _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
+            await _dbContext.SaveChangesAsync();
+
+            return user;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Error deleting user with ID {userId} from DB");
+            throw;
+        }
+    }
     
     public async Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
     {

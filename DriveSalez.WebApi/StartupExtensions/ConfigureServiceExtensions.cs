@@ -106,7 +106,7 @@ public static class ConfigureServiceExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(
-            options => { options.UseSqlServer(configuration.GetConnectionString("AzureDbConnection")); }
+            options => { options.UseSqlServer(configuration.GetConnectionString("MacConnection")); }
         );
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

@@ -346,9 +346,9 @@ public class AccountService : IAccountService
         
         if (user != null  && await _userManager.CheckPasswordAsync(user, password))
         {
-            var result = await _userManager.DeleteAsync(user);
+            var result = await _accountRepository.DeleteUserFromDbAsync(user.Id);
             
-            if (result.Succeeded)
+            if (result != null)
             {
                 return true;
             }

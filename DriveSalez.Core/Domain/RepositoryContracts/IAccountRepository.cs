@@ -15,4 +15,6 @@ public interface IAccountRepository
     Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user);
 
     Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user);
+
+    Task<ApplicationUser> DeleteUserFromDbAsync(Guid userId);
 }
