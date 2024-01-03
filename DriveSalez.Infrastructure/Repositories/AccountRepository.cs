@@ -117,8 +117,18 @@ public class AccountRepository : IAccountRepository
                 .Where(x => x.Id == userId)
                 .Include(x => x.PhoneNumbers)
                 .FirstOrDefaultAsync();
+            var announcements = await _dbContext.Announcements
+                .Where(x => x.Owner.Id == user.Id)
+                .Include(x => x.ImageUrls)
+                .ToListAsync();
+            var images = announcements
+                .SelectMany(a => a.ImageUrls)
+                .ToList();
             
+            _dbContext.ImageUrls.RemoveRange(images);
+            _dbContext.Announcements.RemoveRange(announcements);
             _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
+            
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
 
