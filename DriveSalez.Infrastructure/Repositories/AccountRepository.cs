@@ -119,6 +119,7 @@ public class AccountRepository : IAccountRepository
                 .FirstOrDefaultAsync();
             
             _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
+            _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
 
             return user;
