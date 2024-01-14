@@ -14,6 +14,8 @@ public class AnnouncementResponseMiniDto
     
     public decimal Price { get; set; }
     
+    public bool IsPremium { get; set; }
+
     public int Mileage { get; set; }
     
     public string MileageType { get; set; }
