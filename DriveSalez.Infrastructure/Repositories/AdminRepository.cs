@@ -1,10 +1,9 @@
-﻿using DriveSalez.Core.DTO;
+﻿using DriveSalez.Core.Domain.RepositoryContracts;
+using DriveSalez.Core.DTO;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

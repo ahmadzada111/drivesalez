@@ -1,10 +1,9 @@
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
-using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

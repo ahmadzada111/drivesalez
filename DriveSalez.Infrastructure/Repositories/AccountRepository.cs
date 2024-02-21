@@ -1,7 +1,7 @@
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -47,7 +47,7 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser> FindUserByLoginInDbAsync(string login)
+    public async Task<ApplicationUser?> FindUserByLoginInDbAsync(string login)
     {
         try
         {
@@ -67,7 +67,7 @@ public class AccountRepository : IAccountRepository
         }
     }
     
-    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
     {
         try
         {
@@ -107,8 +107,10 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser> DeleteUserFromDbAsync(Guid userId)
+    public async Task<ApplicationUser?> DeleteUserFromDbAsync(Guid userId)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        
         try
         {
             _logger.LogInformation($"Deleting user with ID {userId} from DB");
@@ -124,24 +126,26 @@ public class AccountRepository : IAccountRepository
             var images = announcements
                 .SelectMany(a => a.ImageUrls)
                 .ToList();
+
             
             _dbContext.ImageUrls.RemoveRange(images);
             _dbContext.Announcements.RemoveRange(announcements);
             _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
-            
             _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
 
+            await transaction.CommitAsync();
+            
             return user;
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error deleting user with ID {userId} from DB");
-            throw;
+            return null;
         }
     }
     
-    public async Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
     {
         try
         {
@@ -192,7 +196,7 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
     {
         try
         {

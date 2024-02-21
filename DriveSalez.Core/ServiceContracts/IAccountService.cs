@@ -12,9 +12,9 @@ public interface IAccountService
 
     Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request);
 
-    Task<AuthenticationResponseDto> LoginAsync(LoginDto request);
+    Task<AuthenticationResponseDto?> LoginAsync(LoginDto request);
 
-    Task<AuthenticationResponseDto> LoginStaffAsync(LoginDto request);
+    Task<AuthenticationResponseDto?> LoginStaffAsync(LoginDto request);
     
     Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request);
 
@@ -26,11 +26,11 @@ public interface IAccountService
 
     Task LogOutAsync();
 
-    Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user);
+    Task<ApplicationUser?> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user);
 
-    Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user);
+    Task<ApplicationUser?> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user);
 
-    Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
+    Task<ApplicationUser?> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
 
     Task<bool> ChangeEmailAsync(string email, string newMail);
     

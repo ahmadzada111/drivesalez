@@ -9,7 +9,7 @@ public interface IFileService
 
     Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images);
 
-    Task<bool> DeleteFilesAsync(List<ImageUrl> imageUrls);
+    Task<bool> DeleteFileAsync(ImageUrl imageUrl);
     
     Task<bool> DeleteAllFilesAsync(Guid userId);
 }

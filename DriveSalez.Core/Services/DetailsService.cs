@@ -1,8 +1,8 @@
 using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 
 namespace DriveSalez.Core.Services;

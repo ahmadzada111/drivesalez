@@ -174,8 +174,7 @@ namespace DriveSalez.WebApi.Controllers
 
             if (!ModelState.IsValid)
             {
-                string errorMessage = string.Join(" | ",
-                    ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+                string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
                 return Problem(errorMessage);
             }
 

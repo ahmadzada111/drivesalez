@@ -1,10 +1,10 @@
 using System.Security.Claims;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,10 +20,11 @@ public class AccountService : IAccountService
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IJwtService _jwtService;
     private readonly IAccountRepository _accountRepository;
+    private readonly IFileService _fileService;
     
     public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
         RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor,
-        IAccountRepository accountRepository)
+        IAccountRepository accountRepository, IFileService fileService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -31,6 +32,7 @@ public class AccountService : IAccountService
         _contextAccessor = contextAccessor;
         _jwtService = jwtService;
         _accountRepository = accountRepository;
+        _fileService = fileService;
     }
 
     public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
@@ -165,13 +167,13 @@ public class AccountService : IAccountService
         return result;
     }
     
-    public async Task<AuthenticationResponseDto> LoginAsync(LoginDto request)
+    public async Task<AuthenticationResponseDto?> LoginAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
 
         if (result.Succeeded)
         {
-            ApplicationUser user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
+            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
 
             if (user == null)
             {
@@ -195,13 +197,13 @@ public class AccountService : IAccountService
         return null;
     }
 
-    public async Task<AuthenticationResponseDto> LoginStaffAsync(LoginDto request)
+    public async Task<AuthenticationResponseDto?> LoginStaffAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
 
         if (result.Succeeded)
         {
-            ApplicationUser user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
+            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
             
             if (user == null)
             {
@@ -230,7 +232,7 @@ public class AccountService : IAccountService
         }
 
         string email = principal.FindFirstValue(ClaimTypes.Email);
-        ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
 
         if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
         {
@@ -359,7 +361,7 @@ public class AccountService : IAccountService
         throw new UserNotAuthorizedException("User is not authorized!");
     }
 
-    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
@@ -377,7 +379,7 @@ public class AccountService : IAccountService
         return defaultAccount;
     }
     
-    public async Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
@@ -395,7 +397,7 @@ public class AccountService : IAccountService
         return premiumAccount;
     }
     
-    public async Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser?> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);

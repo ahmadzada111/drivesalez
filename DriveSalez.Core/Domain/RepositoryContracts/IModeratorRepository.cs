@@ -1,6 +1,6 @@
 using DriveSalez.Core.DTO;
 
-namespace DriveSalez.Core.RepositoryContracts;
+namespace DriveSalez.Core.Domain.RepositoryContracts;
 
 public interface IModeratorRepository
 {

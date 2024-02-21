@@ -1,5 +1,4 @@
 ﻿using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Core.Services;
 using DriveSalez.Infrastructure.DbContext;
@@ -13,10 +12,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Infrastructure.AutoMapper;
-using DriveSalez.Infrastructure.Quartz.Jobs;
 using DriveSalez.Infrastructure.Quartz.Setups;
-using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace DriveSalez.WebApi.StartupExtensions;

@@ -1,8 +1,8 @@
 using AutoMapper;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

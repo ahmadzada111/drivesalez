@@ -83,15 +83,13 @@ public class FileService : IFileService
         }
     }
     
-    public async Task<bool> DeleteFilesAsync(List<ImageUrl> imageUrls)
+    public async Task<bool> DeleteFileAsync(ImageUrl imageUrl)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
-
         BlobContainerClient imageContainer = _containerClient.GetContainerClient();
         
         try
         {
-            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
+            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(imageUrl.Url.ToString());
             var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
             return result.Value;

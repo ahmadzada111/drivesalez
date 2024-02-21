@@ -1,12 +1,12 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.RepositoryContracts;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +62,8 @@ namespace DriveSalez.Infrastructure.Repositories
 
         public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
             try
             {
                 _logger.LogInformation($"Creating announcement for user with ID: {userId}");
@@ -130,7 +132,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
                 if (response.State == EntityState.Added)
                 {
-                    await _dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
                     return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
@@ -138,6 +140,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
             catch (Exception e)
             {
+                await transaction.RollbackAsync();
                 _logger.LogError(e, $"Error getting user limits from DB for user with ID: {userId}");
                 throw;
             }

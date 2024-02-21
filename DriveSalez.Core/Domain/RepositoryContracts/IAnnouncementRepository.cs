@@ -3,7 +3,7 @@ using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 
-namespace DriveSalez.Core.RepositoryContracts
+namespace DriveSalez.Core.Domain.RepositoryContracts
 {
     public interface IAnnouncementRepository
     {

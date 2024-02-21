@@ -3,7 +3,7 @@ using DriveSalez.Core.Entities;
 using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Entities.VehicleParts;
 
-namespace DriveSalez.Core.RepositoryContracts
+namespace DriveSalez.Core.Domain.RepositoryContracts
 {
     public interface IAdminRepository
     {
