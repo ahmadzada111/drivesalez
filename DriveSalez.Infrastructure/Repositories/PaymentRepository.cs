@@ -52,7 +52,7 @@ public class PaymentRepository : IPaymentRepository
         }
     }
 
-    public async Task<bool> AddAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddRegularAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
     {
         try
         {
@@ -76,40 +76,21 @@ public class PaymentRepository : IPaymentRepository
             {
                 throw new KeyNotFoundException();
             }
-
-            if (announcementSubscription.PricingName == "Premium Announcement")
+            
+            if (user.AccountBalance - announcementSubscription.Price.Price >= 0)
             {
-                if (user.AccountBalance - announcementSubscription.Price.Price > 0)
+                user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                user.RegularUploadLimit += announcementQuantity;
+
+                var response = _dbContext.Update(user);
+
+                if (response.State == EntityState.Modified)
                 {
-                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
-                    user.PremiumUploadLimit += announcementQuantity;
-
-                    var response = _dbContext.Update(user);
-
-                    if (response.State == EntityState.Modified)
-                    {
-                        await _dbContext.SaveChangesAsync();
-                        return true;
-                    }
+                    await _dbContext.SaveChangesAsync();
+                    return true;
                 }
-            }
-            else if(announcementSubscription.PricingName == "Regular Announcement")
-            {
-                if (user.AccountBalance - announcementSubscription.Price.Price > 0)
-                {
-                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
-                    user.RegularUploadLimit += announcementQuantity;
-
-                    var response = _dbContext.Update(user);
-
-                    if (response.State == EntityState.Modified)
-                    {
-                        await _dbContext.SaveChangesAsync();
-                        return true;
-                    }
-                }
-            }
-
+            }    
+            
             return false;
         }
         catch (Exception e)
@@ -119,6 +100,54 @@ public class PaymentRepository : IPaymentRepository
         }
     }
 
+    public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
+    {
+        try
+        {
+            _logger.LogInformation($"Adding limit to user with ID {userId} in DB");
+            
+            var user = await _dbContext.Users
+                .Where(x => x.Id == userId)
+                .FirstOrDefaultAsync();
+            
+            var announcementSubscription = await _dbContext.AnnouncementPricing
+                .Include(x => x.Price)
+                .Where(x => x.Id == subscriptionId)
+                .FirstOrDefaultAsync();
+            
+            if (user == null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            if (announcementSubscription == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            
+            if (user.AccountBalance - announcementSubscription.Price.Price >= 0)
+            {
+                user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                user.PremiumUploadLimit += announcementQuantity;
+
+                var response = _dbContext.Update(user);
+
+                if (response.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"Error adding limit to user with ID {userId} in DB");
+            throw;
+        }
+    }
+    
     public async Task<Subscription> GetSubscriptionFromDbAsync(int subscriptionId)
     {
         try

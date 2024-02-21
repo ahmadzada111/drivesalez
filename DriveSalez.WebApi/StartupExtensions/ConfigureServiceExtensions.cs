@@ -71,8 +71,6 @@ public static class ConfigureServiceExtensions
                 }
             );
 
-            //setup.IncludeXmlComments(@"obj\Debug\net6.0\ToDo WEB API.xml");
-
             setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Name = "Authorization",
@@ -106,7 +104,7 @@ public static class ConfigureServiceExtensions
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(
-            options => { options.UseSqlServer(configuration.GetConnectionString("AzureDbConnection")); }
+            options => { options.UseSqlServer(configuration.GetConnectionString("MacConnection")); }
         );
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
