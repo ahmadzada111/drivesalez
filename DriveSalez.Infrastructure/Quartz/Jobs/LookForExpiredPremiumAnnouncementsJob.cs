@@ -56,6 +56,6 @@ public class LookForExpiredPremiumAnnouncementsJob : IJob
         
         await _dbContext.SaveChangesAsync();
         
-        _logger.LogInformation($"{typeof(LookForExpiredPremiumAnnouncementsJob)} job started");
+        _logger.LogInformation($"{typeof(LookForExpiredPremiumAnnouncementsJob)} job finished");
     }
 }

@@ -15,6 +15,8 @@ using System.Text;
 using AutoMapper;
 using DriveSalez.Infrastructure.AutoMapper;
 using DriveSalez.Infrastructure.Quartz.Jobs;
+using DriveSalez.Infrastructure.Quartz.Setups;
+using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace DriveSalez.WebApi.StartupExtensions;
@@ -100,7 +102,7 @@ public static class ConfigureServiceExtensions
         return services;
     }
 
-    public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services,
+    public static IServiceCollection AddAuthenticationAndAuthorizationConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(
@@ -168,84 +170,21 @@ public static class ConfigureServiceExtensions
     
     public static IServiceCollection AddQuartzToServices(this IServiceCollection services)
     {
-        services.AddQuartz(q =>
+        services.AddQuartz();
+        
+        services.AddQuartzHostedService(options =>
         {
-            q.SchedulerId = "ds_scheduler";
-            q.SchedulerName = "DriveSalezQuartzScheduler";
-            
-            var checkAnnouncementStateKey = new JobKey("CheckAnnouncementExpiration");
-            q.AddJob<CheckAnnouncementExpirationJob>(opts => opts.WithIdentity(checkAnnouncementStateKey)
-                .StoreDurably());
-
-            q.AddTrigger(opts => opts
-                .ForJob(checkAnnouncementStateKey)
-                .WithIdentity("CheckAnnouncementExpiration-trigger")
-                .WithCronSchedule("0 0 * * * ?")
-                .StartNow());
-            
-            var deleteInactiveAccountsKey = new JobKey("DeleteInactiveAccounts");
-            q.AddJob<DeleteInactiveAccountsJob>(opts => opts.WithIdentity(deleteInactiveAccountsKey)
-                .StoreDurably());
-
-            q.AddTrigger(opts => opts
-                .ForJob(deleteInactiveAccountsKey)
-                .WithIdentity("DeleteInactiveAccounts-trigger")
-                .WithCronSchedule("0 0 * * * ?")
-                .StartNow());
-            
-            var startImageAnalyzer = new JobKey("StartImageAnalyzer");
-            q.AddJob<StartImageAnalyzerJob>(opts => opts.WithIdentity(startImageAnalyzer)
-                .StoreDurably());
-
-            q.AddTrigger(opts => opts
-                .ForJob(startImageAnalyzer)
-                .WithIdentity("StartImageAnalyzer-trigger")
-                .WithCronSchedule("0 * * * * ?")
-                .StartNow());
-            
-            var lookForExpiredPremiumAnnouncements = new JobKey("LookForExpiredPremiumAnnouncements");
-            q.AddJob<LookForExpiredPremiumAnnouncementsJob>(opts => opts.WithIdentity(lookForExpiredPremiumAnnouncements)
-                .StoreDurably());
-
-            q.AddTrigger(opts => opts
-                .ForJob(startImageAnalyzer)
-                .WithIdentity("LookForExpiredPremiumAnnouncements-trigger")
-                .WithCronSchedule("0 0 * * * ?")
-                .StartNow());
-            
-            var notifyUsersWithExpiredSubscriptions = new JobKey("NotifyUsersWithExpiredSubscriptions");
-            q.AddJob<NotifyUsersWithExpiringSubscriptionsJob>(opts => opts.WithIdentity(notifyUsersWithExpiredSubscriptions)
-                .StoreDurably());
-
-            q.AddTrigger(opts => opts
-                .ForJob(notifyUsersWithExpiredSubscriptions)
-                .WithIdentity("NotifyUsersWithExpiredSubscriptions-trigger")
-                .WithCronSchedule("0 0 * * * ?")
-                .StartNow());
-            
-            var notifyUserAboutSubscriptionCancellation = new JobKey("NotifyUserAboutSubscriptionCancellation");
-            q.AddJob<NotifyUserAboutSubscriptionCancellationJob>(opts => opts.WithIdentity(notifyUserAboutSubscriptionCancellation)
-                .StoreDurably());
-            
-            q.AddTrigger(opts => opts
-                .ForJob(notifyUserAboutSubscriptionCancellation)
-                .WithIdentity("NotifyUserAboutSubscriptionCancellation-trigger")
-                .WithCronSchedule("0 * * * * ?")
-                .StartNow());
-            
-            var renewLimitsForDefaultUser = new JobKey("RenewLimitsForDefaultUser");
-            q.AddJob<RenewLimitsForDefaultUserJob>(opts => opts.WithIdentity(renewLimitsForDefaultUser)
-                .StoreDurably());
-            
-            q.AddTrigger(opts => opts
-                .ForJob(renewLimitsForDefaultUser)
-                .WithIdentity("RenewLimitsForDefaultUser-trigger")
-                .WithCronSchedule("0 * * * * ?")
-                .StartNow());
+            options.WaitForJobsToComplete = true;
         });
 
-        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
+        services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
+        services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
+        services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
+        services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
+        services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
+        services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
+        services.ConfigureOptions<StartImageAnalyzerJobSetup>();
+        
         return services;
     }
 }

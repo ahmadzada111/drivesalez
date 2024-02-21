@@ -27,7 +27,7 @@ namespace DriveSalez.WebApi
                 .Build();
 
             builder.Services.AddServices();
-            builder.Services.AddAuthenticationAndAuthorization(configuration);
+            builder.Services.AddAuthenticationAndAuthorizationConfiguration(configuration);
             builder.Services.AddQuartzToServices();
             builder.Services.AddSwagger();
             builder.Services.AddCorsToServices();
@@ -57,7 +57,7 @@ namespace DriveSalez.WebApi
             app.UseAuthorization();
             
             app.MapControllers();
-
+            
             app.Run();
         }
     }

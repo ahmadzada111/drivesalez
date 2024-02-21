@@ -22,14 +22,15 @@ public class DeleteInactiveAccountsJob : IJob
     {
         _logger.LogInformation($"{typeof(DeleteInactiveAccountsJob)} job started");
   
+        var thresholdDate = DateTimeOffset.Now.AddDays(-30);
         var inactiveAccounts = await _dbContext.Users
-            .Where(a => !a.EmailConfirmed && (DateTimeOffset.Now - a.CreationDate).TotalDays >= 30)
+            .Where(a => !a.EmailConfirmed && a.CreationDate <= thresholdDate)
             .ToListAsync();
         
         _dbContext.Users.RemoveRange(inactiveAccounts);
         
         await _dbContext.SaveChangesAsync();
         
-        _logger.LogInformation($"{typeof(DeleteInactiveAccountsJob)} job started");
+        _logger.LogInformation($"{typeof(DeleteInactiveAccountsJob)} job finished");
     }
 }
