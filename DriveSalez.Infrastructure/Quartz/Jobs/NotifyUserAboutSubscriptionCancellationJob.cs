@@ -1,9 +1,6 @@
-using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.IdentityEntities;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;

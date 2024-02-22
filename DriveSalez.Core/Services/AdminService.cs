@@ -1,9 +1,9 @@
-﻿using DriveSalez.Core.Domain.RepositoryContracts;
+﻿using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
+using DriveSalez.Core.Domain.IdentityEntities;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
-using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -31,15 +31,20 @@ namespace DriveSalez.Core.Services
             _detailsRepository = detailsRepository;
         }
 
-        public async Task<VehicleBodyType> AddBodyTypeAsync(string bodyType)
+        public async Task<VehicleBodyType?> AddBodyTypeAsync(string bodyType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
 
+            if (string.IsNullOrEmpty(bodyType))
+            {
+                return null;
+            }
+            
             var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
 
             if (bodyTypes.Any(x => x.BodyType == bodyType))
@@ -51,9 +56,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleColor> AddColorAsync(string color)
+        public async Task<VehicleColor?> AddColorAsync(string color)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -71,9 +76,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Subscription> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId)
+        public async Task<Subscription?> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -91,9 +96,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Currency> AddCurrencyAsync(string currencyName)
+        public async Task<Currency?> AddCurrencyAsync(string currencyName)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -111,9 +116,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Make> AddMakeAsync(string make)
+        public async Task<Make?> AddMakeAsync(string make)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -131,9 +136,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Model> AddModelAsync(int makeId, string model)
+        public async Task<Model?> AddModelAsync(int makeId, string model)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -151,9 +156,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleCondition> AddVehicleConditionAsync(string condition, string description)
+        public async Task<VehicleCondition?> AddVehicleConditionAsync(string condition, string description)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -171,9 +176,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleOption> AddVehicleOptionAsync(string option)
+        public async Task<VehicleOption?> AddVehicleOptionAsync(string option)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -191,9 +196,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleDrivetrainType> AddVehicleDrivetrainTypeAsync(string driveTrainType)
+        public async Task<VehicleDrivetrainType?> AddVehicleDrivetrainTypeAsync(string driveTrainType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -211,9 +216,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleFuelType> AddVehicleFuelTypeAsync(string fuelType)
+        public async Task<VehicleFuelType?> AddVehicleFuelTypeAsync(string fuelType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -231,9 +236,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleGearboxType> AddVehicleGearboxTypeAsync(string gearboxType)
+        public async Task<VehicleGearboxType?> AddVehicleGearboxTypeAsync(string gearboxType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -251,9 +256,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Country> AddCountryAsync(string country)
+        public async Task<Country?> AddCountryAsync(string country)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -271,9 +276,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<City> AddCityAsync(string city, int countryId)
+        public async Task<City?> AddCityAsync(string city, int countryId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -291,9 +296,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleMarketVersion> AddVehicleMarketVersionAsync(string marketVersion)
+        public async Task<VehicleMarketVersion?> AddVehicleMarketVersionAsync(string marketVersion)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -311,9 +316,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleColor> UpdateVehicleColorAsync(int colorId, string newColor)
+        public async Task<VehicleColor?> UpdateVehicleColorAsync(int colorId, string newColor)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -331,9 +336,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleBodyType> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
+        public async Task<VehicleBodyType?> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -351,9 +356,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Country> UpdateCountryAsync(int countryId, string newCountry)
+        public async Task<Country?> UpdateCountryAsync(int countryId, string newCountry)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -371,9 +376,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<City> UpdateCityAsync(int cityId, string newCity)
+        public async Task<City?> UpdateCityAsync(int cityId, string newCity)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -392,9 +397,9 @@ namespace DriveSalez.Core.Services
         }
         
         //CHECK!
-        public async Task<AccountLimit> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit)
+        public async Task<AccountLimit?> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -405,9 +410,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Currency> UpdateCurrencyAsync(int currencyId, string currencyName)
+        public async Task<Currency?> UpdateCurrencyAsync(int currencyId, string currencyName)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -425,24 +430,24 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Subscription> UpdateSubscriptionAsync(int subscriptionId, decimal price, int currencyId)
+        public async Task<Subscription?> UpdateSubscriptionAsync(int subscriptionId, decimal price, int currencyId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            var subscriptions = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
+            // var subscriptions = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
             
             var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price, currencyId);
             return response;
         }
         
-        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
+        public async Task<VehicleDrivetrainType?> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -460,9 +465,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
+        public async Task<VehicleGearboxType?> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -480,9 +485,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Make> UpdateMakeAsync(int makeId, string newMake)
+        public async Task<Make?> UpdateMakeAsync(int makeId, string newMake)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -500,9 +505,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Model> UpdateModelAsync(int modelId, string newModel)
+        public async Task<Model?> UpdateModelAsync(int modelId, string newModel)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -520,9 +525,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleFuelType> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
+        public async Task<VehicleFuelType?> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -540,9 +545,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
+        public async Task<VehicleCondition?> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -560,9 +565,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleOption> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption)
+        public async Task<VehicleOption?> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -580,9 +585,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion)
+        public async Task<VehicleMarketVersion?> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -600,9 +605,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleColor> DeleteVehicleColorAsync(int colorId)
+        public async Task<VehicleColor?> DeleteVehicleColorAsync(int colorId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -613,9 +618,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Country> DeleteCountryAsync(int countryId)
+        public async Task<Country?> DeleteCountryAsync(int countryId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -626,9 +631,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<City> DeleteCityAsync(int cityId)
+        public async Task<City?> DeleteCityAsync(int cityId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -639,9 +644,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Currency> DeleteCurrencyAsync(int currencyId)
+        public async Task<Currency?> DeleteCurrencyAsync(int currencyId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -652,9 +657,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<Subscription> DeleteSubscriptionAsync(int subscriptionId)
+        public async Task<Subscription?> DeleteSubscriptionAsync(int subscriptionId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -665,9 +670,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
         
-        public async Task<VehicleBodyType> DeleteVehicleBodyTypeAsync(int bodyTypeId)
+        public async Task<VehicleBodyType?> DeleteVehicleBodyTypeAsync(int bodyTypeId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -678,9 +683,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeAsync(int drivetrainId)
+        public async Task<VehicleDrivetrainType?> DeleteVehicleDrivetrainTypeAsync(int drivetrainId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -691,9 +696,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeAsync(int gearboxId)
+        public async Task<VehicleGearboxType?> DeleteVehicleGearboxTypeAsync(int gearboxId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -704,9 +709,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Make> DeleteMakeAsync(int makeId)
+        public async Task<Make?> DeleteMakeAsync(int makeId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -717,9 +722,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<Model> DeleteModelAsync(int modelId)
+        public async Task<Model?> DeleteModelAsync(int modelId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -730,9 +735,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleFuelType> DeleteFuelTypeAsync(int fuelTypeId)
+        public async Task<VehicleFuelType?> DeleteFuelTypeAsync(int fuelTypeId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -743,9 +748,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleCondition> DeleteVehicleConditionAsync(int vehicleConditionId)
+        public async Task<VehicleCondition?> DeleteVehicleConditionAsync(int vehicleConditionId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -756,9 +761,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleOption> DeleteVehicleOptionAsync(int vehicleOptionId)
+        public async Task<VehicleOption?> DeleteVehicleOptionAsync(int vehicleOptionId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -769,9 +774,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionAsync(int marketVersionId)
+        public async Task<VehicleMarketVersion?> DeleteVehicleMarketVersionAsync(int marketVersionId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {
@@ -782,9 +787,9 @@ namespace DriveSalez.Core.Services
             return response;
         }
 
-        public async Task<RegisterModeratorResponseDto> AddModeratorAsync(RegisterModeratorDto request)
+        public async Task<RegisterModeratorResponseDto?> AddModeratorAsync(RegisterModeratorDto request)
         {
-            var admin = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var admin = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (admin == null)
             {
@@ -829,7 +834,7 @@ namespace DriveSalez.Core.Services
             return null;
         }
 
-        public async Task<List<GetModeratorDto>> GetAllModeratorsAsync()
+        public async Task<List<GetModeratorDto>?> GetAllModeratorsAsync()
         {
             var moderators = await _userManager.GetUsersInRoleAsync(UserType.Moderator.ToString());
             List<GetModeratorDto> result = new List<GetModeratorDto>();
@@ -839,8 +844,8 @@ namespace DriveSalez.Core.Services
                 result.Add(new GetModeratorDto()
                 {
                     Id = moderator.Id,
-                    Name = moderator.FirstName,
-                    Surname = moderator.LastName,
+                    Name = moderator.FirstName ?? string.Empty,
+                    Surname = moderator.LastName ?? string.Empty,
                     Email = moderator.UserName
                 });
             }
@@ -848,9 +853,9 @@ namespace DriveSalez.Core.Services
             return result;
         }
 
-        public async Task<GetModeratorDto> DeleteModeratorAsync(Guid moderatorId)
+        public async Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId)
         {
-            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
             if (user == null)
             {

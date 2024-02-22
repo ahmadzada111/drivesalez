@@ -3,12 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using DriveSalez.Core.Domain.IdentityEntities;
 using Microsoft.Extensions.Configuration;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.IdentityEntities;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Core.Services;

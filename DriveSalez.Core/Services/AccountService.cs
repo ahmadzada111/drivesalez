@@ -1,10 +1,10 @@
 using System.Security.Claims;
+using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -71,7 +71,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
 
-            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.DefaultAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.DefaultAccount);
             return result;
         }
 
@@ -115,7 +115,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
             
-            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.PremiumAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.PremiumAccount);
             return result;
         }
 
@@ -160,7 +160,7 @@ public class AccountService : IAccountService
 
             await _userManager.UpdateAsync(user);
 
-            await _accountRepository.AddLimitsToAccountInDbAsync(user.Id, UserType.BusinessAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.BusinessAccount);
             return result;
         }
 
@@ -332,7 +332,7 @@ public class AccountService : IAccountService
     
     public async Task LogOutAsync()
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -344,7 +344,7 @@ public class AccountService : IAccountService
     
     public async Task<bool> DeleteUserAsync(string password)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user != null  && await _userManager.CheckPasswordAsync(user, password))
         {
@@ -352,6 +352,7 @@ public class AccountService : IAccountService
             
             if (result != null)
             {
+                await _fileService.DeleteAllFilesAsync(user.Id);
                 return true;
             }
 

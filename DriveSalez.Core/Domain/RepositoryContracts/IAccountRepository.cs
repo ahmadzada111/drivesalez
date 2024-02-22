@@ -1,12 +1,11 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.IdentityEntities;
 
 namespace DriveSalez.Core.Domain.RepositoryContracts;
 
 public interface IAccountRepository
 {
-    Task AddLimitsToAccountInDbAsync(Guid userId, UserType userType);
+    Task AddLimitsToAccountInDbAsync(ApplicationUser user, UserType userType);
 
     Task<ApplicationUser?> FindUserByLoginInDbAsync(string login);
 

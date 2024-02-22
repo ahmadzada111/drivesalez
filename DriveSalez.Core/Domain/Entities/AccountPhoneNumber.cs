@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace DriveSalez.Core.Entities
+namespace DriveSalez.Core.Domain.Entities
 {
     public class AccountPhoneNumber
     {

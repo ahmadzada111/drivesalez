@@ -1,5 +1,5 @@
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
 
 namespace DriveSalez.Core.Domain.RepositoryContracts;
 

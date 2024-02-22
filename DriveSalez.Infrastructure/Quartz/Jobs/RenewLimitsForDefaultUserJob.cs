@@ -1,5 +1,5 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

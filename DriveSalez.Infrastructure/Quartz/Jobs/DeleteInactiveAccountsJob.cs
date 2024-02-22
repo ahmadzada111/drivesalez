@@ -1,5 +1,3 @@
-using DriveSalez.Core.Enums;
-using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

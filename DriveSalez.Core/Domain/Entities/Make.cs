@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace DriveSalez.Core.Entities
+namespace DriveSalez.Core.Domain.Entities
 {
     public class Make
     {

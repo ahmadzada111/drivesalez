@@ -1,8 +1,8 @@
 using AutoMapper;
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
 
-namespace DriveSalez.Infrastructure.AutoMapper;
+namespace DriveSalez.Core.AutoMapper;
 
 public class MappingProfile : Profile
 {

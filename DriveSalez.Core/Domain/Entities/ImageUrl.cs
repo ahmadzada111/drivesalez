@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DriveSalez.Core.Entities
+namespace DriveSalez.Core.Domain.Entities
 {
     public class ImageUrl
     {

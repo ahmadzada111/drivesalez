@@ -1,7 +1,7 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,9 +21,9 @@ public class ModeratorService : IModeratorService
         _moderatorRepository = moderatorRepository;
     }
     
-    public async Task<AnnouncementResponseDto> MakeAnnouncementActiveAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -35,9 +35,9 @@ public class ModeratorService : IModeratorService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -49,9 +49,9 @@ public class ModeratorService : IModeratorService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementWaitingAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {

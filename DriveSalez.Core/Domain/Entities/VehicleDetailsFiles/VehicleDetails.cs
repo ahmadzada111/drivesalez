@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
 using DriveSalez.Core.Enums;
-using DriveSalez.Core.Entities.VehicleParts;
-using System.Text.Json.Serialization;
 
-namespace DriveSalez.Core.Entities.VehicleDetailsFiles
+namespace DriveSalez.Core.Domain.Entities.VehicleDetailsFiles
 {
     public class VehicleDetails
     {

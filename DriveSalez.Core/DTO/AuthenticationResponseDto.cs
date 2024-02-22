@@ -1,6 +1,4 @@
-﻿using DriveSalez.Core.Entities;
-using Google.Type;
-using Microsoft.AspNetCore.Identity;
+﻿using DriveSalez.Core.Domain.Entities;
 using DateTime = System.DateTime;
 
 namespace DriveSalez.Core.DTO

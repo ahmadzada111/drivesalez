@@ -1,5 +1,4 @@
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Enums;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;

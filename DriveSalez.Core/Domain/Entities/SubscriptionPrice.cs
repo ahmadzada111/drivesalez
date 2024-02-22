@@ -1,4 +1,4 @@
-namespace DriveSalez.Core.Entities;
+namespace DriveSalez.Core.Domain.Entities;
 
 public class SubscriptionPrice
 {

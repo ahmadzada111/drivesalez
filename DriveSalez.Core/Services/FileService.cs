@@ -1,12 +1,10 @@
-using System.Text;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using DriveSalez.Core.Entities;
+using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
-using Google.Apis.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 

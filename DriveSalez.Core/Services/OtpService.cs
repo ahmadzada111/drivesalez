@@ -1,6 +1,6 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;

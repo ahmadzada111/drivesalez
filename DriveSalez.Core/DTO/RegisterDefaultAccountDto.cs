@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DriveSalez.Core.Entities;
-using Microsoft.AspNetCore.Mvc;
+using DriveSalez.Core.Domain.Entities;
 
 namespace DriveSalez.Core.DTO
 {

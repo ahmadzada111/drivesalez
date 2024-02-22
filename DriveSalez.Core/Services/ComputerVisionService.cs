@@ -1,6 +1,6 @@
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.ServiceContracts;
 using Google.Cloud.Vision.V1;
-using ImageUrl = DriveSalez.Core.Entities.ImageUrl;
 
 namespace DriveSalez.Core.Services;
 

@@ -1,7 +1,6 @@
-using DriveSalez.Core.DTO;
-using DriveSalez.Core.IdentityEntities;
+using DriveSalez.Core.Domain.Entities;
 
-namespace DriveSalez.Core.Entities;
+namespace DriveSalez.Core.Domain.IdentityEntities;
 
 public class PaidUser : ApplicationUser
 {

@@ -1,6 +1,6 @@
-﻿using DriveSalez.Core.IdentityEntities;
+﻿using DriveSalez.Core.Domain.IdentityEntities;
 
-namespace DriveSalez.Core.Entities
+namespace DriveSalez.Core.Domain.Entities
 {
     public class BusinessAccount : PaidUser
     {

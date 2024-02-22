@@ -1,8 +1,8 @@
-﻿using DriveSalez.Core.Domain.RepositoryContracts;
+﻿using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
+using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
-using DriveSalez.Core.Entities.VehicleParts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -20,7 +20,7 @@ namespace DriveSalez.Infrastructure.Repositories
             _logger = logger;
         }
 
-        public async Task<VehicleColor> SendNewColorToDbAsync(string color)
+        public async Task<VehicleColor?> SendNewColorToDbAsync(string color)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Country> SendNewCountryToDbAsync(string country)
+        public async Task<Country?> SendNewCountryToDbAsync(string country)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
+        public async Task<VehicleBodyType?> SendNewBodyTypeToDbAsync(string bodyType)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
+        public async Task<VehicleDrivetrainType?> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
+        public async Task<VehicleGearboxType?> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<City> SendNewCityToDbAsync(string city, int countryId)
+        public async Task<City?> SendNewCityToDbAsync(string city, int countryId)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<Make> SendNewMakeToDbAsync(string make)
+        public async Task<Make?> SendNewMakeToDbAsync(string make)
         {
             try
             {
@@ -220,7 +220,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Model> SendNewModelToDbAsync(int makeId, string model)
+        public async Task<Model?> SendNewModelToDbAsync(int makeId, string model)
         {
             try
             {
@@ -231,7 +231,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return null;
                 }
 
-                var response = await _dbContext.Models.AddAsync(new Core.Entities.Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
+                var response = await _dbContext.Models.AddAsync(new Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
 
                 if (response.State == EntityState.Added)
                 {
@@ -248,7 +248,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
+        public async Task<VehicleFuelType?> SendNewVehicleFuelTypeToDbAsync(string fuelType)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description)
+        public async Task<VehicleCondition?> SendNewVehicleConditionToDbAsync(string condition, string description)
         {
             try
             {
@@ -308,7 +308,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
+        public async Task<VehicleMarketVersion?> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
         {
             try
             {
@@ -336,7 +336,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option)
+        public async Task<VehicleOption?> SendNewVehicleOptionToDbAsync(string option)
         {
             try
             {
@@ -364,7 +364,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId)
+        public async Task<Subscription?> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId)
         {
             try
             {
@@ -400,7 +400,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Currency> SendNewCurrencyToDbAsync(string currencyName)
+        public async Task<Currency?> SendNewCurrencyToDbAsync(string currencyName)
         {
             try
             {
@@ -428,7 +428,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor)
+        public async Task<VehicleColor?> UpdateVehicleColorInDbAsync(int colorId, string newColor)
         {
             try
             {
@@ -439,7 +439,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return null;
                 }
 
-                var color = await _dbContext.FindAsync<VehicleColor>(colorId);
+                var color = await _dbContext.FindAsync<VehicleColor>(colorId) ?? new VehicleColor();
                 color.Color = newColor;
             
                 var response = _dbContext.Update(color);
@@ -459,7 +459,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
+        public async Task<VehicleBodyType?> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
         {
             try
             {
@@ -489,7 +489,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry)
+        public async Task<Country?> UpdateCountryInDbAsync(int countryId, string newCountry)
         {
             try
             {
@@ -520,7 +520,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<City> UpdateCityInDbAsync(int cityId, string newCity)
+        public async Task<City?> UpdateCityInDbAsync(int cityId, string newCity)
         {
             try
             {
@@ -551,7 +551,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
+        public async Task<Currency?> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
         {
             try
             {
@@ -581,7 +581,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId)
+        public async Task<Subscription?> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId)
         {
             try
             {
@@ -609,7 +609,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
+        public async Task<VehicleDrivetrainType?> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
         {
             try
             {
@@ -639,7 +639,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
+        public async Task<VehicleGearboxType?> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
         {
             if (gearboxId == null || string.IsNullOrEmpty(newGearbox))
             {
@@ -659,7 +659,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<Make> UpdateMakeInDbAsync(int makeId, string newMake)
+        public async Task<Make?> UpdateMakeInDbAsync(int makeId, string newMake)
         {
             if (makeId == null || string.IsNullOrEmpty(newMake))
             {
@@ -679,7 +679,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<Model> UpdateModelInDbAsync(int modelId, string newModel)
+        public async Task<Model?> UpdateModelInDbAsync(int modelId, string newModel)
         {
             if (modelId == null || string.IsNullOrEmpty(newModel))
             {
@@ -687,6 +687,12 @@ namespace DriveSalez.Infrastructure.Repositories
             }
 
             var model = await _dbContext.FindAsync<Model>(modelId);
+
+            if (model == null)
+            {
+                return null;
+            }
+            
             model.ModelName = newModel;
             var response = _dbContext.Update(model);
 
@@ -699,7 +705,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
+        public async Task<AccountLimit?> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
         {
             if (limitId == null || premiumLimit < 0 || regularLimit < 0)
             {
@@ -721,7 +727,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
+        public async Task<VehicleFuelType?> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
         {
             if (fuelTypeId == null || string.IsNullOrEmpty(newFuelType))
             {
@@ -741,7 +747,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
+        public async Task<VehicleCondition?> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
         {
             if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition) || string.IsNullOrEmpty(newDescription))
             {
@@ -763,7 +769,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
+        public async Task<VehicleOption?> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
         {
             if (vehicleOptionId == null || string.IsNullOrEmpty(newVehicleOption))
             {
@@ -783,7 +789,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
+        public async Task<VehicleMarketVersion?> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
         {
             if (marketVersionId == null || string.IsNullOrEmpty(newMarketVersion))
             {
@@ -803,7 +809,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleColor> DeleteVehicleColorFromDbAsync(int colorId)
+        public async Task<VehicleColor?> DeleteVehicleColorFromDbAsync(int colorId)
         {
             if (colorId == null)
             {
@@ -826,7 +832,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleBodyType> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId)
+        public async Task<VehicleBodyType?> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId)
         {
             if (bodyTypeId == null)
             {
@@ -849,7 +855,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Country> DeleteCountryFromDbAsync(int countryId)
+        public async Task<Country?> DeleteCountryFromDbAsync(int countryId)
         {
             if (countryId == null)
             {
@@ -877,7 +883,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<Currency> DeleteCurrencyFromDbAsync(int currencyId)
+        public async Task<Currency?> DeleteCurrencyFromDbAsync(int currencyId)
         {
             if (currencyId == null)
             {
@@ -900,7 +906,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleDrivetrainType> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId)
+        public async Task<VehicleDrivetrainType?> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId)
         {
             if (driveTrainId == null)
             {
@@ -923,7 +929,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleGearboxType> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId)
+        public async Task<VehicleGearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId)
         {
             if (gearboxId == null)
             {
@@ -946,7 +952,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Subscription> DeleteSubscriptionFromDbAsync(int subscriptionId)
+        public async Task<Subscription?> DeleteSubscriptionFromDbAsync(int subscriptionId)
         {
             if (subscriptionId == null)
             {
@@ -969,7 +975,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<Make> DeleteMakeFromDbAsync(int makeId)
+        public async Task<Make?> DeleteMakeFromDbAsync(int makeId)
         {
             if (makeId == null)
             {
@@ -992,7 +998,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<City> DeleteCityFromDbAsync(int cityId)
+        public async Task<City?> DeleteCityFromDbAsync(int cityId)
         {
             if (cityId == null)
             {
@@ -1015,7 +1021,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
         
-        public async Task<Model> DeleteModelFromDbAsync(int modelId)
+        public async Task<Model?> DeleteModelFromDbAsync(int modelId)
         {
             if (modelId == null)
             {
@@ -1038,7 +1044,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleFuelType> DeleteFuelTypeFromDbAsync(int fuelTypeId)
+        public async Task<VehicleFuelType?> DeleteFuelTypeFromDbAsync(int fuelTypeId)
         {
             if (fuelTypeId == null)
             {
@@ -1061,7 +1067,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleCondition> DeleteVehicleConditionFromDbAsync(int vehicleConditionId)
+        public async Task<VehicleCondition?> DeleteVehicleConditionFromDbAsync(int vehicleConditionId)
         {
             if (vehicleConditionId == null)
             {
@@ -1084,7 +1090,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleOption> DeleteVehicleOptionFromDbAsync(int vehicleOptionId)
+        public async Task<VehicleOption?> DeleteVehicleOptionFromDbAsync(int vehicleOptionId)
         {
             if (vehicleOptionId == null)
             {
@@ -1107,7 +1113,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<VehicleMarketVersion> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId)
+        public async Task<VehicleMarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId)
         {
             if (marketVersionId == null)
             {
@@ -1130,7 +1136,7 @@ namespace DriveSalez.Infrastructure.Repositories
             return null;
         }
 
-        public async Task<GetModeratorDto> DeleteModeratorFromDbAsync(Guid moderatorId)
+        public async Task<GetModeratorDto?> DeleteModeratorFromDbAsync(Guid moderatorId)
         {
             if (moderatorId == null)
             {

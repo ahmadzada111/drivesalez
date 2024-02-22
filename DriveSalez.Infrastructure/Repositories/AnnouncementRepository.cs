@@ -1,16 +1,16 @@
-﻿using System.Linq.Expressions;
-using AutoMapper;
+﻿using AutoMapper;
+using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
@@ -60,7 +60,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
+        public async Task<AnnouncementResponseDto?> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
@@ -127,7 +127,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     Owner = user
                 };
 
-                user.Announcements.Add(announcement);
+                user.Announcements?.Add(announcement);
                 var response = await _dbContext.Announcements.AddAsync(announcement);
 
                 if (response.State == EntityState.Added)
@@ -219,7 +219,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> GetActiveAnnouncementByIdFromDbAsync(Guid id)
+        public async Task<AnnouncementResponseDto?> GetActiveAnnouncementByIdFromDbAsync(Guid id)
         {
             try
             {
@@ -306,7 +306,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.VehicleDetails.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
-                    .OrderBy(o => o.IsPremium)
+                    .OrderByDescending(o => o.IsPremium)
                     .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                     .Take(parameter.PageSize)
                     .ToListAsync();
@@ -325,7 +325,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId,
+        public async Task<AnnouncementResponseDto?> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId,
             UpdateAnnouncementDto request)
         {
             try
@@ -407,7 +407,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
+        public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
         {
             try
             {
@@ -456,7 +456,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
+        public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
         {
             try
             {
@@ -499,7 +499,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> DeleteInactiveAnnouncementFromDbAsync(Guid userId,
+        public async Task<AnnouncementResponseDto?> DeleteInactiveAnnouncementFromDbAsync(Guid userId,
             Guid announcementId)
         {
             try
@@ -541,7 +541,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserIdFromDbAsync(Guid userId,
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncementsByUserIdFromDbAsync(Guid userId,
             PagingParameters pagingParameters, AnnouncementState announcementState)
         {
             try
@@ -582,7 +582,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Take(pagingParameters.PageSize)
                     .ToListAsync();
 
-                if (announcement == null)
+                if (announcement.IsNullOrEmpty())
                 {
                     return null;
                 }
@@ -596,7 +596,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
             PagingParameters pagingParameters)
         {
             try
@@ -637,7 +637,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Take(pagingParameters.PageSize)
                     .ToListAsync();
 
-                if (announcement == null)
+                if (announcement.IsNullOrEmpty())
                 {
                     return null;
                 }
@@ -651,7 +651,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsFromDbAsync(
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters)
         {
             try
@@ -869,7 +869,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
                 await filteredAnnouncements.ToListAsync();
 
-                if (filteredAnnouncements == null)
+                if (filteredAnnouncements.IsNullOrEmpty())
                 {
                     return null;
                 }

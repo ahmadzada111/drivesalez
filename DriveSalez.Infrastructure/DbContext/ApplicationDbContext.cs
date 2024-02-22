@@ -1,12 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using DriveSalez.Core.Domain.Entities;
+﻿using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
-using DriveSalez.Core.Entities.VehicleParts;
-using DriveSalez.Core.IdentityEntities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,12 +42,12 @@ namespace DriveSalez.Infrastructure.DbContext
                 VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "Korea" });
                 VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "Europe" });
 
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "White" });
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Black" });
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Red" });
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Yellow" });
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Green" });
-                VehicleColors.Add(new Core.Entities.VehicleParts.VehicleColor() { Color = "Blue" });
+                VehicleColors.Add(new VehicleColor() { Color = "White" });
+                VehicleColors.Add(new VehicleColor() { Color = "Black" });
+                VehicleColors.Add(new VehicleColor() { Color = "Red" });
+                VehicleColors.Add(new VehicleColor() { Color = "Yellow" });
+                VehicleColors.Add(new VehicleColor() { Color = "Green" });
+                VehicleColors.Add(new VehicleColor() { Color = "Blue" });
 
                 VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Sedan" });
                 VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Coupe" });

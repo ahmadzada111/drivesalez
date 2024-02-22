@@ -1,5 +1,5 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO;
-using DriveSalez.Core.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Core.ServiceContracts;

@@ -1,5 +1,4 @@
-using DriveSalez.Core.Entities;
-using Microsoft.AspNetCore.Http;
+using DriveSalez.Core.Domain.Entities;
 
 namespace DriveSalez.Core.ServiceContracts;
 

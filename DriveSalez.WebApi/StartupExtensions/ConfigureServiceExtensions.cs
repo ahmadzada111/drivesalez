@@ -1,5 +1,4 @@
-﻿using DriveSalez.Core.IdentityEntities;
-using DriveSalez.Core.ServiceContracts;
+﻿using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Core.Services;
 using DriveSalez.Infrastructure.DbContext;
 using DriveSalez.Infrastructure.Repositories;
@@ -12,8 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
+using DriveSalez.Core.AutoMapper;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
-using DriveSalez.Infrastructure.AutoMapper;
 using DriveSalez.Infrastructure.Quartz.Setups;
 using Quartz;
 

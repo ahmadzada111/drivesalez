@@ -1,4 +1,6 @@
-using ImageUrl = DriveSalez.Core.Entities.ImageUrl;
+
+
+using DriveSalez.Core.Domain.Entities;
 
 namespace DriveSalez.Core.ServiceContracts;
 

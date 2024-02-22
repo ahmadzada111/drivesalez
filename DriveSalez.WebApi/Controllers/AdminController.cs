@@ -1,7 +1,5 @@
 ﻿using DriveSalez.Core.DTO;
-using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

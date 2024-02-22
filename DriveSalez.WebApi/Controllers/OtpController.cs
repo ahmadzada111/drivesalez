@@ -4,7 +4,6 @@ using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 namespace DriveSalez.WebApi.Controllers;
 
@@ -16,16 +15,13 @@ public class OtpController : Controller
     private readonly IEmailService _emailService;
     private readonly IOtpService _otpService;
     private readonly IMemoryCache _cache;
-    private readonly IHostEnvironment _hostEnvironment;
     private readonly ILogger _logger;
     
-    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache, 
-        IHostEnvironment hostEnvironment, ILogger<OtpController> logger)
+    public OtpController(IEmailService emailService, IOtpService otpService, IMemoryCache cache, ILogger<OtpController> logger)
     {
         _emailService = emailService;
         _otpService = otpService;
         _cache = cache;
-        _hostEnvironment = hostEnvironment;
         _logger = logger;
     }
     

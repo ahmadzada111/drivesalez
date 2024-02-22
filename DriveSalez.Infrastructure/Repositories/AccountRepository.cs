@@ -1,7 +1,7 @@
+using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -19,13 +19,12 @@ public class AccountRepository : IAccountRepository
         _logger = logger;
     }
     
-    public async Task AddLimitsToAccountInDbAsync(Guid userId, UserType userType)
+    public async Task AddLimitsToAccountInDbAsync(ApplicationUser user, UserType userType)
     {
         try
         {
-            _logger.LogInformation($"Adding limits to user ID {userId} in DB");
-
-            var user = await _dbContext.Users.FindAsync(userId);
+            _logger.LogInformation($"Adding limits to user ID {user.Id} in DB");
+            
             var limit = await _dbContext.AccountLimits
                 .Where(x => x.UserType == userType)
                 .FirstOrDefaultAsync();
@@ -42,7 +41,7 @@ public class AccountRepository : IAccountRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error adding limits to account with ID {userId}");
+            _logger.LogError(e, $"Error adding limits to account with ID {user.Id}");
             throw;
         }
     }
@@ -126,7 +125,6 @@ public class AccountRepository : IAccountRepository
             var images = announcements
                 .SelectMany(a => a.ImageUrls)
                 .ToList();
-
             
             _dbContext.ImageUrls.RemoveRange(images);
             _dbContext.Announcements.RemoveRange(announcements);

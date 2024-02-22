@@ -1,7 +1,7 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +26,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> TopUpBalance(PaymentRequestDto request)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -50,7 +50,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -74,7 +74,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> AddRegularAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -98,7 +98,7 @@ public class PaymentService : IPaymentService
     
     public async Task<bool> BuyPremiumAccount(int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -124,7 +124,7 @@ public class PaymentService : IPaymentService
     
     public async Task<bool> BuyBusinessAccount(int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {

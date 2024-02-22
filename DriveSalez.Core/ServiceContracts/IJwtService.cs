@@ -1,8 +1,6 @@
 ﻿using DriveSalez.Core.DTO;
-using DriveSalez.Core.IdentityEntities;
 using System.Security.Claims;
-using DriveSalez.Core.Entities;
-
+using DriveSalez.Core.Domain.IdentityEntities;
 
 namespace DriveSalez.Core.ServiceContracts;
 

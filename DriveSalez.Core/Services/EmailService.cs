@@ -1,12 +1,9 @@
 using System.Net;
 using System.Net.Mail;
-using DriveSalez.Core.DTO;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 
 namespace DriveSalez.Core.Services;

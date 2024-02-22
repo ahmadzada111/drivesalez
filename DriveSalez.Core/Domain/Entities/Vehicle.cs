@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
-using DriveSalez.Core.Entities.VehicleParts;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
 
-namespace DriveSalez.Core.Entities
+namespace DriveSalez.Core.Domain.Entities
 {
     public class Vehicle
     {

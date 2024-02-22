@@ -1,6 +1,5 @@
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
-using DriveSalez.Core.Entities;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
@@ -121,7 +120,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.DeleteDeactivateAnnouncementAsync(announcementId);
+            var response = await _announcementService.DeleteInactivateAnnouncementAsync(announcementId);
             return response != null ? Ok(response) : BadRequest();
         }
         catch (UserNotAuthorizedException e)
@@ -209,7 +208,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-inactive-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>?> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 

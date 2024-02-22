@@ -1,6 +1,4 @@
-using DriveSalez.Core.IdentityEntities;
-
-namespace DriveSalez.Core.Entities;
+namespace DriveSalez.Core.Domain.IdentityEntities;
 
 public class DefaultAccount : ApplicationUser
 {

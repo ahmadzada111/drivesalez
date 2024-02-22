@@ -1,9 +1,9 @@
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Enums;
 using DriveSalez.Core.Exceptions;
-using DriveSalez.Core.IdentityEntities;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,9 +23,9 @@ public class AnnouncementService : IAnnouncementService
         _announcementRepository = announcementRepository;
     }
     
-    public async Task<AnnouncementResponseDto> AddAnnouncementAsync(CreateAnnouncementDto request)
+    public async Task<AnnouncementResponseDto?> AddAnnouncementAsync(CreateAnnouncementDto request)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -55,9 +55,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<AnnouncementResponseDto> DeleteDeactivateAnnouncementAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> DeleteInactivateAnnouncementAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -69,9 +69,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<LimitRequestDto> GetUserLimitsAsync()
+    public async Task<LimitRequestDto?> GetUserLimitsAsync()
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -83,27 +83,27 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<AnnouncementResponseDto> GetAnnouncementByIdAsync(Guid id)
+    public async Task<AnnouncementResponseDto?> GetAnnouncementByIdAsync(Guid id)
     {
         var response = await _announcementRepository.GetAnnouncementByIdFromDbAsync(id);
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> GetActiveAnnouncementByIdAsync(Guid id)
+    public async Task<AnnouncementResponseDto?> GetActiveAnnouncementByIdAsync(Guid id)
     {
         var response = await _announcementRepository.GetActiveAnnouncementByIdFromDbAsync(id);
         return response;
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncements(PagingParameters parameters, AnnouncementState announcementState)
     {
         var response = await _announcementRepository.GetAnnouncementsFromDbAsync(parameters, announcementState);
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request)
+    public async Task<AnnouncementResponseDto?> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -114,9 +114,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
 
-    public async Task<AnnouncementResponseDto> MakeAnnouncementActiveAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -128,9 +128,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -142,15 +142,15 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         var response = await _announcementRepository.GetFilteredAnnouncementsFromDbAsync(filterParameters, pagingParameters);
         return response;
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncementsByUserIdAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {
@@ -162,9 +162,9 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserIdAsync(PagingParameters pagingParameters)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAllAnnouncementsByUserIdAsync(PagingParameters pagingParameters)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
         if (user == null)
         {

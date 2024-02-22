@@ -1,7 +1,6 @@
-using System.ComponentModel.DataAnnotations;
-using DriveSalez.Core.Entities;
-using DriveSalez.Core.Entities.VehicleDetailsFiles;
-using DriveSalez.Core.Entities.VehicleParts;
+using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.Entities.VehicleParts;
 using DriveSalez.Core.Enums;
 
 namespace DriveSalez.Core.DTO;

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using DriveSalez.Core.Entities;
+using DriveSalez.Core.Domain.Entities;
 
 namespace DriveSalez.Core.DTO;
 

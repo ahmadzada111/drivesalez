@@ -38,7 +38,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException)
         {
             return Problem();
         }
@@ -63,7 +63,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException)
         {
             return Problem();
         }
@@ -88,7 +88,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException)
         {
             return Problem();
         }
@@ -112,7 +112,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException)
         {
             return Problem();
         }
@@ -136,7 +136,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException e)
+        catch (KeyNotFoundException)
         {
             return Problem();
         }

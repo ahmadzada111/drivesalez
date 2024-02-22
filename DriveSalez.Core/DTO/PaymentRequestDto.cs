@@ -1,5 +1,3 @@
-using DriveSalez.Core.Entities;
-
 namespace DriveSalez.Core.DTO;
 
 public class PaymentRequestDto

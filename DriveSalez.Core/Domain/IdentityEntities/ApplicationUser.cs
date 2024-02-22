@@ -1,8 +1,7 @@
-﻿using DriveSalez.Core.Entities;
-using Microsoft.AspNetCore.Identity;
-using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Identity;
+using DriveSalez.Core.Domain.Entities;
 
-namespace DriveSalez.Core.IdentityEntities
+namespace DriveSalez.Core.Domain.IdentityEntities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

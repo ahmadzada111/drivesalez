@@ -1,5 +1,4 @@
-﻿using DriveSalez.Core.Entities;
-using DriveSalez.Core.Enums;
+﻿using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
