@@ -296,7 +296,7 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var response = await _accountService.DeleteUserAsync(password);
-                return response ? Ok() : BadRequest();
+                return response != null ? Ok() : BadRequest();
             }
             catch (UserNotAuthorizedException e)
             {

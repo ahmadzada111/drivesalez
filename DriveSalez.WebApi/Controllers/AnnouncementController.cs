@@ -35,7 +35,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.AddAnnouncementAsync(createAnnouncement);
+            var response = await _announcementService.CreateAnnouncementAsync(createAnnouncement);
             return response != null ? Ok(response) : BadRequest();
         }
         catch (UserNotAuthorizedException e)
@@ -56,7 +56,7 @@ public class AnnouncementController : Controller
         try
         {
             var response = await _announcementService.GetUserLimitsAsync();
-            return response != null ? Ok(response) : BadRequest();
+            return Ok(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -88,7 +88,7 @@ public class AnnouncementController : Controller
         try
         {
             var response = await _announcementService.GetAnnouncementByIdAsync(announcementId);
-            return response != null ? Ok(response) : BadRequest();
+            return Ok(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -135,7 +135,7 @@ public class AnnouncementController : Controller
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Inactive);
+        var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest();
     }
 
@@ -145,7 +145,7 @@ public class AnnouncementController : Controller
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Waiting);
+        var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Waiting);
         return response != null ? Ok(response) : BadRequest();
     }
     
@@ -155,7 +155,7 @@ public class AnnouncementController : Controller
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAnnouncements(parameters, AnnouncementState.Active);
+        var response = await _announcementService.GetAllActiveAnnouncements(parameters);
         return response != null ? Ok(response) : BadRequest();
     }
     
@@ -198,7 +198,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Active);
+            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Active);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
@@ -214,7 +214,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Inactive);
+            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Inactive);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
@@ -230,7 +230,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserIdAsync(pagingParameters, AnnouncementState.Waiting);
+            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Waiting);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
@@ -246,7 +246,7 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAllAnnouncementsByUserIdAsync(pagingParameters);
+            var response = await _announcementService.GetAllAnnouncementsByUserAsync(pagingParameters);
             return response != null ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)

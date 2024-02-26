@@ -834,7 +834,7 @@ namespace DriveSalez.Core.Services
             return null;
         }
 
-        public async Task<List<GetModeratorDto>?> GetAllModeratorsAsync()
+        public async Task<IEnumerable<GetModeratorDto>> GetAllModeratorsAsync()
         {
             var moderators = await _userManager.GetUsersInRoleAsync(UserType.Moderator.ToString());
             List<GetModeratorDto> result = new List<GetModeratorDto>();
@@ -862,7 +862,7 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            var response = await _adminRepository.DeleteModeratorFromDbAsync(moderatorId);
+            var response = await _adminRepository.DeleteModeratorFromDbAsync(user);
             return response;
         }
     }

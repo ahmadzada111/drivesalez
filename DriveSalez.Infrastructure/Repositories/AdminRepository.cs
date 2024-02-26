@@ -1,6 +1,7 @@
 ﻿using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.Entities.VehicleParts;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Infrastructure.DbContext;
@@ -39,7 +40,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception ex)
             {
@@ -67,7 +68,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -95,7 +96,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -123,7 +124,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -151,7 +152,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -183,7 +184,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -211,7 +212,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -239,7 +240,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -267,7 +268,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -299,7 +300,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -327,7 +328,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -355,7 +356,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -391,7 +392,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -419,7 +420,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return response.Entity;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
@@ -450,7 +451,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return color;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -480,7 +481,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return bodyType;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -511,7 +512,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return country;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -542,7 +543,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return city;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -572,7 +573,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return currency;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -600,7 +601,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return subscription;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -630,7 +631,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return drivetrain;
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -676,7 +677,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return make;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         
         public async Task<Model?> UpdateModelInDbAsync(int modelId, string newModel)
@@ -702,7 +703,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return model;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
 
         public async Task<AccountLimit?> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
@@ -724,7 +725,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return accountLimit;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         
         public async Task<VehicleFuelType?> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
@@ -744,7 +745,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return fuelType;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         
         public async Task<VehicleCondition?> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
@@ -766,7 +767,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return vehicleCondition;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         
         public async Task<VehicleOption?> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
@@ -786,7 +787,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return vehicleOption;   
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         
         public async Task<VehicleMarketVersion?> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
@@ -806,7 +807,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 return marketVersion;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
 
         public async Task<VehicleColor?> DeleteVehicleColorFromDbAsync(int colorId)
@@ -827,8 +828,10 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return color;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
-            
+
             return null;
         }
 
@@ -850,6 +853,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return bodyType;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -878,6 +883,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return country;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -901,6 +908,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return currency;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -924,6 +933,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return drivetrain;   
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -947,6 +958,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return gearbox;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -970,6 +983,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return subscription;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -993,6 +1008,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return make;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1016,6 +1033,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return city;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1039,6 +1058,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return model;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1062,6 +1083,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return fuelType;   
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1085,6 +1108,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return vehicleCondition;   
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1108,6 +1133,8 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return vehicleOption;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
@@ -1131,40 +1158,34 @@ namespace DriveSalez.Infrastructure.Repositories
                     await _dbContext.SaveChangesAsync();
                     return marketVersion;
                 }
+                
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             
             return null;
         }
 
-        public async Task<GetModeratorDto?> DeleteModeratorFromDbAsync(Guid moderatorId)
+        public async Task<GetModeratorDto?> DeleteModeratorFromDbAsync(ApplicationUser moderator)
         {
-            if (moderatorId == null)
-            {
-                return null;
-            }
+            // var moderator = await _dbContext.Users
+            //     .Where(x => x.Id == moderatorId)
+            //     .FirstOrDefaultAsync();
+            //
+            var response = _dbContext.Remove(moderator);
 
-            var moderator = await _dbContext.Users
-                .Where(x => x.Id == moderatorId)
-                .FirstOrDefaultAsync();
-            
-            if (moderator != null)
+            if (response.State == EntityState.Deleted)
             {
-                var response = _dbContext.Remove(moderator);
-
-                if (response.State == EntityState.Deleted)
+                await _dbContext.SaveChangesAsync();
+                return new GetModeratorDto()
                 {
-                    await _dbContext.SaveChangesAsync();
-                    return new GetModeratorDto()
-                    {
-                        Id = moderator.Id,
-                        Name = moderator.FirstName,
-                        Surname = moderator.LastName,
-                        Email = moderator.UserName
-                    };
-                }
+                    Id = moderator.Id,
+                    Name = moderator.FirstName,
+                    Surname = moderator.LastName,
+                    Email = moderator.UserName
+                };
             }
             
-            return null;
+            throw new InvalidOperationException("Object wasn't deleted");
         }
     }
 }

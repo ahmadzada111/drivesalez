@@ -38,6 +38,8 @@ public class AccountRepository : IAccountRepository
             {
                 await _dbContext.SaveChangesAsync();
             }
+            
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
@@ -66,7 +68,7 @@ public class AccountRepository : IAccountRepository
         }
     }
     
-    public async Task<ApplicationUser?> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
     {
         try
         {
@@ -97,7 +99,7 @@ public class AccountRepository : IAccountRepository
                 return defaultAccount;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
@@ -106,18 +108,18 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser?> DeleteUserFromDbAsync(Guid userId)
+    public async Task<ApplicationUser> DeleteUserFromDbAsync(ApplicationUser user)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         
         try
         {
-            _logger.LogInformation($"Deleting user with ID {userId} from DB");
+            _logger.LogInformation($"Deleting user with ID {user} from DB");
 
-            var user = await _dbContext.Users
-                .Where(x => x.Id == userId)
-                .Include(x => x.PhoneNumbers)
-                .FirstOrDefaultAsync();
+            // var user = await _dbContext.Users
+            //     .Where(x => x.Id == userId)
+            //     .Include(x => x.PhoneNumbers)
+            //     .FirstOrDefaultAsync();
             var announcements = await _dbContext.Announcements
                 .Where(x => x.Owner.Id == user.Id)
                 .Include(x => x.ImageUrls)
@@ -132,18 +134,19 @@ public class AccountRepository : IAccountRepository
             _dbContext.Users.Remove(user);
 
             await transaction.CommitAsync();
+            await _dbContext.SaveChangesAsync();
             
             return user;
         }
         catch (Exception e)
         {
             await transaction.RollbackAsync();
-            _logger.LogError(e, $"Error deleting user with ID {userId} from DB");
-            return null;
+            _logger.LogError(e, $"Error deleting user with ID {user} from DB");
+            throw;
         }
     }
     
-    public async Task<ApplicationUser?> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user)
     {
         try
         {
@@ -185,7 +188,7 @@ public class AccountRepository : IAccountRepository
                 return premiumAccount;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
@@ -194,7 +197,7 @@ public class AccountRepository : IAccountRepository
         }
     }
 
-    public async Task<ApplicationUser?> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
     {
         try
         {
@@ -236,7 +239,7 @@ public class AccountRepository : IAccountRepository
                 return businessAccount;
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {

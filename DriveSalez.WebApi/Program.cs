@@ -1,4 +1,3 @@
-using System.Text.Json;
 using DriveSalez.WebApi.StartupExtensions;
 using System.Text.Json.Serialization;
 using DriveSalez.WebApi.Middleware;

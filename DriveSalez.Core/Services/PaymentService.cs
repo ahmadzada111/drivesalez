@@ -38,7 +38,7 @@ public class PaymentService : IPaymentService
             return false;
         }
         
-        var result = await _paymentRepository.RecordBalanceTopUpInDbAsync(user.Id, request);
+        var result = await _paymentRepository.RecordBalanceTopUpInDbAsync(user, request);
 
         if (!result)
         {
@@ -62,7 +62,7 @@ public class PaymentService : IPaymentService
             return false;
         }
         
-        var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
+        var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
 
         if (!result)
         {
@@ -86,7 +86,7 @@ public class PaymentService : IPaymentService
             return false;
         }
         
-        var result = await _paymentRepository.AddRegularAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
+        var result = await _paymentRepository.AddRegularAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
 
         if (!result)
         {

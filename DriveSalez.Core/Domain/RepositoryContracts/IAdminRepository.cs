@@ -1,6 +1,7 @@
 ﻿using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.Entities.VehicleParts;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.DTO;
 
 namespace DriveSalez.Core.Domain.RepositoryContracts
@@ -93,6 +94,6 @@ namespace DriveSalez.Core.Domain.RepositoryContracts
 
         Task<VehicleMarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
 
-        Task<GetModeratorDto?> DeleteModeratorFromDbAsync(Guid moderatorId);
+        Task<GetModeratorDto?> DeleteModeratorFromDbAsync(ApplicationUser moderator);
     }
 }

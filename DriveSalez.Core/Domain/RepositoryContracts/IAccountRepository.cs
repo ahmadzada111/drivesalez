@@ -9,11 +9,11 @@ public interface IAccountRepository
 
     Task<ApplicationUser?> FindUserByLoginInDbAsync(string login);
 
-    Task<ApplicationUser?> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user);
+    Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user);
 
-    Task<ApplicationUser?> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user);
+    Task<ApplicationUser> ChangeUserTypeToPremiumInDbAsync(ApplicationUser user);
 
-    Task<ApplicationUser?> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user);
+    Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user);
 
-    Task<ApplicationUser?> DeleteUserFromDbAsync(Guid userId);
+    Task<ApplicationUser> DeleteUserFromDbAsync(ApplicationUser user);
 }

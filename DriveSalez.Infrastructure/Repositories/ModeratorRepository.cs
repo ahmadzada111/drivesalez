@@ -55,7 +55,7 @@ public class ModeratorRepository : IModeratorRepository
                 return _mapper.Map<AnnouncementResponseDto>(announcement);
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
@@ -97,7 +97,7 @@ public class ModeratorRepository : IModeratorRepository
                 return _mapper.Map<AnnouncementResponseDto>(announcement);
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
@@ -139,7 +139,7 @@ public class ModeratorRepository : IModeratorRepository
                 return _mapper.Map<AnnouncementResponseDto>(announcement);
             }
 
-            return null;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {

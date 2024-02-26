@@ -1,6 +1,3 @@
-using System.Net;
-using Microsoft.IdentityModel.Tokens;
-
 namespace DriveSalez.WebApi.Middleware;
 
 public class ExceptionHandlingMiddleware

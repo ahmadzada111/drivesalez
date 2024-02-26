@@ -26,7 +26,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
             var response = await _detailsService.GetAllColorsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -42,7 +42,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleBodyTypesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -58,7 +58,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleDrivetrainsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -74,7 +74,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleGearboxTypesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -90,7 +90,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllMakesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -106,7 +106,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllModelsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -122,7 +122,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllModelsByMakeIdAsync(id);
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -138,7 +138,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleFuelTypesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -154,7 +154,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleDetailsConditionsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -170,7 +170,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleMarketVersionsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -186,7 +186,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllVehicleDetailsOptionsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -202,7 +202,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllManufactureYearsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -218,7 +218,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllCountriesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -234,7 +234,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllCitiesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -250,7 +250,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllCurrenciesAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -266,7 +266,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllSubscriptionsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -282,7 +282,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllAnnouncementPricingsAsync();
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {
@@ -298,7 +298,7 @@ public class DetailsController : Controller
             _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
             var response = await _detailsService.GetAllCitiesByCountryIdAsync(countryId);
-            return response != null ? Ok(response) : BadRequest(response);
+            return Ok(response);
         }
         catch (Exception)
         {

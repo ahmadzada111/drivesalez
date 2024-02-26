@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Pagination;
 using DriveSalez.Core.Enums;
-using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -30,56 +30,59 @@ namespace DriveSalez.Infrastructure.Repositories
             _logger = logger;
         }
 
-        public async Task<LimitRequestDto> GetUserLimitsFromDbAsync(Guid userId)
-        {
-            try
-            {
-                _logger.LogInformation($"Getting user limits from DB for user with ID: {userId}");
+        // public async Task<LimitRequestDto> GetUserLimitsFromDbAsync(ApplicationUser user)
+        // {
+        //     try
+        //     {
+        //         _logger.LogInformation($"Getting user limits from DB for user with ID: {user.Id}");
+        //
+        //         // var user = await _dbContext.Users
+        //         //     .Where(x => x.Id == userId)
+        //         //     .FirstOrDefaultAsync();
+        //
+        //         // if (user == null)
+        //         // {
+        //         //     _logger.LogWarning($"User not found with ID: {user.Id}");
+        //         //     throw new UserNotFoundException("User not found");
+        //         // }
+        //
+        //         return new LimitRequestDto()
+        //         {
+        //             PremiumLimit = user.PremiumUploadLimit,
+        //             RegularLimit = user.RegularUploadLimit,
+        //             AccountBalance = user.AccountBalance
+        //         };
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         _logger.LogError(e, $"Error getting user limits from DB for user with ID: {user.Id}");
+        //         throw;
+        //     }
+        // }
 
-                var user = await _dbContext.Users
-                    .Where(x => x.Id == userId)
-                    .FirstOrDefaultAsync();
-
-                if (user == null)
-                {
-                    _logger.LogWarning($"User not found with ID: {userId}");
-                    throw new UserNotFoundException("User not found");
-                }
-
-                return new LimitRequestDto()
-                {
-                    PremiumLimit = user.PremiumUploadLimit,
-                    RegularLimit = user.RegularUploadLimit,
-                    AccountBalance = user.AccountBalance
-                };
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error getting user limits from DB for user with ID: {userId}");
-                throw;
-            }
-        }
-
-        public async Task<AnnouncementResponseDto?> CreateAnnouncementAsync(Guid userId, CreateAnnouncementDto request)
+        public async Task<AnnouncementResponseDto> CreateAnnouncementInDbAsync(ApplicationUser user, CreateAnnouncementDto request)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
             {
-                _logger.LogInformation($"Creating announcement for user with ID: {userId}");
+                _logger.LogInformation($"Creating announcement for user with ID: {user.Id}");
 
-                var user = await _dbContext.Users
-                    .Include(x => x.PhoneNumbers)
-                    .FirstOrDefaultAsync(x => x.Id == userId);
+                // var user = await _dbContext.Users
+                //     .Include(x => x.PhoneNumbers)
+                //     .FirstOrDefaultAsync(x => x.Id == userId);
 
-                if (user == null)
+                // if (user == null)
+                // {
+                //     _logger.LogWarning($"User not found with ID: {user.Id}");
+                //     throw new UserNotFoundException("User not found");
+                // }
+
+                if (!await CheckAllRelationsInAnnouncement(request))
                 {
-                    _logger.LogWarning($"User not found with ID: {userId}");
-                    throw new UserNotFoundException("User not found");
+                    throw new ArgumentException("Invalid relations in the announcement request");
                 }
-
-                if (!await CheckAllRelationsInAnnouncement(request)) return null;
-
+                
                 var announcement = new Announcement()
                 {
                     Vehicle = new Vehicle()
@@ -133,15 +136,16 @@ namespace DriveSalez.Infrastructure.Repositories
                 if (response.State == EntityState.Added)
                 {
                     await transaction.CommitAsync();
+                    await _dbContext.SaveChangesAsync();
                     return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't added");
             }
             catch (Exception e)
             {
                 await transaction.RollbackAsync();
-                _logger.LogError(e, $"Error getting user limits from DB for user with ID: {userId}");
+                _logger.LogError(e, $"Error getting user limits from DB for user with ID: {user.Id}");
                 throw;
             }
         }
@@ -176,7 +180,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto> GetAnnouncementByIdFromDbAsync(Guid id)
+        public async Task<AnnouncementResponseDto?> GetAnnouncementByIdFromDbAsync(Guid id)
         {
             try
             {
@@ -193,13 +197,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -207,7 +217,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 if (response == null)
                 {
                     _logger.LogWarning($"Announcement not found with ID: {id}");
-                    throw new KeyNotFoundException();
+                    return null;
                 }
 
                 return _mapper.Map<AnnouncementResponseDto>(response);
@@ -236,23 +246,24 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                    .FirstOrDefaultAsync(x => x.Id == id && x.AnnouncementState == AnnouncementState.Active);
 
                 if (response == null)
-                {
-                    throw new KeyNotFoundException();
-                }
-
-                if (response.AnnouncementState != AnnouncementState.Active)
                 {
                     return null;
                 }
@@ -267,7 +278,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     return _mapper.Map<AnnouncementResponseDto>(response);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
@@ -276,15 +287,13 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsFromDbAsync(
-            PagingParameters parameter,
-            AnnouncementState announcementState)
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState)
         {
             try
             {
-                _logger.LogInformation($"Getting announcements from DB");
+                _logger.LogInformation($"Getting waiting announcements from DB");
 
-                var announcements = await _dbContext.Announcements
+                var waitingAnnouncements = await _dbContext.Announcements
                     .AsNoTracking()
                     .Where(on => on.AnnouncementState == announcementState)
                     .Include(x => x.Owner)
@@ -297,26 +306,118 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
-                    .OrderByDescending(o => o.IsPremium)
                     .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                     .Take(parameter.PageSize)
                     .ToListAsync();
 
-                if (announcements == null)
+                if (waitingAnnouncements.IsNullOrEmpty())
                 {
-                    throw new KeyNotFoundException();
+                    return Enumerable.Empty<AnnouncementResponseMiniDto>();
                 }
 
-                return _mapper.Map<List<AnnouncementResponseMiniDto>>(announcements);
+                return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(waitingAnnouncements);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting all announcements for admin panel from DB");
+                throw;
+            }
+        }
+        
+        public async Task<Tuple<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsFromDbAsync(PagingParameters parameter)
+        {
+            try
+            {
+                _logger.LogInformation($"Getting announcements from DB");
+
+                var regularAnnouncements = await _dbContext.Announcements
+                    .AsNoTracking()
+                    .Where(on => on.AnnouncementState == AnnouncementState.Active && !on.IsPremium)
+                    .Include(x => x.Owner)
+                    .Include(x => x.Owner.PhoneNumbers)
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Currency)
+                    .Include(x => x.ImageUrls)
+                    .Include(x => x.Vehicle.Year)
+                    .Include(x => x.Vehicle.Make)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.Vehicle.FuelType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
+                    .Include(x => x.Country)
+                    .Include(x => x.City)
+                    .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize)
+                    .ToListAsync();
+
+                var premiumAnnouncements = await _dbContext.Announcements
+                    .AsNoTracking()
+                    .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
+                    .Include(x => x.Owner)
+                    .Include(x => x.Owner.PhoneNumbers)
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Currency)
+                    .Include(x => x.ImageUrls)
+                    .Include(x => x.Vehicle.Year)
+                    .Include(x => x.Vehicle.Make)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.Vehicle.FuelType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
+                    .Include(x => x.Country)
+                    .Include(x => x.City)
+                    .Skip((parameter.PageNumber - 1) * parameter.PageSize)
+                    .Take(parameter.PageSize)
+                    .ToListAsync();
+                
+                if (regularAnnouncements.IsNullOrEmpty() && premiumAnnouncements.IsNullOrEmpty())
+                {
+                    return Tuple.Create(Enumerable.Empty<AnnouncementResponseMiniDto>(), Enumerable.Empty<AnnouncementResponseMiniDto>());
+                }
+                
+                var regularAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(regularAnnouncements);
+                var premiumAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(premiumAnnouncements);
+                
+                return Tuple.Create<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>(regularAnnouncementDtos, premiumAnnouncementDtos);
             }
             catch (Exception e)
             {
@@ -325,19 +426,19 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AnnouncementResponseDto?> UpdateAnnouncementInDbAsync(Guid userId, Guid announcementId,
+        public async Task<AnnouncementResponseDto> UpdateAnnouncementInDbAsync(ApplicationUser user, Guid announcementId,
             UpdateAnnouncementDto request)
         {
             try
             {
-                _logger.LogInformation($"Updating announcement in DB with ID {announcementId} for user with ID {userId}");
+                _logger.LogInformation($"Updating announcement in DB with ID {announcementId} for user with ID {user.Id}");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(userId);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
                 var announcement = await _dbContext.Announcements
                     .Where(x => x.Id == announcementId)
@@ -351,13 +452,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .FirstOrDefaultAsync();
@@ -398,27 +505,27 @@ namespace DriveSalez.Infrastructure.Repositories
                     return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error updating announcement with ID {announcementId} for user with ID {userId}");
+                _logger.LogError(e, $"Error updating announcement with ID {announcementId} for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
+        public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveInDbAsync(ApplicationUser user, Guid announcementId)
         {
             try
             {
-                _logger.LogInformation($"Making announcement with ID {announcementId} active in DB for user with ID {userId}");
+                _logger.LogInformation($"Making announcement with ID {announcementId} active in DB for user with ID {user.Id}");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(userId);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
                 var announcement =
                     await _dbContext.Announcements
@@ -427,11 +534,6 @@ namespace DriveSalez.Infrastructure.Repositories
                                                   x.AnnouncementState != AnnouncementState.Active);
 
                 if (announcement == null)
-                {
-                    return null;
-                }
-
-                if (announcement.AnnouncementState == AnnouncementState.Active)
                 {
                     return null;
                 }
@@ -447,27 +549,27 @@ namespace DriveSalez.Infrastructure.Repositories
                     return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error making announcement active with ID {announcementId} for user with ID {userId}");
+                _logger.LogError(e, $"Error making announcement active with ID {announcementId} for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
+        public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveInDbAsync(ApplicationUser user, Guid announcementId)
         {
             try
             {
-                _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB for user with ID {userId}");
+                _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB for user with ID {user.Id}");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(userId);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
                 var announcement =
                     await _dbContext.Announcements
@@ -490,33 +592,33 @@ namespace DriveSalez.Infrastructure.Repositories
                     return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't modified");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error making announcement inactive with ID {announcementId} for user with ID {userId}");
+                _logger.LogError(e, $"Error making announcement inactive with ID {announcementId} for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<AnnouncementResponseDto?> DeleteInactiveAnnouncementFromDbAsync(Guid userId,
+        public async Task<AnnouncementResponseDto?> DeleteInactiveAnnouncementFromDbAsync(ApplicationUser user,
             Guid announcementId)
         {
             try
             {
-                _logger.LogInformation($"Deleting announcement with ID {announcementId} from DB for user with ID {userId}");
+                _logger.LogInformation($"Deleting announcement with ID {announcementId} from DB for user with ID {user.Id}");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(user);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
                 var announcement = await _dbContext.Announcements
                     .Where(x => x.Id == announcementId &&
                                 x.AnnouncementState == AnnouncementState.Inactive &&
-                                x.Owner.Id == userId)
+                                x.Owner.Id == user.Id)
                     .FirstOrDefaultAsync();
 
                 if (announcement == null)
@@ -532,32 +634,32 @@ namespace DriveSalez.Infrastructure.Repositories
                     return _mapper.Map<AnnouncementResponseDto>(response);
                 }
 
-                return null;
+                throw new InvalidOperationException("Object wasn't deleted");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error deleting announcement with ID {announcementId} for user with ID {userId}");
+                _logger.LogError(e, $"Error deleting announcement with ID {announcementId} for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncementsByUserIdFromDbAsync(Guid userId,
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserFromDbAsync(ApplicationUser user,
             PagingParameters pagingParameters, AnnouncementState announcementState)
         {
             try
             {
-                _logger.LogInformation($"Getting announcements by user ID {userId} from DB");
+                _logger.LogInformation($"Getting announcements by user ID {user.Id} from DB");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(userId);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
-                var announcement = await _dbContext.Announcements
+                var announcements = await _dbContext.Announcements
                     .AsNoTracking()
-                    .Where(x => x.Owner.Id == userId && x.AnnouncementState == announcementState)
+                    .Where(x => x.Owner.Id == user.Id && x.AnnouncementState == announcementState)
                     .Include(x => x.Owner)
                     .Include(x => x.Owner.PhoneNumbers)
                     .Include(x => x.Vehicle)
@@ -568,13 +670,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)
@@ -582,37 +690,37 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Take(pagingParameters.PageSize)
                     .ToListAsync();
 
-                if (announcement.IsNullOrEmpty())
+                if (announcements.IsNullOrEmpty())
                 {
-                    return null;
+                    return Enumerable.Empty<AnnouncementResponseMiniDto>();
                 }
 
-                return _mapper.Map<List<AnnouncementResponseMiniDto>>(announcement);
+                return _mapper.Map<List<AnnouncementResponseMiniDto>>(announcements);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting announcements for user with ID {userId}");
+                _logger.LogError(e, $"Error getting announcements for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAllAnnouncementsByUserIdFromDbAsync(Guid userId,
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
             PagingParameters pagingParameters)
         {
             try
             {
-                _logger.LogInformation($"Getting all announcements by user ID {userId} from DB");
+                _logger.LogInformation($"Getting all announcements by user ID {user.Id} from DB");
 
-                var user = await _dbContext.Users.FindAsync(userId);
+                // var user = await _dbContext.Users.FindAsync(userId);
 
-                if (user == null)
-                {
-                    throw new UserNotFoundException("User not found");
-                }
+                // if (user == null)
+                // {
+                //     throw new UserNotFoundException("User not found");
+                // }
 
                 var announcement = await _dbContext.Announcements
                     .AsNoTracking()
-                    .Where(x => x.Owner.Id == userId)
+                    .Where(x => x.Owner.Id == user.Id)
                     .Include(x => x.Owner)
                     .Include(x => x.Owner.PhoneNumbers)
                     .Include(x => x.Vehicle)
@@ -623,13 +731,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)
@@ -639,19 +753,19 @@ namespace DriveSalez.Infrastructure.Repositories
 
                 if (announcement.IsNullOrEmpty())
                 {
-                    return null;
+                    return Enumerable.Empty<AnnouncementResponseMiniDto>();
                 }
 
                 return _mapper.Map<List<AnnouncementResponseMiniDto>>(announcement);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting all announcements for user with ID {userId}");
+                _logger.LogError(e, $"Error getting all announcements for user with ID {user.Id}");
                 throw;
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetFilteredAnnouncementsFromDbAsync(
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters)
         {
             try
@@ -671,13 +785,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                    .Include(x => x.Vehicle.VehicleDetails.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails.Color)
-                    .Include(x => x.Vehicle.VehicleDetails.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails.Options)
-                    .Include(x => x.Vehicle.VehicleDetails.Conditions)
+                        .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                        .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)
@@ -871,7 +991,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
                 if (filteredAnnouncements.IsNullOrEmpty())
                 {
-                    return null;
+                    return Enumerable.Empty<AnnouncementResponseMiniDto>();
                 }
 
                 return _mapper.Map<List<AnnouncementResponseMiniDto>>(filteredAnnouncements);

@@ -8,6 +8,7 @@ using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.Core.Services;
@@ -49,7 +50,7 @@ public class AccountService : IAccountService
             LastUpdateDate = DateTimeOffset.Now,
             SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
         };
-
+        
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
         if (result.Succeeded)
@@ -177,7 +178,7 @@ public class AccountService : IAccountService
 
             if (user == null)
             {
-                throw new UserNotFoundException("User not found!");
+                throw new UserNotFoundException("User found!");
             }
 
             if (!user.EmailConfirmed)
@@ -207,7 +208,7 @@ public class AccountService : IAccountService
             
             if (user == null)
             {
-                throw new UserNotFoundException("User not found!");
+                throw new UserNotFoundException("User found!");
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -254,7 +255,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User is not found!");
+            throw new UserNotFoundException("User not found!");
         }
 
         var passwordValidator = new PasswordValidator<ApplicationUser>();
@@ -286,7 +287,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User is not found!");
+            throw new UserNotFoundException("User not found!");
         }
 
         var passwordValidator = new PasswordValidator<ApplicationUser>();
@@ -314,7 +315,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User is not found!");
+            throw new UserNotFoundException("User not found!");
         }
 
         user.Email = newMail;
@@ -336,30 +337,33 @@ public class AccountService : IAccountService
 
         if (user == null)
         {
-            throw new UserNotAuthorizedException("User is not authorized!");
+            throw new UserNotAuthorizedException("User not authorized!");
         }
 
         await _signInManager.SignOutAsync();
     }
     
-    public async Task<bool> DeleteUserAsync(string password)
+    public async Task<ApplicationUser?> DeleteUserAsync(string password)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
+        var currentUser = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.Users
+            .Include(u => u.PhoneNumbers)
+            .FirstOrDefaultAsync(u => u.Id.ToString() == currentUser.Id.ToString());
+
         if (user != null  && await _userManager.CheckPasswordAsync(user, password))
         {
-            var result = await _accountRepository.DeleteUserFromDbAsync(user.Id);
+            var result = await _accountRepository.DeleteUserFromDbAsync(user);
             
             if (result != null)
             {
                 await _fileService.DeleteAllFilesAsync(user.Id);
-                return true;
+                return result;
             }
 
-            return false;
+            return null;
         }
 
-        throw new UserNotAuthorizedException("User is not authorized!");
+        throw new UserNotAuthorizedException("User not authorized!");
     }
 
     public async Task<ApplicationUser?> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)

@@ -93,7 +93,7 @@ namespace DriveSalez.Core.ServiceContracts
         
         Task<RegisterModeratorResponseDto?> AddModeratorAsync(RegisterModeratorDto registerDto);
         
-        Task<List<GetModeratorDto>?> GetAllModeratorsAsync();
+        Task<IEnumerable<GetModeratorDto>> GetAllModeratorsAsync();
 
         Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId);
     }

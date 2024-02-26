@@ -1,4 +1,5 @@
 using DriveSalez.Core.Domain.Entities;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Exceptions;
@@ -19,20 +20,20 @@ public class PaymentRepository : IPaymentRepository
         _logger = logger;
     }
 
-    public async Task<bool> RecordBalanceTopUpInDbAsync(Guid userId, PaymentRequestDto request)
+    public async Task<bool> RecordBalanceTopUpInDbAsync(ApplicationUser user, PaymentRequestDto request)
     {
         try
         {
-            _logger.LogInformation($"Recording balance top up for user with ID {userId} in DB");
+            _logger.LogInformation($"Recording balance top up for user with ID {user.Id} in DB");
             
-            var user = await _dbContext.Users
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync();
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
+            // var user = await _dbContext.Users
+            //     .Where(x => x.Id == userId)
+            //     .FirstOrDefaultAsync();
+            //
+            // if (user == null)
+            // {
+            //     throw new UserNotFoundException("User not found");
+            // }
         
             user.AccountBalance += request.Sum;
             var response = _dbContext.Update(user);
@@ -43,34 +44,34 @@ public class PaymentRepository : IPaymentRepository
                 return true;
             }
 
-            return false;
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error recording balance top up for user with ID {userId} in DB");
+            _logger.LogError(e, $"Error recording balance top up for user with ID {user.Id} in DB");
             throw;
         }
     }
 
-    public async Task<bool> AddRegularAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddRegularAnnouncementLimitInDbAsync(ApplicationUser user, int announcementQuantity, int subscriptionId)
     {
         try
         {
-            _logger.LogInformation($"Adding limit to user with ID {userId} in DB");
+            _logger.LogInformation($"Adding limit to user with ID {user.Id} in DB");
             
-            var user = await _dbContext.Users
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync();
+            // var user = await _dbContext.Users
+            //     .Where(x => x.Id == userId)
+            //     .FirstOrDefaultAsync();
             
             var announcementSubscription = await _dbContext.AnnouncementPricing
                 .Include(x => x.Price)
                 .Where(x => x.Id == subscriptionId)
                 .FirstOrDefaultAsync();
             
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
+            // if (user == null)
+            // {
+            //     throw new UserNotFoundException("User not found");
+            // }
 
             if (announcementSubscription == null)
             {
@@ -89,26 +90,26 @@ public class PaymentRepository : IPaymentRepository
                     await _dbContext.SaveChangesAsync();
                     return true;
                 }
-            }    
-            
-            return false;
+            }
+
+            throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error adding limit to user with ID {userId} in DB");
+            _logger.LogError(e, $"Error adding limit to user with ID {user.Id} in DB");
             throw;
         }
     }
 
-    public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddPremiumAnnouncementLimitInDbAsync(ApplicationUser user, int announcementQuantity, int subscriptionId)
     {
         try
         {
-            _logger.LogInformation($"Adding limit to user with ID {userId} in DB");
+            _logger.LogInformation($"Adding limit to user with ID {user.Id} in DB");
             
-            var user = await _dbContext.Users
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync();
+            // var user = await _dbContext.Users
+            //     .Where(x => x.Id == userId)
+            //     .FirstOrDefaultAsync();
             
             var announcementSubscription = await _dbContext.AnnouncementPricing
                 .Include(x => x.Price)
@@ -137,13 +138,15 @@ public class PaymentRepository : IPaymentRepository
                     await _dbContext.SaveChangesAsync();
                     return true;
                 }
+
+                throw new InvalidOperationException("Object wasn't modified");
             }
             
             return false;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error adding limit to user with ID {userId} in DB");
+            _logger.LogError(e, $"Error adding limit to user with ID {user.Id} in DB");
             throw;
         }
     }
