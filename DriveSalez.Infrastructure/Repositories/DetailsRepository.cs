@@ -137,7 +137,6 @@ public class DetailsRepository : IDetailsRepository
             _logger.LogError(e, $"Error getting VehicleConditions from DB: {e.Message}");
             throw;
         }
-
     }
 
     public async Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync()

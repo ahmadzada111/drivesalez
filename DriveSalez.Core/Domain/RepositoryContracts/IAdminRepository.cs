@@ -94,6 +94,6 @@ namespace DriveSalez.Core.Domain.RepositoryContracts
 
         Task<VehicleMarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
 
-        Task<GetModeratorDto?> DeleteModeratorFromDbAsync(ApplicationUser moderator);
+        Task<GetModeratorDto?> DeleteModeratorFromDbAsync(Guid moderatorId);
     }
 }

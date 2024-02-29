@@ -26,7 +26,7 @@ namespace DriveSalez.Core.Domain.RepositoryContracts
         Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsFromDbAsync(
             FilterParameters filterParameters, PagingParameters pagingParameters);
 
-        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserFromDbAsync(ApplicationUser user, PagingParameters pagingParameters, AnnouncementState announcementState);
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user, PagingParameters pagingParameters, AnnouncementState announcementState);
 
         Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
             PagingParameters pagingParameters);

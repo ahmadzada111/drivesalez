@@ -15,12 +15,15 @@ public class AnnouncementService : IAnnouncementService
     private readonly IAnnouncementRepository _announcementRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IFileService _fileService;
 
-    public AnnouncementService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, IAnnouncementRepository announcementRepository)
+    public AnnouncementService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, 
+        IAnnouncementRepository announcementRepository, IFileService fileService)
     {
         _contextAccessor = accessor;
         _userManager = userManager;
         _announcementRepository = announcementRepository;
+        _fileService = fileService;
     }
     
     public async Task<AnnouncementResponseDto?> CreateAnnouncementAsync(CreateAnnouncementDto request)
@@ -66,6 +69,7 @@ public class AnnouncementService : IAnnouncementService
         
         var response = await _announcementRepository.DeleteInactiveAnnouncementFromDbAsync(user, announcementId);
 
+        await _fileService.DeleteAllFilesAsync(user.Id);
         return response;
     }
 
@@ -86,7 +90,7 @@ public class AnnouncementService : IAnnouncementService
         };
     }
     
-    public async Task<AnnouncementResponseDto> GetAnnouncementByIdAsync(Guid id)
+    public async Task<AnnouncementResponseDto?> GetAnnouncementByIdAsync(Guid id)
     {
         var response = await _announcementRepository.GetAnnouncementByIdFromDbAsync(id);
         return response;
@@ -153,13 +157,13 @@ public class AnnouncementService : IAnnouncementService
         return response;
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         var response = await _announcementRepository.GetFilteredAnnouncementsFromDbAsync(filterParameters, pagingParameters);
         return response;
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncementsByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
@@ -168,12 +172,12 @@ public class AnnouncementService : IAnnouncementService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
 
-        var response = await _announcementRepository.GetAnnouncementsByUserFromDbAsync(user, pagingParameters, announcementState);
+        var response = await _announcementRepository.GetAnnouncementsByStatesAndByUserFromDbAsync(user, pagingParameters, announcementState);
 
         return response;
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters)
+    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         

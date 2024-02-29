@@ -38,8 +38,10 @@ public class AccountRepository : IAccountRepository
             {
                 await _dbContext.SaveChangesAsync();
             }
-            
-            throw new InvalidOperationException("Object wasn't modified");
+            else
+            {
+                throw new InvalidOperationException("Object wasn't modified");
+            }
         }
         catch (Exception e)
         {
@@ -131,12 +133,17 @@ public class AccountRepository : IAccountRepository
             _dbContext.ImageUrls.RemoveRange(images);
             _dbContext.Announcements.RemoveRange(announcements);
             _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
-            _dbContext.Users.Remove(user);
+            var result = _dbContext.Users.Remove(user);
 
-            await transaction.CommitAsync();
-            await _dbContext.SaveChangesAsync();
+            if (result.State == EntityState.Deleted)
+            {
+                await transaction.CommitAsync();
+                await _dbContext.SaveChangesAsync();
             
-            return user;
+                return user;
+            }
+
+            throw new InvalidOperationException("Object wasn't deleted");
         }
         catch (Exception e)
         {

@@ -161,10 +161,17 @@ namespace DriveSalez.WebApi.Controllers
         [HttpGet("logout")]
         public async Task<ActionResult> LogOut()
         {
-            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+            try
+            {
+                _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-            await _accountService.LogOutAsync();
-            return NoContent();
+                await _accountService.LogOutAsync();
+                return NoContent();
+            }
+            catch (UserNotAuthorizedException e)
+            {
+                return Unauthorized(e);
+            }
         }
         
         [HttpPost("refresh")]
@@ -296,11 +303,15 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var response = await _accountService.DeleteUserAsync(password);
-                return response != null ? Ok() : BadRequest();
+                return Ok(response);
             }
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -312,7 +323,13 @@ namespace DriveSalez.WebApi.Controllers
             try
             {
                 var result = await _accountService.CreateAdminAsync();
-                return result ? Ok() : BadRequest();
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(string.Join(" | ", result.Errors.Select(e => e.Description)));
+                }
+
+                return Ok();
             }
             catch (UserNotAuthorizedException e)
             {

@@ -15,6 +15,12 @@ public class AnnouncementResponseMiniDto
     
     public bool IsPremium { get; set; }
 
+    public bool Barter { get; set; }
+
+    public bool OnCredit { get; set; }
+    
+    public string VinCode { get; set; }
+    
     public int Mileage { get; set; }
     
     public string MileageType { get; set; }

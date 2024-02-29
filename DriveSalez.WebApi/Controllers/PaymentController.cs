@@ -44,15 +44,65 @@ public class PaymentController : Controller
         }
     }
     
+    // [Authorize]
+    // [HttpPost("add-regular-announcement-limit")]
+    // public async Task<ActionResult> AddRegularAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
+    // {
+    //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+    //
+    //     try
+    //     {
+    //         var result = await _paymentService.AddRegularAnnouncementLimit(announcementQuantity, subscriptionId);
+    //         return result ? Ok() : BadRequest();
+    //     }
+    //     catch (UserNotAuthorizedException e)
+    //     {
+    //         return Unauthorized(e.Message);
+    //     }
+    //     catch (UserNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    //     catch (KeyNotFoundException)
+    //     {
+    //         return Problem();
+    //     }
+    // }
+    //
+    // [Authorize]
+    // [HttpPost("add-premium-announcement-limit")]
+    // public async Task<ActionResult> AddPremiumAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
+    // {
+    //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+    //
+    //     try
+    //     {
+    //         var result = await _paymentService.AddPremiumAnnouncementLimit(announcementQuantity, subscriptionId);
+    //         return result ? Ok() : BadRequest();
+    //     }
+    //     catch (UserNotAuthorizedException e)
+    //     {
+    //         return Unauthorized(e.Message);
+    //     }
+    //     catch (UserNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    //     catch (KeyNotFoundException)
+    //     {
+    //         return Problem();
+    //     }
+    // }
+    
     [Authorize]
-    [HttpPost("add-regular-announcement-limit")]
-    public async Task<ActionResult> AddRegularAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
+    [HttpPost("add-announcement-limit")]
+    public async Task<ActionResult> AddAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
         try
         {
-            var result = await _paymentService.AddRegularAnnouncementLimit(announcementQuantity, subscriptionId);
+            var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
             return result ? Ok() : BadRequest();
         }
         catch (UserNotAuthorizedException e)
@@ -63,32 +113,7 @@ public class PaymentController : Controller
         {
             return NotFound(e.Message);
         }
-        catch (KeyNotFoundException)
-        {
-            return Problem();
-        }
-    }
-
-    [Authorize]
-    [HttpPost("add-premium-announcement-limit")]
-    public async Task<ActionResult> AddPremiumAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
-    {
-        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var result = await _paymentService.AddPremiumAnnouncementLimit(announcementQuantity, subscriptionId);
-            return result ? Ok() : BadRequest();
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException e)
         {
             return Problem();
         }

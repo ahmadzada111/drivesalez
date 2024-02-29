@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Azure;
 using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
@@ -178,12 +179,12 @@ public class AccountService : IAccountService
 
             if (user == null)
             {
-                throw new UserNotFoundException("User found!");
+                throw new UserNotFoundException("User not found!");
             }
 
             if (!user.EmailConfirmed)
             {
-                throw new EmailNotConfirmedException("Email is not confirmed!");
+                throw new EmailNotConfirmedException("Email not confirmed!");
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -208,7 +209,7 @@ public class AccountService : IAccountService
             
             if (user == null)
             {
-                throw new UserNotFoundException("User found!");
+                throw new UserNotFoundException("User not found!");
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -343,9 +344,9 @@ public class AccountService : IAccountService
         await _signInManager.SignOutAsync();
     }
     
-    public async Task<ApplicationUser?> DeleteUserAsync(string password)
+    public async Task<ApplicationUser> DeleteUserAsync(string password)
     {
-        var currentUser = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var currentUser = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         var user = await _userManager.Users
             .Include(u => u.PhoneNumbers)
             .FirstOrDefaultAsync(u => u.Id.ToString() == currentUser.Id.ToString());
@@ -354,29 +355,19 @@ public class AccountService : IAccountService
         {
             var result = await _accountRepository.DeleteUserFromDbAsync(user);
             
-            if (result != null)
-            {
-                await _fileService.DeleteAllFilesAsync(user.Id);
-                return result;
-            }
-
-            return null;
+            await _fileService.DeleteAllFilesAsync(user.Id);
+            return result;
         }
 
         throw new UserNotAuthorizedException("User not authorized!");
     }
 
-    public async Task<ApplicationUser?> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
 
         var defaultAccount = await _accountRepository.ChangeUserTypeToDefaultAccountInDbAsync(user);
-        
-        if (defaultAccount == null)
-        {
-            return null;
-        }
         
         await _userManager.AddToRoleAsync(defaultAccount, UserType.DefaultAccount.ToString());
         await _userManager.UpdateAsync(defaultAccount);
@@ -384,17 +375,12 @@ public class AccountService : IAccountService
         return defaultAccount;
     }
     
-    public async Task<ApplicationUser?> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
 
         var premiumAccount = await _accountRepository.ChangeUserTypeToPremiumInDbAsync(user);
-        
-        if (premiumAccount == null)
-        {
-            return null;
-        }
         
         await _userManager.AddToRoleAsync(premiumAccount, UserType.PremiumAccount.ToString());
         await _userManager.UpdateAsync(premiumAccount);
@@ -402,17 +388,12 @@ public class AccountService : IAccountService
         return premiumAccount;
     }
     
-    public async Task<ApplicationUser?> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
         await _userManager.RemoveFromRolesAsync(user, roles);
 
         var businessAccount = await _accountRepository.ChangeUserTypeToBusinessInDbAsync(user);
-        
-        if (businessAccount == null)
-        {
-            return null;
-        }
         
         await _userManager.AddToRoleAsync(businessAccount, UserType.BusinessAccount.ToString());
         await _userManager.UpdateAsync(businessAccount);
@@ -420,7 +401,7 @@ public class AccountService : IAccountService
         return businessAccount;
     }
     
-    public async Task<bool> CreateAdminAsync()
+    public async Task<IdentityResult> CreateAdminAsync()
     {
         DefaultAccount user = new DefaultAccount()
         {
@@ -449,9 +430,11 @@ public class AccountService : IAccountService
                 await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
             }
 
-            return true;
+            await _userManager.UpdateAsync(user);
+            
+            return result;
         }
 
-        return false;
+        return result;
     }
 }

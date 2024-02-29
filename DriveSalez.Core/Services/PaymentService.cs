@@ -48,21 +48,16 @@ public class PaymentService : IPaymentService
         return true;
     }
 
-    public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
 
         if (user == null)
         {
             throw new UserNotAuthorizedException("User is not Authorized");
         }
 
-        if (announcementQuantity <= 0)
-        {
-            return false;
-        }
-        
-        var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
+        var result = await _paymentRepository.AddAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
 
         if (!result)
         {
@@ -71,30 +66,54 @@ public class PaymentService : IPaymentService
         
         return true;
     }
-
-    public async Task<bool> AddRegularAnnouncementLimit(int announcementQuantity, int subscriptionId)
-    {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not Authorized");
-        }
-
-        if (announcementQuantity <= 0)
-        {
-            return false;
-        }
-        
-        var result = await _paymentRepository.AddRegularAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
-
-        if (!result)
-        {
-            return false;
-        }
-        
-        return true;
-    }
+    
+    // public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    // {
+    //     var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+    //
+    //     if (user == null)
+    //     {
+    //         throw new UserNotAuthorizedException("User is not Authorized");
+    //     }
+    //
+    //     if (announcementQuantity <= 0)
+    //     {
+    //         return false;
+    //     }
+    //     
+    //     var result = await _paymentRepository.AddPremiumAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
+    //
+    //     if (!result)
+    //     {
+    //         return false;
+    //     }
+    //     
+    //     return true;
+    // }
+    //
+    // public async Task<bool> AddRegularAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    // {
+    //     var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+    //
+    //     if (user == null)
+    //     {
+    //         throw new UserNotAuthorizedException("User is not Authorized");
+    //     }
+    //
+    //     if (announcementQuantity <= 0)
+    //     {
+    //         return false;
+    //     }
+    //     
+    //     var result = await _paymentRepository.AddRegularAnnouncementLimitInDbAsync(user, announcementQuantity, subscriptionId);
+    //
+    //     if (!result)
+    //     {
+    //         return false;
+    //     }
+    //     
+    //     return true;
+    // }
     
     public async Task<bool> BuyPremiumAccount(int subscriptionId)
     {
@@ -107,14 +126,9 @@ public class PaymentService : IPaymentService
 
         var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId);
         
-        if (user.AccountBalance - subscription.Price.Price > 0)
+        if (user.AccountBalance - subscription?.Price.Price > 0)
         {
-            var premiumAccount = await _accountService.ChangeUserTypeToPremiumAccountAsync(user);
-            
-            if (premiumAccount == null)
-            {
-                return false;
-            }
+            await _accountService.ChangeUserTypeToPremiumAccountAsync(user);
 
             return true;
         }
@@ -133,14 +147,9 @@ public class PaymentService : IPaymentService
 
         var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId); 
         
-        if (user.AccountBalance - subscription.Price.Price > 0)
+        if (user.AccountBalance - subscription?.Price.Price > 0)
         {
-            var businessAccount = await _accountService.ChangeUserTypeToBusinessAccountAsync(user);
-            
-            if (businessAccount == null)
-            {
-                return false;
-            }
+            await _accountService.ChangeUserTypeToBusinessAccountAsync(user);
 
             return true;
         }

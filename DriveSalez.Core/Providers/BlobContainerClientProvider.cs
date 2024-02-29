@@ -2,7 +2,7 @@ using Azure.Storage.Blobs;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.Extensions.Configuration;
 
-namespace DriveSalez.Core.Services;
+namespace DriveSalez.Core.Providers;
 
 public class BlobContainerClientProvider : IBlobContainerClientProvider
 {

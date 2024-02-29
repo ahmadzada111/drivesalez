@@ -26,7 +26,7 @@ public class FileService : IFileService
 
     public async Task<List<ImageUrl>> UploadFilesAsync(List<string> base64Images)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {
@@ -64,55 +64,34 @@ public class FileService : IFileService
 
     public async Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         BlobContainerClient imageContainer = _containerClient.GetContainerClient();
         
-        try
-        {
-            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
-            await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
+        await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
-            return await UploadFilesAsync(base64Images);
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return await UploadFilesAsync(base64Images);
     }
     
     public async Task<bool> DeleteFileAsync(ImageUrl imageUrl)
     {
         BlobContainerClient imageContainer = _containerClient.GetContainerClient();
         
-        try
-        {
-            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(imageUrl.Url.ToString());
-            var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(imageUrl.Url?.ToString());
+        var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
-            return result.Value;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return result.Value;
     }
     
     public async Task<bool> DeleteAllFilesAsync(Guid userId)
     {
         BlobContainerClient imageContainer = _containerClient.GetContainerClient();
         
-        try
-        {
-            BlobClient existTagsBlobClient = imageContainer.GetBlobClient(userId.ToString());
-            var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(userId.ToString());
+        var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
-            return result.Value;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return result.Value;   
     }
     
      private string GetImageTypeFromBase64(string base64String)

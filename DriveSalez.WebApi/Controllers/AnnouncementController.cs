@@ -5,6 +5,7 @@ using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.WebApi.Controllers;
 
@@ -42,7 +43,11 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
-        catch (PaymentFailedException e)
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (InvalidOperationException e)
         {
             return Problem(e.Message);
         }
@@ -78,6 +83,10 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
     }
     
     [HttpGet("get-announcement-by-id/{announcementId}")]
@@ -88,7 +97,7 @@ public class AnnouncementController : Controller
         try
         {
             var response = await _announcementService.GetAnnouncementByIdAsync(announcementId);
-            return Ok(response);
+            return response != null ? Ok(response) : BadRequest();
         }
         catch (UserNotAuthorizedException e)
         {
@@ -111,6 +120,10 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
     }
     
     [HttpDelete("delete-announcement/{announcementId}")]
@@ -127,6 +140,10 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
     }
     
     [Authorize(Roles = "Admin, Moderator")]
@@ -136,7 +153,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
         var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Inactive);
-        return response != null ? Ok(response) : BadRequest();
+        return !response.IsNullOrEmpty() ? Ok(response) : BadRequest();   
     }
 
     [Authorize(Roles = "Admin, Moderator")]
@@ -146,7 +163,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
         var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Waiting);
-        return response != null ? Ok(response) : BadRequest();
+        return !response.IsNullOrEmpty() ? Ok(response) : BadRequest();
     }
     
     [AllowAnonymous]
@@ -156,7 +173,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
         var response = await _announcementService.GetAllActiveAnnouncements(parameters);
-        return response != null ? Ok(response) : BadRequest();
+        return !response.Item1.IsNullOrEmpty() || !response.Item2.IsNullOrEmpty() ? Ok(response) : BadRequest();
     }
     
     [HttpPost("reactivate-announcement/{announcementId}")]
@@ -172,6 +189,10 @@ public class AnnouncementController : Controller
         catch (UserNotAuthorizedException e)
         {
             return Unauthorized(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
         }
     }
 
@@ -189,6 +210,10 @@ public class AnnouncementController : Controller
         {
             return Unauthorized(e.Message);
         }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
     }
     
     [HttpGet("get-all-active-announcements-by-user-id")]
@@ -198,8 +223,8 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Active);
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Active);
+            return !response.IsNullOrEmpty() ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -214,8 +239,8 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Inactive);
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Inactive);
+            return !response.IsNullOrEmpty() ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -230,8 +255,8 @@ public class AnnouncementController : Controller
 
         try
         {
-            var response = await _announcementService.GetAnnouncementsByUserAsync(pagingParameters, AnnouncementState.Waiting);
-            return response != null ? Ok(response) : BadRequest(response);
+            var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Waiting);
+            return !response.IsNullOrEmpty() ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -247,7 +272,7 @@ public class AnnouncementController : Controller
         try
         {
             var response = await _announcementService.GetAllAnnouncementsByUserAsync(pagingParameters);
-            return response != null ? Ok(response) : BadRequest(response);
+            return !response.IsNullOrEmpty() ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
         {
@@ -264,7 +289,7 @@ public class AnnouncementController : Controller
         try
         {
             var response = await _announcementService.GetFilteredAnnouncementsAsync(filterParameters, pagingParameters);
-            return response != null ? Ok(response) : BadRequest(response);
+            return !response.IsNullOrEmpty() ? Ok(response) : BadRequest(response);
         }
         catch (UserNotAuthorizedException e)
         {

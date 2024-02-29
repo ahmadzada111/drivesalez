@@ -1,10 +1,9 @@
-using Azure.Storage.Blobs;
 using DriveSalez.Core.ServiceContracts;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Vision.V1;
 using Microsoft.Extensions.Configuration;
 
-namespace DriveSalez.Core.Services;
+namespace DriveSalez.Core.Providers;
 
 public class ImageAnnotatorClientProvider : IImageAnnotatorClientProvider
 {
@@ -28,7 +27,7 @@ public class ImageAnnotatorClientProvider : IImageAnnotatorClientProvider
             Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsPath);
         }
         
-        var credentials = GoogleCredential.FromFile(_configuration["ImageAnalyzer:Path"]);
+        GoogleCredential.FromFile(_configuration["ImageAnalyzer:Path"]);
         var visionClient = ImageAnnotatorClient.Create();
 
         return visionClient;

@@ -862,7 +862,7 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            var response = await _adminRepository.DeleteModeratorFromDbAsync(user);
+            var response = await _adminRepository.DeleteModeratorFromDbAsync(moderatorId);
             return response;
         }
     }

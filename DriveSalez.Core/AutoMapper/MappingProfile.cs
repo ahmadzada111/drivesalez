@@ -10,13 +10,16 @@ public class MappingProfile : Profile
     {
         
         CreateMap<Announcement, AnnouncementResponseMiniDto>()
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls[0]))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls?[0]))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model))
             .ForMember(dest => dest.FuelType, opt => opt.MapFrom(src => src.Vehicle.FuelType))
             .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.EngineVolume))
             .ForMember(dest => dest.Mileage, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileAge))
+            .ForMember(dest => dest.OnCredit, opt => opt.MapFrom(src => src.OnCredit))
+            .ForMember(dest => dest.Barter, opt => opt.MapFrom(src => src.Barter))
+            .ForMember(dest => dest.VinCode, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.VinCode))
             .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetails.MileageType));
         
        CreateMap<Announcement, AnnouncementResponseDto>()

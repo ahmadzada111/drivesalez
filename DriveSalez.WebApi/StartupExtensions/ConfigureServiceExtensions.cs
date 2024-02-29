@@ -14,6 +14,7 @@ using AutoMapper;
 using DriveSalez.Core.AutoMapper;
 using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
+using DriveSalez.Core.Providers;
 using DriveSalez.Infrastructure.Quartz.Setups;
 using Quartz;
 

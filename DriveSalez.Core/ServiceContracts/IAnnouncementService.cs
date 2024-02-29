@@ -16,17 +16,17 @@ public interface IAnnouncementService
     
     Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId);
     
-    Task<AnnouncementResponseDto> GetAnnouncementByIdAsync(Guid id);
+    Task<AnnouncementResponseDto?> GetAnnouncementByIdAsync(Guid id);
 
     Task<AnnouncementResponseDto?> GetActiveAnnouncementByIdAsync(Guid id);
     
     Task<Tuple<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncements(PagingParameters parameters);
 
-    Task<IEnumerable<AnnouncementResponseMiniDto>?> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters);
+    Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters);
 
-    Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAnnouncementsByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState);
+    Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState);
 
-    Task<IEnumerable<AnnouncementResponseMiniDto>?> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters);
+    Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters);
 
     Task<LimitRequestDto> GetUserLimitsAsync();
 

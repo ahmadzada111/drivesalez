@@ -1,8 +1,8 @@
 using AutoMapper;
+using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.Enums;
-using DriveSalez.Core.Exceptions;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -22,18 +22,18 @@ public class ModeratorRepository : IModeratorRepository
         _logger = logger;
     }
     
-    public async Task<AnnouncementResponseDto> MakeAnnouncementActiveInDbAsync(Guid userId, Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveInDbAsync(ApplicationUser user, Guid announcementId)
     {
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} active in DB by moderator");
             
-            var user = await _dbContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
+            // var user = await _dbContext.Users.FindAsync(userId);
+            //
+            // if (user == null)
+            // {
+            //     throw new UserNotFoundException("User not found");
+            // }
 
             var announcement =
                 await _dbContext.Announcements
@@ -64,18 +64,18 @@ public class ModeratorRepository : IModeratorRepository
         }
     }
 
-    public async Task<AnnouncementResponseDto> MakeAnnouncementInactiveInDbAsync(Guid userId, Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveInDbAsync(ApplicationUser user, Guid announcementId)
     {
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB by moderator");
             
-            var user = await _dbContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
+            // var user = await _dbContext.Users.FindAsync(userId);
+            //
+            // if (user == null)
+            // {
+            //     throw new UserNotFoundException("User not found");
+            // }
 
             var announcement =
                 await _dbContext.Announcements
@@ -106,18 +106,18 @@ public class ModeratorRepository : IModeratorRepository
         }
     }
 
-    public async Task<AnnouncementResponseDto> MakeAnnouncementWaitingInDbAsync(Guid userId, Guid announcementId)
+    public async Task<AnnouncementResponseDto?> MakeAnnouncementWaitingInDbAsync(ApplicationUser user, Guid announcementId)
     {
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} waiting in DB by moderator");
 
-            var user = await _dbContext.Users.FindAsync(userId);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User not found");
-            }
+            // var user = await _dbContext.Users.FindAsync(userId);
+            //
+            // if (user == null)
+            // {
+            //     throw new UserNotFoundException("User not found");
+            // }
 
             var announcement =
                 await _dbContext.Announcements

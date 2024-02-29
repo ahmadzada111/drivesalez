@@ -197,19 +197,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == id);
@@ -246,19 +246,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .FirstOrDefaultAsync(x => x.Id == id && x.AnnouncementState == AnnouncementState.Active);
@@ -306,19 +306,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .Skip((parameter.PageNumber - 1) * parameter.PageSize)
@@ -345,38 +345,6 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 _logger.LogInformation($"Getting announcements from DB");
 
-                var regularAnnouncements = await _dbContext.Announcements
-                    .AsNoTracking()
-                    .Where(on => on.AnnouncementState == AnnouncementState.Active && !on.IsPremium)
-                    .Include(x => x.Owner)
-                    .Include(x => x.Owner.PhoneNumbers)
-                    .Include(x => x.Vehicle)
-                    .Include(x => x.Currency)
-                    .Include(x => x.ImageUrls)
-                    .Include(x => x.Vehicle.Year)
-                    .Include(x => x.Vehicle.Make)
-                    .Include(x => x.Vehicle.Model)
-                    .Include(x => x.Vehicle.FuelType)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
-                    .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
-                    .Include(x => x.Country)
-                    .Include(x => x.City)
-                    .Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                    .Take(parameter.PageSize)
-                    .ToListAsync();
-
                 var premiumAnnouncements = await _dbContext.Announcements
                     .AsNoTracking()
                     .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
@@ -390,32 +358,63 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
+                    .Include(x => x.Country)
+                    .Include(x => x.City)
+                    .Take(8)
+                    .ToListAsync();
+
+                var allAnnouncements = await _dbContext.Announcements
+                    .AsNoTracking()
+                    .Where(on => on.AnnouncementState == AnnouncementState.Active)
+                    .Include(x => x.Owner)
+                    .Include(x => x.Owner.PhoneNumbers)
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Currency)
+                    .Include(x => x.ImageUrls)
+                    .Include(x => x.Vehicle.Year)
+                    .Include(x => x.Vehicle.Make)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.Vehicle.FuelType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                     .Take(parameter.PageSize)
                     .ToListAsync();
                 
-                if (regularAnnouncements.IsNullOrEmpty() && premiumAnnouncements.IsNullOrEmpty())
+                if (premiumAnnouncements.IsNullOrEmpty() && allAnnouncements.IsNullOrEmpty())
                 {
                     return Tuple.Create(Enumerable.Empty<AnnouncementResponseMiniDto>(), Enumerable.Empty<AnnouncementResponseMiniDto>());
                 }
                 
-                var regularAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(regularAnnouncements);
-                var premiumAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(premiumAnnouncements);
+                var regularAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(premiumAnnouncements);
+                var premiumAnnouncementDtos = _mapper.Map<List<AnnouncementResponseMiniDto>>(allAnnouncements);
                 
                 return Tuple.Create<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>(regularAnnouncementDtos, premiumAnnouncementDtos);
             }
@@ -452,19 +451,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .FirstOrDefaultAsync();
@@ -604,6 +603,8 @@ namespace DriveSalez.Infrastructure.Repositories
         public async Task<AnnouncementResponseDto?> DeleteInactiveAnnouncementFromDbAsync(ApplicationUser user,
             Guid announcementId)
         {
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            
             try
             {
                 _logger.LogInformation($"Deleting announcement with ID {announcementId} from DB for user with ID {user.Id}");
@@ -619,17 +620,21 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Where(x => x.Id == announcementId &&
                                 x.AnnouncementState == AnnouncementState.Inactive &&
                                 x.Owner.Id == user.Id)
+                    .Include(a => a.Owner)
+                    .Include(a => a.ImageUrls)
                     .FirstOrDefaultAsync();
-
+                
                 if (announcement == null)
                 {
                     return null;
                 }
 
+                _dbContext.ImageUrls.RemoveRange(announcement.ImageUrls);
                 var response = _dbContext.Announcements.Remove(announcement);
 
                 if (response.State == EntityState.Deleted)
                 {
+                    await transaction.CommitAsync();
                     await _dbContext.SaveChangesAsync();
                     return _mapper.Map<AnnouncementResponseDto>(response);
                 }
@@ -639,11 +644,12 @@ namespace DriveSalez.Infrastructure.Repositories
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error deleting announcement with ID {announcementId} for user with ID {user.Id}");
+                await transaction.RollbackAsync();
                 throw;
             }
         }
 
-        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByUserFromDbAsync(ApplicationUser user,
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user,
             PagingParameters pagingParameters, AnnouncementState announcementState)
         {
             try
@@ -670,19 +676,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)
@@ -720,8 +726,7 @@ namespace DriveSalez.Infrastructure.Repositories
 
                 var announcement = await _dbContext.Announcements
                     .AsNoTracking()
-                    .Where(x => x.Owner.Id == user.Id)
-                    .Include(x => x.Owner)
+                    .Where(x => x.Owner.Id == user.Id)             .Include(x => x.Owner)
                     .Include(x => x.Owner.PhoneNumbers)
                     .Include(x => x.Vehicle)
                     .Include(x => x.Currency)
@@ -731,19 +736,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)
@@ -785,19 +790,19 @@ namespace DriveSalez.Infrastructure.Repositories
                     .Include(x => x.Vehicle.Model)
                     .Include(x => x.Vehicle.FuelType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.BodyType)
+                    .ThenInclude(x => x.BodyType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.DrivetrainType)
+                    .ThenInclude(x => x.DrivetrainType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.GearboxType)
+                    .ThenInclude(x => x.GearboxType)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Color)
+                    .ThenInclude(x => x.Color)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.MarketVersion)
+                    .ThenInclude(x => x.MarketVersion)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Options)
+                    .ThenInclude(x => x.Options)
                     .Include(x => x.Vehicle.VehicleDetails)
-                        .ThenInclude(x => x.Conditions)
+                    .ThenInclude(x => x.Conditions)
                     .Include(x => x.Country)
                     .Include(x => x.City)
                     .OrderBy(o => o.IsPremium)

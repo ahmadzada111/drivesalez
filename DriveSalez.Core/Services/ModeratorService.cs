@@ -30,7 +30,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _moderatorRepository.MakeAnnouncementActiveInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementActiveInDbAsync(user, announcementId);
 
         return response;
     }
@@ -44,7 +44,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _moderatorRepository.MakeAnnouncementInactiveInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementInactiveInDbAsync(user, announcementId);
 
         return response;
     }
@@ -58,7 +58,7 @@ public class ModeratorService : IModeratorService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
         
-        var response = await _moderatorRepository.MakeAnnouncementWaitingInDbAsync(user.Id, announcementId);
+        var response = await _moderatorRepository.MakeAnnouncementWaitingInDbAsync(user, announcementId);
 
         return response;
     }
