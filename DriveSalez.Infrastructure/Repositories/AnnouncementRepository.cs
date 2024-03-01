@@ -30,36 +30,6 @@ namespace DriveSalez.Infrastructure.Repositories
             _logger = logger;
         }
 
-        // public async Task<LimitRequestDto> GetUserLimitsFromDbAsync(ApplicationUser user)
-        // {
-        //     try
-        //     {
-        //         _logger.LogInformation($"Getting user limits from DB for user with ID: {user.Id}");
-        //
-        //         // var user = await _dbContext.Users
-        //         //     .Where(x => x.Id == userId)
-        //         //     .FirstOrDefaultAsync();
-        //
-        //         // if (user == null)
-        //         // {
-        //         //     _logger.LogWarning($"User not found with ID: {user.Id}");
-        //         //     throw new UserNotFoundException("User not found");
-        //         // }
-        //
-        //         return new LimitRequestDto()
-        //         {
-        //             PremiumLimit = user.PremiumUploadLimit,
-        //             RegularLimit = user.RegularUploadLimit,
-        //             AccountBalance = user.AccountBalance
-        //         };
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         _logger.LogError(e, $"Error getting user limits from DB for user with ID: {user.Id}");
-        //         throw;
-        //     }
-        // }
-
         public async Task<AnnouncementResponseDto> CreateAnnouncementInDbAsync(ApplicationUser user, CreateAnnouncementDto request)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -67,17 +37,7 @@ namespace DriveSalez.Infrastructure.Repositories
             try
             {
                 _logger.LogInformation($"Creating announcement for user with ID: {user.Id}");
-
-                // var user = await _dbContext.Users
-                //     .Include(x => x.PhoneNumbers)
-                //     .FirstOrDefaultAsync(x => x.Id == userId);
-
-                // if (user == null)
-                // {
-                //     _logger.LogWarning($"User not found with ID: {user.Id}");
-                //     throw new UserNotFoundException("User not found");
-                // }
-
+                
                 if (!await CheckAllRelationsInAnnouncement(request))
                 {
                     throw new ArgumentException("Invalid relations in the announcement request");
@@ -432,13 +392,6 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 _logger.LogInformation($"Updating announcement in DB with ID {announcementId} for user with ID {user.Id}");
 
-                // var user = await _dbContext.Users.FindAsync(userId);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
-
                 var announcement = await _dbContext.Announcements
                     .Where(x => x.Id == announcementId)
                     .Include(x => x.Owner)
@@ -519,13 +472,6 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 _logger.LogInformation($"Making announcement with ID {announcementId} active in DB for user with ID {user.Id}");
 
-                // var user = await _dbContext.Users.FindAsync(userId);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
-
                 var announcement =
                     await _dbContext.Announcements
                         .FirstOrDefaultAsync(x => x.Id == announcementId &&
@@ -562,13 +508,6 @@ namespace DriveSalez.Infrastructure.Repositories
             try
             {
                 _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB for user with ID {user.Id}");
-
-                // var user = await _dbContext.Users.FindAsync(userId);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
 
                 var announcement =
                     await _dbContext.Announcements
@@ -609,13 +548,6 @@ namespace DriveSalez.Infrastructure.Repositories
             {
                 _logger.LogInformation($"Deleting announcement with ID {announcementId} from DB for user with ID {user.Id}");
 
-                // var user = await _dbContext.Users.FindAsync(user);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
-
                 var announcement = await _dbContext.Announcements
                     .Where(x => x.Id == announcementId &&
                                 x.AnnouncementState == AnnouncementState.Inactive &&
@@ -655,13 +587,6 @@ namespace DriveSalez.Infrastructure.Repositories
             try
             {
                 _logger.LogInformation($"Getting announcements by user ID {user.Id} from DB");
-
-                // var user = await _dbContext.Users.FindAsync(userId);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
 
                 var announcements = await _dbContext.Announcements
                     .AsNoTracking()
@@ -716,13 +641,6 @@ namespace DriveSalez.Infrastructure.Repositories
             try
             {
                 _logger.LogInformation($"Getting all announcements by user ID {user.Id} from DB");
-
-                // var user = await _dbContext.Users.FindAsync(userId);
-
-                // if (user == null)
-                // {
-                //     throw new UserNotFoundException("User not found");
-                // }
 
                 var announcement = await _dbContext.Announcements
                     .AsNoTracking()

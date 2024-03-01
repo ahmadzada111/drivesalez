@@ -27,13 +27,6 @@ public class ModeratorRepository : IModeratorRepository
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} active in DB by moderator");
-            
-            // var user = await _dbContext.Users.FindAsync(userId);
-            //
-            // if (user == null)
-            // {
-            //     throw new UserNotFoundException("User not found");
-            // }
 
             var announcement =
                 await _dbContext.Announcements
@@ -69,13 +62,6 @@ public class ModeratorRepository : IModeratorRepository
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB by moderator");
-            
-            // var user = await _dbContext.Users.FindAsync(userId);
-            //
-            // if (user == null)
-            // {
-            //     throw new UserNotFoundException("User not found");
-            // }
 
             var announcement =
                 await _dbContext.Announcements
@@ -111,13 +97,6 @@ public class ModeratorRepository : IModeratorRepository
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} waiting in DB by moderator");
-
-            // var user = await _dbContext.Users.FindAsync(userId);
-            //
-            // if (user == null)
-            // {
-            //     throw new UserNotFoundException("User not found");
-            // }
 
             var announcement =
                 await _dbContext.Announcements

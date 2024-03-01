@@ -25,16 +25,7 @@ public class PaymentRepository : IPaymentRepository
         try
         {
             _logger.LogInformation($"Recording balance top up for user with ID {user.Id} in DB");
-            
-            // var user = await _dbContext.Users
-            //     .Where(x => x.Id == userId)
-            //     .FirstOrDefaultAsync();
-            //
-            // if (user == null)
-            // {
-            //     throw new UserNotFoundException("User not found");
-            // }
-        
+ 
             user.AccountBalance += request.Sum;
             var response = _dbContext.Update(user);
 

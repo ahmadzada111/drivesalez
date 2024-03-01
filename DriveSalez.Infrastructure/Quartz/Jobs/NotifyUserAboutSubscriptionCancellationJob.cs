@@ -34,12 +34,7 @@ public class NotifyUserAboutSubscriptionCancellationJob : IJob
 
         foreach (var user in users)
         {
-            var result = await _accountService.ChangeUserTypeToDefaultAccountAsync(user);
-
-            if (result == null)
-            {
-                continue;    
-            }
+            await _accountService.ChangeUserTypeToDefaultAccountAsync(user);
             
             string subject = "Your Subscription Has Been Canceled";
             string body = $"Dear {user.FirstName} {user.LastName},\n\nWe hope this message finds you well. " +
