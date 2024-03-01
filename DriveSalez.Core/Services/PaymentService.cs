@@ -50,7 +50,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext.User);
+        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
         if (user == null)
         {

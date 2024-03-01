@@ -38,6 +38,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return NotFound(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPatch("make-announcement-inactive/{announcementId}")]
@@ -58,6 +62,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return NotFound(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPatch("make-announcement-waiting/{announcementId}")]
@@ -77,6 +85,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
     }

@@ -66,7 +66,7 @@ public class PaymentRepository : IPaymentRepository
 
             if (announcementSubscription == null)
             {
-                throw new KeyNotFoundException();
+                return false;
             }
 
             if (announcementSubscription.PricingName == "Premium Announcement")
@@ -83,6 +83,8 @@ public class PaymentRepository : IPaymentRepository
                         await _dbContext.SaveChangesAsync();
                         return true;
                     }
+
+                    throw new InvalidOperationException("Object wasn't modified");
                 }
             }
             else if(announcementSubscription.PricingName == "Regular Announcement")
@@ -99,6 +101,8 @@ public class PaymentRepository : IPaymentRepository
                         await _dbContext.SaveChangesAsync();
                         return true;
                     }
+                    
+                    throw new InvalidOperationException("Object wasn't modified");
                 }
             }
 

@@ -35,6 +35,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPost("add-new-body")]
@@ -48,6 +52,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -63,6 +71,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPost("add-new-drivetrain")]
@@ -76,6 +88,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 
@@ -91,6 +107,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPost("add-new-city")]
@@ -104,6 +124,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -119,6 +143,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPost("add-new-make")]
@@ -132,6 +160,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 
@@ -147,6 +179,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPost("add-new-fuel")]
@@ -160,6 +196,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 
@@ -175,6 +215,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPost("add-new-market-version")]
@@ -188,6 +232,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 
@@ -203,6 +251,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpPut("update-color")]
@@ -216,6 +268,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -231,6 +287,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-account-limit")]
@@ -245,6 +305,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-currency")]
@@ -258,6 +322,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -274,6 +342,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-city")]
@@ -287,6 +359,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -302,6 +378,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-drivetrain")]
@@ -315,6 +395,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -330,6 +414,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-make")]
@@ -343,6 +431,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -358,6 +450,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-fuel")]
@@ -372,6 +468,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             } 
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-condition")]
@@ -385,6 +485,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -400,6 +504,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpPut("update-market-version")]
@@ -413,6 +521,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -442,6 +554,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-body")]
@@ -455,6 +571,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -470,6 +590,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-city")]
@@ -483,6 +607,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -498,6 +626,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-gearbox")]
@@ -511,6 +643,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -526,6 +662,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-model")]
@@ -539,6 +679,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -554,6 +698,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             } 
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-condition")]
@@ -567,6 +715,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -582,6 +734,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
         
         [HttpDelete("delete-market-version")]
@@ -595,6 +751,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 
@@ -616,6 +776,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpDelete("delete-moderator")]
@@ -629,6 +793,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
         
@@ -644,6 +812,10 @@ namespace DriveSalez.WebApi.Controllers
             {
                 return Unauthorized(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
+            }
         }
 
         [HttpGet("get-all-users")]
@@ -657,6 +829,10 @@ namespace DriveSalez.WebApi.Controllers
             catch (UserNotAuthorizedException e)
             {
                 return Unauthorized(e);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Problem(e.Message);
             }
         }
 

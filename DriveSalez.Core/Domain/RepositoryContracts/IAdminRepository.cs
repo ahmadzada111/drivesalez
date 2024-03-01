@@ -8,63 +8,63 @@ namespace DriveSalez.Core.Domain.RepositoryContracts
 {
     public interface IAdminRepository
     {
-        Task<VehicleColor?> SendNewColorToDbAsync(string color);
+        Task<VehicleColor> SendNewColorToDbAsync(string color);
 
-        Task<VehicleBodyType?> SendNewBodyTypeToDbAsync(string bodyType);
+        Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType);
 
-        Task<City?> SendNewCityToDbAsync(string city, int countryId);
+        Task<City> SendNewCityToDbAsync(string city, int countryId);
         
-        Task<Country?> SendNewCountryToDbAsync(string country);
+        Task<Country> SendNewCountryToDbAsync(string country);
         
-        Task<VehicleDrivetrainType?> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
+        Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
 
-        Task<VehicleGearboxType?> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
+        Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
 
-        Task<Make?> SendNewMakeToDbAsync(string make);
+        Task<Make> SendNewMakeToDbAsync(string make);
 
-        Task<Model?> SendNewModelToDbAsync(int makeId, string model);
+        Task<Model> SendNewModelToDbAsync(int makeId, string model);
 
-        Task<VehicleFuelType?> SendNewVehicleFuelTypeToDbAsync(string fuelType);
+        Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
 
-        Task<VehicleCondition?> SendNewVehicleConditionToDbAsync(string condition, string description);
+        Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description);
 
-        Task<VehicleMarketVersion?> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
+        Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
 
-        Task<VehicleOption?> SendNewVehicleOptionToDbAsync(string option);
+        Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option);
 
-        Task<Subscription?> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId);
+        Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId);
         
-        Task<Currency?> SendNewCurrencyToDbAsync(string currencyName);
+        Task<Currency> SendNewCurrencyToDbAsync(string currencyName);
         
-        Task<VehicleColor?> UpdateVehicleColorInDbAsync(int colorId, string newColor);
+        Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor);
 
-        Task<VehicleBodyType?> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
+        Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
 
-        Task<AccountLimit?> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit);
+        Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit);
 
-        Task<City?> UpdateCityInDbAsync(int cityId, string newCity);
+        Task<City> UpdateCityInDbAsync(int cityId, string newCity);
         
-        Task<Currency?> UpdateCurrencyInDbAsync(int currencyId, string currencyName);
+        Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName);
 
-        Task<Subscription?> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId);
+        Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId);
         
-        Task<VehicleDrivetrainType?> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
+        Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
 
-        Task<VehicleGearboxType?> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
+        Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
 
-        Task<Make?> UpdateMakeInDbAsync(int gearboxId, string newGearbox);
+        Task<Make> UpdateMakeInDbAsync(int gearboxId, string newGearbox);
 
-        Task<Country?> UpdateCountryInDbAsync(int countryId, string newCountry);
+        Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry);
         
-        Task<Model?> UpdateModelInDbAsync(int modelId, string newModel);
+        Task<Model> UpdateModelInDbAsync(int modelId, string newModel);
 
-        Task<VehicleFuelType?> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
+        Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
 
-        Task<VehicleCondition?> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
+        Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
 
-        Task<VehicleOption?> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption);
+        Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption);
 
-        Task<VehicleMarketVersion?> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion);
+        Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion);
         
         Task<VehicleColor?> DeleteVehicleColorFromDbAsync(int colorId);
 

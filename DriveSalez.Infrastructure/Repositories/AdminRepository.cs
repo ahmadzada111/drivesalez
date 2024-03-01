@@ -2,7 +2,6 @@
 using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.Entities.VehicleParts;
-using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
 using DriveSalez.Core.DTO.Enums;
@@ -673,7 +672,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<Make?> UpdateMakeInDbAsync(int makeId, string newMake)
+        public async Task<Make> UpdateMakeInDbAsync(int makeId, string newMake)
         {
             try
             {
@@ -701,7 +700,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<Model?> UpdateModelInDbAsync(int modelId, string newModel)
+        public async Task<Model> UpdateModelInDbAsync(int modelId, string newModel)
         {
             try
             {
@@ -735,7 +734,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
-        public async Task<AccountLimit?> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
+        public async Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit)
         {
             try
             {
@@ -765,7 +764,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleFuelType?> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
+        public async Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
         {
             try
             {
@@ -793,7 +792,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleCondition?> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
+        public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
         {
             try
             {
@@ -823,7 +822,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleOption?> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
+        public async Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
         {
             try
             {
@@ -851,7 +850,7 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
         
-        public async Task<VehicleMarketVersion?> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
+        public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
         {
             try
             {
@@ -903,7 +902,7 @@ namespace DriveSalez.Infrastructure.Repositories
                     throw new InvalidOperationException("Object wasn't deleted");
                 }
 
-                return color;
+                return null;
             }
             catch (Exception e)
             {
