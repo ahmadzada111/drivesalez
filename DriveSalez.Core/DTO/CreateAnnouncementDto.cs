@@ -50,8 +50,7 @@ namespace DriveSalez.Core.DTO
 
         [Required(ErrorMessage = "Seat count cannot be blank!")]
         public int? SeatCount { get; set; }
-
-        [Required(ErrorMessage = "Vin code cannot be blank!")]
+        
         public string? VinCode { get; set; }
 
         [Required(ErrorMessage = "Mileage cannot be blank!")]

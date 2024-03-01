@@ -296,4 +296,25 @@ public class AnnouncementController : Controller
             return Unauthorized(e.Message);
         }
     }
+    
+    [AllowAnonymous]
+    [HttpGet("get-all-premium-announcements")]
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllPremiumAnnouncements(PagingParameters pagingParameters)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        try
+        {
+            var response = await _announcementService.GetAllPremiumAnnouncementsAsync(pagingParameters);
+            return Ok(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
+    }
 }

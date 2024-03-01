@@ -1276,6 +1276,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 _logger.LogError($"Getting all users from db");
 
                 var users = await _dbContext.Users
+                    .Where(x => x.EmailConfirmed)
                     .Join(_dbContext.UserRoles,
                         user => user.Id,
                         userRole => userRole.UserId,

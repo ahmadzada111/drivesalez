@@ -441,8 +441,6 @@ namespace DriveSalez.Core.Services
                 throw new UserNotAuthorizedException("User is not authorized!");
             }
             
-            // var subscriptions = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
-            
             var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price, currencyId);
             return response;
         }

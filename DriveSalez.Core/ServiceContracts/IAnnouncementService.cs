@@ -28,6 +28,8 @@ public interface IAnnouncementService
 
     Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters);
 
+    Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsAsync(PagingParameters pagingParameters);
+
     Task<LimitRequestDto> GetUserLimitsAsync();
 
     Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelAsync(PagingParameters parameters, AnnouncementState announcementState);

@@ -31,6 +31,8 @@ namespace DriveSalez.Core.Domain.RepositoryContracts
         Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
             PagingParameters pagingParameters);
 
+        Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters);
+        
         Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState);
     }
 }

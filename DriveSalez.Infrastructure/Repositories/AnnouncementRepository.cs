@@ -247,6 +247,58 @@ namespace DriveSalez.Infrastructure.Repositories
             }
         }
 
+        public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters)
+        {
+             try
+             {
+                _logger.LogInformation($"Getting all premium announcements from DB");
+
+                var waitingAnnouncements = await _dbContext.Announcements
+                    .AsNoTracking()
+                    .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
+                    .Include(x => x.Owner)
+                    .Include(x => x.Owner.PhoneNumbers)
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Currency)
+                    .Include(x => x.ImageUrls)
+                    .Include(x => x.Vehicle.Year)
+                    .Include(x => x.Vehicle.Make)
+                    .Include(x => x.Vehicle.Model)
+                    .Include(x => x.Vehicle.FuelType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.BodyType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.DrivetrainType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.GearboxType)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Color)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.MarketVersion)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Options)
+                    .Include(x => x.Vehicle.VehicleDetails)
+                    .ThenInclude(x => x.Conditions)
+                    .Include(x => x.Country)
+                    .Include(x => x.City)
+                    .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
+                    .Take(pagingParameters.PageSize)
+                    .ToListAsync();
+
+                if (waitingAnnouncements.IsNullOrEmpty())
+                {
+                    return Enumerable.Empty<AnnouncementResponseMiniDto>();
+                }
+
+                return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(waitingAnnouncements); 
+             }
+             catch (Exception e) 
+             {
+                 _logger.LogError(e, "Error getting all premium announcements for admin panel from DB");
+                 throw; 
+             }
+        }
+
         public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState)
         {
             try
