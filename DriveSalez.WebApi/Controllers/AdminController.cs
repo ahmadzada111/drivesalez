@@ -661,11 +661,11 @@ namespace DriveSalez.WebApi.Controllers
         }
 
         [HttpPost("send-mail-to-user")]
-        public async Task<ActionResult> SendEmail([FromBody] string toEmail, string subject, string body)
+        public async Task<ActionResult> SendEmail([FromBody] SendEmailFromStaffDto request)
         {
             try
             {
-                var result = await _adminService.SendEmailFromStaffAsync(toEmail, subject, body);
+                var result = await _adminService.SendEmailFromStaffAsync(request.ToEmail, request.Subject, request.Body);
 
                 if (result)
                 {

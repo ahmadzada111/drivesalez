@@ -27,7 +27,7 @@ namespace DriveSalez.WebApi
 
             builder.Services.AddServices();
             builder.Services.AddAuthenticationAndAuthorizationConfiguration(configuration);
-            // builder.Services.AddQuartzToServices();
+            builder.Services.AddQuartzToServices();
             builder.Services.AddSwagger();
             builder.Services.AddCorsToServices();
             builder.Services.AddHttpContextAccessor();

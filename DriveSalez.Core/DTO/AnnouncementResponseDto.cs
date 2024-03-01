@@ -9,7 +9,7 @@ public class AnnouncementResponseDto
 {
     public Guid Id { get; set; }
     
-    public ManufactureYear? Year { get; set; }   // 2009
+    public ManufactureYear? Year { get; set; }   
 
     public Make? Make { get; set; }
 
@@ -17,19 +17,19 @@ public class AnnouncementResponseDto
     
     public VehicleFuelType? FuelType { get; set; }
     
-    public VehicleBodyType BodyType { get; set; }    // Sedan,Pick-up, Truck, Roadster     
+    public VehicleBodyType BodyType { get; set; }        
 
-    public VehicleColor Color { get; set; }       // Red
+    public VehicleColor Color { get; set; }       
 
-    public int HorsePower { get; set; }     // 150 hp
+    public int HorsePower { get; set; }     
 
-    public VehicleGearboxType GearboxType { get; set; }     // Manual
+    public VehicleGearboxType GearboxType { get; set; }     
 
-    public VehicleDrivetrainType DrivetrainType { get; set; }  // FWD
+    public VehicleDrivetrainType DrivetrainType { get; set; }  
 
-    public List<VehicleCondition> Conditions { get; set; }  //No Damage, No Color
+    public List<VehicleCondition> Conditions { get; set; }  
 
-    public VehicleMarketVersion MarketVersion { get; set; }      // US
+    public VehicleMarketVersion MarketVersion { get; set; }      
 
     public int? OwnerQuantity { get; set; }
 
@@ -37,15 +37,15 @@ public class AnnouncementResponseDto
 
     public string? VinCode { get; set; }
 
-    public List<VehicleOption> Options { get; set; }      // ABS, REAR CAMERA, FRONT RADAR
+    public List<VehicleOption> Options { get; set; }      
 
-    public int? EngineVolume { get; set; }     //6200 CC
+    public int? EngineVolume { get; set; }     
 
-    public int Mileage { get; set; }    //149000 km
+    public int Mileage { get; set; }    
 
     public string MileageType { get; set; }
     
-    public bool? IsBrandNew { get; set; }       //NEW Or USED
+    public bool? IsBrandNew { get; set; }       
 
     public bool? Barter { get; set; }
 

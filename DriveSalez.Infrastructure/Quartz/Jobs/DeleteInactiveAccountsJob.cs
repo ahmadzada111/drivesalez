@@ -1,3 +1,4 @@
+using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,7 +24,18 @@ public class DeleteInactiveAccountsJob : IJob
         var thresholdDate = DateTimeOffset.Now.AddDays(-30);
         var inactiveAccounts = await _dbContext.Users
             .Where(a => !a.EmailConfirmed && a.CreationDate <= thresholdDate)
+            .Join(_dbContext.UserRoles,
+                user => user.Id,
+                userRole => userRole.UserId,
+                (user, userRole) => new
+                {
+                    User = user, UserRole = userRole
+                })
+            .Where(joined => !_dbContext.Roles
+                .Any(r => r.Id == joined.UserRole.RoleId && (r.Name == UserType.Moderator.ToString() || r.Name == UserType.Admin.ToString() )))
+            .Select(joined => joined.User)
             .ToListAsync();
+        
         
         _dbContext.Users.RemoveRange(inactiveAccounts);
         

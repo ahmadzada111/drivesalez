@@ -12,5 +12,7 @@ public class GetUserDto
     
     public string Email { get; set; }
     
+    public bool IsBanned { get; set; }
+    
     public List<AccountPhoneNumber> PhoneNumbers { get; set; }
 }

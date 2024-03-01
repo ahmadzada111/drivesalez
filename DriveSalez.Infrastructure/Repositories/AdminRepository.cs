@@ -5,6 +5,7 @@ using DriveSalez.Core.Domain.Entities.VehicleParts;
 using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
 using DriveSalez.Core.DTO;
+using DriveSalez.Core.DTO.Enums;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -1276,9 +1277,19 @@ namespace DriveSalez.Infrastructure.Repositories
                 _logger.LogError($"Getting all users from db");
 
                 var users = await _dbContext.Users
-                    .Include(x => x.PhoneNumbers)
+                    .Join(_dbContext.UserRoles,
+                        user => user.Id,
+                        userRole => userRole.UserId,
+                        (user, userRole) => new
+                        {
+                            User = user, UserRole = userRole
+                        })
+                    .Where(joined => !_dbContext.Roles
+                        .Any(r => r.Id == joined.UserRole.RoleId && (r.Name == UserType.Admin.ToString() || r.Name == UserType.Moderator.ToString())))
+                    .Select(joined => joined.User)
+                    .Include(u => u.PhoneNumbers)
                     .ToListAsync();
-
+                
                 if (users.IsNullOrEmpty())
                 {
                     return Enumerable.Empty<GetUserDto>();

@@ -23,9 +23,19 @@ public class RenewLimitsForDefaultUserJob : IJob
         _logger.LogInformation($"{typeof(RenewLimitsForDefaultUserJob)} job started");
         
         var users = await _dbContext.Users
-            .OfType<DefaultAccount>()
             .Where(x => x.SubscriptionExpirationDate <= DateTimeOffset.Now)
+            .Join(_dbContext.UserRoles,
+                user => user.Id,
+                userRole => userRole.UserId,
+                (user, userRole) => new
+                    {
+                        User = user, UserRole = userRole
+                    })
+            .Where(joined => _dbContext.Roles
+                .Any(r => r.Id == joined.UserRole.RoleId && (r.Name == UserType.DefaultAccount.ToString())))
+            .Select(joined => joined.User)
             .ToListAsync();
+        
         var limit = await _dbContext.AccountLimits
             .Where(x => x.UserType == UserType.DefaultAccount)
             .FirstOrDefaultAsync();
