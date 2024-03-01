@@ -96,5 +96,13 @@ namespace DriveSalez.Core.ServiceContracts
         Task<IEnumerable<GetModeratorDto>> GetAllModeratorsAsync();
 
         Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId);
+
+        Task<IEnumerable<GetUserDto>> GetAllUsers();
+
+        Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body);
+
+        Task<bool> BanUserAsync(Guid userId);
+        
+        Task<bool> UnbanUserAsync(Guid userId);
     }
 }

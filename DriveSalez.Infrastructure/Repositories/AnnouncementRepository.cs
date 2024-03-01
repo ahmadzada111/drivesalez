@@ -636,7 +636,7 @@ namespace DriveSalez.Infrastructure.Repositories
                 {
                     await transaction.CommitAsync();
                     await _dbContext.SaveChangesAsync();
-                    return _mapper.Map<AnnouncementResponseDto>(response);
+                    return _mapper.Map<AnnouncementResponseDto>(announcement);
                 }
 
                 throw new InvalidOperationException("Object wasn't deleted");

@@ -28,5 +28,7 @@ namespace DriveSalez.Core.Domain.IdentityEntities
         public DateTimeOffset CreationDate { get; set; }
         
         public DateTimeOffset LastUpdateDate { get; set; }
+        
+        public bool IsBanned { get; set; }
     }
 }

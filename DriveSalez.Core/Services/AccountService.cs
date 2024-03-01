@@ -49,7 +49,8 @@ public class AccountService : IAccountService
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
             LastUpdateDate = DateTimeOffset.Now,
-            SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
+            SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1),
+            IsBanned = false
         };
         
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -93,7 +94,8 @@ public class AccountService : IAccountService
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
             LastUpdateDate = DateTimeOffset.Now,
-            SubscriptionExpirationDate = DateTimeOffset.Now
+            SubscriptionExpirationDate = DateTimeOffset.Now,
+            IsBanned = false
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -138,7 +140,8 @@ public class AccountService : IAccountService
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
             LastUpdateDate = DateTimeOffset.Now,
-            SubscriptionExpirationDate = DateTimeOffset.Now
+            SubscriptionExpirationDate = DateTimeOffset.Now,
+            IsBanned = false
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -179,12 +182,17 @@ public class AccountService : IAccountService
 
             if (user == null)
             {
-                throw new UserNotFoundException("User not found!");
+                throw new UserNotFoundException("User with provided login wasn't found!");
             }
 
             if (!user.EmailConfirmed)
             {
                 throw new EmailNotConfirmedException("Email not confirmed!");
+            }
+
+            if (user.IsBanned)
+            {
+                throw new BannedUserException("User is banned!");
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -209,7 +217,7 @@ public class AccountService : IAccountService
             
             if (user == null)
             {
-                throw new UserNotFoundException("User not found!");
+                throw new UserNotFoundException("User with provided login wasn't found!");
             }
             
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -256,7 +264,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
 
         var passwordValidator = new PasswordValidator<ApplicationUser>();
@@ -288,7 +296,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
 
         var passwordValidator = new PasswordValidator<ApplicationUser>();
@@ -316,7 +324,7 @@ public class AccountService : IAccountService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
 
         user.Email = newMail;
@@ -408,7 +416,8 @@ public class AccountService : IAccountService
             Email = "admin",
             UserName = "admin",
             FirstName = "admin" ,
-            LastName = "admin"
+            LastName = "admin",
+            EmailConfirmed = true
         };
 
         IdentityResult result = await _userManager.CreateAsync(user, "Admin1234!");
@@ -429,8 +438,6 @@ public class AccountService : IAccountService
             {
                 await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
             }
-
-            await _userManager.UpdateAsync(user);
             
             return result;
         }

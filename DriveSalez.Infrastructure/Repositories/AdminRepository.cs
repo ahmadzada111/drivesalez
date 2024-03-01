@@ -1,4 +1,5 @@
-﻿using DriveSalez.Core.Domain.Entities;
+﻿using AutoMapper;
+using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.Entities.VehicleParts;
 using DriveSalez.Core.Domain.IdentityEntities;
@@ -7,6 +8,7 @@ using DriveSalez.Core.DTO;
 using DriveSalez.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.Infrastructure.Repositories
 {
@@ -14,11 +16,13 @@ namespace DriveSalez.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
         
-        public AdminRepository(ApplicationDbContext dbContext, ILogger<AdminRepository> logger)
+        public AdminRepository(ApplicationDbContext dbContext, ILogger<AdminRepository> logger, IMapper mapper)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public async Task<VehicleColor> SendNewColorToDbAsync(string color)
@@ -1263,6 +1267,84 @@ namespace DriveSalez.Infrastructure.Repositories
             }
             
             throw new InvalidOperationException("Object wasn't deleted");
+        }
+
+        public async Task<IEnumerable<GetUserDto>> GetAllUsersFromDbAsync()
+        {
+            try
+            {
+                _logger.LogError($"Getting all users from db");
+
+                var users = await _dbContext.Users
+                    .Include(x => x.PhoneNumbers)
+                    .ToListAsync();
+
+                if (users.IsNullOrEmpty())
+                {
+                    return Enumerable.Empty<GetUserDto>();
+                }
+
+                return _mapper.Map<IEnumerable<GetUserDto>>(users);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting all users from db");
+                throw;
+            }
+        }
+
+        public async Task<bool> BanUserInDbAsync(Guid userId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (!user.IsBanned)
+            {
+                user.IsBanned = true;
+
+                var result = _dbContext.Update(user);
+
+                if (result.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                throw new InvalidOperationException("Object wasn't modified");
+            }
+
+            return false;
+        }
+
+        public async Task<bool> UnbanUserInDbAsync(Guid userId)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (user.IsBanned)
+            {
+                user.IsBanned = false;
+
+                var result = _dbContext.Update(user);
+
+                if (result.State == EntityState.Modified)
+                {
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                throw new InvalidOperationException("Object wasn't modified");
+            }
+
+            return false;
         }
     }
 }

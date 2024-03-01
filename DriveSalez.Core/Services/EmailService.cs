@@ -25,7 +25,7 @@ public class EmailService : IEmailService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
         
         var client = new SmtpClient("smtp.gmail.com", 587);
@@ -56,7 +56,7 @@ public class EmailService : IEmailService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
         
         user.EmailConfirmed = true;

@@ -128,6 +128,15 @@ namespace DriveSalez.WebApi.Controllers
                     ContentType = "text/plain"
                 };
             }
+            catch (BannedUserException e)
+            {
+                return new ContentResult()
+                {
+                    StatusCode = 403,
+                    Content = e.Message,
+                    ContentType = "text/plain"
+                };
+            }
         }
         
         [HttpPost("login-staff")]

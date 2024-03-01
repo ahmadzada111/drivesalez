@@ -28,7 +28,7 @@ public class OtpService : IOtpService
         
         if (user == null)
         {
-            throw new UserNotFoundException("User is not found!");
+            throw new UserNotFoundException("User with provided email wasn't found!");
         }
         
         if (cache.TryGetValue(request.Email, out string cachedOtp))

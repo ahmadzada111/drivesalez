@@ -19,16 +19,18 @@ namespace DriveSalez.Core.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IDetailsRepository _detailsRepository;
+        private readonly IEmailService _emailService;
         
         public AdminService(IAdminRepository adminRepository, IHttpContextAccessor contextAccessor, 
             UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
-            IDetailsRepository detailsRepository)
+            IDetailsRepository detailsRepository, IEmailService emailService)
         {
             _adminRepository = adminRepository;
             _contextAccessor = contextAccessor;
             _userManager = userManager;
             _roleManager = roleManager;
             _detailsRepository = detailsRepository;
+            _emailService = emailService;
         }
 
         public async Task<VehicleBodyType?> AddBodyTypeAsync(string bodyType)
@@ -801,7 +803,8 @@ namespace DriveSalez.Core.Services
                 Email = request.Email,
                 UserName = request.Email,
                 FirstName = request.FirstName,
-                LastName = request.LastName
+                LastName = request.LastName,
+                EmailConfirmed = true
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, request.Password);
@@ -856,7 +859,7 @@ namespace DriveSalez.Core.Services
         public async Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId)
         {
             var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
+            
             if (user == null)
             {
                 throw new UserNotAuthorizedException("User is not authorized!");
@@ -864,6 +867,58 @@ namespace DriveSalez.Core.Services
             
             var response = await _adminRepository.DeleteModeratorFromDbAsync(moderatorId);
             return response;
+        }
+
+        public async Task<IEnumerable<GetUserDto>> GetAllUsers()
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var response = await _adminRepository.GetAllUsersFromDbAsync();
+            return response;
+        }
+
+        public async Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var result = await _emailService.SendEmailAsync(mail, subject, body);
+            return result;
+        }
+
+        public async Task<bool> BanUserAsync(Guid userId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+            
+            var result = await _adminRepository.BanUserInDbAsync(userId);
+            return result;
+        }
+
+        public async Task<bool> UnbanUserAsync(Guid userId)
+        {
+            var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+
+            if (user == null)
+            {
+                throw new UserNotAuthorizedException("User is not authorized!");
+            }
+
+            var result = await _adminRepository.UnbanUserInDbAsync(userId);
+            return result;
         }
     }
 }

@@ -1,6 +1,3 @@
-using DriveSalez.Core.DTO;
-using Microsoft.Extensions.Caching.Memory;
-
 namespace DriveSalez.Core.ServiceContracts;
 
 public interface IEmailService

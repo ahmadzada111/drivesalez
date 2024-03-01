@@ -70,7 +70,7 @@ public class PaymentRepository : IPaymentRepository
             
             if (user == null)
             {
-                throw new UserNotFoundException("User not found");
+                throw new UserNotFoundException("User with provided id wasn't found!");
             }
 
             if (announcementSubscription == null)
