@@ -75,13 +75,6 @@ public class AnnouncementService : IAnnouncementService
 
     public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsAsync(PagingParameters pagingParameters)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-        
         var response = await _announcementRepository.GetAllPremiumAnnouncementsFromDbAsync(pagingParameters);
         return response;
     }

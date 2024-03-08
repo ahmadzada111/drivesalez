@@ -169,8 +169,6 @@ namespace DriveSalez.Infrastructure.DbContext
                 });
             }
         }
-        
-        public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
 
         public DbSet<PaidUser> PaidUsers => Set<PaidUser>();
 
@@ -179,8 +177,6 @@ namespace DriveSalez.Infrastructure.DbContext
         public DbSet<BusinessAccount> BusinessAccounts => Set<BusinessAccount>();
 
         public DbSet<PremiumAccount> PremiumAccounts => Set<PremiumAccount>();
-        
-        public DbSet<ApplicationRole> Roles => Set<ApplicationRole>();
 
         public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
         

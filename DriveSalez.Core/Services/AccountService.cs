@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Azure;
 using DriveSalez.Core.Domain.Entities;
 using DriveSalez.Core.Domain.IdentityEntities;
 using DriveSalez.Core.Domain.RepositoryContracts;
