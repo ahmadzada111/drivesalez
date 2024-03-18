@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     [AllowAnonymous]
     public class AccountController : Controller
     {

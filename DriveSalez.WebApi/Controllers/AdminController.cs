@@ -8,7 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {

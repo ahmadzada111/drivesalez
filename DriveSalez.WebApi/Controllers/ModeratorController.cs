@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DriveSalez.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     [Authorize(Roles = "Admin, Moderator")]
     public class ModeratorController : Controller
     {

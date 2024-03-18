@@ -8,7 +8,6 @@ using Microsoft.Extensions.Caching.Memory;
 namespace DriveSalez.WebApi.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
 [AllowAnonymous]
 public class OtpController : Controller
 {

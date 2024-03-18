@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
 
-[ApiController]
 [Route("api/[controller]")]
 public class PaymentController : Controller
 {

@@ -10,6 +10,6 @@ namespace DriveSalez.Core.Domain.Entities.VehicleParts
         public string Color { get; set; }
 
         [JsonIgnore]
-        public List<VehicleDetails> VehicleDetails { get; set; }        //EF CORE FOREIGN KEY
+        public List<VehicleDetails> VehicleDetails { get; set; }
     }
 }

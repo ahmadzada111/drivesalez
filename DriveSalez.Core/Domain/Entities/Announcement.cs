@@ -17,9 +17,9 @@ namespace DriveSalez.Core.Domain.Entities
 
         public string? Description { get; set; }
       
-        public decimal Price { get; set; }  // 10900      
+        public decimal Price { get; set; }  
 
-        public Currency Currency { get; set; }  // USD
+        public Currency Currency { get; set; }  
 
         public AnnouncementState AnnouncementState { get; set; } = AnnouncementState.Waiting;
 
