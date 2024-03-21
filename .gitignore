@@ -10,14 +10,14 @@ DriveSalez.WebApi/bin/
 DriveSalez.WebApi/appsettings.Secrets.json
 DriveSalez.WebApi/vision-ai-credentials.json
 
-DriveSalez.ControllerTests/bin/
 DriveSalez.ControllerTests/obj/
+DriveSalez.ControllerTests/bin/
 
-DriveSalez.ServiceTests/bin/
 DriveSalez.ServiceTests/obj/
+DriveSalez.ServiceTests/bin/
 
-DriveSalez.IntegrationTests/bin/
 DriveSalez.IntegrationTests/obj/
+DriveSalez.IntegrationTests/bin/
 .DS_Store
 
 .idea/
