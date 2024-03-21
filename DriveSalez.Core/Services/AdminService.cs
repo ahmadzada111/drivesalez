@@ -809,20 +809,7 @@ namespace DriveSalez.Core.Services
 
             if (result.Succeeded)
             {
-                if (await _roleManager.FindByNameAsync(UserType.Moderator.ToString()) == null)
-                {
-                    ApplicationRole applicationRole = new ApplicationRole()
-                    {
-                        Name = UserType.Moderator.ToString()
-                    };
-
-                    await _roleManager.CreateAsync(applicationRole);
-                    await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
-                }
+                await _userManager.AddToRoleAsync(user, UserType.Moderator.ToString());
 
                 return new RegisterModeratorResponseDto()
                 {

@@ -56,24 +56,10 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            if (await _roleManager.FindByNameAsync(UserType.DefaultAccount.ToString()) == null)
-            {
-                ApplicationRole applicationRole = new ApplicationRole()
-                {
-                    Name = UserType.DefaultAccount.ToString()
-                };
-
-                await _roleManager.CreateAsync(applicationRole);
-                await _userManager.AddToRoleAsync(user, UserType.DefaultAccount.ToString());
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, UserType.DefaultAccount.ToString());
-            }
-
+            await _userManager.AddToRoleAsync(user, UserType.DefaultAccount.ToString());
             await _userManager.UpdateAsync(user);
-
             await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.DefaultAccount);
+            
             return result;
         }
 
@@ -101,24 +87,10 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            if (await _roleManager.FindByNameAsync(UserType.PremiumAccount.ToString()) == null)
-            {
-                ApplicationRole applicationRole = new ApplicationRole()
-                {
-                    Name = UserType.PremiumAccount.ToString()
-                };
-
-                await _roleManager.CreateAsync(applicationRole);
-                await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
-            }
-
+            await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
             await _userManager.UpdateAsync(user);
-            
             await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.PremiumAccount);
+            
             return result;
         }
 
@@ -147,24 +119,10 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            if (await _roleManager.FindByNameAsync(UserType.BusinessAccount.ToString()) == null)
-            {
-                ApplicationRole applicationRole = new ApplicationRole()
-                {
-                    Name = UserType.BusinessAccount.ToString()
-                };
-
-                await _roleManager.CreateAsync(applicationRole);
-                await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
-            }
-
+            await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
             await _userManager.UpdateAsync(user);
-
             await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.BusinessAccount);
+            
             return result;
         }
 
@@ -423,20 +381,7 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            if (await _roleManager.FindByNameAsync(UserType.Admin.ToString()) == null)
-            {
-                ApplicationRole applicationRole = new ApplicationRole()
-                {
-                    Name = UserType.Admin.ToString()
-                };
-
-                await _roleManager.CreateAsync(applicationRole);
-                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
-            }
+            await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
             
             return result;
         }

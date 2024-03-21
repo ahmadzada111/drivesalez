@@ -170,58 +170,50 @@ namespace DriveSalez.Infrastructure.DbContext
             }
         }
 
-        public DbSet<PaidUser> PaidUsers => Set<PaidUser>();
-
-        public DbSet<DefaultAccount> DefaultAccounts => Set<DefaultAccount>();
-
-        public DbSet<BusinessAccount> BusinessAccounts => Set<BusinessAccount>();
-
-        public DbSet<PremiumAccount> PremiumAccounts => Set<PremiumAccount>();
-
-        public DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
+        public virtual DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
         
-        public DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
+        public virtual DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
 
-        public DbSet<AccountLimit> AccountLimits => Set<AccountLimit>();
+        public virtual DbSet<AccountLimit> AccountLimits => Set<AccountLimit>();
 
-        public DbSet<Subscription> Subscriptions => Set<Subscription>();
+        public virtual DbSet<Subscription> Subscriptions => Set<Subscription>();
 
-        public DbSet<AnnouncementTypePricing> AnnouncementPricing => Set<AnnouncementTypePricing>();
+        public virtual DbSet<AnnouncementTypePricing> AnnouncementPricing => Set<AnnouncementTypePricing>();
         
-        public DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
+        public virtual DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
         
-        public DbSet<Announcement> Announcements => Set<Announcement>();
+        public virtual DbSet<Announcement> Announcements => Set<Announcement>();
 
-        public DbSet<Make> Makes => Set<Make>();
+        public virtual DbSet<Make> Makes => Set<Make>();
 
-        public DbSet<Model> Models => Set<Model>();
+        public virtual DbSet<Model> Models => Set<Model>();
 
-        public DbSet<Vehicle> Vehicles => Set<Vehicle>(); 
+        public virtual DbSet<Vehicle> Vehicles => Set<Vehicle>(); 
 
-        public DbSet<VehicleDetails> VehicleDetails => Set<VehicleDetails>(); 
+        public virtual DbSet<VehicleDetails> VehicleDetails => Set<VehicleDetails>(); 
 
-        public DbSet<VehicleBodyType> VehicleBodyTypes => Set<VehicleBodyType>();
+        public virtual DbSet<VehicleBodyType> VehicleBodyTypes => Set<VehicleBodyType>();
 
-        public DbSet<VehicleColor> VehicleColors => Set<VehicleColor>();
+        public virtual DbSet<VehicleColor> VehicleColors => Set<VehicleColor>();
 
-        public DbSet<VehicleGearboxType> VehicleGearboxTypes => Set<VehicleGearboxType>();
+        public virtual DbSet<VehicleGearboxType> VehicleGearboxTypes => Set<VehicleGearboxType>();
 
-        public DbSet<VehicleDrivetrainType> VehicleDriveTrainTypes => Set<VehicleDrivetrainType>();
+        public virtual DbSet<VehicleDrivetrainType> VehicleDriveTrainTypes => Set<VehicleDrivetrainType>();
 
-        public DbSet<VehicleMarketVersion> VehicleMarketVersions => Set<VehicleMarketVersion>();
+        public virtual DbSet<VehicleMarketVersion> VehicleMarketVersions => Set<VehicleMarketVersion>();
 
-        public DbSet<VehicleFuelType> VehicleFuelTypes => Set<VehicleFuelType>();
+        public virtual DbSet<VehicleFuelType> VehicleFuelTypes => Set<VehicleFuelType>();
 
-        public DbSet<VehicleCondition> VehicleDetailsConditions => Set<VehicleCondition>();
+        public virtual DbSet<VehicleCondition> VehicleDetailsConditions => Set<VehicleCondition>();
 
-        public DbSet<VehicleOption> VehicleDetailsOptions=> Set<VehicleOption>();
+        public virtual DbSet<VehicleOption> VehicleDetailsOptions=> Set<VehicleOption>();
 
-        public DbSet<Country> Countries => Set<Country>();
+        public virtual DbSet<Country> Countries => Set<Country>();
         
-        public DbSet<City> Cities => Set<City>();
+        public virtual DbSet<City> Cities => Set<City>();
 
-        public DbSet<ManufactureYear> ManufactureYears => Set<ManufactureYear>();
+        public virtual DbSet<ManufactureYear> ManufactureYears => Set<ManufactureYear>();
 
-        public DbSet<Currency> Currencies => Set<Currency>();
+        public virtual DbSet<Currency> Currencies => Set<Currency>();
     }
 }

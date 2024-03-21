@@ -22,4 +22,7 @@
       <Folder Include="wwwroot\" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="DriveSalez.IntegrationTests"/>
+    </ItemGroup>
 </Project>
