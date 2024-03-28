@@ -4,91 +4,92 @@ using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DriveSalez.WebApi.Controllers
+namespace DriveSalez.WebApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "Admin, Moderator")]
+public class ModeratorController : Controller
 {
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Admin, Moderator")]
-    public class ModeratorController : Controller
+    private readonly IModeratorService _moderatorService;
+    private readonly ILogger _logger;
+    
+    public ModeratorController(IModeratorService moderatorService, ILogger<ModeratorController> logger)
     {
-        private readonly IModeratorService _moderatorService;
-        private readonly ILogger _logger;
-        
-        public ModeratorController(IModeratorService moderatorService, ILogger<ModeratorController> logger)
+        _moderatorService = moderatorService;
+        _logger = logger;
+    }
+
+    [HttpPatch("confirm-announcement/{announcementId}")]
+    public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] Guid announcementId)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        try
         {
-            _moderatorService = moderatorService;
-            _logger = logger;
+            var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
+            return response != null ? Ok(response) : BadRequest(response);
         }
-
-        [HttpPatch("confirm-announcement/{announcementId}")]
-        public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] Guid announcementId)
+        catch (UserNotAuthorizedException e)
         {
-            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-            try
-            {
-                var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
-                return response != null ? Ok(response) : BadRequest(response);
-            }
-            catch (UserNotAuthorizedException e)
-            {
-                return Unauthorized(e.Message);
-            }
-            catch (UserNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return Problem(e.Message);
-            }
+            return Unauthorized(e.Message);
         }
-
-        [HttpPatch("make-announcement-inactive/{announcementId}")]
-        public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] Guid announcementId)
+        catch (UserNotFoundException e)
         {
-            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-            try
-            {
-                var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
-                return response != null ? Ok(response) : BadRequest(response);
-            }
-            catch (UserNotAuthorizedException e)
-            {
-                return Unauthorized(e.Message);
-            }
-            catch (UserNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return Problem(e.Message);
-            }
+            return NotFound(e.Message);
         }
-        
-        [HttpPatch("make-announcement-waiting/{announcementId}")]
-        public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] Guid announcementId)
+        catch (InvalidOperationException e)
         {
-            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+            return Problem(e.Message);
+        }
+    }
 
-            try
-            {
-                var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);
-                return response != null ? Ok(response) : BadRequest(response);
-            }
-            catch (UserNotAuthorizedException e)
-            {
-                return Unauthorized(e.Message);
-            }
-            catch (UserNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return Problem(e.Message);
-            }
+    [HttpPatch("make-announcement-inactive/{announcementId}")]
+    public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] Guid announcementId)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        try
+        {
+            var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
+        }
+    }
+    
+    [HttpPatch("make-announcement-waiting/{announcementId}")]
+    public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] Guid announcementId)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        try
+        {
+            var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);
+            return response != null ? Ok(response) : BadRequest(response);
+        }
+        catch (UserNotAuthorizedException e)
+        {
+            return Unauthorized(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return Problem(e.Message);
         }
     }
 }
+

@@ -5,10 +5,10 @@ using DriveSalez.Core.Exceptions;
 using DriveSalez.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.WebApi.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 [Authorize]
 public class AnnouncementController : Controller
@@ -52,7 +52,7 @@ public class AnnouncementController : Controller
             return Problem(e.Message);
         }
     }
-
+    
     [HttpGet("get-user-limit")]
     public async Task<ActionResult> GetUserLimits()
     {
@@ -217,7 +217,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-active-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -233,7 +233,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-inactive-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>?> GetAllInactiveAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>?> GetAllInactiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -249,7 +249,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-waiting-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllWaitingAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllWaitingAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -265,7 +265,7 @@ public class AnnouncementController : Controller
     }
     
     [HttpGet("get-all-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllAnnouncementsByUserId(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -282,7 +282,7 @@ public class AnnouncementController : Controller
     
     [AllowAnonymous]
     [HttpGet("filter-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements(FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements([FromQuery] FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -299,7 +299,7 @@ public class AnnouncementController : Controller
     
     [AllowAnonymous]
     [HttpGet("get-all-premium-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllPremiumAnnouncements(PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllPremiumAnnouncements([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 

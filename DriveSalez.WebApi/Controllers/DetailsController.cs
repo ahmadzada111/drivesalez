@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriveSalez.WebApi.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]
 public class DetailsController : Controller

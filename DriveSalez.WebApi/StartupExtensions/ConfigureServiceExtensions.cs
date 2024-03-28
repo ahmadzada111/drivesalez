@@ -176,12 +176,12 @@ public static class ConfigureServiceExtensions
             options.WaitForJobsToComplete = true;
         });
 
-        services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
-        services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
-        services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
-        services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
-        services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
-        services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
+        // services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
+        // services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
+        // services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
+        // services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
+        // services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
+        // services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
         services.ConfigureOptions<StartImageAnalyzerJobSetup>();
         
         return services;
