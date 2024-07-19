@@ -1,6 +1,7 @@
 using DriveSalez.WebApi.StartupExtensions;
 using System.Text.Json.Serialization;
 using DriveSalez.WebApi.Middleware;
+using AssemblyReference = DriveSalez.Presentation.AssemblyReference;
 
 namespace DriveSalez.WebApi
 {
@@ -15,15 +16,16 @@ namespace DriveSalez.WebApi
                 {
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+                })
+                .AddApplicationPart(typeof(AssemblyReference).Assembly);
             
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
-            var configuration = builder.Configuration
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.Secrets.json")
-                .Build();
+
+            var configuration = builder.Configuration;
+                // .SetBasePath(Directory.GetCurrentDirectory())
+                // .AddJsonFile("appsettings.Secrets.json")
+                // .Build();
 
             builder.Services.AddServices();
             builder.Services.AddAuthenticationAndAuthorizationConfiguration(configuration);
@@ -59,7 +61,7 @@ namespace DriveSalez.WebApi
 
             await app.SeedData();
             
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

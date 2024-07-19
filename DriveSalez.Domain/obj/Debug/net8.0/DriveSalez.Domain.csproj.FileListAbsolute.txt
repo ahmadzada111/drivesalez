@@ -1,0 +1,12 @@
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/bin/Debug/net8.0/DriveSalez.Domain.deps.json
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/bin/Debug/net8.0/DriveSalez.Domain.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/bin/Debug/net8.0/DriveSalez.Domain.pdb
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.csproj.AssemblyReference.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.AssemblyInfoInputs.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.AssemblyInfo.cs
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.csproj.CoreCompileInputs.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/refint/DriveSalez.Domain.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/DriveSalez.Domain.pdb
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Domain/obj/Debug/net8.0/ref/DriveSalez.Domain.dll

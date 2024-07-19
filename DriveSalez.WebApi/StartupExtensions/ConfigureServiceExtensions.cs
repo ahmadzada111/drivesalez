@@ -1,7 +1,7 @@
-﻿using DriveSalez.Core.ServiceContracts;
-using DriveSalez.Core.Services;
-using DriveSalez.Infrastructure.DbContext;
-using DriveSalez.Infrastructure.Repositories;
+﻿using DriveSalez.Application.ServiceContracts;
+using DriveSalez.Application.Services;
+using DriveSalez.Persistence.DbContext;
+using DriveSalez.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +11,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
-using DriveSalez.Core.AutoMapper;
-using DriveSalez.Core.Domain.IdentityEntities;
-using DriveSalez.Core.Domain.RepositoryContracts;
-using DriveSalez.Core.Providers;
-using DriveSalez.Infrastructure.Quartz.Setups;
+using DriveSalez.Application.AutoMapper;
+using DriveSalez.Application.Providers;
+using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.Domain.RepositoryContracts;
+using DriveSalez.Persistence.Quartz.Setups;
 using Quartz;
 
 namespace DriveSalez.WebApi.StartupExtensions;

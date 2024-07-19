@@ -1,0 +1,15 @@
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/bin/Debug/net8.0/DriveSalez.Application.deps.json
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/bin/Debug/net8.0/DriveSalez.Application.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/bin/Debug/net8.0/DriveSalez.Application.pdb
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/bin/Debug/net8.0/DriveSalez.Domain.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/bin/Debug/net8.0/DriveSalez.Domain.pdb
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.csproj.AssemblyReference.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.AssemblyInfoInputs.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.AssemblyInfo.cs
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.csproj.CoreCompileInputs.cache
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSal.07845923.Up2Date
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/refint/DriveSalez.Application.dll
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/DriveSalez.Application.pdb
+/Users/ahmad/Desktop/drivesalez/DriveSalez.Application/obj/Debug/net8.0/ref/DriveSalez.Application.dll

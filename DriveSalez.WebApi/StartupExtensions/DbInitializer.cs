@@ -1,10 +1,9 @@
-using DriveSalez.Core.Domain.Entities;
-using DriveSalez.Core.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Core.Domain.Entities.VehicleParts;
-using DriveSalez.Core.Domain.IdentityEntities;
-using DriveSalez.Core.DTO;
-using DriveSalez.Core.DTO.Enums;
-using DriveSalez.Infrastructure.DbContext;
+using DriveSalez.Domain.Entities;
+using DriveSalez.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Domain.Enums;
+using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.Persistence.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
