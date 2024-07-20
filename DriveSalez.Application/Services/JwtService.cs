@@ -3,28 +3,33 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using DriveSalez.Application.DTO;
+using AutoMapper;
+using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
-using Microsoft.Extensions.Configuration;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Application.Services;
 
 public class JwtService : IJwtService
 {
-    private readonly IConfiguration _jwtConfig;
+    private readonly JwtSettings _jwtSettings;
+    private readonly RefreshTokenSettings _refreshTokenSettings;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IMapper _mapper;
     
-    public JwtService(IConfiguration jwtConfig, UserManager<ApplicationUser> userManager)
+    public JwtService(JwtSettings jwtSettings, RefreshTokenSettings _refreshTokenSettings, 
+        UserManager<ApplicationUser> userManager, IMapper mapper)
     {
-        _jwtConfig = jwtConfig;
+        _jwtSettings = jwtSettings;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
     {
-        DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["JWT:Expiration"]));
+        DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
         var role = await _userManager.GetRolesAsync(user);
         
         Claim[] claims = new Claim[]
@@ -41,12 +46,12 @@ public class JwtService : IJwtService
         await _userManager.RemoveClaimsAsync(user, possibleClaims);
         await _userManager.AddClaimsAsync(user, claims);
         
-        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig["JWT:Secret"]));
+        SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         JwtSecurityToken token = new JwtSecurityToken(
-            _jwtConfig["JWT:Issuer"],
-            _jwtConfig["JWT:Audience"],
+            _jwtSettings.Issuer,
+            _jwtSettings.Audience,
             claims,
             expires: expiration,
             signingCredentials: signingCredentials
@@ -61,10 +66,10 @@ public class JwtService : IJwtService
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            PhoneNumbers = user.PhoneNumbers,
+            PhoneNumbers = _mapper.Map<List<string>>(user.PhoneNumbers),
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
-            RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_jwtConfig["RefreshToken:Expiration"])),
+            RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(_refreshTokenSettings.Expiration),
             UserRole = role[0]
         };
     }
@@ -76,9 +81,9 @@ public class JwtService : IJwtService
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfig["JWT:Secret"])),
-            ValidIssuer = _jwtConfig["JWT:Issuer"],
-            ValidAudience = _jwtConfig["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
+            ValidIssuer = _jwtSettings.Issuer,
+            ValidAudience = _jwtSettings.Audience,
             ValidateLifetime = false
         };
 
@@ -88,7 +93,9 @@ public class JwtService : IJwtService
         {
             ClaimsPrincipal principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
 
-            if (securityToken is JwtSecurityToken jwtSecurityToken && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            if (securityToken is JwtSecurityToken jwtSecurityToken && 
+                jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, 
+                    StringComparison.InvariantCultureIgnoreCase))
             {
                 return principal;
             }

@@ -24,49 +24,19 @@ public class PaymentController : Controller
     // public async Task<ActionResult> TopUpBalance([FromBody] PaymentRequestDto request)
     // {
     //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-    //
-    //     try
-    //     {
-    //         var result = await _paymentService.TopUpBalance(request);
-    //         return result ? Ok() : BadRequest();
-    //     }
-    //     catch (UserNotAuthorizedException e)
-    //     {
-    //         return Unauthorized(e.Message);
-    //     }
-    //     catch (UserNotFoundException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    //     catch (InvalidOperationException e)
-    //     {
-    //         return Problem(e.Message);
-    //     }
+    //     
+    //     var result = await _paymentService.TopUpBalance(request); 
+    //     return result ? Ok() : BadRequest();
     // }
-    
+    //
     // [Authorize]
     // [HttpPost("add-regular-announcement-limit")]
     // public async Task<ActionResult> AddRegularAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     // {
     //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-    //
-    //     try
-    //     {
-    //         var result = await _paymentService.AddRegularAnnouncementLimit(announcementQuantity, subscriptionId);
-    //         return result ? Ok() : BadRequest();
-    //     }
-    //     catch (UserNotAuthorizedException e)
-    //     {
-    //         return Unauthorized(e.Message);
-    //     }
-    //     catch (UserNotFoundException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    //     catch (KeyNotFoundException)
-    //     {
-    //         return Problem();
-    //     }
+    //     
+    //     var result = await _paymentService.AddRegularAnnouncementLimit(announcementQuantity, subscriptionId);
+    //     return result ? Ok() : BadRequest();
     // }
     //
     // [Authorize]
@@ -74,24 +44,9 @@ public class PaymentController : Controller
     // public async Task<ActionResult> AddPremiumAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     // {
     //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-    //
-    //     try
-    //     {
-    //         var result = await _paymentService.AddPremiumAnnouncementLimit(announcementQuantity, subscriptionId);
-    //         return result ? Ok() : BadRequest();
-    //     }
-    //     catch (UserNotAuthorizedException e)
-    //     {
-    //         return Unauthorized(e.Message);
-    //     }
-    //     catch (UserNotFoundException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    //     catch (KeyNotFoundException)
-    //     {
-    //         return Problem();
-    //     }
+    //     
+    //     var result = await _paymentService.AddPremiumAnnouncementLimit(announcementQuantity, subscriptionId);
+    //     return result ? Ok() : BadRequest();
     // }
     
     [Authorize]
@@ -99,71 +54,26 @@ public class PaymentController : Controller
     public async Task<ActionResult> AddAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
-            return result ? Ok() : BadRequest();
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
+        return result ? Ok() : BadRequest();
     }
     
     [HttpPost("buy-premium-account")]
     public async Task<ActionResult> BuyPremiumAccount(int subscriptionId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var result = await _paymentService.BuyPremiumAccount(subscriptionId);
-            return result ? Ok() : BadRequest();
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var result = await _paymentService.BuyPremiumAccount(subscriptionId);
+        return result ? Ok() : BadRequest();
     }
     
     [HttpPost("buy-business-account")]
     public async Task<ActionResult> BuyBusinessAccount(int subscriptionId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var result = await _paymentService.BuyBusinessAccount(subscriptionId);
-            return result ? Ok() : BadRequest();
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var result = await _paymentService.BuyBusinessAccount(subscriptionId);
+        return result ? Ok() : BadRequest();
     }
 }

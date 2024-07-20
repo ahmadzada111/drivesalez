@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DriveSalez.Domain\DriveSalez.Domain.csproj" />
+      <ProjectReference Include="..\DriveSalez.SharedKernel\DriveSalez.SharedKernel.csproj" />
     </ItemGroup>
 
 </Project>

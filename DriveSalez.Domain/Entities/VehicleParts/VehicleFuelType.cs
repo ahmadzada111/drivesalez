@@ -7,7 +7,6 @@ public class VehicleFuelType
     public int Id { get; set; }
 
     public string FuelType { get; set; }
-
-    [JsonIgnore]
-    public List<Vehicle> Vehicles { get; set; }        //EF CORE FOREIGN KEY
+    
+    public List<Vehicle> Vehicles { get; set; }       
 }

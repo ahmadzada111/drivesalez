@@ -12,7 +12,6 @@ public class Model
     public string ModelName { get; set; }
 
     public Make Make { get; set; }
-
-    [JsonIgnore]
+    
     public List<Vehicle> Vehicles { get; set; }
 }

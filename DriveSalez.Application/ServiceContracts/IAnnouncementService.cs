@@ -1,4 +1,7 @@
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
+using DriveSalez.Application.DTO.AnnoucementDTO;
+using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.Pagination;
 

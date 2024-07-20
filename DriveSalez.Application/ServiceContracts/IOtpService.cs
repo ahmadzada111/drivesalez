@@ -1,4 +1,5 @@
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace DriveSalez.Application.ServiceContracts;

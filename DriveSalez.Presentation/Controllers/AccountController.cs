@@ -1,11 +1,10 @@
 ﻿using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
-using DriveSalez.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace DriveSalez.Presentation.Controllers;
 
@@ -82,40 +81,15 @@ public class AccountController : Controller
             string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
             return Problem(errorMessage);
         }
+        
+        var response = await _accountService.LoginAsync(request);
 
-        try
+        if (response == null)
         {
-            var response = await _accountService.LoginAsync(request);
+            return Unauthorized("Email or password is invalid");
+        }
 
-            if (response == null)
-            {
-                return Unauthorized("Email or password is invalid");
-            }
-
-            return Ok(response);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (EmailNotConfirmedException e)
-        {
-            return new ContentResult()
-            {
-                StatusCode = 403,
-                Content = e.Message,
-                ContentType = "text/plain"
-            };
-        }
-        catch (BannedUserException e)
-        {
-            return new ContentResult()
-            {
-                StatusCode = 403,
-                Content = e.Message,
-                ContentType = "text/plain"
-            };
-        }
+        return Ok(response);
     }
     
     [HttpPost("login-staff")]
@@ -128,38 +102,25 @@ public class AccountController : Controller
             string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
             return Problem(errorMessage);
         }
+        
+        var response = await _accountService.LoginStaffAsync(request);
 
-        try
+        if (response == null)
         {
-            var response = await _accountService.LoginStaffAsync(request);
-
-            if (response == null)
-            {
-                return Unauthorized("Email or password is invalid");
-            }
-
-            return Ok(response);
+            return Unauthorized("Email or password is invalid");
         }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
+
+        return Ok(response);
     }
     
     [HttpGet("logout")]
     public async Task<ActionResult> LogOut()
     {
-        try
-        {
-            _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+        
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-            await _accountService.LogOutAsync();
-            return NoContent();
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e);
-        }
+        await _accountService.LogOutAsync();
+        return NoContent();
     }
     
     [HttpPost("refresh")]
@@ -173,15 +134,9 @@ public class AccountController : Controller
             return Problem(errorMessage);
         }
 
-        try
-        {
-            var response = await _accountService.RefreshAsync(request);
-            return Ok(response);
-        }
-        catch (SecurityTokenException e)
-        {
-            return Unauthorized(e.Message);
-        }
+        
+        var response = await _accountService.RefreshAsync(request);
+        return Ok(response);
     }
     
     [Authorize]
@@ -197,15 +152,9 @@ public class AccountController : Controller
             return Problem(errorMessage);
         }
 
-        try
-        {
-            var result = await _accountService.ChangePasswordAsync(request);
-            return result ? Ok("Password was successfully changed") : BadRequest("Error");
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
+        
+        var result = await _accountService.ChangePasswordAsync(request);
+        return result ? Ok("Password was successfully changed") : BadRequest("Error");
     }
     
     [HttpPost("reset-password")]
@@ -219,27 +168,18 @@ public class AccountController : Controller
                 ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
             return Problem(errorMessage);
         }
-
-        try
-        {
-            var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
-
-            if (response)
-            {
-                var result = await _accountService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
         
-                if (result)
-                {
-                    return Ok("Password was successfully changed");
-                }
-            }
+        var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
 
-            return BadRequest("Cannot validate OTP");
-        }
-        catch (UserNotFoundException e)
+        if (!response) return BadRequest("Cannot validate OTP");
+        var result = await _accountService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
+        
+        if (result)
         {
-            return NotFound(e.Message);
+            return Ok("Password was successfully changed");
         }
+
+        return BadRequest("Cannot validate OTP");
     }
     
     [Authorize]
@@ -254,27 +194,18 @@ public class AccountController : Controller
                 ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
             return Problem(errorMessage);
         }
-
-        try
-        {
-            var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
-
-            if (response)
-            {
-                var result = await _accountService.ChangeEmailAsync(request.ValidateRequest.Email, request.NewMail);
         
-                if (result)
-                {
-                    return Ok("Password was successfully changed");
-                }
-            }
+        var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
 
-            return BadRequest("Cannot validate OTP");
-        }
-        catch (UserNotFoundException e)
+        if (!response) return BadRequest("Cannot validate OTP");
+        var result = await _accountService.ChangeEmailAsync(request.ValidateRequest.Email, request.NewMail);
+        
+        if (result)
         {
-            return NotFound(e.Message);
+            return Ok("Password was successfully changed");
         }
+
+        return BadRequest("Cannot validate OTP");
     }
     
     [Authorize]
@@ -287,42 +218,24 @@ public class AccountController : Controller
         {
             return Unauthorized("Password is invalid");
         }
-
-        try
-        {
-            var response = await _accountService.DeleteUserAsync(password);
-            return Ok(response);
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var response = await _accountService.DeleteUserAsync(password);
+        return Ok(response);
     }
     
     [HttpPost("create-admin")]
     public async Task<ActionResult> CreateAdmin()
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+        
+        var result = await _accountService.CreateAdminAsync();
 
-        try
+        if (!result.Succeeded)
         {
-            var result = await _accountService.CreateAdminAsync();
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(string.Join(" | ", result.Errors.Select(e => e.Description)));
-            }
-
-            return Ok();
+            return BadRequest(string.Join(" | ", result.Errors.Select(e => e.Description)));
         }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
+
+        return Ok();
     }
 }
 

@@ -8,7 +8,6 @@ public class VehicleMarketVersion
     public int Id { get; set; }
 
     public string MarketVersion { get; set; }
-
-    [JsonIgnore]
-    public List<VehicleDetails> VehicleDetails { get; set; }        //EF CORE FOREIGN KEY
+    
+    public List<VehicleDetails> VehicleDetails { get; set; }        
 }

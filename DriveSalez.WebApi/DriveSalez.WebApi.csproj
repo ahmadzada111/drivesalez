@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Quartz.AspNetCore" Version="3.8.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
@@ -17,6 +18,7 @@
       <ProjectReference Include="..\DriveSalez.Application\DriveSalez.Application.csproj" />
       <ProjectReference Include="..\DriveSalez.Persistence\DriveSalez.Persistence.csproj" />
       <ProjectReference Include="..\DriveSalez.Presentation\DriveSalez.Presentation.csproj" />
+      <ProjectReference Include="..\DriveSalez.SharedKernel\DriveSalez.SharedKernel.csproj" />
     </ItemGroup>
     
 </Project>

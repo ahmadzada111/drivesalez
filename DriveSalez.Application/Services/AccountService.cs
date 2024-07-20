@@ -1,6 +1,9 @@
 using System.Security.Claims;
+using AutoMapper;
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
+using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
@@ -22,10 +25,11 @@ public class AccountService : IAccountService
     private readonly IJwtService _jwtService;
     private readonly IAccountRepository _accountRepository;
     private readonly IFileService _fileService;
+    private readonly IMapper _mapper;
     
     public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
         RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor,
-        IAccountRepository accountRepository, IFileService fileService)
+        IAccountRepository accountRepository, IFileService fileService, IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -34,6 +38,7 @@ public class AccountService : IAccountService
         _jwtService = jwtService;
         _accountRepository = accountRepository;
         _fileService = fileService;
+        _mapper = mapper;
     }
 
     public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
@@ -41,7 +46,7 @@ public class AccountService : IAccountService
         DefaultAccount user = new DefaultAccount()
         {
             Email = request.Email,
-            PhoneNumbers = request.PhoneNumbers,
+            PhoneNumbers = _mapper.Map<List<AccountPhoneNumber>>(request.PhoneNumbers),
             UserName = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -71,7 +76,7 @@ public class AccountService : IAccountService
         BusinessAccount user = new BusinessAccount()
         {
             Email = request.Email,
-            PhoneNumbers = request.PhoneNumbers,
+            PhoneNumbers = _mapper.Map<List<AccountPhoneNumber>>(request.PhoneNumbers),
             UserName = request.UserName,
             WorkHours = request.WorkHours,
             Address = request.Address,

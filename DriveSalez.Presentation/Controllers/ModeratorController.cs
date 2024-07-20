@@ -25,72 +25,27 @@ public class ModeratorController : Controller
     public async Task<ActionResult<Announcement>> ConfirmAnnouncement([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
-            return response != null ? Ok(response) : BadRequest(response);
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var response = await _moderatorService.MakeAnnouncementActiveAsync(announcementId);
+        return response != null ? Ok(response) : BadRequest(response);
     }
 
     [HttpPatch("make-announcement-inactive/{announcementId}")]
     public async Task<ActionResult<Announcement>> MakeAnnouncementInactive([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
-            return response != null ? Ok(response) : BadRequest(response);
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var response = await _moderatorService.MakeAnnouncementInactiveAsync(announcementId);
+        return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpPatch("make-announcement-waiting/{announcementId}")]
     public async Task<ActionResult<Announcement>> MakeAnnouncementWaiting([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        try
-        {
-            var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);
-            return response != null ? Ok(response) : BadRequest(response);
-        }
-        catch (UserNotAuthorizedException e)
-        {
-            return Unauthorized(e.Message);
-        }
-        catch (UserNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return Problem(e.Message);
-        }
+        
+        var response = await _moderatorService.MakeAnnouncementWaitingAsync(announcementId);
+        return response != null ? Ok(response) : BadRequest(response);
     }
 }
 

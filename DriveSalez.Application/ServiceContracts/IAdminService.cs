@@ -1,4 +1,5 @@
 ﻿using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;

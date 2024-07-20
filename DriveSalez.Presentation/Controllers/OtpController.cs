@@ -1,4 +1,5 @@
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
@@ -35,63 +36,43 @@ public class OtpController : Controller
         {
             _cache.Remove(email);    
         }
-
-        try
-        {
-            string otp = _otpService.GenerateOtp();
-            string subject = "DriveSalez - One-Time Password (OTP)";
+        
+        string otp = _otpService.GenerateOtp();
+        string subject = "DriveSalez - One-Time Password (OTP)";
             
-            string body = $"Thank you for choosing DriveSalez!\n\n" +
-                          $"To verify your identity, please use the following One-Time Password (OTP):\n{otp}\n\n" +
-                          $"This OTP is valid for 3 minutes and is used to ensure the security of your account.\n\n" +
-                          $"Please do not share this OTP with anyone and avoid responding to any requests for it.\n\n" +
-                          $"Best regards, DriveSalez Team";
+        string body = $"Thank you for choosing DriveSalez!\n\n" +
+                      $"To verify your identity, please use the following One-Time Password (OTP):\n{otp}\n\n" +
+                      $"This OTP is valid for 3 minutes and is used to ensure the security of your account.\n\n" +
+                      $"Please do not share this OTP with anyone and avoid responding to any requests for it.\n\n" +
+                      $"Best regards, DriveSalez Team";
                 
             
-            var response = await _emailService.SendEmailAsync(email, subject, body);
+        var response = await _emailService.SendEmailAsync(email, subject, body);
 
-            if (response)
-            {
-                _cache.Set(email, otp, new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
-                });
-
-                return Ok("OTP was sent to your Email");
-            }
-
-            return BadRequest("Cannot send OTP");
-        }
-        catch (UserNotFoundException e)
+        if (!response) return BadRequest("Cannot send OTP");
+        _cache.Set(email, otp, new MemoryCacheEntryOptions
         {
-            return NotFound(e.Message);
-        }
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3)
+        });
+
+        return Ok("OTP was sent to your Email");
     }
 
     [HttpPost("verify-email")]
     public async Task<ActionResult> ValidateOtp([FromBody] ValidateOtpDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+        
+        var response =  await _otpService.ValidateOtpAsync(_cache, request);
 
-        try
-        {
-            var response =  await _otpService.ValidateOtpAsync(_cache, request);
-
-            if (response)
-            {
-                var result = await _emailService.VerifyEmailAsync(request.Email);
+        if (!response) return BadRequest("Cannot validate OTP");
+        var result = await _emailService.VerifyEmailAsync(request.Email);
             
-                if (result)
-                {
-                    return Ok("Email was successfully verified");
-                }
-            }
-
-            return BadRequest("Cannot validate OTP");
-        }
-        catch (UserNotFoundException e)
+        if (result)
         {
-            return NotFound(e.Message);
+            return Ok("Email was successfully verified");
         }
+
+        return BadRequest("Cannot validate OTP");
     }
 }

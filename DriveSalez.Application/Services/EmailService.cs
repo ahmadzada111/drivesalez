@@ -3,19 +3,19 @@ using System.Net.Mail;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
 namespace DriveSalez.Application.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _emailConfig;
+    private readonly EmailSettings _emailSettings;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public EmailService(IConfiguration emailConfig, UserManager<ApplicationUser> userManager)
+    public EmailService(EmailSettings emailSettings, UserManager<ApplicationUser> userManager)
     {
-        _emailConfig = emailConfig;
+        _emailSettings = emailSettings;
         _userManager = userManager;
     }
     
@@ -28,12 +28,12 @@ public class EmailService : IEmailService
             throw new UserNotFoundException("User with provided email wasn't found!");
         }
         
-        var client = new SmtpClient("smtp.gmail.com", 587);
+        var client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.Port);
         client.EnableSsl = true;
         
         client.Credentials = new NetworkCredential(
-            _emailConfig["Email:CompanyEmail"],
-            _emailConfig["Email:EmailKey"]);
+            _emailSettings.CompanyEmail,
+            _emailSettings.EmailKey);
     
         var message = new MailMessage()
         {
@@ -42,7 +42,7 @@ public class EmailService : IEmailService
         };
 
         // message.IsBodyHtml = true;
-        message.From = new MailAddress(_emailConfig["Email:CompanyEmail"], "DriveSalez");
+        message.From = new MailAddress(_emailSettings.CompanyEmail, _emailSettings.SenderName);
         message.To.Add(new MailAddress(toEmail));
 
         await client.SendMailAsync(message);

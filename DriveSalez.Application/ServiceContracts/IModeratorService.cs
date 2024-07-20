@@ -1,4 +1,6 @@
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AnnoucementDTO;
+using DriveSalez.Application.DTO.AnnouncementDTO;
 
 namespace DriveSalez.Application.ServiceContracts;
 

@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AccountDTO;
+using DriveSalez.Application.DTO.AnnoucementDTO;
+using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
@@ -59,7 +61,7 @@ public class AnnouncementService : IAnnouncementService
                     VinCode = request.VinCode,
                     EngineVolume = request.EngineVolume,
                     MileAge = request.Mileage,
-                    MileageType = request.MileageType
+                    MileageType = Enum.Parse<DistanceUnit>(request.MileageType, true)
                 }
             },
             Barter = request.Barter,
@@ -106,7 +108,6 @@ public class AnnouncementService : IAnnouncementService
                         }
                     },
                     ViewCount = 0,
-                    // ImageUrls = await _fileService.UploadFilesAsync(request.ImageData),
                     ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                     Barter = request.Barter,
                     OnCredit = request.OnCredit,
@@ -167,8 +168,9 @@ public class AnnouncementService : IAnnouncementService
             throw new ValidationException("Invalid relationships in the announcement.");
         }
         
+        announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageData);
         var response = await _announcementRepository.CreateAnnouncementInDbAsync(user, announcement);
-
+        
         return _mapper.Map<AnnouncementResponseDto>(response);
     }
     

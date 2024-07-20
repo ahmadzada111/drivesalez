@@ -1,5 +1,7 @@
 using AutoMapper;
 using DriveSalez.Application.DTO;
+using DriveSalez.Application.DTO.AnnoucementDTO;
+using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;

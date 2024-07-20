@@ -11,6 +11,9 @@
 /DriveSalez.Presentation/bin/
 /DriveSalez.Presentation/obj/
 
+/DriveSalez.SharedKernel/bin/
+/DriveSalez.SharedKernel/obj/
+
 /DriveSalez.WebApi/obj/
 /DriveSalez.WebApi/bin/
 
