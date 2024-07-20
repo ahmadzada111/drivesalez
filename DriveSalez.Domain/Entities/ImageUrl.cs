@@ -1,9 +1,8 @@
-﻿namespace DriveSalez.Domain.Entities
-{
-    public class ImageUrl
-    {
-        public int Id { get; set; }
+﻿namespace DriveSalez.Domain.Entities;
 
-        public Uri? Url { get; set; }
-    }
+public class ImageUrl
+{
+    public int Id { get; set; }
+
+    public Uri? Url { get; set; }
 }

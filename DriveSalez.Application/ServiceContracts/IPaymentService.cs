@@ -1,5 +1,3 @@
-using DriveSalez.Application.DTO;
-
 namespace DriveSalez.Application.ServiceContracts;
 
 public interface IPaymentService

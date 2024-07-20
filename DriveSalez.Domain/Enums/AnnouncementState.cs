@@ -1,9 +1,8 @@
-﻿namespace DriveSalez.Domain.Enums
+﻿namespace DriveSalez.Domain.Enums;
+
+public enum AnnouncementState
 {
-    public enum AnnouncementState
-    {
-        Active, 
-        Inactive, 
-        Pending
-    }
+    Active, 
+    Inactive, 
+    Pending
 }

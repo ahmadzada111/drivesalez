@@ -1,8 +1,7 @@
-﻿namespace DriveSalez.Domain.Enums
+﻿namespace DriveSalez.Domain.Enums;
+
+public enum DistanceUnit
 {
-    public enum DistanceUnit
-    {
-        Km,
-        Mi
-    }
+    Km,
+    Mi
 }

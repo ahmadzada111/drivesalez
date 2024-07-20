@@ -1,5 +1,3 @@
-using DriveSalez.Core.Domain.Entities;
-
 namespace DriveSalez.Domain.Entities;
 
 public class Subscription

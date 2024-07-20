@@ -11,15 +11,12 @@ public class NotifyUsersWithExpiringSubscriptionsJob : IJob
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger _logger;
-    private readonly IComputerVisionService _computerVisionService;
     private readonly IEmailService _emailService;
     
-    public NotifyUsersWithExpiringSubscriptionsJob(ApplicationDbContext dbContext, ILogger<StartImageAnalyzerJob> logger,
-        IComputerVisionService computerVisionService, IEmailService emailService)
+    public NotifyUsersWithExpiringSubscriptionsJob(ApplicationDbContext dbContext, ILogger<NotifyUsersWithExpiringSubscriptionsJob> logger, IEmailService emailService)
     {
         _dbContext = dbContext;
         _logger = logger;
-        _computerVisionService = computerVisionService;
         _emailService = emailService;
     }
 

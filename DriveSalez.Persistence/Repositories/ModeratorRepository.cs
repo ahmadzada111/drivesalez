@@ -1,5 +1,4 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;

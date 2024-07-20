@@ -1,4 +1,3 @@
-using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;

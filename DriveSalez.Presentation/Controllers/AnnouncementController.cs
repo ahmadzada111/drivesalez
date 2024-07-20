@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DriveSalez.WebApi.Controllers;
+namespace DriveSalez.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

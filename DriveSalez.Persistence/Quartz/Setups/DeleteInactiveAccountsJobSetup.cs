@@ -1,5 +1,4 @@
 using DriveSalez.Persistence.Quartz.Jobs;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Quartz;
 

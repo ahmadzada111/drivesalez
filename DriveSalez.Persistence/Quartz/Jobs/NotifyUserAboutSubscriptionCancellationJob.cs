@@ -14,7 +14,7 @@ public class NotifyUserAboutSubscriptionCancellationJob : IJob
     private readonly ILogger _logger;
     private readonly IEmailService _emailService;
     
-    public NotifyUserAboutSubscriptionCancellationJob(ApplicationDbContext dbContext, ILogger<StartImageAnalyzerJob> logger,
+    public NotifyUserAboutSubscriptionCancellationJob(ApplicationDbContext dbContext, ILogger<NotifyUserAboutSubscriptionCancellationJob> logger,
         IEmailService emailService, IAccountService accountService)
     {
         _dbContext = dbContext;

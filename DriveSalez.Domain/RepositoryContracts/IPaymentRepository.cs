@@ -1,5 +1,4 @@
 using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.IdentityEntities;
 
 namespace DriveSalez.Domain.RepositoryContracts;
 

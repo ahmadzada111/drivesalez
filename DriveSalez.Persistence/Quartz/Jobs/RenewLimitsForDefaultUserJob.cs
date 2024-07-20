@@ -11,7 +11,7 @@ public class RenewLimitsForDefaultUserJob : IJob
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger _logger;
     
-    public RenewLimitsForDefaultUserJob(ApplicationDbContext dbContext, ILogger<StartImageAnalyzerJob> logger)
+    public RenewLimitsForDefaultUserJob(ApplicationDbContext dbContext, ILogger<RenewLimitsForDefaultUserJob> logger)
     {
         _dbContext = dbContext;
         _logger = logger;

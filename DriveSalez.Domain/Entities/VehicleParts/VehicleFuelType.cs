@@ -1,15 +1,13 @@
 ﻿using System.Text.Json.Serialization;
-using DriveSalez.Domain.Entities;
 
-namespace DriveSalez.Core.Domain.Entities.VehicleParts
+namespace DriveSalez.Domain.Entities.VehicleParts;
+
+public class VehicleFuelType
 {
-    public class VehicleFuelType
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string FuelType { get; set; }
+    public string FuelType { get; set; }
 
-        [JsonIgnore]
-        public List<Vehicle> Vehicles { get; set; }        //EF CORE FOREIGN KEY
-    }
+    [JsonIgnore]
+    public List<Vehicle> Vehicles { get; set; }        //EF CORE FOREIGN KEY
 }

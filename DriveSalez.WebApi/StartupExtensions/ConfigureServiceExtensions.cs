@@ -15,7 +15,6 @@ using DriveSalez.Application.AutoMapper;
 using DriveSalez.Application.Providers;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
-using DriveSalez.Persistence.Quartz.Setups;
 using Quartz;
 
 namespace DriveSalez.WebApi.StartupExtensions;
@@ -25,12 +24,10 @@ public static class ConfigureServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddSingleton<IBlobContainerClientProvider, BlobContainerClientProvider>();
-        services.AddSingleton<IImageAnnotatorClientProvider, ImageAnnotatorClientProvider>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IModeratorService, ModeratorService>();
         services.AddScoped<IModeratorRepository, ModeratorRepository>();
         services.AddScoped<IPaymentService, PaymentService>();
-        services.AddScoped<IComputerVisionService, ComputerVisionService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
         services.AddScoped<IJwtService, JwtService>();
@@ -182,7 +179,6 @@ public static class ConfigureServiceExtensions
         // services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
         // services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
         // services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
-        services.ConfigureOptions<StartImageAnalyzerJobSetup>();
         
         return services;
     }

@@ -1,4 +1,3 @@
-using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
