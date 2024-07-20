@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DriveSalez.Presentation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a04917b3fb4deb438ba69b8ebd99fd9fd7eb2ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e4f6945643e6f1299a95f6eff8d167474721ed2")]
 [assembly: System.Reflection.AssemblyProductAttribute("DriveSalez.Presentation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DriveSalez.Presentation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
