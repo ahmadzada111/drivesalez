@@ -1,18 +1,18 @@
-DriveSalez.Domain/bin/
-DriveSalez.Domain/obj/
+/DriveSalez.Domain/bin/
+/DriveSalez.Domain/obj/
 
-DriveSalez.Application/bin/
-DriveSalez.Application/obj/
+/DriveSalez.Application/bin/
+/DriveSalez.Application/obj/
 
-DriveSalez.Persistence/bin/
-DriveSalez.Persistence/obj/
-DriveSalez.Persistence/Migrations/
+/DriveSalez.Persistence/bin/
+/DriveSalez.Persistence/obj/
+/DriveSalez.Persistence/Migrations/
 
-DriveSalez.Presentation/bin/
-DriveSalez.Presentation/obj/
+/DriveSalez.Presentation/bin/
+/DriveSalez.Presentation/obj/
 
-DriveSalez.WebApi/obj/
-DriveSalez.WebApi/bin/
+/DriveSalez.WebApi/obj/
+/DriveSalez.WebApi/bin/
 
 .DS_Store
 
