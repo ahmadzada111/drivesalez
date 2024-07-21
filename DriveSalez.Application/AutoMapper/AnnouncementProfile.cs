@@ -1,7 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO.AnnoucementDTO;
 using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Domain.Entities;
+using DriveSalez.SharedKernel.Pagination;
 
 namespace DriveSalez.Application.AutoMapper;
 
@@ -10,7 +10,7 @@ public class AnnouncementProfile : Profile
     public AnnouncementProfile()
     {
         CreateMap<Announcement, AnnouncementResponseMiniDto>()
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls[0]))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls.FirstOrDefault().Url))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model))
@@ -49,5 +49,20 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
             .ForMember(dest => dest.PhoneNumbers, opt => opt.MapFrom(src => src.Owner.PhoneNumbers.Select(num => num.PhoneNumber).ToList()));
+       
+       CreateMap(typeof(PaginatedList<>), typeof(PaginatedList<>))
+           .ConvertUsing(typeof(PaginatedListConverter<,>));
+
+       CreateMap<Tuple<IEnumerable<Announcement>, PaginatedList<Announcement>>, 
+           Tuple<IEnumerable<AnnouncementResponseMiniDto>, PaginatedList<AnnouncementResponseMiniDto>>>();
+    }
+    
+    private class PaginatedListConverter<TSource, TDestination> : ITypeConverter<PaginatedList<TSource>, PaginatedList<TDestination>>
+    {
+        public PaginatedList<TDestination> Convert(PaginatedList<TSource> source, PaginatedList<TDestination> destination, ResolutionContext context)
+        {
+            var items = context.Mapper.Map<List<TDestination>>(source.Items);
+            return new PaginatedList<TDestination>(items, source.PageIndex, source.TotalPages, source.TotalCount);
+        }
     }
 } 

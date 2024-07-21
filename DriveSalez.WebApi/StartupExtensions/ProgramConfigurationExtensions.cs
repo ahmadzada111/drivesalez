@@ -19,8 +19,13 @@ public static class ProgramConfigurationExtensions
         }
         
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+        builder.Services.AddSingleton<JwtSettings>();
+        
         builder.Services.Configure<RefreshTokenSettings>(builder.Configuration.GetSection("RefreshTokenSettings"));
+        builder.Services.AddSingleton<RefreshTokenSettings>();
+
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        builder.Services.AddSingleton<EmailSettings>();
     }
 
     public static void RegisterServices(this WebApplicationBuilder builder)

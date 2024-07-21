@@ -9,5 +9,6 @@ public class VehicleMarketVersion
 
     public string MarketVersion { get; set; }
     
+    [JsonIgnore]
     public List<VehicleDetails> VehicleDetails { get; set; }        
 }

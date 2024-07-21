@@ -9,8 +9,8 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
-using DriveSalez.Domain.Pagination;
 using DriveSalez.Domain.RepositoryContracts;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -189,10 +189,10 @@ public class AnnouncementService : IAnnouncementService
         return _mapper.Map<AnnouncementResponseDto>(response);
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsAsync(PagingParameters pagingParameters)
+    public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAllPremiumAnnouncementsAsync(PagingParameters pagingParameters)
     {
         var response = await _announcementRepository.GetAllPremiumAnnouncementsFromDbAsync(pagingParameters);
-        return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(response);
+        return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
 
     public async Task<LimitRequestDto> GetUserLimitsAsync()
@@ -224,18 +224,18 @@ public class AnnouncementService : IAnnouncementService
         return _mapper.Map<AnnouncementResponseDto>(response);
     }
 
-    public async Task<Tuple<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncements(PagingParameters parameters)
+    public async Task<Tuple<IEnumerable<AnnouncementResponseMiniDto>, PaginatedList<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncements(PagingParameters parameters)
     {
         var response = await _announcementRepository.GetAllActiveAnnouncementsFromDbAsync(parameters);
-        return _mapper.Map<Tuple<IEnumerable<AnnouncementResponseMiniDto>, IEnumerable<AnnouncementResponseMiniDto>>>(response);
+        return _mapper.Map<Tuple<IEnumerable<AnnouncementResponseMiniDto>, PaginatedList<AnnouncementResponseMiniDto>>>(response);
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelAsync(
+    public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelAsync(
         PagingParameters parameters, AnnouncementState announcementState)
     {
         var response =
             await _announcementRepository.GetAllAnnouncementsForAdminPanelFromDbAsync(parameters, announcementState);
-        return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(response);
+        return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
     
     public async Task<AnnouncementResponseDto?> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request)
@@ -287,13 +287,13 @@ public class AnnouncementService : IAnnouncementService
         return _mapper.Map<AnnouncementResponseDto>(response);
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         var response = await _announcementRepository.GetFilteredAnnouncementsFromDbAsync(filterParameters, pagingParameters);
-        return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(response);
+        return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
 
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
+    public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
@@ -304,10 +304,10 @@ public class AnnouncementService : IAnnouncementService
 
         var response = await _announcementRepository.GetAnnouncementsByStatesAndByUserFromDbAsync(user, pagingParameters, announcementState);
 
-        return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(response);
+        return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
     
-    public async Task<IEnumerable<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters)
+    public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
         
@@ -318,6 +318,6 @@ public class AnnouncementService : IAnnouncementService
 
         var response = await _announcementRepository.GetAllAnnouncementsByUserFromDbAsync(user, pagingParameters);
 
-        return _mapper.Map<IEnumerable<AnnouncementResponseMiniDto>>(response);
+        return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
 }

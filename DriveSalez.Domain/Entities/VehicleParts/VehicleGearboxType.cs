@@ -9,5 +9,6 @@ public class VehicleGearboxType
 
     public string GearboxType { get; set; }
     
+    [JsonIgnore]
     public List<VehicleDetails> VehicleDetails { get; set; }        
 }

@@ -3,7 +3,8 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
-using DriveSalez.Domain.Pagination;
+using DriveSalez.SharedKernel.Pagination;
+
 
 namespace DriveSalez.Domain.RepositoryContracts;
 
@@ -22,20 +23,20 @@ public interface IAnnouncementRepository
     Task<Announcement?> GetAnnouncementByIdFromDbAsync(Guid id);
 
     Task<Announcement?> GetActiveAnnouncementByIdFromDbAsync(Guid id);
-        
-    Task<Tuple<IEnumerable<Announcement>, IEnumerable<Announcement>>> GetAllActiveAnnouncementsFromDbAsync(PagingParameters parameters);
 
-    Task<IEnumerable<Announcement>> GetFilteredAnnouncementsFromDbAsync(
+    Task<Tuple<IEnumerable<Announcement>, PaginatedList<Announcement>>> GetAllActiveAnnouncementsFromDbAsync(PagingParameters parameter);
+
+    Task<PaginatedList<Announcement>> GetFilteredAnnouncementsFromDbAsync(
         FilterParameters filterParameters, PagingParameters pagingParameters);
 
-    Task<IEnumerable<Announcement>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user, PagingParameters pagingParameters, AnnouncementState announcementState);
+    Task<PaginatedList<Announcement>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user, PagingParameters pagingParameters, AnnouncementState announcementState);
 
-    Task<IEnumerable<Announcement>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
+    Task<PaginatedList<Announcement>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
         PagingParameters pagingParameters);
 
-    Task<IEnumerable<Announcement>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters);
+    Task<PaginatedList<Announcement>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters);
         
-    Task<IEnumerable<Announcement>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState);
+    Task<PaginatedList<Announcement>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState);
 
     public Task<ManufactureYear> GetManufactureYearById(int id);
 

@@ -8,5 +8,6 @@ public class VehicleFuelType
 
     public string FuelType { get; set; }
     
+    [JsonIgnore]
     public List<Vehicle> Vehicles { get; set; }       
 }

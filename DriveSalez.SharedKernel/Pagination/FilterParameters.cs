@@ -1,6 +1,4 @@
-﻿using DriveSalez.Domain.Enums;
-
-namespace DriveSalez.Domain.Pagination;
+﻿namespace DriveSalez.SharedKernel.Pagination;
 
 public class FilterParameters
 {
@@ -44,7 +42,7 @@ public class FilterParameters
 
     public int? ToMileage { get; set; }
         
-    public DistanceUnit? MileageType { get; set; }
+    public string? MileageType { get; set; }
 
     public bool? Barter { get; set; }
 

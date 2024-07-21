@@ -5,7 +5,7 @@ using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.Exceptions;
-using DriveSalez.Domain.Pagination;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

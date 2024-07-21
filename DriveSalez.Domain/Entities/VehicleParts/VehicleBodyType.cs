@@ -9,5 +9,6 @@ public class VehicleBodyType
 
     public string BodyType { get; set; }
     
+    [JsonIgnore]
     public List<VehicleDetails> VehicleDetails { get; set; }        
 }

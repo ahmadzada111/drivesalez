@@ -12,9 +12,10 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
 using DriveSalez.Application.AutoMapper;
+using DriveSalez.Application.Providers;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
-using DriveSalez.Persistence.Quartz.Setups;
+using DriveSalez.SharedKernel.Settings;
 using Quartz;
 
 namespace DriveSalez.WebApi.StartupExtensions;
@@ -23,6 +24,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
     {
+        services.AddScoped<IBlobContainerClientProvider, BlobContainerClientProvider>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IModeratorService, ModeratorService>();
         services.AddScoped<IModeratorRepository, ModeratorRepository>();
@@ -143,16 +145,18 @@ public static class ServiceCollectionExtensions
         })
         .AddJwtBearer(options =>
         {
+            var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+            
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidIssuer = configuration["JWT:Issuer"],
-                ValidAudience = configuration["JWT:Audience"],
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
         });
 
@@ -195,12 +199,12 @@ public static class ServiceCollectionExtensions
             options.WaitForJobsToComplete = true;
         });
 
-        services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
-        services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
-        services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
-        services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
-        services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
-        services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
+        // services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
+        // services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
+        // services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
+        // services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
+        // services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
+        // services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
         
         return services;
     }

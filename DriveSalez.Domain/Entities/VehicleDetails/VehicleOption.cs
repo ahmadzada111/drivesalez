@@ -8,5 +8,6 @@ public class VehicleOption
 
     public string Option { get; set; }
     
+    [JsonIgnore]
     public List<VehicleDetails> Details { get; set; }
 }

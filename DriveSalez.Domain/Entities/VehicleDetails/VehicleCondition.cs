@@ -10,5 +10,6 @@ public class VehicleCondition
         
     public string Description { get; set; }
     
+    [JsonIgnore]
     public List<VehicleDetails> VehicleDetails { get; set; }
 }

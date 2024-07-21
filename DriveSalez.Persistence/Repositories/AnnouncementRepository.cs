@@ -6,9 +6,9 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
-using DriveSalez.Domain.Pagination;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.Persistence.DbContext;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -268,13 +268,13 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<IEnumerable<Announcement>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters)
+    public async Task<PaginatedList<Announcement>> GetAllPremiumAnnouncementsFromDbAsync(PagingParameters pagingParameters)
     {
         try
         {
             _logger.LogInformation($"Getting all premium announcements from DB");
 
-            var waitingAnnouncements = await _dbContext.Announcements
+            var announcements = await _dbContext.Announcements
                 .AsNoTracking()
                 .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
                 .Include(x => x.Owner)
@@ -305,13 +305,20 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
                 .Take(pagingParameters.PageSize)
                 .ToListAsync();
-
-            if (waitingAnnouncements.IsNullOrEmpty())
+            
+            var totalCount = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
+                .CountAsync();
+            
+            if (announcements.IsNullOrEmpty())
             {
-                return Enumerable.Empty<Announcement>();
+                return new PaginatedList<Announcement>();
             }
 
-            return waitingAnnouncements; 
+            var paginatedAnnouncements = PaginatedList<Announcement>.Create(announcements, pagingParameters.PageNumber, pagingParameters.PageSize, totalCount);
+
+            return paginatedAnnouncements;
         }
         catch (Exception e) 
         {
@@ -320,13 +327,13 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<IEnumerable<Announcement>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState)
+    public async Task<PaginatedList<Announcement>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState)
     {
         try
         {
             _logger.LogInformation($"Getting waiting announcements from DB");
 
-            var waitingAnnouncements = await _dbContext.Announcements
+            var announcements = await _dbContext.Announcements
                 .AsNoTracking()
                 .Where(on => on.AnnouncementState == announcementState)
                 .Include(x => x.Owner)
@@ -358,12 +365,19 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Take(parameter.PageSize)
                 .ToListAsync();
 
-            if (waitingAnnouncements.IsNullOrEmpty())
+            var totalCount = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(on => on.AnnouncementState == announcementState)
+                .CountAsync();
+
+            if (announcements.IsNullOrEmpty())
             {
-                return Enumerable.Empty<Announcement>();
+                return new PaginatedList<Announcement>();
             }
 
-            return waitingAnnouncements;
+            var paginatedAnnouncements = PaginatedList<Announcement>.Create(announcements, parameter.PageNumber, parameter.PageSize, totalCount);
+
+            return paginatedAnnouncements;
         }
         catch (Exception e)
         {
@@ -372,81 +386,68 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
         
-    public async Task<Tuple<IEnumerable<Announcement>, IEnumerable<Announcement>>> GetAllActiveAnnouncementsFromDbAsync(PagingParameters parameter)
+    private IQueryable<Announcement> BuildAnnouncementsQuery(bool isPremium = false)
+    {
+        var query = _dbContext.Announcements
+            .AsNoTracking()
+            .Where(on => on.AnnouncementState == AnnouncementState.Active);
+
+        if (isPremium)
+        {
+            query = query.Where(on => on.IsPremium);
+        }
+
+        query = query
+            .Include(x => x.Owner)
+            .Include(x => x.Owner.PhoneNumbers)
+            .Include(x => x.Vehicle)
+            .Include(x => x.Currency)
+            .Include(x => x.ImageUrls)
+            .Include(x => x.Vehicle.Year)
+            .Include(x => x.Vehicle.Make)
+            .Include(x => x.Vehicle.Model)
+            .Include(x => x.Vehicle.FuelType)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.BodyType)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.DrivetrainType)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.GearboxType)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.Color)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.MarketVersion)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.Options)
+            .Include(x => x.Vehicle.VehicleDetails)
+            .ThenInclude(x => x.Conditions)
+            .Include(x => x.Country)
+            .Include(x => x.City);
+
+        return query;
+    }
+
+    public async Task<Tuple<IEnumerable<Announcement>, PaginatedList<Announcement>>> GetAllActiveAnnouncementsFromDbAsync(PagingParameters parameter)
     {
         try
         {
-            _logger.LogInformation($"Getting announcements from DB");
-
-            var premiumAnnouncements = await _dbContext.Announcements
-                .AsNoTracking()
-                .Where(on => on.AnnouncementState == AnnouncementState.Active && on.IsPremium)
-                .Include(x => x.Owner)
-                .Include(x => x.Owner.PhoneNumbers)
-                .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
-                .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
-                .Include(x => x.Vehicle.Make)
-                .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Conditions)
-                .Include(x => x.Country)
-                .Include(x => x.City)
-                .Take(8)
-                .ToListAsync();
-
-            var allAnnouncements = await _dbContext.Announcements
-                .AsNoTracking()
-                .Where(on => on.AnnouncementState == AnnouncementState.Active)
-                .Include(x => x.Owner)
-                .Include(x => x.Owner.PhoneNumbers)
-                .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
-                .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
-                .Include(x => x.Vehicle.Make)
-                .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
-                .ThenInclude(x => x.Conditions)
-                .Include(x => x.Country)
-                .Include(x => x.City)
+            _logger.LogInformation("Getting announcements from DB");
+            
+            var allPremiumAnnouncements = await BuildAnnouncementsQuery(true).ToListAsync();
+            
+            var random = new Random();
+            var premiumAnnouncements = allPremiumAnnouncements.OrderBy(x => random.Next()).Take(8).ToList();
+            
+            var nonPremiumQuery = BuildAnnouncementsQuery(false);
+            var totalNonPremiumCount = await nonPremiumQuery.CountAsync();
+            var nonPremiumAnnouncements = await nonPremiumQuery
                 .Skip((parameter.PageNumber - 1) * parameter.PageSize)
                 .Take(parameter.PageSize)
                 .ToListAsync();
-                
-            if (premiumAnnouncements.IsNullOrEmpty() && allAnnouncements.IsNullOrEmpty())
-            {
-                return Tuple.Create(Enumerable.Empty<Announcement>(), Enumerable.Empty<Announcement>());
-            }
-                
-            return Tuple.Create<IEnumerable<Announcement>, IEnumerable<Announcement>>(allAnnouncements, premiumAnnouncements);
+
+            var paginatedNonPremiumAnnouncements = PaginatedList<Announcement>.Create(nonPremiumAnnouncements, parameter.PageNumber, parameter.PageSize, totalNonPremiumCount);
+
+            return Tuple.Create<IEnumerable<Announcement>, PaginatedList<Announcement>>(premiumAnnouncements, paginatedNonPremiumAnnouncements);
         }
         catch (Exception e)
         {
@@ -454,7 +455,7 @@ public class AnnouncementRepository : IAnnouncementRepository
             throw;
         }
     }
-
+    
     public async Task<Announcement> UpdateAnnouncementInDbAsync(ApplicationUser user, Guid announcementId, Announcement request)
     {
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -639,7 +640,7 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<IEnumerable<Announcement>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user,
+    public async Task<PaginatedList<Announcement>> GetAnnouncementsByStatesAndByUserFromDbAsync(ApplicationUser user,
         PagingParameters pagingParameters, AnnouncementState announcementState)
     {
         try
@@ -679,12 +680,19 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Take(pagingParameters.PageSize)
                 .ToListAsync();
 
+            var totalCount = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(x => x.Owner.Id == user.Id && x.AnnouncementState == announcementState)
+                .CountAsync();
+                
             if (announcements.IsNullOrEmpty())
             {
-                return Enumerable.Empty<Announcement>();
+                return new PaginatedList<Announcement>();
             }
 
-            return announcements;
+            var paginatedAnnouncements = PaginatedList<Announcement>.Create(announcements, pagingParameters.PageNumber, pagingParameters.PageSize, totalCount);
+
+            return paginatedAnnouncements;
         }
         catch (Exception e)
         {
@@ -693,16 +701,17 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<IEnumerable<Announcement>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
+    public async Task<PaginatedList<Announcement>> GetAllAnnouncementsByUserFromDbAsync(ApplicationUser user,
         PagingParameters pagingParameters)
     {
         try
         {
             _logger.LogInformation($"Getting all announcements by user ID {user.Id} from DB");
 
-            var announcement = await _dbContext.Announcements
+            var announcements = await _dbContext.Announcements
                 .AsNoTracking()
-                .Where(x => x.Owner.Id == user.Id)             .Include(x => x.Owner)
+                .Where(x => x.Owner.Id == user.Id)             
+                .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
                 .Include(x => x.Currency)
@@ -732,12 +741,19 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Take(pagingParameters.PageSize)
                 .ToListAsync();
 
-            if (announcement.IsNullOrEmpty())
+            var totalCount = await _dbContext.Announcements
+                .AsNoTracking()
+                .Where(x => x.Owner.Id == user.Id)
+                .CountAsync();
+            
+            if (announcements.IsNullOrEmpty())
             {
-                return Enumerable.Empty<Announcement>();
+                return new PaginatedList<Announcement>();
             }
 
-            return announcement;
+            var paginatedAnnouncements = PaginatedList<Announcement>.Create(announcements, pagingParameters.PageNumber, pagingParameters.PageSize, totalCount);
+
+            return paginatedAnnouncements;
         }
         catch (Exception e)
         {
@@ -746,7 +762,7 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<IEnumerable<Announcement>> GetFilteredAnnouncementsFromDbAsync(
+    public async Task<PaginatedList<Announcement>> GetFilteredAnnouncementsFromDbAsync(
         FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         try
@@ -785,202 +801,12 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Skip((pagingParameters.PageNumber - 1) * pagingParameters.PageSize)
                 .Take(pagingParameters.PageSize);
 
-            if (filterParameters.FromYearId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Vehicle.Year.Id >= filterParameters.FromYearId);
-            }
-
-            if (filterParameters.ToYearId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Vehicle.Year.Id <= filterParameters.ToYearId);
-            }
-
-            if (filterParameters.MakeId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
-            }
-
-            if (filterParameters.IsBrandNew != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Vehicle.IsBrandNew == filterParameters.IsBrandNew);
-            }
-
-            if (filterParameters.MakeId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Vehicle.Make.Id == filterParameters.MakeId);
-            }
-
-            if (filterParameters.FromHorsePower != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x =>
-                    x.Vehicle.VehicleDetails.HorsePower >= filterParameters.FromHorsePower);
-            }
-
-            if (filterParameters.ToHorsePower != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x =>
-                    x.Vehicle.VehicleDetails.HorsePower <= filterParameters.ToHorsePower);
-            }
-
-            if (filterParameters.SeatCount != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x =>
-                        x.Vehicle.VehicleDetails.SeatCount == filterParameters.SeatCount);
-            }
-
-            if (filterParameters.FromEngineVolume != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x =>
-                    x.Vehicle.VehicleDetails.EngineVolume >= filterParameters.FromEngineVolume);
-            }
-
-            if (filterParameters.ToEngineVolume != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x =>
-                    x.Vehicle.VehicleDetails.EngineVolume <= filterParameters.ToEngineVolume);
-            }
-
-            if (filterParameters.FromMileage != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x =>
-                        x.Vehicle.VehicleDetails.MileAge >= filterParameters.FromMileage);
-            }
-
-            if (filterParameters.ToMileage != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x =>
-                        x.Vehicle.VehicleDetails.MileAge <= filterParameters.ToMileage);
-            }
-
-            if (filterParameters.MileageType != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x =>
-                    x.Vehicle.VehicleDetails.MileageType == filterParameters.MileageType);
-            }
-
-            if (filterParameters.Barter != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x => x.Barter == filterParameters.Barter);
-            }
-
-            if (filterParameters.OnCredit != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x => x.OnCredit == filterParameters.OnCredit);
-            }
-
-            if (filterParameters.FromPrice != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x => x.Price >= filterParameters.FromPrice);
-            }
-
-            if (filterParameters.ToPrice != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x => x.Price <= filterParameters.ToPrice);
-            }
-
-            if (filterParameters.OnCredit != null)
-            {
-                filteredAnnouncements = filteredAnnouncements.Where(x => x.OnCredit == filterParameters.OnCredit);
-            }
-
-            if (filterParameters.CurrencyId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Currency.Id == filterParameters.CurrencyId);
-            }
-
-            if (filterParameters.CountryId != null)
-            {
-                filteredAnnouncements =
-                    filteredAnnouncements.Where(x => x.Country.Id == filterParameters.CountryId);
-            }
-
-            if (filterParameters.ModelsIds != null && filterParameters.ModelsIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.ModelsIds.Contains(x.Vehicle.Model.Id));
-            }
-
-            if (filterParameters.FuelTypesIds != null && filterParameters.FuelTypesIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.FuelTypesIds.Contains(x.Vehicle.FuelType.Id));
-            }
-
-            if (filterParameters.BodyTypesIds != null && filterParameters.BodyTypesIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.BodyTypesIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id));
-            }
-
-            if (filterParameters.ColorsIds != null && filterParameters.ColorsIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.ColorsIds.Contains(x.Vehicle.VehicleDetails.BodyType.Id));
-            }
-
-            if (filterParameters.GearboxTypesIds != null && filterParameters.GearboxTypesIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.GearboxTypesIds.Contains(x.Vehicle.VehicleDetails.GearboxType.Id));
-            }
-
-            if (filterParameters.DriveTrainTypesIds != null && filterParameters.DriveTrainTypesIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(
-                        x => filterParameters.DriveTrainTypesIds.Contains(
-                            x.Vehicle.VehicleDetails.DrivetrainType.Id));
-            }
-
-            if (filterParameters.MarketVersionsIds != null && filterParameters.MarketVersionsIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.MarketVersionsIds.Contains(x.Vehicle.VehicleDetails.MarketVersion
-                        .Id));
-            }
-
-            if (filterParameters.CitiesIds != null && filterParameters.CitiesIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => filterParameters.CitiesIds.Contains(x.City.Id));
-            }
-
-            if (filterParameters.OptionsIds != null && filterParameters.OptionsIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => x.Vehicle.VehicleDetails.Options
-                        .All(option => filterParameters.OptionsIds.Contains(option.Id)));
-            }
-
-            if (filterParameters.ConditionsIds != null && filterParameters.ConditionsIds.Any())
-            {
-                filteredAnnouncements = filteredAnnouncements
-                    .Where(x => x.Vehicle.VehicleDetails.Conditions
-                        .All(condition => filterParameters.ConditionsIds.Contains(condition.Id)));
-            }
-
-            await filteredAnnouncements.ToListAsync();
-
-            if (filteredAnnouncements.IsNullOrEmpty())
-            {
-                return Enumerable.Empty<Announcement>();
-            }
-
-            return filteredAnnouncements;
         }
-        catch (Exception e)
+        catch
         {
-            _logger.LogError(e, $"Error getting filtered announcements");
-            throw;
+            throw new NotImplementedException();
         }
+
+        return null;
     }
 }
