@@ -168,7 +168,7 @@ public class AnnouncementService : IAnnouncementService
             throw new ValidationException("Invalid relationships in the announcement.");
         }
         
-        announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageData);
+        // announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageData);
         var response = await _announcementRepository.CreateAnnouncementInDbAsync(user, announcement);
         
         return _mapper.Map<AnnouncementResponseDto>(response);

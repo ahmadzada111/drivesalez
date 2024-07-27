@@ -1,6 +1,23 @@
+using System.Linq.Expressions;
+using DriveSalez.Domain.Entities;
+using DriveSalez.Persistence.Abstractions;
+
 namespace DriveSalez.Persistence.Specifications;
 
-public class AnnouncementByEngineVolumeRangeSpecification
+public class AnnouncementByEngineVolumeRangeSpecification : ISpecification<Announcement>
 {
-    
+    private readonly int? _fromVolume;
+    private readonly int? _toVolume;
+
+    public AnnouncementByEngineVolumeRangeSpecification(int? fromVolume, int? toVolume)
+    {
+        _fromVolume = fromVolume;
+        _toVolume = toVolume;
+    }
+
+    public Expression<Func<Announcement, bool>> ToExpression()
+    {
+        return a => (!_fromVolume.HasValue || a.Vehicle.VehicleDetails.EngineVolume >= _fromVolume)
+                    && (!_toVolume.HasValue || a.Vehicle.VehicleDetails.EngineVolume <= _toVolume);
+    }
 }

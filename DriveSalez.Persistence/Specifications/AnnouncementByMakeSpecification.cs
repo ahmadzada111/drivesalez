@@ -1,14 +1,20 @@
+using System.Linq.Expressions;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Persistence.Abstractions;
 
 namespace DriveSalez.Persistence.Specifications;
 
-public class AnnounecementByMakeSpecification : ISpecification<Announcement>
+public class AnnouncementByMakeSpecification : ISpecification<Announcement>
 {
-    private readonly int? makeId;
-    
-    public bool IsSatisfied(Announcement item)
+    private readonly int? _makeId;
+
+    public AnnouncementByMakeSpecification(int? makeId)
     {
-        return !makeId.HasValue || item.Vehicle.Make.Id == makeId;
+        _makeId = makeId;
+    }
+
+    public Expression<Func<Announcement, bool>> ToExpression()
+    {
+        return a => !_makeId.HasValue || a.Vehicle.Make.Id == _makeId;
     }
 }

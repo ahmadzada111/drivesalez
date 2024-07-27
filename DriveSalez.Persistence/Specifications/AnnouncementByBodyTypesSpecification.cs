@@ -6,16 +6,16 @@ namespace DriveSalez.Persistence.Specifications;
 
 public class AnnouncementByBodyTypesSpecification : ISpecification<Announcement>
 {
-    private readonly List<int>? _bodyTypeIds;
+    private readonly List<int>? _bodyTypesIds;
 
-    public AnnouncementByBodyTypesSpecification(List<int>? bodyTypeIds)
+    public AnnouncementByBodyTypesSpecification(List<int>? bodyTypesIds)
     {
-        _bodyTypeIds = bodyTypeIds;
+        _bodyTypesIds = bodyTypesIds;
     }
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => _bodyTypeIds != null ||
-                    _bodyTypeIds.Contains(a.Vehicle.VehicleDetails.BodyType.Id);
+        return a => _bodyTypesIds != null ||
+                    _bodyTypesIds.Contains(a.Vehicle.VehicleDetails.BodyType.Id);
     }
 }

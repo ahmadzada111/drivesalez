@@ -1,6 +1,5 @@
 ﻿using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

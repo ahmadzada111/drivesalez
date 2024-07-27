@@ -2,7 +2,7 @@
 using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.DTO.AdminDTO;
 using DriveSalez.Application.ServiceContracts;
-using DriveSalez.Domain.Exceptions;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -335,17 +335,17 @@ public class AdminController : Controller
     }
     
     [HttpGet("get-all-moderators")]
-    public async Task<ActionResult> GetAllModerators()
+    public async Task<ActionResult> GetAllModerators(PagingParameters pagingParameters)
     {
-        var result = await _adminService.GetAllModeratorsAsync();
-        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
+        var result = await _adminService.GetAllModeratorsAsync(pagingParameters);
+        return !result.Items.IsNullOrEmpty() ? Ok(result) : BadRequest();
     }
 
     [HttpGet("get-all-users")]
-    public async Task<ActionResult> GetAllUsers()
+    public async Task<ActionResult> GetAllUsers(PagingParameters pagingParameters)
     {
-        var result = await _adminService.GetAllUsers();
-        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
+        var result = await _adminService.GetAllUsers(pagingParameters);
+        return !result.Items.IsNullOrEmpty() ? Ok(result) : BadRequest();
     }
 
     [HttpPost("send-mail-to-user")]

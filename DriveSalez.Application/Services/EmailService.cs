@@ -5,6 +5,7 @@ using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace DriveSalez.Application.Services;
 
@@ -13,9 +14,9 @@ public class EmailService : IEmailService
     private readonly EmailSettings _emailSettings;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public EmailService(EmailSettings emailSettings, UserManager<ApplicationUser> userManager)
+    public EmailService(IOptions<EmailSettings> emailSettings, UserManager<ApplicationUser> userManager)
     {
-        _emailSettings = emailSettings;
+        _emailSettings = emailSettings.Value;
         _userManager = userManager;
     }
     

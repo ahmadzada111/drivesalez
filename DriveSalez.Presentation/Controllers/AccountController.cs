@@ -1,5 +1,4 @@
-﻿using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
+﻿using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

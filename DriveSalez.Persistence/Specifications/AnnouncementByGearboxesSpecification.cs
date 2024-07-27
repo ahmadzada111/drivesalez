@@ -6,16 +6,16 @@ namespace DriveSalez.Persistence.Specifications;
 
 public class AnnouncementByGearboxesSpecification : ISpecification<Announcement>
 {
-    private readonly List<int>? _gearBoxIds;
+    private readonly List<int>? _gearBoxesIds;
 
-    public AnnouncementByGearboxesSpecification(List<int>? gearBoxIds)
+    public AnnouncementByGearboxesSpecification(List<int>? gearBoxesIds)
     {
-        _gearBoxIds = gearBoxIds;
+        _gearBoxesIds = gearBoxesIds;
     }
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => _gearBoxIds == null 
-                    || _gearBoxIds.Contains(a.Vehicle.VehicleDetails.GearboxType.Id);
+        return a => _gearBoxesIds == null 
+                    || _gearBoxesIds.Contains(a.Vehicle.VehicleDetails.GearboxType.Id);
     }
 }

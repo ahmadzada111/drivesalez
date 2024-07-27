@@ -3,6 +3,7 @@ using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
+using DriveSalez.SharedKernel.Pagination;
 
 namespace DriveSalez.Application.ServiceContracts;
 
@@ -94,11 +95,11 @@ public interface IAdminService
         
     Task<RegisterModeratorResponseDto?> AddModeratorAsync(RegisterModeratorDto registerDto);
         
-    Task<IEnumerable<GetModeratorDto>> GetAllModeratorsAsync();
+    Task<PaginatedList<GetModeratorDto>> GetAllModeratorsAsync(PagingParameters pagingParameters);
 
     Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId);
 
-    Task<IEnumerable<GetUserDto>> GetAllUsers();
+    Task<PaginatedList<GetUserDto>> GetAllUsers(PagingParameters pagingParameters);
 
     Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body);
 

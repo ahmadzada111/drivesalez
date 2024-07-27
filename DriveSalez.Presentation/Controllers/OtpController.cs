@@ -1,7 +1,5 @@
-using DriveSalez.Application.DTO;
 using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
-using DriveSalez.Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -32,7 +30,7 @@ public class OtpController : Controller
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        if (_cache.TryGetValue(email, out string cachedOtp))
+        if (_cache.TryGetValue(email, out string? cachedOtp))
         {
             _cache.Remove(email);    
         }

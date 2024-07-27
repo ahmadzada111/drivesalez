@@ -9,6 +9,7 @@ using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -824,23 +825,20 @@ public class AdminService : IAdminService
         return null;
     }
 
-    public async Task<IEnumerable<GetModeratorDto>> GetAllModeratorsAsync()
+    public async Task<PaginatedList<GetModeratorDto>> GetAllModeratorsAsync(PagingParameters pagingParameters)
     {
         var moderators = await _userManager.GetUsersInRoleAsync(UserType.Moderator.ToString());
-        List<GetModeratorDto> result = new List<GetModeratorDto>();
-            
-        foreach (var moderator in moderators)
-        {
-            result.Add(new GetModeratorDto()
-            {
-                Id = moderator.Id,
-                Name = moderator.FirstName ?? string.Empty,
-                Surname = moderator.LastName ?? string.Empty,
-                Email = moderator.UserName
-            });
-        }
 
-        return result;
+        var result = _mapper.Map<List<GetModeratorDto>>(moderators);
+        
+        result = result
+            .Skip((pagingParameters.PageIndex - 1) * pagingParameters.PageSize)
+            .Take(pagingParameters.PageSize)
+            .ToList();
+
+        var totalCount = result.Count();
+        
+        return new PaginatedList<GetModeratorDto>(result, pagingParameters.PageIndex, pagingParameters.PageSize, totalCount);
     }
 
     public async Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId)
@@ -856,7 +854,7 @@ public class AdminService : IAdminService
         return _mapper.Map<GetModeratorDto>(response);
     }
 
-    public async Task<IEnumerable<GetUserDto>> GetAllUsers()
+    public async Task<PaginatedList<GetUserDto>> GetAllUsers(PagingParameters pagingParameters)
     {
         var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
 
@@ -865,8 +863,8 @@ public class AdminService : IAdminService
             throw new UserNotAuthorizedException("User is not authorized!");
         }
 
-        var response = await _adminRepository.GetAllUsersFromDbAsync();
-        return _mapper.Map<IEnumerable<GetUserDto>>(response);
+        var response = await _adminRepository.GetAllUsersFromDbAsync(pagingParameters);
+        return _mapper.Map<PaginatedList<GetUserDto>>(response);
     }
 
     public async Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body)

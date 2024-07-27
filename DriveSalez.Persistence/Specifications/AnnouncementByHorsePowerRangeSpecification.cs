@@ -4,12 +4,12 @@ using DriveSalez.Persistence.Abstractions;
 
 namespace DriveSalez.Persistence.Specifications;
 
-public class AnnouncementByHorsePowerSpecification : ISpecification<Announcement>
+public class AnnouncementByHorsePowerRangeSpecification : ISpecification<Announcement>
 {
     private readonly int? _fromHorsePower;
     private readonly int? _toHorsePower;
 
-    public AnnouncementByHorsePowerSpecification(int? fromHorsePower, int? toHorsePower)
+    public AnnouncementByHorsePowerRangeSpecification(int? fromHorsePower, int? toHorsePower)
     {
         _fromHorsePower = fromHorsePower;
         _toHorsePower = toHorsePower;
@@ -17,6 +17,7 @@ public class AnnouncementByHorsePowerSpecification : ISpecification<Announcement
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        
+        return a => (!_fromHorsePower.HasValue || a.Vehicle.VehicleDetails.HorsePower >= _fromHorsePower)
+                    && (!_toHorsePower.HasValue || a.Vehicle.VehicleDetails.HorsePower <= _toHorsePower);
     }
 }

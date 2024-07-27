@@ -8,10 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
-      <PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
-      <PackageReference Include="Quartz.AspNetCore" Version="3.8.1" />
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.21.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
     </ItemGroup>
 
     <ItemGroup>

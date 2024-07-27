@@ -6,6 +6,7 @@ using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.Persistence.DbContext;
+using DriveSalez.SharedKernel.Pagination;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -1263,13 +1264,13 @@ public class AdminRepository : IAdminRepository
         throw new InvalidOperationException("Object wasn't deleted");
     }
 
-    public async Task<IEnumerable<ApplicationUser>> GetAllUsersFromDbAsync()
+    public async Task<PaginatedList<ApplicationUser>> GetAllUsersFromDbAsync(PagingParameters pagingParameters)
     {
         try
         {
             _logger.LogError($"Getting all users from db");
 
-            var users = await _dbContext.Users
+            var query = _dbContext.Users
                 .Where(x => x.EmailConfirmed)
                 .Join(_dbContext.UserRoles,
                     user => user.Id,
@@ -1279,17 +1280,25 @@ public class AdminRepository : IAdminRepository
                         User = user, UserRole = userRole
                     })
                 .Where(joined => !_dbContext.Roles
-                    .Any(r => r.Id == joined.UserRole.RoleId && (r.Name == UserType.Admin.ToString() || r.Name == UserType.Moderator.ToString())))
+                    .Any(r => r.Id == joined.UserRole.RoleId &&
+                              (r.Name == UserType.Admin.ToString() || r.Name == UserType.Moderator.ToString())))
                 .Select(joined => joined.User)
-                .Include(u => u.PhoneNumbers)
-                .ToListAsync();
-                
+                .Include(u => u.PhoneNumbers);
+            
+            var totalCount = await query.CountAsync();
+            var users = await query
+                    .Skip((pagingParameters.PageIndex - 1) * pagingParameters.PageSize)
+                    .Take(pagingParameters.PageSize)
+                    .ToListAsync();
+            
             if (users.IsNullOrEmpty())
             {
-                return Enumerable.Empty<ApplicationUser>();
+                return new PaginatedList<ApplicationUser>();
             }
 
-            return users;
+            var paginatedUsers = PaginatedList<ApplicationUser>.Create(users, pagingParameters.PageIndex, pagingParameters.PageSize, totalCount);
+
+            return paginatedUsers;
         }
         catch (Exception e)
         {

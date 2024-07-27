@@ -2,6 +2,7 @@
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.Pagination;
 
 namespace DriveSalez.Domain.RepositoryContracts;
 
@@ -95,7 +96,7 @@ public interface IAdminRepository
 
     Task<ApplicationUser?> DeleteModeratorFromDbAsync(Guid moderatorId);
 
-    Task<IEnumerable<ApplicationUser>> GetAllUsersFromDbAsync();
+    Task<PaginatedList<ApplicationUser>> GetAllUsersFromDbAsync(PagingParameters pagingParameters);
 
     Task<bool> BanUserInDbAsync(Guid userId);
         

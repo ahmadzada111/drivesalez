@@ -9,6 +9,7 @@ using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace DriveSalez.Application.Services;
 
@@ -19,12 +20,13 @@ public class JwtService : IJwtService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
     
-    public JwtService(JwtSettings jwtSettings, RefreshTokenSettings _refreshTokenSettings, 
+    public JwtService(IOptions<JwtSettings> jwtSettings, IOptions<RefreshTokenSettings> refreshTokenSettings, 
         UserManager<ApplicationUser> userManager, IMapper mapper)
     {
-        _jwtSettings = jwtSettings;
+        _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
         _mapper = mapper;
+        _refreshTokenSettings = refreshTokenSettings.Value;
     }
 
     public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
@@ -36,10 +38,10 @@ public class JwtService : IJwtService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, role[0])
+            new Claim(ClaimTypes.Role, role.FirstOrDefault()?.ToString())
         };
         
         var possibleClaims = await _userManager.GetClaimsAsync(user);
@@ -55,7 +57,7 @@ public class JwtService : IJwtService
             claims,
             expires: expiration,
             signingCredentials: signingCredentials
-            );
+        );
 
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
         string response = tokenHandler.WriteToken(token);

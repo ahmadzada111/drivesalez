@@ -1,10 +1,8 @@
-using DriveSalez.Application.DTO;
 using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.DTO.AnnoucementDTO;
 using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Enums;
-using DriveSalez.Domain.Exceptions;
 using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -174,11 +172,11 @@ public class AnnouncementController : Controller
     
     [AllowAnonymous]
     [HttpGet("filter-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements([FromQuery] FilterParameters filterParameters, PagingParameters pagingParameters)
+    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements([FromQuery] FilterAnnouncementsRequestDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetFilteredAnnouncementsAsync(filterParameters, pagingParameters);
+        var response = await _announcementService.GetFilteredAnnouncementsAsync(request.FilterParameters, request.PagingParameters);
         return Ok(response);
     }
     
