@@ -24,6 +24,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
     {
+        services.AddSingleton<JwtSettings>();
+        services.AddSingleton<EmailSettings>();
+        services.AddSingleton<RefreshTokenSettings>();
         services.AddScoped<IBlobContainerClientProvider, BlobContainerClientProvider>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IModeratorService, ModeratorService>();
@@ -137,6 +140,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -145,8 +150,6 @@ public static class ServiceCollectionExtensions
         })
         .AddJwtBearer(options =>
         {
-            var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
-            
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,

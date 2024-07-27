@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using DriveSalez.Presentation;
 using DriveSalez.SharedKernel.Settings;
-using DriveSalez.WebApi.Middleware;
+using DriveSalez.WebApi.ExceptionHandler;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 
@@ -12,20 +12,17 @@ public static class ProgramConfigurationExtensions
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables(); 
-
+        
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        
         if (builder.Environment.IsDevelopment())
         {
             builder.Configuration.AddUserSecrets<Program>();
         }
         
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-        builder.Services.AddSingleton<JwtSettings>();
-        
         builder.Services.Configure<RefreshTokenSettings>(builder.Configuration.GetSection("RefreshTokenSettings"));
-        builder.Services.AddSingleton<RefreshTokenSettings>();
-
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-        builder.Services.AddSingleton<EmailSettings>();
     }
 
     public static void RegisterServices(this WebApplicationBuilder builder)

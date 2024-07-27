@@ -4,7 +4,7 @@ using System.Text.Json;
 using DriveSalez.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace DriveSalez.WebApi.Middleware;
+namespace DriveSalez.WebApi.ExceptionHandler;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {
