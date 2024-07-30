@@ -1,8 +1,8 @@
 namespace DriveSalez.Application.DTO.AdminDTO;
 
-public record UpdateVehicleOptionDto
+public record UpdateOptionDto
 {
-    public int VehicleOptionId { get; init; }
+    public int OptionId { get; init; }
     
     public string NewVehicleOption { get; init; }
 }

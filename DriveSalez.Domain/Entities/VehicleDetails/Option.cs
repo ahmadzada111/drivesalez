@@ -2,12 +2,12 @@
 
 namespace DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
-public class VehicleOption
+public class Option
 {
     public int Id { get; set; }
 
-    public string Option { get; set; }
+    public required string Title { get; set; }
     
     [JsonIgnore]
-    public List<VehicleDetails> Details { get; set; }
+    public List<VehicleDetail> VehicleDetails { get; } = [];
 }

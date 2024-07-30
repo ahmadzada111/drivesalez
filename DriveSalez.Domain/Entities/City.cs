@@ -1,15 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace DriveSalez.Domain.Entities;
 
 public class City
 {
-    [Key]
     public int Id { get; set; } 
 
-    public string CityName { get; set; }
-        
+    public string Name { get; set; }
+
+    public int CountryId { get; set; }    
+
     [JsonIgnore]
-    public Country? Country { get; set; }    
+    public Country Country { get; set; }    
+
+    [JsonIgnore]
+    public List<Announcement> Announcements { get; } = [];
 }

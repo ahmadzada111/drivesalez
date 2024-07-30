@@ -32,72 +32,78 @@ public class AnnouncementRepository : IAnnouncementRepository
 
     public async Task<ManufactureYear> GetManufactureYearById(int id)
     {
-        return await _dbContext.ManufactureYears.FindAsync(id);
+        return await _dbContext.ManufactureYears.FindAsync(id) ?? 
+        throw new KeyNotFoundException($"Year with id {id} not found");
     }
         
     public async Task<Make> GetMakeById(int id)
     {
-        return await _dbContext.Makes.FindAsync(id);
+        return await _dbContext.Makes.FindAsync(id) ??
+        throw new KeyNotFoundException($"Make with id {id} not found");
     }
 
     public async Task<Model> GetModelById(int id)
     {
-        return await _dbContext.Models.FindAsync(id);
+        return await _dbContext.Models.FindAsync(id) ??
+        throw new KeyNotFoundException($"Model with id {id} not found");
     }
 
-    public async Task<VehicleFuelType> GetFuelTypeById(int id)
+    public async Task<FuelType> GetFuelTypeById(int id)
     {
-        return await _dbContext.VehicleFuelTypes.FindAsync(id);
+        return await _dbContext.VehicleFuelTypes.FindAsync(id) ??
+        throw new KeyNotFoundException($"Fuel type with id {id} not found");
     }
 
-    public async Task<VehicleGearboxType> GetGearboxById(int id)
+    public async Task<GearboxType> GetGearboxById(int id)
     {
-        return await _dbContext.VehicleGearboxTypes.FindAsync(id);
+        return await _dbContext.VehicleGearboxTypes.FindAsync(id) ??
+        throw new KeyNotFoundException($"Gearbox with id {id} not found");
     }
 
-    public async Task<VehicleDrivetrainType> GetDrivetrainTypeById(int id)
+    public async Task<DrivetrainType> GetDrivetrainTypeById(int id)
     {
-        return await _dbContext.VehicleDriveTrainTypes.FindAsync(id);
+        return await _dbContext.VehicleDriveTrainTypes.FindAsync(id) ??
+        throw new KeyNotFoundException($"Drivetrain with id {id} not found");
     }
 
-    public async Task<VehicleBodyType> GetBodyTypeById(int id)
+    public async Task<BodyType> GetBodyTypeById(int id)
     {
-        return await _dbContext.VehicleBodyTypes.FindAsync(id);
+        return await _dbContext.VehicleBodyTypes.FindAsync(id) ??
+        throw new KeyNotFoundException($"Body type with id {id} not found");
     }
 
-    public async Task<List<VehicleCondition>> GetConditionsByIds(List<int> ids)
+    public async Task<List<Condition>> GetConditionsByIds(List<int> ids)
     {
         return await _dbContext.VehicleDetailsConditions.Where(c => ids.Contains(c.Id)).ToListAsync();
     }
 
-    public async Task<List<VehicleOption>> GetOptionsByIds(List<int> ids)
+    public async Task<List<Option>> GetOptionsByIds(List<int> ids)
     {
         return await _dbContext.VehicleDetailsOptions.Where(o => ids.Contains(o.Id)).ToListAsync();
     }
 
-    public async Task<VehicleColor> GetColorById(int id)
+    public async Task<Color> GetColorById(int id)
     {
-        return await _dbContext.VehicleColors.FindAsync(id);
+        return await _dbContext.VehicleColors.FindAsync(id) ??
+        throw new KeyNotFoundException($"Color with id {id} not found");
     }
 
-    public async Task<VehicleMarketVersion> GetMarketVersionById(int id)
+    public async Task<MarketVersion> GetMarketVersionById(int id)
     {
-        return await _dbContext.VehicleMarketVersions.FindAsync(id);
+        return await _dbContext.VehicleMarketVersions.FindAsync(id) ??
+        throw new KeyNotFoundException($"Market version with id {id} not found");
     }
 
     public async Task<Country> GetCountryById(int id)
     {
-        return await _dbContext.Countries.FindAsync(id);
+        return await _dbContext.Countries.FindAsync(id) ?? 
+        throw new KeyNotFoundException($"Country with id {id} not found");
     }
 
     public async Task<City> GetCityById(int id)
     {
-        return await _dbContext.Cities.FindAsync(id);
-    }
-
-    public async Task<Currency> GetCurrencyById(int id)
-    {
-        return await _dbContext.Currencies.FindAsync(id);
+        return await _dbContext.Cities.FindAsync(id) ??
+        throw new KeyNotFoundException($"City with id {id} not found");
     }
 
     public async Task<Announcement> CreateAnnouncementInDbAsync(ApplicationUser user, Announcement announcement)
@@ -112,13 +118,7 @@ public class AnnouncementRepository : IAnnouncementRepository
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
                 
-            var entry = _dbContext.Entry(announcement);
-            if (entry.State == EntityState.Added)
-            {
-                return announcement;
-            }
-                
-            throw new InvalidOperationException("Failed to add announcement.");
+            return announcement;
         }
         catch (Exception ex)
         {
@@ -142,9 +142,7 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(c => c.Country)
                 .FirstOrDefaultAsync(c => c.Id == request.City.Id);
 
-            var currency = await _dbContext.Currencies.FindAsync(request.Currency.Id);
-
-            if (model?.Make.Id != request.Vehicle.Make.Id || city?.Country.Id != request.Country.Id || currency == null)
+            if (model?.Make.Id != request.Vehicle.Make.Id || city?.Country.Id != request.Country.Id)
             {
                 _logger.LogWarning("Relation check failed");
                 return false;
@@ -170,25 +168,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City)
@@ -196,7 +193,7 @@ public class AnnouncementRepository : IAnnouncementRepository
 
             if (response == null)
             {
-                _logger.LogWarning($"Announcement not found with ID: {id}");
+                _logger.LogWarning($"Announcement with ID {id} not found");
                 return null;
             }
 
@@ -219,25 +216,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City)
@@ -252,13 +248,7 @@ public class AnnouncementRepository : IAnnouncementRepository
 
             var result = _dbContext.Update(response);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return response;
         }
         catch (Exception e)
         {
@@ -279,25 +269,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City);
@@ -336,25 +325,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City);
@@ -396,25 +384,24 @@ public class AnnouncementRepository : IAnnouncementRepository
             .Include(x => x.Owner)
             .Include(x => x.Owner.PhoneNumbers)
             .Include(x => x.Vehicle)
-            .Include(x => x.Currency)
             .Include(x => x.ImageUrls)
-            .Include(x => x.Vehicle.Year)
+            .Include(x => x.Vehicle.VehicleDetail.Year)
             .Include(x => x.Vehicle.Make)
             .Include(x => x.Vehicle.Model)
-            .Include(x => x.Vehicle.FuelType)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail.FuelType)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.BodyType)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.DrivetrainType)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.GearboxType)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.Color)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.MarketVersion)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.Options)
-            .Include(x => x.Vehicle.VehicleDetails)
+            .Include(x => x.Vehicle.VehicleDetail)
             .ThenInclude(x => x.Conditions)
             .Include(x => x.Country)
             .Include(x => x.City);
@@ -464,25 +451,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City)
@@ -542,13 +528,7 @@ public class AnnouncementRepository : IAnnouncementRepository
 
             var result = _dbContext.Announcements.Update(announcement);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return announcement;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return announcement;
         }
         catch (Exception e)
         {
@@ -578,13 +558,7 @@ public class AnnouncementRepository : IAnnouncementRepository
 
             var result = _dbContext.Announcements.Update(announcement);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return _mapper.Map<Announcement>(announcement);
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return announcement;
         }
         catch (Exception e)
         {
@@ -618,14 +592,7 @@ public class AnnouncementRepository : IAnnouncementRepository
             _dbContext.ImageUrls.RemoveRange(announcement.ImageUrls);
             var response = _dbContext.Announcements.Remove(announcement);
 
-            if (response.State == EntityState.Deleted)
-            {
-                await transaction.CommitAsync();
-                await _dbContext.SaveChangesAsync();
-                return announcement;
-            }
-
-            throw new InvalidOperationException("Object wasn't deleted");
+            return announcement;
         }
         catch (Exception e)
         {
@@ -648,25 +615,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City);
@@ -708,25 +674,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                 .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City);
@@ -859,11 +824,6 @@ public class AnnouncementRepository : IAnnouncementRepository
             specs.Add(new AnnouncementByPriceRangeSpecification(filterParameters.FromPrice, filterParameters.ToPrice));
         }
 
-        if (filterParameters.CurrencyId.HasValue)
-        {
-            specs.Add(new AnnouncementByCurrencySpecification(filterParameters.CurrencyId));
-        }
-
         if (filterParameters.CountryId.HasValue)
         {
             specs.Add(new AnnouncementByCountrySpecification(filterParameters.CountryId));
@@ -890,25 +850,24 @@ public class AnnouncementRepository : IAnnouncementRepository
                 .Include(x => x.Owner)
                 .Include(x => x.Owner.PhoneNumbers)
                 .Include(x => x.Vehicle)
-                .Include(x => x.Currency)
                 .Include(x => x.ImageUrls)
-                .Include(x => x.Vehicle.Year)
+                .Include(x => x.Vehicle.VehicleDetail.Year)
                 .Include(x => x.Vehicle.Make)
                 .Include(x => x.Vehicle.Model)
-                .Include(x => x.Vehicle.FuelType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail.FuelType)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.BodyType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.DrivetrainType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.GearboxType)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.Color)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.MarketVersion)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.Options)
-                .Include(x => x.Vehicle.VehicleDetails)
+                .Include(x => x.Vehicle.VehicleDetail)
                     .ThenInclude(x => x.Conditions)
                 .Include(x => x.Country)
                 .Include(x => x.City);

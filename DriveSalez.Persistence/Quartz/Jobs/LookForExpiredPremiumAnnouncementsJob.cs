@@ -34,6 +34,12 @@ public class LookForExpiredPremiumAnnouncementsJob : IJob
 
         foreach (var announcement in announcements)
         {
+            if (string.IsNullOrWhiteSpace(announcement.Owner.Email))
+            {
+                _logger.LogWarning($"User {announcement.Owner.Id} does not have a valid email address.");
+                continue;
+            }
+            
             announcement.IsPremium = false;
 
             string subject = "Your Premium Announcement Subscription Has Expired";

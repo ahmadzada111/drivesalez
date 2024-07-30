@@ -42,13 +42,7 @@ public class ModeratorRepository : IModeratorRepository
 
             var result = _dbContext.Announcements.Update(announcement);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return announcement;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return announcement;
         }
         catch (Exception e)
         {
@@ -77,13 +71,7 @@ public class ModeratorRepository : IModeratorRepository
 
             var result = _dbContext.Announcements.Update(announcement);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return announcement;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return announcement;
         }
         catch (Exception e)
         {
@@ -112,13 +100,7 @@ public class ModeratorRepository : IModeratorRepository
 
             var result = _dbContext.Announcements.Update(announcement);
 
-            if (result.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return announcement;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return announcement;
         }
         catch (Exception e)
         {

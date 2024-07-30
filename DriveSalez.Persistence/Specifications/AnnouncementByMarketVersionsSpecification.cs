@@ -16,6 +16,6 @@ public class AnnouncementByMarketVersionsSpecification : ISpecification<Announce
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _marketVersionsIds != null
-                    || _marketVersionsIds.Contains(a.Vehicle.VehicleDetails.MarketVersion.Id);
+                    || _marketVersionsIds.Contains(a.Vehicle.VehicleDetail.MarketVersion.Id);
     }
 }

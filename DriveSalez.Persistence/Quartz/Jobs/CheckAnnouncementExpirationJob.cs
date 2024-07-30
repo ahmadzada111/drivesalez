@@ -35,6 +35,12 @@ public class CheckAnnouncementExpirationJob : IJob
         
         foreach (var announcement in expiredAnnouncements)
         {
+            if (string.IsNullOrWhiteSpace(announcement.Owner.Email))
+            {
+                _logger.LogWarning($"User {announcement.Owner.Id} does not have a valid email address.");
+                continue;
+            }
+
             announcement.AnnouncementState = AnnouncementState.Inactive;
 
             string subject = "Activate Your Expired Announcement";

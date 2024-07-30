@@ -1,4 +1,3 @@
-using DriveSalez.Application.DTO;
 using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +8,7 @@ public interface IAccountService
 {
     Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request);
 
-    Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request);
+    Task<IdentityResult> RegisterBusinessAccountAsync(RegisterBusinessAccountDto request);
 
     Task<AuthenticationResponseDto?> LoginAsync(LoginDto request);
 
@@ -26,8 +25,6 @@ public interface IAccountService
     Task LogOutAsync();
 
     Task<ApplicationUser> ChangeUserTypeToDefaultAccountAsync(ApplicationUser user);
-
-    Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user);
 
     Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
 

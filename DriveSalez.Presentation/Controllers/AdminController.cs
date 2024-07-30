@@ -40,13 +40,6 @@ public class AdminController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
     
-    [HttpPost("add-new-currency")]
-    public async Task<ActionResult> AddNewCurrency([FromBody] string currencyName)
-    {
-        var response = await _adminService.AddCurrencyAsync(currencyName);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
     [HttpPost("add-new-drivetrain")]
     public async Task<ActionResult> AddNewDrivetrainType([FromBody] string driveTrainType)
     {
@@ -132,24 +125,9 @@ public class AdminController : Controller
     }
     
     [HttpPut("update-account-limit")]
-    public async Task<ActionResult> UpdateUserLimit([FromBody] UpdateUserLimitDto request)
+    public async Task<ActionResult> UpdateUserLimit([FromBody] UpdateAccountLimitDto request)
     {
         var response = await _adminService.UpdateAccountLimitAsync(request.LimitId, request.PremiumLimit, request.RegularLimit);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-currency")]
-    public async Task<ActionResult> UpdateCurrency([FromBody] UpdateCurrencyDto request)
-    {
-        var response = await _adminService.UpdateCurrencyAsync(request.CurrencyId, request.NewCurrencyName);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-subscription")]
-    public async Task<ActionResult> UpdateSubscription([FromBody] UpdateSubscriptionDto request)
-    {
-        var response = await _adminService.UpdateSubscriptionAsync(request.SubscriptionId,
-                request.Price, request.CurrencyId);
         return response != null ? Ok(response) : BadRequest(response);
     }
     
@@ -203,16 +181,16 @@ public class AdminController : Controller
     }
     
     [HttpPut("update-condition")]
-    public async Task<ActionResult> UpdateVehicleCondition([FromBody] UpdateVehicleConditionDto request)
+    public async Task<ActionResult> UpdateVehicleCondition([FromBody] UpdateConditionDto request)
     {
-        var response = await _adminService.UpdateVehicleConditionAsync(request.VehicleConditionId, request.NewVehicleCondition, request.NewDescription);
+        var response = await _adminService.UpdateVehicleConditionAsync(request.ConditionId, request.NewCondition, request.NewDescription);
         return response != null ? Ok(response) : BadRequest(response);
     }
     
     [HttpPut("update-option")]
-    public async Task<ActionResult> UpdateVehicleOption([FromBody] UpdateVehicleOptionDto request)
+    public async Task<ActionResult> UpdateVehicleOption([FromBody] UpdateOptionDto request)
     {
-        var response = await _adminService.UpdateVehicleOptionAsync(request.VehicleOptionId, request.NewVehicleOption);
+        var response = await _adminService.UpdateVehicleOptionAsync(request.OptionId, request.NewVehicleOption);
         return response != null ? Ok(response) : BadRequest(response);
     }
     
@@ -227,13 +205,6 @@ public class AdminController : Controller
     public async Task<ActionResult> DeleteVehicleColor([FromBody] int colorId)
     {
         var response = await _adminService.DeleteVehicleColorAsync(colorId); 
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-currency")]
-    public async Task<ActionResult> DeleteCurrency([FromBody] int currencyId)
-    {
-        var response = await _adminService.DeleteCurrencyAsync(currencyId);
         return response != null ? Ok(response) : BadRequest(response);
     }
     

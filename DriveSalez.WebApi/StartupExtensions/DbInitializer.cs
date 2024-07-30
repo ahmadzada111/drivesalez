@@ -37,12 +37,6 @@ public static class DbInitializer
                 },
                 new ApplicationRole
                 {
-                    Id = Guid.Parse("4d329e8c-8953-4116-bc85-17c86e7c1602"),
-                    Name = UserType.PremiumAccount.ToString(),
-                    NormalizedName = UserType.PremiumAccount.ToString().ToUpperInvariant()
-                },
-                new ApplicationRole
-                {
                     Id = Guid.Parse("6faa4cd6-6cb6-4ec8-a3c4-8e7e4a03e373"),
                     Name = UserType.Admin.ToString(),
                     NormalizedName = UserType.Admin.ToString().ToUpperInvariant(),
@@ -69,98 +63,98 @@ public static class DbInitializer
                 RoleId = Guid.Parse("6faa4cd6-6cb6-4ec8-a3c4-8e7e4a03e373")
             });
 
-            context.VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "USA" });
-            context.VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "Azerbaijan" });
-            context.VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "Korea" });
-            context.VehicleMarketVersions.Add(new VehicleMarketVersion() { MarketVersion = "Europe" });
+            context.VehicleMarketVersions.Add(new MarketVersion() { Version = "USA" });
+            context.VehicleMarketVersions.Add(new MarketVersion() { Version = "Azerbaijan" });
+            context.VehicleMarketVersions.Add(new MarketVersion() { Version = "Korea" });
+            context.VehicleMarketVersions.Add(new MarketVersion() { Version = "Europe" });
 
-            context.VehicleColors.Add(new VehicleColor() { Color = "White" });
-            context.VehicleColors.Add(new VehicleColor() { Color = "Black" });
-            context.VehicleColors.Add(new VehicleColor() { Color = "Red" });
-            context.VehicleColors.Add(new VehicleColor() { Color = "Yellow" });
-            context.VehicleColors.Add(new VehicleColor() { Color = "Green" });
-            context.VehicleColors.Add(new VehicleColor() { Color = "Blue" });
+            context.VehicleColors.Add(new Color() { Title = "White" });
+            context.VehicleColors.Add(new Color() { Title = "Black" });
+            context.VehicleColors.Add(new Color() { Title = "Red" });
+            context.VehicleColors.Add(new Color() { Title = "Yellow" });
+            context.VehicleColors.Add(new Color() { Title = "Green" });
+            context.VehicleColors.Add(new Color() { Title = "Blue" });
 
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Sedan" });
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Coupe" });
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Cabriolet" });
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Station Wagon" });
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "SUV/Off-Road" });
-            context.VehicleBodyTypes.Add(new VehicleBodyType() { BodyType = "Pick-Up" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "Sedan" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "Coupe" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "Cabriolet" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "Station Wagon" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "SUV/Off-Road" });
+            context.VehicleBodyTypes.Add(new BodyType() { Type = "Pick-Up" });
 
-            context.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Manual" });
-            context.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Auto" });
-            context.VehicleGearboxTypes.Add(new VehicleGearboxType() { GearboxType = "Robotic" });
+            context.VehicleGearboxTypes.Add(new GearboxType() { Type = "Manual" });
+            context.VehicleGearboxTypes.Add(new GearboxType() { Type = "Auto" });
+            context.VehicleGearboxTypes.Add(new GearboxType() { Type = "Robotic" });
 
-            context.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "FWD" });
-            context.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "RWD" });
-            context.VehicleDriveTrainTypes.Add(new VehicleDrivetrainType() { DrivetrainType = "AWD" });
+            context.VehicleDriveTrainTypes.Add(new DrivetrainType() { Type = "FWD" });
+            context.VehicleDriveTrainTypes.Add(new DrivetrainType() { Type = "RWD" });
+            context.VehicleDriveTrainTypes.Add(new DrivetrainType() { Type = "AWD" });
 
-            var bmw = context.Makes.Add(new Make() { MakeName = "BMW" }).Entity;
-            var mercedes = context.Makes.Add(new Make() { MakeName = "Mercedes-Benz" }).Entity;
-            var audi = context.Makes.Add(new Make() { MakeName = "Audi" }).Entity;
-            var ford = context.Makes.Add(new Make() { MakeName = "Ford" }).Entity;
+            var bmw = context.Makes.Add(new Make() { Title = "BMW" }).Entity;
+            var mercedes = context.Makes.Add(new Make() { Title = "Mercedes-Benz" }).Entity;
+            var audi = context.Makes.Add(new Make() { Title = "Audi" }).Entity;
+            var ford = context.Makes.Add(new Make() { Title = "Ford" }).Entity;
 
-            context.Models.Add(new Model() { ModelName = "M5", Make = bmw });
-            context.Models.Add(new Model() { ModelName = "M8", Make = bmw });
-            context.Models.Add(new Model() { ModelName = "M3", Make = bmw });
-            context.Models.Add(new Model() { ModelName = "M2", Make = bmw });
+            context.Models.Add(new Model() { Title = "M5", Make = bmw });
+            context.Models.Add(new Model() { Title = "M8", Make = bmw });
+            context.Models.Add(new Model() { Title = "M3", Make = bmw });
+            context.Models.Add(new Model() { Title = "M2", Make = bmw });
 
-            context.Models.Add(new Model() { ModelName = "C200", Make = mercedes });
-            context.Models.Add(new Model() { ModelName = "C220", Make = mercedes });
-            context.Models.Add(new Model() { ModelName = "C230", Make = mercedes });
-            context.Models.Add(new Model() { ModelName = "C240", Make = mercedes });
+            context.Models.Add(new Model() { Title = "C200", Make = mercedes });
+            context.Models.Add(new Model() { Title = "C220", Make = mercedes });
+            context.Models.Add(new Model() { Title = "C230", Make = mercedes });
+            context.Models.Add(new Model() { Title = "C240", Make = mercedes });
 
-            context.Models.Add(new Model() { ModelName = "RS6", Make = audi });
-            context.Models.Add(new Model() { ModelName = "RS7", Make = audi });
-            context.Models.Add(new Model() { ModelName = "RS4", Make = audi });
-            context.Models.Add(new Model() { ModelName = "RS3", Make = audi });
+            context.Models.Add(new Model() { Title = "RS6", Make = audi });
+            context.Models.Add(new Model() { Title = "RS7", Make = audi });
+            context.Models.Add(new Model() { Title = "RS4", Make = audi });
+            context.Models.Add(new Model() { Title = "RS3", Make = audi });
 
-            context.Models.Add(new Model() { ModelName = "GT", Make = ford });
-            context.Models.Add(new Model() { ModelName = "Mondeo", Make = ford });
-            context.Models.Add(new Model() { ModelName = "F150", Make = ford });
-            context.Models.Add(new Model() { ModelName = "F500", Make = ford });
+            context.Models.Add(new Model() { Title = "GT", Make = ford });
+            context.Models.Add(new Model() { Title = "Mondeo", Make = ford });
+            context.Models.Add(new Model() { Title = "F150", Make = ford });
+            context.Models.Add(new Model() { Title = "F500", Make = ford });
 
-            context.VehicleFuelTypes.Add(new VehicleFuelType() { FuelType = "Gasoline" });
+            context.VehicleFuelTypes.Add(new FuelType() { Type = "Gasoline" });
 
-            var azerbaijan = context.Countries.Add(new Country() { CountryName = "Azerbaijan" }).Entity;
-            var poland = context.Countries.Add(new Country() { CountryName = "Poland" }).Entity;
+            var azerbaijan = context.Countries.Add(new Country() { Name = "Azerbaijan" }).Entity;
+            var poland = context.Countries.Add(new Country() { Name = "Poland" }).Entity;
             
-            context.Cities.Add(new City() { CityName = "Baku", Country = azerbaijan });
-            context.Cities.Add(new City() { CityName = "Quba", Country = azerbaijan });
-            context.Cities.Add(new City() { CityName = "Qah", Country = azerbaijan });
+            context.Cities.Add(new City() { Name = "Baku", Country = azerbaijan });
+            context.Cities.Add(new City() { Name = "Quba", Country = azerbaijan });
+            context.Cities.Add(new City() { Name = "Qah", Country = azerbaijan });
 
-            context.Cities.Add(new City() { CityName = "Warsaw", Country = poland });
-            context.Cities.Add(new City() { CityName = "Krakow", Country = poland });
-            context.Cities.Add(new City() { CityName = "Gdansk", Country = poland });
+            context.Cities.Add(new City() { Name = "Warsaw", Country = poland });
+            context.Cities.Add(new City() { Name = "Krakow", Country = poland });
+            context.Cities.Add(new City() { Name = "Gdansk", Country = poland });
             
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Alloy Wheels" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "ABS" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Sunroof" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Rain sensor" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Central locking" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Parking sensors" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Air conditioning" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Heated seats" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Leather interior" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Xenon headlights" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Rearview camera" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Side curtains" });
-            context.VehicleDetailsOptions.Add(new VehicleOption() { Option = "Seat ventilation" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Alloy Wheels" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "ABS" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Sunroof" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Rain sensor" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Central locking" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Parking sensors" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Air conditioning" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Heated seats" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Leather interior" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Xenon headlights" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Rearview camera" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Side curtains" });
+            context.VehicleDetailsOptions.Add(new Option() { Title = "Seat ventilation" });
 
-            context.VehicleDetailsConditions.Add(new VehicleCondition() 
+            context.VehicleDetailsConditions.Add(new Condition() 
             { 
-                    Condition= "Damaged", 
+                    Title= "Damaged", 
                     Description= "One or more parts have been replaced or repaired." 
             });
-            context.VehicleDetailsConditions.Add(new VehicleCondition()
+            context.VehicleDetailsConditions.Add(new Condition()
             {
-                Condition= "Painted", 
+                Title= "Painted", 
                 Description= "One or more parts have been repainted or cosmetic work has been done."
             });
-            context.VehicleDetailsConditions.Add(new VehicleCondition()
+            context.VehicleDetailsConditions.Add(new Condition()
             {
-                Condition= "Crashed or for parts", 
+                Title= "Crashed or for parts", 
                 Description= "Needs repair or is completely unfit for use."
             });
 
@@ -170,28 +164,18 @@ public static class DbInitializer
             context.ManufactureYears.Add(new ManufactureYear() { Year = 2020 });
             context.ManufactureYears.Add(new ManufactureYear() { Year = 2019 });
 
-            var azn = context.Currencies.Add(new Currency() { CurrencyName = "AZN" }).Entity;
-            context.Currencies.Add(new Currency() { CurrencyName = "EUR" });
-            context.Currencies.Add(new Currency() { CurrencyName = "USD" });
+            var subPrice = context.SubscriptionPrices.Add(new PriceDetail() { Price = 5}).Entity;
 
-            var subPrice = context.SubscriptionPrices.Add(new SubscriptionPrice() { Price = 5, Currency = azn}).Entity;
-
-            context.Subscriptions.Add(new Subscription() { SubscriptionName = "Premium Account", Price = subPrice });
-            context.Subscriptions.Add(new Subscription() { SubscriptionName = "Business Account", Price = subPrice });
-            context.AnnouncementPricing.Add(new AnnouncementTypePricing() { PricingName = "Premium Announcement", Price = subPrice });
-            context.AnnouncementPricing.Add(new AnnouncementTypePricing() { PricingName = "Regular Announcement", Price = subPrice });
+            context.Subscriptions.Add(new Subscription() { Title = "Premium Account", Price = subPrice });
+            context.Subscriptions.Add(new Subscription() { Title = "Business Account", Price = subPrice });
+            context.AnnouncementPricing.Add(new AnnouncementTypePricing() { Title = "Premium Announcement", Price = subPrice });
+            context.AnnouncementPricing.Add(new AnnouncementTypePricing() { Title = "Regular Announcement", Price = subPrice });
             
             context.AccountLimits.Add(new AccountLimit()
             {
                 PremiumAnnouncementsLimit = 0,
-                RegularAnnouncementsLimit = 1, 
+                RegularAnnouncementsLimit = 5, 
                 UserType = UserType.DefaultAccount
-            });
-            context.AccountLimits.Add(new AccountLimit()
-            {
-                PremiumAnnouncementsLimit = 10,
-                RegularAnnouncementsLimit = 30,
-                UserType = UserType.PremiumAccount
             });
             context.AccountLimits.Add(new AccountLimit()
             {

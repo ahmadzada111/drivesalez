@@ -3,12 +3,12 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
 namespace DriveSalez.Domain.Entities.VehicleParts;
 
-public class VehicleDrivetrainType
+public class BodyType
 {
     public int Id { get; set; }
 
-    public string DrivetrainType { get; set; }
+    public string Type { get; set; }
     
     [JsonIgnore]
-    public List<VehicleDetails> VehicleDetails { get; set; }        
+    public List<VehicleDetail> VehicleDetails { get; } = []; 
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Text.Json.Serialization;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 
@@ -6,8 +6,10 @@ namespace DriveSalez.Domain.Entities;
 
 public class Announcement
 {
-    [Key]
     public Guid Id { get; set; }
+
+    [JsonIgnore]
+    public int VehicleId { get; set; }
 
     public Vehicle Vehicle { get; set; }
 
@@ -19,15 +21,22 @@ public class Announcement
       
     public decimal Price { get; set; }  
 
-    public Currency Currency { get; set; }  
-
     public AnnouncementState AnnouncementState { get; set; } = AnnouncementState.Pending;
 
-    public List<ImageUrl>? ImageUrls { get; set; }
+    public List<ImageUrl> ImageUrls { get; set; }
         
+    [JsonIgnore]
+    public int CountryId { get; set; }
+    
+    [JsonIgnore]
+    public int CityId { get; set; }
+    
     public Country Country { get; set; }
 
     public City City { get; set; }
+
+    [JsonIgnore]
+    public Guid UserId {get; set;}
 
     public ApplicationUser Owner { get; set; }
         

@@ -36,15 +36,8 @@ public class AdminService : IAdminService
         _mapper = mapper;
     }
 
-    public async Task<VehicleBodyType?> AddBodyTypeAsync(string bodyType)
+    public async Task<BodyType?> AddBodyTypeAsync(string bodyType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         if (string.IsNullOrEmpty(bodyType))
         {
             return null;
@@ -52,7 +45,7 @@ public class AdminService : IAdminService
             
         var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
 
-        if (bodyTypes.Any(x => x.BodyType == bodyType))
+        if (bodyTypes.Any(x => x.Type == bodyType))
         {
             return null;
         }
@@ -61,18 +54,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleColor?> AddColorAsync(string color)
+    public async Task<Color?> AddColorAsync(string color)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var colors = await _detailsRepository.GetAllColorsFromDbAsync();
 
-        if (colors.Any(x => x.Color == color))
+        if (colors.Any(x => x.Title == color))
         {
             return null;
         }
@@ -81,58 +67,24 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<Subscription?> AddSubscriptionAsync(string subscriptionName, decimal price, int currencyId)
+    public async Task<Subscription?> AddSubscriptionAsync(string subscriptionName, decimal price)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var subscription = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
 
-        if (subscription.Any(x => x.SubscriptionName == subscriptionName))
+        if (subscription.Any(x => x.Title == subscriptionName))
         {
             return null;
         }
             
-        var response = await _adminRepository.SendNewSubscriptionToDbAsync(subscriptionName, price, currencyId);
-        return response;
-    }
-        
-    public async Task<Currency?> AddCurrencyAsync(string currencyName)
-    {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
-        var currencies = await _detailsRepository.GetAllCurrenciesFromDbAsync();
-
-        if (currencies.Any(x => x.CurrencyName == currencyName))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewCurrencyToDbAsync(currencyName);
+        var response = await _adminRepository.SendNewSubscriptionToDbAsync(subscriptionName, price);
         return response;
     }
         
     public async Task<Make?> AddMakeAsync(string make)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var makes = await _detailsRepository.GetAllMakesFromDbAsync();
 
-        if (makes.Any(x => x.MakeName == make))
+        if (makes.Any(x => x.Title == make))
         {
             return null;
         }
@@ -143,16 +95,9 @@ public class AdminService : IAdminService
 
     public async Task<Model?> AddModelAsync(int makeId, string model)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var models = await _detailsRepository.GetAllModelsFromDbAsync();
 
-        if (models.Any(x => x.ModelName == model))
+        if (models.Any(x => x.Title == model))
         {
             return null;
         }
@@ -161,18 +106,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleCondition?> AddVehicleConditionAsync(string condition, string description)
+    public async Task<Condition?> AddVehicleConditionAsync(string condition, string description)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var vehicleConditions = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
 
-        if (vehicleConditions.Any(x => x.Condition == condition || x.Description == description))
+        if (vehicleConditions.Any(x => x.Title == condition || x.Description == description))
         {
             return null;
         }
@@ -181,18 +119,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleOption?> AddVehicleOptionAsync(string option)
+    public async Task<Option?> AddVehicleOptionAsync(string option)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var vehicleOptions = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
 
-        if (vehicleOptions.Any(x => x.Option == option))
+        if (vehicleOptions.Any(x => x.Title == option))
         {
             return null;
         }
@@ -201,18 +132,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleDrivetrainType?> AddVehicleDrivetrainTypeAsync(string driveTrainType)
+    public async Task<DrivetrainType?> AddVehicleDrivetrainTypeAsync(string driveTrainType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var drivetrains = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
 
-        if (drivetrains.Any(x => x.DrivetrainType == driveTrainType))
+        if (drivetrains.Any(x => x.Type == driveTrainType))
         {
             return null;
         }
@@ -221,18 +145,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleFuelType?> AddVehicleFuelTypeAsync(string fuelType)
+    public async Task<FuelType?> AddVehicleFuelTypeAsync(string fuelType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
 
-        if (fuelTypes.Any(x => x.FuelType == fuelType))
+        if (fuelTypes.Any(x => x.Type == fuelType))
         {
             return null;
         }
@@ -241,18 +158,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleGearboxType?> AddVehicleGearboxTypeAsync(string gearboxType)
+    public async Task<GearboxType?> AddVehicleGearboxTypeAsync(string gearboxType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var gearboxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
 
-        if (gearboxes.Any(x => x.GearboxType == gearboxType))
+        if (gearboxes.Any(x => x.Type == gearboxType))
         {
             return null;
         }
@@ -263,16 +173,9 @@ public class AdminService : IAdminService
 
     public async Task<Country?> AddCountryAsync(string country)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
 
-        if (countries.Any(x => x.CountryName == country))
+        if (countries.Any(x => x.Name == country))
         {
             return null;
         }
@@ -283,16 +186,9 @@ public class AdminService : IAdminService
         
     public async Task<City?> AddCityAsync(string city, int countryId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
 
-        if (cities.Any(x => x.CityName == city))
+        if (cities.Any(x => x.Name == city))
         {
             return null;
         }
@@ -301,18 +197,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleMarketVersion?> AddVehicleMarketVersionAsync(string marketVersion)
+    public async Task<MarketVersion?> AddVehicleMarketVersionAsync(string marketVersion)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var marketVersions = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
 
-        if (marketVersions.Any(x => x.MarketVersion == marketVersion))
+        if (marketVersions.Any(x => x.Version == marketVersion))
         {
             return null;
         }
@@ -321,18 +210,11 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleColor?> UpdateVehicleColorAsync(int colorId, string newColor)
+    public async Task<Color?> UpdateVehicleColorAsync(int colorId, string newColor)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var colors = await _detailsRepository.GetAllColorsFromDbAsync();
 
-        if (colors.Any(x => x.Color == newColor))
+        if (colors.Any(x => x.Title == newColor))
         {
             return null;
         }
@@ -341,18 +223,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleBodyType?> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
+    public async Task<BodyType?> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
 
-        if (bodyTypes.Any(x => x.BodyType == newBodyType))
+        if (bodyTypes.Any(x => x.Type == newBodyType))
         {
             return null;
         }
@@ -363,16 +238,9 @@ public class AdminService : IAdminService
         
     public async Task<Country?> UpdateCountryAsync(int countryId, string newCountry)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
 
-        if (countries.Any(x => x.CountryName == newCountry))
+        if (countries.Any(x => x.Name == newCountry))
         {
             return null;
         }
@@ -383,16 +251,9 @@ public class AdminService : IAdminService
         
     public async Task<City?> UpdateCityAsync(int cityId, string newCity)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
 
-        if (cities.Any(x => x.CityName == newCity))
+        if (cities.Any(x => x.Name == newCity))
         {
             return null;
         }
@@ -401,65 +262,23 @@ public class AdminService : IAdminService
         return response;
     }
         
-    //CHECK!
     public async Task<AccountLimit?> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.UpdateAccountLimitInDbAsync(limitId, premiumLimit, regularLimit);
         return response;
     }
         
-    public async Task<Currency?> UpdateCurrencyAsync(int currencyId, string currencyName)
+    public async Task<Subscription?> UpdateSubscriptionAsync(int subscriptionId, decimal price)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
-        var currencies = await _detailsRepository.GetAllCurrenciesFromDbAsync();
-
-        if (currencies.Any(x => x.CurrencyName == currencyName))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateCurrencyInDbAsync(currencyId, currencyName);
+        var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price);
         return response;
     }
         
-    public async Task<Subscription?> UpdateSubscriptionAsync(int subscriptionId, decimal price, int currencyId)
+    public async Task<DrivetrainType?> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
-        var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price, currencyId);
-        return response;
-    }
-        
-    public async Task<VehicleDrivetrainType?> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
-    {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var drivetrainTypes = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
 
-        if (drivetrainTypes.Any(x => x.DrivetrainType == newDrivetrain))
+        if (drivetrainTypes.Any(x => x.Type == newDrivetrain))
         {
             return null;
         }
@@ -468,18 +287,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleGearboxType?> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
+    public async Task<GearboxType?> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var gearBoxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
 
-        if (gearBoxes.Any(x => x.GearboxType == newGearbox))
+        if (gearBoxes.Any(x => x.Type == newGearbox))
         {
             return null;
         }
@@ -490,16 +302,9 @@ public class AdminService : IAdminService
 
     public async Task<Make?> UpdateMakeAsync(int makeId, string newMake)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var makes = await _detailsRepository.GetAllMakesFromDbAsync();
 
-        if (makes.Any(x => x.MakeName == newMake))
+        if (makes.Any(x => x.Title == newMake))
         {
             return null;
         }
@@ -510,16 +315,9 @@ public class AdminService : IAdminService
         
     public async Task<Model?> UpdateModelAsync(int modelId, string newModel)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var models = await _detailsRepository.GetAllModelsFromDbAsync();
 
-        if (models.Any(x => x.ModelName == newModel))
+        if (models.Any(x => x.Title == newModel))
         {
             return null;
         }
@@ -528,18 +326,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleFuelType?> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
+    public async Task<FuelType?> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
 
-        if (fuelTypes.Any(x => x.FuelType == newFuelType))
+        if (fuelTypes.Any(x => x.Type == newFuelType))
         {
             return null;
         }
@@ -548,18 +339,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleCondition?> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
+    public async Task<Condition?> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var vehicleConditions = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
 
-        if (vehicleConditions.Any(x => x.Condition == newVehicleCondition))
+        if (vehicleConditions.Any(x => x.Title == newVehicleCondition))
         {
             return null;
         }
@@ -568,18 +352,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleOption?> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption)
+    public async Task<Option?> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var vehicleOptions = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
 
-        if (vehicleOptions.Any(x => x.Option == newVehicleOption))
+        if (vehicleOptions.Any(x => x.Title == newVehicleOption))
         {
             return null;
         }
@@ -588,18 +365,11 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<VehicleMarketVersion?> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion)
+    public async Task<MarketVersion?> UpdateVehicleMarketVersionAsync(int marketVersionId, string newMarketVersion)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var marketVersions = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
 
-        if (marketVersions.Any(x => x.MarketVersion == newMarketVersion))
+        if (marketVersions.Any(x => x.Version == newMarketVersion))
         {
             return null;
         }
@@ -608,197 +378,86 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<VehicleColor?> DeleteVehicleColorAsync(int colorId)
+    public async Task<Color?> DeleteVehicleColorAsync(int colorId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleColorFromDbAsync(colorId);
         return response;
     }
 
     public async Task<Country?> DeleteCountryAsync(int countryId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteCountryFromDbAsync(countryId);
         return response;
     }
         
     public async Task<City?> DeleteCityAsync(int cityId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteCityFromDbAsync(cityId);
-        return response;
-    }
-        
-    public async Task<Currency?> DeleteCurrencyAsync(int currencyId)
-    {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
-        var response = await _adminRepository.DeleteCurrencyFromDbAsync(currencyId);
         return response;
     }
         
     public async Task<Subscription?> DeleteSubscriptionAsync(int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteSubscriptionFromDbAsync(subscriptionId);
         return response;
     }
         
-    public async Task<VehicleBodyType?> DeleteVehicleBodyTypeAsync(int bodyTypeId)
+    public async Task<BodyType?> DeleteVehicleBodyTypeAsync(int bodyTypeId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleBodyTypeFromDbAsync(bodyTypeId);
         return response;
     }
 
-    public async Task<VehicleDrivetrainType?> DeleteVehicleDrivetrainTypeAsync(int drivetrainId)
+    public async Task<DrivetrainType?> DeleteVehicleDrivetrainTypeAsync(int drivetrainId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleDrivetrainTypeFromDbAsync(drivetrainId);
         return response;
     }
 
-    public async Task<VehicleGearboxType?> DeleteVehicleGearboxTypeAsync(int gearboxId)
+    public async Task<GearboxType?> DeleteVehicleGearboxTypeAsync(int gearboxId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleGearboxTypeFromDbAsync(gearboxId);
         return response;
     }
 
     public async Task<Make?> DeleteMakeAsync(int makeId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteMakeFromDbAsync(makeId);
         return response;
     }
 
     public async Task<Model?> DeleteModelAsync(int modelId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteModelFromDbAsync(modelId);
         return response;
     }
 
-    public async Task<VehicleFuelType?> DeleteFuelTypeAsync(int fuelTypeId)
+    public async Task<FuelType?> DeleteFuelTypeAsync(int fuelTypeId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteFuelTypeFromDbAsync(fuelTypeId);
         return response;
     }
 
-    public async Task<VehicleCondition?> DeleteVehicleConditionAsync(int vehicleConditionId)
+    public async Task<Condition?> DeleteVehicleConditionAsync(int vehicleConditionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleConditionFromDbAsync(vehicleConditionId);
         return response;
     }
 
-    public async Task<VehicleOption?> DeleteVehicleOptionAsync(int vehicleOptionId)
+    public async Task<Option?> DeleteVehicleOptionAsync(int vehicleOptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleOptionFromDbAsync(vehicleOptionId);
         return response;
     }
 
-    public async Task<VehicleMarketVersion?> DeleteVehicleMarketVersionAsync(int marketVersionId)
+    public async Task<MarketVersion?> DeleteVehicleMarketVersionAsync(int marketVersionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteVehicleMarketVersionFromDbAsync(marketVersionId);
         return response;
     }
 
     public async Task<RegisterModeratorResponseDto?> AddModeratorAsync(RegisterModeratorDto request)
     {
-        var admin = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (admin == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         DefaultAccount user = new DefaultAccount()
         {
             Email = request.Email,
@@ -843,65 +502,30 @@ public class AdminService : IAdminService
 
     public async Task<GetModeratorDto?> DeleteModeratorAsync(Guid moderatorId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-            
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var response = await _adminRepository.DeleteModeratorFromDbAsync(moderatorId);
         return _mapper.Map<GetModeratorDto>(response);
     }
 
     public async Task<PaginatedList<GetUserDto>> GetAllUsers(PagingParameters pagingParameters)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var response = await _adminRepository.GetAllUsersFromDbAsync(pagingParameters);
         return _mapper.Map<PaginatedList<GetUserDto>>(response);
     }
 
     public async Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var result = await _emailService.SendEmailAsync(mail, subject, body);
         return result;
     }
 
     public async Task<bool> BanUserAsync(Guid userId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-            
         var result = await _adminRepository.BanUserInDbAsync(userId);
         return result;
     }
 
     public async Task<bool> UnbanUserAsync(Guid userId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
         var result = await _adminRepository.UnbanUserInDbAsync(userId);
         return result;
     }

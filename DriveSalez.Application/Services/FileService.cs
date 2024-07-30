@@ -5,37 +5,35 @@ using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace DriveSalez.Application.Services;
 
 public class FileService : IFileService
 {
-     private readonly IBlobContainerClientProvider _containerClient;
-     private readonly UserManager<ApplicationUser> _userManager;
-     private readonly IHttpContextAccessor _contextAccessor;
+    private readonly BlobStorageSettings _blobStoraSettings;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IHttpContextAccessor _contextAccessor;
      
-     public FileService(IBlobContainerClientProvider containerClient, UserManager<ApplicationUser> userManager, 
-          IHttpContextAccessor contextAccessor)
-     {
-          _containerClient = containerClient;
-          _userManager = userManager;
-          _contextAccessor = contextAccessor;
-     }
+    public FileService(IOptions<BlobStorageSettings> blobStorageSettings, UserManager<ApplicationUser> userManager, 
+        IHttpContextAccessor contextAccessor)
+    {
+        _blobStoraSettings = blobStorageSettings.Value;
+        _userManager = userManager;
+        _contextAccessor = contextAccessor;
+    }
 
     public async Task<List<ImageUrl>> UploadFilesAsync(List<string> base64Images)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
 
         List<ImageUrl> uploadedUris = new List<ImageUrl>();
         
-        BlobContainerClient blobContainerClient = _containerClient.GetContainerClient();
+        BlobContainerClient blobContainerClient = new BlobContainerClient(_blobStoraSettings.ConnectionString, _blobStoraSettings.ContainerName);
         string userBlobName = $"{user.Id}";
 
         foreach (var base64Image in base64Images)
@@ -64,11 +62,12 @@ public class FileService : IFileService
 
     public async Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
 
-        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        BlobContainerClient blobContainerClient = new BlobContainerClient(_blobStoraSettings.ConnectionString, _blobStoraSettings.ContainerName);
         
-        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(user.Id.ToString());
+        BlobClient existTagsBlobClient = blobContainerClient.GetBlobClient(user.Id.ToString());
         await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
         return await UploadFilesAsync(base64Images);
@@ -76,9 +75,9 @@ public class FileService : IFileService
     
     public async Task<bool> DeleteFileAsync(ImageUrl imageUrl)
     {
-        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        BlobContainerClient blobContainerClient = new BlobContainerClient(_blobStoraSettings.ConnectionString, _blobStoraSettings.ContainerName);
         
-        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(imageUrl.Url?.ToString());
+        BlobClient existTagsBlobClient = blobContainerClient.GetBlobClient(imageUrl.Url?.ToString());
         var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
         return result.Value;
@@ -86,29 +85,29 @@ public class FileService : IFileService
     
     public async Task<bool> DeleteAllFilesAsync(Guid userId)
     {
-        BlobContainerClient imageContainer = _containerClient.GetContainerClient();
+        BlobContainerClient blobContainerClient = new BlobContainerClient(_blobStoraSettings.ConnectionString, _blobStoraSettings.ContainerName);
         
-        BlobClient existTagsBlobClient = imageContainer.GetBlobClient(userId.ToString());
+        BlobClient existTagsBlobClient = blobContainerClient.GetBlobClient(userId.ToString());
         var result = await existTagsBlobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
 
         return result.Value;   
     }
     
-     private string GetImageTypeFromBase64(string base64String)
-     {
-         int prefixEndIndex = base64String.IndexOf(';');
-         string prefix = base64String.Substring(0, prefixEndIndex);
-         string imageType = prefix.Replace("data:image/", "");
+    private string GetImageTypeFromBase64(string base64String)
+    {
+        int prefixEndIndex = base64String.IndexOf(';');
+        string prefix = base64String.Substring(0, prefixEndIndex);
+        string imageType = prefix.Replace("data:image/", "");
 
-         return imageType;
-     }
+        return imageType;
+    }
      
-     private byte[] RemovePrefixFromBase64(string base64String)
-     {
-         int prefixEndIndex = base64String.IndexOf(',') + 1;
-         string base64WithoutPrefix = base64String.Substring(prefixEndIndex);
-         byte[] bytes = Convert.FromBase64String(base64WithoutPrefix);
+    private byte[] RemovePrefixFromBase64(string base64String)
+    {
+        int prefixEndIndex = base64String.IndexOf(',') + 1;
+        string base64WithoutPrefix = base64String.Substring(prefixEndIndex);
+        byte[] bytes = Convert.FromBase64String(base64WithoutPrefix);
 
-         return bytes;
-     }
+        return bytes;
+    }
 }

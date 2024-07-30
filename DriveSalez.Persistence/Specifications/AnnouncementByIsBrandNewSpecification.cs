@@ -15,6 +15,6 @@ public class AnnouncementByIsBrandNewSpecification : ISpecification<Announcement
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => !_isBrandNew.HasValue || a.Vehicle.IsBrandNew == _isBrandNew;
+        return a => !_isBrandNew.HasValue || a.Vehicle.VehicleDetail.IsBrandNew == _isBrandNew;
     }
 }

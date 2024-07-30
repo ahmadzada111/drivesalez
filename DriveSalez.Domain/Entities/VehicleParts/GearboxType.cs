@@ -3,12 +3,12 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
 namespace DriveSalez.Domain.Entities.VehicleParts;
 
-public class VehicleColor
+public class GearboxType
 {
     public int Id { get; set; }
 
-    public string Color { get; set; }
+    public string Type { get; set; }
     
     [JsonIgnore]
-    public List<VehicleDetails> VehicleDetails { get; set; }
+    public List<VehicleDetail> VehicleDetails { get; } = [];
 }

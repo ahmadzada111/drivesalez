@@ -16,6 +16,6 @@ public class AnnouncementByMileageTypeSpecification : ISpecification<Announcemen
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _mileageType != null 
-                    || a.Vehicle.VehicleDetails.MileageType.ToString() == _mileageType;
+                    || a.Vehicle.VehicleDetail.MileageType.ToString() == _mileageType;
     }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DriveSalez.Application.DTO.AccountDTO;
 
-public record RegisterPaidAccountDto
+public record RegisterBusinessAccountDto
 {
     [Required(ErrorMessage = "Email cannot be blank!")]
     [EmailAddress(ErrorMessage = "Email address should be in a proper format!")]

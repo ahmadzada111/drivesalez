@@ -17,7 +17,7 @@ public class AnnouncementByEngineVolumeRangeSpecification : ISpecification<Annou
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => (!_fromVolume.HasValue || a.Vehicle.VehicleDetails.EngineVolume >= _fromVolume)
-                    && (!_toVolume.HasValue || a.Vehicle.VehicleDetails.EngineVolume <= _toVolume);
+        return a => (!_fromVolume.HasValue || a.Vehicle.VehicleDetail.EngineVolume >= _fromVolume)
+                    && (!_toVolume.HasValue || a.Vehicle.VehicleDetail.EngineVolume <= _toVolume);
     }
 }

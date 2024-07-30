@@ -16,6 +16,6 @@ public class AnnouncementByBodyTypesSpecification : ISpecification<Announcement>
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _bodyTypesIds != null ||
-                    _bodyTypesIds.Contains(a.Vehicle.VehicleDetails.BodyType.Id);
+                    _bodyTypesIds.Contains(a.Vehicle.VehicleDetail.BodyType.Id);
     }
 }

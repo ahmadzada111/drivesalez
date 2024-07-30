@@ -16,6 +16,6 @@ public class AnnouncementByConditionsSpecification : ISpecification<Announcement
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _conditionsIds == null || !_conditionsIds.Any()
-                                           || a.Vehicle.VehicleDetails.Conditions.Any(c => _conditionsIds.Contains(c.Id));
+                                           || a.Vehicle.VehicleDetail.Conditions.Any(c => _conditionsIds.Contains(c.Id));
     }
 }

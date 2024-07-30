@@ -1,10 +1,15 @@
+using System.Text.Json.Serialization;
+
 namespace DriveSalez.Domain.Entities;
 
 public class AnnouncementTypePricing
 {
     public int Id { get; set; }
     
-    public string PricingName { get; set; }
+    public string Title { get; set; }
 
-    public SubscriptionPrice Price { get; set; }
+    [JsonIgnore]
+    public int PriceId { get; set; }
+
+    public PriceDetail Price { get; set; }
 }

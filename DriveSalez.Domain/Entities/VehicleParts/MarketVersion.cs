@@ -3,12 +3,12 @@ using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
 namespace DriveSalez.Domain.Entities.VehicleParts;
 
-public class VehicleMarketVersion
+public class MarketVersion
 {
     public int Id { get; set; }
 
-    public string MarketVersion { get; set; }
+    public string Version { get; set; }
     
     [JsonIgnore]
-    public List<VehicleDetails> VehicleDetails { get; set; }        
+    public List<VehicleDetail> VehicleDetails { get; } = [];     
 }

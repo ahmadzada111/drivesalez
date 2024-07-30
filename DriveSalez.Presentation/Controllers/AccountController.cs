@@ -49,7 +49,7 @@ public class AccountController : Controller
     }
 
     [HttpPost("register-business-account")]
-    public async Task<ActionResult> RegisterBusinessAccount([FromBody] RegisterPaidAccountDto request)
+    public async Task<ActionResult> RegisterBusinessAccount([FromBody] RegisterBusinessAccountDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 

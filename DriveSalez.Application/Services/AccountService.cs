@@ -45,7 +45,7 @@ public class AccountService : IAccountService
         DefaultAccount user = new DefaultAccount()
         {
             Email = request.Email,
-            PhoneNumbers = _mapper.Map<List<AccountPhoneNumber>>(request.PhoneNumbers),
+            PhoneNumber = request.PhoneNumber,
             UserName = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -70,12 +70,12 @@ public class AccountService : IAccountService
         return result;
     }
 
-    public async Task<IdentityResult> RegisterBusinessAccountAsync(RegisterPaidAccountDto request)
+    public async Task<IdentityResult> RegisterBusinessAccountAsync(RegisterBusinessAccountDto request)
     {
         BusinessAccount user = new BusinessAccount()
         {
             Email = request.Email,
-            PhoneNumbers = _mapper.Map<List<AccountPhoneNumber>>(request.PhoneNumbers),
+            PhoneNumbers = _mapper.Map<List<PhoneNumber>>(request.PhoneNumbers),
             UserName = request.UserName,
             WorkHours = request.WorkHours,
             Address = request.Address,
@@ -91,9 +91,9 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, UserType.PremiumAccount.ToString());
+            await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
             await _userManager.UpdateAsync(user);
-            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.PremiumAccount);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.BusinessAccount);
             
             return result;
         }
@@ -107,13 +107,7 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
-
-            if (user == null)
-            {
-                throw new UserNotFoundException("User with provided login wasn't found!");
-            }
-
+            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) ?? throw new UserNotFoundException("User with provided login wasn't found!");
             if (!user.EmailConfirmed)
             {
                 throw new EmailNotConfirmedException("Email not confirmed!");
@@ -142,13 +136,7 @@ public class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName);
-            
-            if (user == null)
-            {
-                throw new UserNotFoundException("User with provided login wasn't found!");
-            }
-            
+            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) ?? throw new UserNotFoundException("User with provided login wasn't found!");
             await _signInManager.SignInAsync(user, isPersistent: false);
             var response = await _jwtService.GenerateSecurityTokenAsync(user);
             user.RefreshToken = response.RefreshToken;
@@ -163,14 +151,16 @@ public class AccountService : IAccountService
     
     public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
     {
-        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
+        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token) ??
+        throw new SecurityTokenException("Invalid JWT token");
 
-        if (principal == null)
+        string? email = principal.FindFirstValue(ClaimTypes.Email);
+
+        if (string.IsNullOrEmpty(email))
         {
-            throw new SecurityTokenException("Invalid JWT token");
+            throw new SecurityTokenException("Email claim not found in JWT token");
         }
 
-        string email = principal.FindFirstValue(ClaimTypes.Email);
         var user = await _userManager.FindByEmailAsync(email);
 
         if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
@@ -189,13 +179,7 @@ public class AccountService : IAccountService
     
     public async Task<bool> ChangePasswordAsync(ChangePasswordDto request)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        
-        if (user == null)
-        {
-            throw new UserNotFoundException("User with provided email wasn't found!");
-        }
-
+        var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new UserNotFoundException("User with provided email wasn't found!");
         var passwordValidator = new PasswordValidator<ApplicationUser>();
         var validationResult = await passwordValidator.ValidateAsync(_userManager, user, request.NewPassword);
 
@@ -221,13 +205,7 @@ public class AccountService : IAccountService
     
     public async Task<bool> ResetPasswordAsync(string email, string newPassword)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        
-        if (user == null)
-        {
-            throw new UserNotFoundException("User with provided email wasn't found!");
-        }
-
+        var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException("User with provided email wasn't found!");
         var passwordValidator = new PasswordValidator<ApplicationUser>();
         var validationResult = await passwordValidator.ValidateAsync(_userManager, user, newPassword);
 
@@ -249,13 +227,7 @@ public class AccountService : IAccountService
 
     public async Task<bool> ChangeEmailAsync(string email, string newMail)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        
-        if (user == null)
-        {
-            throw new UserNotFoundException("User with provided email wasn't found!");
-        }
-
+        var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException("User with provided email wasn't found!");
         user.Email = newMail;
         user.UserName = newMail;
         
@@ -271,24 +243,18 @@ public class AccountService : IAccountService
     
     public async Task LogOutAsync()
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User not authorized!");
-        }
-
         await _signInManager.SignOutAsync();
     }
     
     public async Task<ApplicationUser> DeleteUserAsync(string password)
     {
-        var currentUser = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var currentUser = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
+        
         var user = await _userManager.Users
-            .Include(u => u.PhoneNumbers)
             .FirstOrDefaultAsync(u => u.Id.ToString() == currentUser.Id.ToString());
 
-        if (user != null  && await _userManager.CheckPasswordAsync(user, password))
+        if (user != null && await _userManager.CheckPasswordAsync(user, password))
         {
             var result = await _accountRepository.DeleteUserFromDbAsync(user);
             
@@ -310,19 +276,6 @@ public class AccountService : IAccountService
         await _userManager.UpdateAsync(defaultAccount);
 
         return defaultAccount;
-    }
-    
-    public async Task<ApplicationUser> ChangeUserTypeToPremiumAccountAsync(ApplicationUser user)
-    {
-        var roles = await _userManager.GetRolesAsync(user);
-        await _userManager.RemoveFromRolesAsync(user, roles);
-
-        var premiumAccount = await _accountRepository.ChangeUserTypeToBusinessInDbAsync(user);
-        
-        await _userManager.AddToRoleAsync(premiumAccount, UserType.PremiumAccount.ToString());
-        await _userManager.UpdateAsync(premiumAccount);
-
-        return premiumAccount;
     }
     
     public async Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user)

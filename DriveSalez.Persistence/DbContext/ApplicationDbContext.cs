@@ -2,6 +2,7 @@
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.Persistence.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,52 +12,80 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-            
+
     }
 
-    public virtual DbSet<ImageUrl> ImageUrls => Set<ImageUrl>();
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+        modelBuilder.ApplyConfiguration(new BusinessAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new ImageUrlConfiguration());
+        modelBuilder.ApplyConfiguration(new PhoneNumberConfiguration());
+        modelBuilder.ApplyConfiguration(new AccountLimitConfiguration());
+        modelBuilder.ApplyConfiguration(new AnnouncementConfiguration());
+        modelBuilder.ApplyConfiguration(new AnnouncementTypePricingConfiguration());
+        modelBuilder.ApplyConfiguration(new BodyTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new CityConfiguration());
+        modelBuilder.ApplyConfiguration(new CountryConfiguration());
+        modelBuilder.ApplyConfiguration(new ConditionConfiguration());
+        modelBuilder.ApplyConfiguration(new OptionConfiguration());
+        modelBuilder.ApplyConfiguration(new DefaultAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new DrivetrainTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new FuelTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new GearboxTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new ImageUrlConfiguration());
+        modelBuilder.ApplyConfiguration(new ManufactureYearConfiguration());
+        modelBuilder.ApplyConfiguration(new MarketVersionConfiguration());
+        modelBuilder.ApplyConfiguration(new PhoneNumberConfiguration());
+        modelBuilder.ApplyConfiguration(new PriceDetailConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionConfiguration());
+        modelBuilder.ApplyConfiguration(new VehicleConfiguration());
+        modelBuilder.ApplyConfiguration(new VehicleDetailConfiguration());
+    }
+
+    public virtual DbSet<ImageUrl> ImageUrls { get; set; }
         
-    public virtual DbSet<AccountPhoneNumber> AccountPhoneNumbers => Set<AccountPhoneNumber>();
+    public virtual DbSet<PhoneNumber> AccountPhoneNumbers { get; set; }
 
-    public virtual DbSet<AccountLimit> AccountLimits => Set<AccountLimit>();
+    public virtual DbSet<AccountLimit> AccountLimits { get; set; }
 
-    public virtual DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public virtual DbSet<Subscription> Subscriptions { get; set; }
 
-    public virtual DbSet<AnnouncementTypePricing> AnnouncementPricing => Set<AnnouncementTypePricing>();
+    public virtual DbSet<AnnouncementTypePricing> AnnouncementPricing { get; set; }
         
-    public virtual DbSet<SubscriptionPrice> SubscriptionPrices => Set<SubscriptionPrice>();
+    public virtual DbSet<PriceDetail> SubscriptionPrices { get; set; }
         
-    public virtual DbSet<Announcement> Announcements => Set<Announcement>();
+    public virtual DbSet<Announcement> Announcements { get; set; }
 
-    public virtual DbSet<Make> Makes => Set<Make>();
+    public virtual DbSet<Make> Makes { get; set; }
 
-    public virtual DbSet<Model> Models => Set<Model>();
+    public virtual DbSet<Model> Models { get; set; }
 
-    public virtual DbSet<Vehicle> Vehicles => Set<Vehicle>(); 
+    public virtual DbSet<Vehicle> Vehicles { get; set; } 
 
-    public virtual DbSet<VehicleDetails> VehicleDetails => Set<VehicleDetails>(); 
+    public virtual DbSet<VehicleDetail> VehicleDetails { get; set; }
 
-    public virtual DbSet<VehicleBodyType> VehicleBodyTypes => Set<VehicleBodyType>();
+    public virtual DbSet<BodyType> VehicleBodyTypes { get; set; }
 
-    public virtual DbSet<VehicleColor> VehicleColors => Set<VehicleColor>();
+    public virtual DbSet<Color> VehicleColors { get; set; }
 
-    public virtual DbSet<VehicleGearboxType> VehicleGearboxTypes => Set<VehicleGearboxType>();
+    public virtual DbSet<GearboxType> VehicleGearboxTypes { get; set; }
 
-    public virtual DbSet<VehicleDrivetrainType> VehicleDriveTrainTypes => Set<VehicleDrivetrainType>();
+    public virtual DbSet<DrivetrainType> VehicleDriveTrainTypes { get; set; }
 
-    public virtual DbSet<VehicleMarketVersion> VehicleMarketVersions => Set<VehicleMarketVersion>();
+    public virtual DbSet<MarketVersion> VehicleMarketVersions { get; set; }
 
-    public virtual DbSet<VehicleFuelType> VehicleFuelTypes => Set<VehicleFuelType>();
+    public virtual DbSet<FuelType> VehicleFuelTypes { get; set; }
 
-    public virtual DbSet<VehicleCondition> VehicleDetailsConditions => Set<VehicleCondition>();
+    public virtual DbSet<Condition> VehicleDetailsConditions { get; set; }
 
-    public virtual DbSet<VehicleOption> VehicleDetailsOptions=> Set<VehicleOption>();
+    public virtual DbSet<Option> VehicleDetailsOptions { get; set; }
 
-    public virtual DbSet<Country> Countries => Set<Country>();
+    public virtual DbSet<Country> Countries { get; set; }
         
-    public virtual DbSet<City> Cities => Set<City>();
+    public virtual DbSet<City> Cities { get; set; }
 
-    public virtual DbSet<ManufactureYear> ManufactureYears => Set<ManufactureYear>();
-
-    public virtual DbSet<Currency> Currencies => Set<Currency>();
+    public virtual DbSet<ManufactureYear> ManufactureYears { get; set; }
 }

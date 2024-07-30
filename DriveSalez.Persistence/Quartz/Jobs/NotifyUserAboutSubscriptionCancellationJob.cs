@@ -34,6 +34,12 @@ public class NotifyUserAboutSubscriptionCancellationJob : IJob
 
         foreach (var user in users)
         {
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                _logger.LogWarning($"User {user.Id} does not have a valid email address.");
+                continue;
+            }
+            
             await _accountService.ChangeUserTypeToDefaultAccountAsync(user);
             
             string subject = "Your Subscription Has Been Canceled";

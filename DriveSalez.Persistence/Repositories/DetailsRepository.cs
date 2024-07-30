@@ -19,7 +19,7 @@ public class DetailsRepository : IDetailsRepository
         _logger = logger;
     }
 
-    public async Task<IEnumerable<VehicleColor>> GetAllColorsFromDbAsync()
+    public async Task<IEnumerable<Color>> GetAllColorsFromDbAsync()
     {
         try
         {
@@ -34,7 +34,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDbAsync()
+    public async Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesFromDbAsync()
     {
         try
         {
@@ -49,7 +49,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
     
-    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync()
+    public async Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync()
     {
         try
         {
@@ -64,7 +64,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDbAsync()
+    public async Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesFromDbAsync()
     {
         try
         {
@@ -109,7 +109,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDbAsync()
+    public async Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesFromDbAsync()
     {
         try
         {
@@ -124,7 +124,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDbAsync()
+    public async Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsFromDbAsync()
     {
         try
         {
@@ -147,7 +147,6 @@ public class DetailsRepository : IDetailsRepository
         
             return await _dbContext.Subscriptions
                 .Include(x => x.Price)
-                .ThenInclude(x => x.Currency)
                 .ToListAsync();
         }
         catch (Exception e)
@@ -166,7 +165,6 @@ public class DetailsRepository : IDetailsRepository
 
             return await _dbContext.AnnouncementPricing
                 .Include(x => x.Price)
-                .ThenInclude(x => x.Currency)
                 .ToListAsync();
         }
         catch (Exception e)
@@ -194,7 +192,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync()
+    public async Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsFromDbAsync()
     {
         try
         {
@@ -224,7 +222,7 @@ public class DetailsRepository : IDetailsRepository
         }
     }
     
-    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDbAsync()
+    public async Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsFromDbAsync()
     {
         try
         {
@@ -280,21 +278,6 @@ public class DetailsRepository : IDetailsRepository
         catch (Exception e)
         {
             _logger.LogError(e, $"Error getting Cities from DB: {e.Message}");
-            throw;
-        }
-    }
-    
-    public async Task<IEnumerable<Currency>> GetAllCurrenciesFromDbAsync()
-    {
-        try
-        {
-            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting Currencies from DB");
-        
-            return await _dbContext.Currencies.ToListAsync();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error getting Currencies from DB: {e.Message}");
             throw;
         }
     }

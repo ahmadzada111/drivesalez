@@ -27,7 +27,8 @@ public class AccountRepository : IAccountRepository
             
             var limit = await _dbContext.AccountLimits
                 .Where(x => x.UserType == userType)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync() ?? 
+                throw new InvalidOperationException($"Limit with {userType} - type wasn't found");
         
             user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
             user.RegularUploadLimit = limit.RegularAnnouncementsLimit;
@@ -117,22 +118,7 @@ public class AccountRepository : IAccountRepository
         try
         {
             _logger.LogInformation($"Deleting user with ID {user} from DB");
-
-            // var user = await _dbContext.Users
-            //     .Where(x => x.Id == userId)
-            //     .Include(x => x.PhoneNumbers)
-            //     .FirstOrDefaultAsync();
-            var announcements = await _dbContext.Announcements
-                .Where(x => x.Owner.Id == user.Id)
-                .Include(x => x.ImageUrls)
-                .ToListAsync();
-            var images = announcements
-                .SelectMany(a => a.ImageUrls)
-                .ToList();
             
-            _dbContext.ImageUrls.RemoveRange(images);
-            _dbContext.Announcements.RemoveRange(announcements);
-            _dbContext.AccountPhoneNumbers.RemoveRange(user.PhoneNumbers);
             var result = _dbContext.Users.Remove(user);
 
             if (result.State == EntityState.Deleted)
@@ -165,8 +151,9 @@ public class AccountRepository : IAccountRepository
             }
 
             var limit = await _dbContext.AccountLimits
-                .Where(x => x.UserType == UserType.PremiumAccount)
-                .FirstOrDefaultAsync();
+                .Where(x => x.UserType == UserType.BusinessAccount)
+                .FirstOrDefaultAsync() ??
+                throw new InvalidOperationException($"Limit with {UserType.BusinessAccount} - type wasn't found");;
         
             var premiumAccount = new BusinessAccount()
             {

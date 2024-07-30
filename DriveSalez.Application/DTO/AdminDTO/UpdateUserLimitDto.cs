@@ -1,6 +1,6 @@
 namespace DriveSalez.Application.DTO.AdminDTO;
 
-public record UpdateUserLimitDto
+public record UpdateAccountLimitDto
 {
     public int LimitId { get; init; } 
     

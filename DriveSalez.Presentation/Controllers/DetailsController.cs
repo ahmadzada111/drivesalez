@@ -144,15 +144,6 @@ public class DetailsController : Controller
         var response = await _detailsService.GetAllCitiesAsync();
         return Ok(response);
     }
-    
-    [HttpGet("get-all-currencies")]
-    public async Task<ActionResult> GetAllCurrencies()
-    {
-        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-
-        var response = await _detailsService.GetAllCurrenciesAsync();
-        return Ok(response);
-    }
 
     [HttpGet("get-all-subscriptions")]
     public async Task<ActionResult> GetAllSubscriptions()

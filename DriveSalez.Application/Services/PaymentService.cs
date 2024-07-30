@@ -13,7 +13,7 @@ public class PaymentService : IPaymentService
     private readonly IPaymentRepository _paymentRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
-    
+
     public PaymentService(IPaymentRepository paymentRepository,
         IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager, IAccountService accountService)
     {
@@ -49,7 +49,8 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User);
 
         if (user == null)
         {
@@ -114,36 +115,10 @@ public class PaymentService : IPaymentService
     //     return true;
     // }
     
-    public async Task<bool> BuyPremiumAccount(int subscriptionId)
-    {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not Authorized");
-        }
-
-        var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId);
-        
-        if (user.AccountBalance - subscription?.Price.Price > 0)
-        {
-            await _accountService.ChangeUserTypeToPremiumAccountAsync(user);
-
-            return true;
-        }
-        
-        return false;
-    }
-    
     public async Task<bool> BuyBusinessAccount(int subscriptionId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not Authorized");
-        }
-
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
         var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId); 
         
         if (user.AccountBalance - subscription?.Price.Price > 0)

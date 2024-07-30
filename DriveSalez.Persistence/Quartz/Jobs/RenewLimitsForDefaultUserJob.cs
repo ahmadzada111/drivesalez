@@ -37,7 +37,8 @@ public class RenewLimitsForDefaultUserJob : IJob
         
         var limit = await _dbContext.AccountLimits
             .Where(x => x.UserType == UserType.DefaultAccount)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync() ??
+            throw new InvalidOperationException($"Limit with {UserType.DefaultAccount} - type wasn't found");
         
         foreach (var user in users)
         {

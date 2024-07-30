@@ -26,18 +26,15 @@ public class AdminRepository : IAdminRepository
         _mapper = mapper;
     }
 
-    public async Task<VehicleColor> SendNewColorToDbAsync(string color)
+    public async Task<Color> SendNewColorToDbAsync(string color)
     {
         try
         {
             _logger.LogInformation($"Sending new color to DB");
 
-            if (string.IsNullOrEmpty(color))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(color);
 
-            var response = await _dbContext.VehicleColors.AddAsync(new VehicleColor() { Color = color });
+            var response = await _dbContext.VehicleColors.AddAsync(new Color() { Title = color });
 
             if (response.State == EntityState.Added)
             {
@@ -59,13 +56,10 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation("Sending new country to DB");
-                
-            if (string.IsNullOrEmpty(country))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.Countries.AddAsync(new Country() { CountryName = country });
+            ArgumentException.ThrowIfNullOrEmpty(country);
+
+            var response = await _dbContext.Countries.AddAsync(new Country() { Name = country });
 
             if (response.State == EntityState.Added)
             {
@@ -82,18 +76,15 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType)
+    public async Task<BodyType> SendNewBodyTypeToDbAsync(string bodyType)
     {
         try
         {
             _logger.LogInformation($"Sending new body type to DB");
-                
-            if (string.IsNullOrEmpty(bodyType))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleBodyTypes.AddAsync(new VehicleBodyType() { BodyType = bodyType });
+            ArgumentException.ThrowIfNullOrEmpty(bodyType);
+
+            var response = await _dbContext.VehicleBodyTypes.AddAsync(new BodyType() { Type = bodyType });
 
             if (response.State == EntityState.Added)
             {
@@ -110,18 +101,15 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
+    public async Task<DrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
     {
         try
         {
             _logger.LogInformation($"Sending new vehicle drivetrain type to DB");
-                
-            if (string.IsNullOrEmpty(driveTrainType))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new VehicleDrivetrainType() { DrivetrainType = driveTrainType });
+            ArgumentException.ThrowIfNullOrEmpty(driveTrainType);
+
+            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new DrivetrainType() { Type = driveTrainType });
            
             if (response.State == EntityState.Added)
             {
@@ -138,18 +126,15 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
+    public async Task<GearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
     {
         try
         {
             _logger.LogInformation("Sending new vehicle gearbox type to DB");
-                
-            if (string.IsNullOrEmpty(gearboxType))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new VehicleGearboxType() { GearboxType = gearboxType });
+            ArgumentException.ThrowIfNullOrEmpty(gearboxType);
+
+            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new GearboxType() { Type = gearboxType });
             
             if (response.State == EntityState.Added)
             {
@@ -171,16 +156,14 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation("Sending new city to DB");
-                
-            if (string.IsNullOrEmpty(city))
-            {
-                throw new ArgumentException();
-            }
+
+            ArgumentException.ThrowIfNullOrEmpty(city);
 
             var response = await _dbContext.Cities.AddAsync(new City()
             {
-                CityName = city,
-                Country = await _dbContext.FindAsync<Country>(countryId)
+                Name = city,
+                Country = await _dbContext.FindAsync<Country>(countryId) ??
+                throw new InvalidOperationException($"Country with ID {countryId} does not exist")
             });
             
             if (response.State == EntityState.Added)
@@ -203,13 +186,10 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation("Sending new make to DB");
-                
-            if (string.IsNullOrEmpty(make))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.Makes.AddAsync(new Make() { MakeName = make });
+            ArgumentException.ThrowIfNullOrEmpty(make);
+
+            var response = await _dbContext.Makes.AddAsync(new Make() { Title = make });
             
             if (response.State == EntityState.Added)
             {
@@ -231,13 +211,15 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation("Sending new model to DB");
-                
-            if (string.IsNullOrEmpty(model))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.Models.AddAsync(new Model() { ModelName = model, Make = await _dbContext.Makes.FindAsync(makeId) });
+            ArgumentException.ThrowIfNullOrEmpty(model);
+
+            var response = await _dbContext.Models.AddAsync(new Model() 
+            { 
+                Title = model, 
+                Make = await _dbContext.Makes.FindAsync(makeId) ??
+                throw new InvalidOperationException($"Make with ID {makeId} does not exist")
+            });
 
             if (response.State == EntityState.Added)
             {
@@ -254,18 +236,15 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
+    public async Task<FuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
     {
         try
         {
             _logger.LogInformation("Sending new vehicle fuel type to DB");
-                
-            if (string.IsNullOrEmpty(fuelType))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleFuelTypes.AddAsync(new VehicleFuelType() { FuelType = fuelType });
+            ArgumentException.ThrowIfNullOrEmpty(fuelType);
+
+            var response = await _dbContext.VehicleFuelTypes.AddAsync(new FuelType() { Type = fuelType });
             
             if (response.State == EntityState.Added)
             {
@@ -282,20 +261,17 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description)
+    public async Task<Condition> SendNewVehicleConditionToDbAsync(string condition, string description)
     {
         try
         {
             _logger.LogInformation("Sending new vehicle condition to DB");
-                
-            if (string.IsNullOrEmpty(condition))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new VehicleCondition()
+            ArgumentException.ThrowIfNullOrEmpty(condition);
+
+            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new Condition()
             {
-                Condition = condition, 
+                Title = condition, 
                 Description = description
             });
             
@@ -314,18 +290,15 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
+    public async Task<MarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion)
     {
         try
         {
             _logger.LogInformation("Sending new vehicle market version to DB");
-                
-            if (string.IsNullOrEmpty(marketVersion))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleMarketVersions.AddAsync(new VehicleMarketVersion() { MarketVersion = marketVersion });
+            ArgumentException.ThrowIfNullOrEmpty(marketVersion);
+
+            var response = await _dbContext.VehicleMarketVersions.AddAsync(new MarketVersion() { Version = marketVersion });
             
             if (response.State == EntityState.Added)
             {
@@ -342,18 +315,15 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option)
+    public async Task<Option> SendNewVehicleOptionToDbAsync(string option)
     {
         try
         {
             _logger.LogInformation("Sending new vehicle option to DB");
-                
-            if (string.IsNullOrEmpty(option))
-            {
-                throw new ArgumentException();
-            }
 
-            var response = await _dbContext.VehicleDetailsOptions.AddAsync(new VehicleOption() { Option = option });
+            ArgumentException.ThrowIfNullOrEmpty(option);
+
+            var response = await _dbContext.VehicleDetailsOptions.AddAsync(new Option() { Title = option });
             
             if (response.State == EntityState.Added)
             {
@@ -370,24 +340,20 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId)
+    public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price)
     {
         try
         {
             _logger.LogInformation("Sending new subscription to DB");
-                
-            if (string.IsNullOrEmpty(subscriptionName))
-            {
-                throw new ArgumentException();
-            }
+
+            ArgumentException.ThrowIfNullOrEmpty(subscriptionName);
 
             var response = await _dbContext.Subscriptions.AddAsync(new Subscription()
             {
-                SubscriptionName = subscriptionName,
-                Price = new SubscriptionPrice()
+                Title = subscriptionName,
+                Price = new PriceDetail()
                 {
                     Price = price,
-                    Currency = await _dbContext.FindAsync<Currency>(currencyId)
                 }
             });
             
@@ -406,47 +372,16 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<Currency> SendNewCurrencyToDbAsync(string currencyName)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new currency to DB");
-                
-            if (string.IsNullOrEmpty(currencyName))
-            {
-                throw new ArgumentException();
-            }
-
-            var response = await _dbContext.Currencies.AddAsync(new Currency() { CurrencyName = currencyName });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new currency to DB");
-            throw;
-        }
-    }
-
-    public async Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor)
+    public async Task<Color> UpdateVehicleColorInDbAsync(int colorId, string newColor)
     {
         try
         {
             _logger.LogInformation($"Updating color with ID {colorId} to new value {newColor} in DB");
-                
-            if (string.IsNullOrEmpty(newColor))
-            {
-                throw new ArgumentException();
-            }
 
-            var color = await _dbContext.FindAsync<VehicleColor>(colorId) ?? new VehicleColor();
-            color.Color = newColor;
+            ArgumentException.ThrowIfNullOrEmpty(newColor);
+
+            var color = await _dbContext.FindAsync<Color>(colorId) ?? new Color();
+            color.Title = newColor;
             
             var response = _dbContext.Update(color);
 
@@ -465,19 +400,17 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
+    public async Task<BodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
     {
         try
         {
             _logger.LogInformation($"Updating body type with ID {bodyTypeId} to new value {newBodyType} in DB");
-                
-            if (string.IsNullOrEmpty(newBodyType))
-            {
-                throw new ArgumentException();
-            }
 
-            var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
-            bodyType.BodyType = newBodyType;
+            ArgumentException.ThrowIfNullOrEmpty(newBodyType);
+
+            var bodyType = await _dbContext.FindAsync<BodyType>(bodyTypeId) ?? 
+            throw new InvalidOperationException($"Body type with ID {bodyTypeId} does not exist");
+            bodyType.Type = newBodyType;
             var response = _dbContext.Update(bodyType);
 
             if (response.State == EntityState.Modified)
@@ -500,14 +433,13 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation($"Updating country with ID {countryId} to new value {newCountry} in DB");
-                
-            if (string.IsNullOrEmpty(newCountry))
-            {
-                throw new ArgumentException();
-            }
 
-            var country = await _dbContext.FindAsync<Country>(countryId);
-            country.CountryName = newCountry;
+            ArgumentException.ThrowIfNullOrEmpty(newCountry);
+
+            var country = await _dbContext.FindAsync<Country>(countryId) ??
+            throw new InvalidOperationException($"Country with ID {countryId} does not exist");
+            
+            country.Name = newCountry;
             
             var response = _dbContext.Update(country);
 
@@ -531,14 +463,13 @@ public class AdminRepository : IAdminRepository
         try
         {
             _logger.LogInformation($"Updating city with ID {cityId} to new value {newCity} in DB");
-                
-            if (string.IsNullOrEmpty(newCity))
-            {
-                throw new ArgumentException();
-            }
 
-            var city = await _dbContext.FindAsync<City>(cityId);
-            city.CityName = newCity;
+            ArgumentException.ThrowIfNullOrEmpty(newCity);
+
+            var city = await _dbContext.FindAsync<City>(cityId) ??
+            throw new InvalidOperationException($"City with ID {cityId} does not exist");
+
+            city.Name = newCity;
             
             var response = _dbContext.Update(city);
 
@@ -556,47 +487,17 @@ public class AdminRepository : IAdminRepository
             throw;
         }
     }
-        
-    public async Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName)
-    {
-        try
-        {
-            _logger.LogInformation($"Updating currency with ID {currencyId} to new value {currencyName}");
-                
-            if (string.IsNullOrEmpty(currencyName))
-            {
-                throw new ArgumentException();
-            }
 
-            var currency = await _dbContext.FindAsync<Currency>(currencyId);
-            currency.CurrencyName = currencyName;
-            var response = _dbContext.Update(currency);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return currency;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating currency with ID {currencyId} to new value {currencyName}");
-            throw;
-        }
-    }
-
-    public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId)
+    public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price)
     {
         try
         {
             _logger.LogInformation($"Updating subscription with ID {subscriptionId} in DB");
                 
-            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
+            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId) ??
+            throw new InvalidOperationException($"Subscription with ID {subscriptionId} does not exist");
 
             subscription.Price.Price = price;
-            subscription.Price.Currency = await _dbContext.Currencies.FindAsync(currencyId);
             
             var response = _dbContext.Update(subscription);
 
@@ -615,19 +516,18 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
+    public async Task<DrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
     {
         try
         {
             _logger.LogInformation($"Updating drivetrain with ID {driveTrainId} to new value {newDrivetrain} in DB");
-                
-            if (driveTrainId == null || string.IsNullOrEmpty(newDrivetrain))
-            {
-                throw new ArgumentException();
-            }
 
-            var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
-            drivetrain.DrivetrainType = newDrivetrain;
+            ArgumentException.ThrowIfNullOrEmpty(newDrivetrain);
+
+            var drivetrain = await _dbContext.FindAsync<DrivetrainType>(driveTrainId) ??
+            throw new InvalidOperationException($"Drivetrain with ID {driveTrainId} does not exist");
+            
+            drivetrain.Type = newDrivetrain;
             var response = _dbContext.Update(drivetrain);
 
             if (response.State == EntityState.Modified)
@@ -645,17 +545,16 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
+    public async Task<GearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
     {
         try
         {
-            if (gearboxId == null || string.IsNullOrEmpty(newGearbox))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newGearbox);
 
-            var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
-            gearbox.GearboxType = newGearbox;
+            var gearbox = await _dbContext.FindAsync<GearboxType>(gearboxId) ?? 
+            throw new InvalidOperationException($"Gearbox with ID {gearboxId} does not exist");
+
+            gearbox.Type = newGearbox;
             var response = _dbContext.Update(gearbox);
 
             if (response.State == EntityState.Modified)
@@ -677,13 +576,12 @@ public class AdminRepository : IAdminRepository
     {
         try
         {
-            if (makeId == null || string.IsNullOrEmpty(newMake))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newMake);
 
-            var make = await _dbContext.FindAsync<Make>(makeId);
-            make.MakeName = newMake;
+            var make = await _dbContext.FindAsync<Make>(makeId) ??
+            throw new InvalidOperationException($"Make with ID {makeId} does not exist");
+
+            make.Title = newMake;
             var response = _dbContext.Update(make);
 
             if (response.State == EntityState.Modified)
@@ -705,10 +603,7 @@ public class AdminRepository : IAdminRepository
     {
         try
         {
-            if (modelId == null || string.IsNullOrEmpty(newModel))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newModel);
 
             var model = await _dbContext.FindAsync<Model>(modelId);
 
@@ -717,7 +612,7 @@ public class AdminRepository : IAdminRepository
                 throw new ArgumentException();
             }
             
-            model.ModelName = newModel;
+            model.Title = newModel;
             var response = _dbContext.Update(model);
 
             if (response.State == EntityState.Modified)
@@ -739,12 +634,14 @@ public class AdminRepository : IAdminRepository
     {
         try
         {
-            if (limitId == null || premiumLimit < 0 || regularLimit < 0)
+            if (premiumLimit < 0 || regularLimit < 0)
             {
                 throw new ArgumentException();
             }
 
-            var accountLimit = await _dbContext.FindAsync<AccountLimit>(limitId);
+            var accountLimit = await _dbContext.FindAsync<AccountLimit>(limitId) ??
+            throw new InvalidOperationException($"Limit with ID {limitId} does not exist");
+
             accountLimit.PremiumAnnouncementsLimit = premiumLimit;
             accountLimit.RegularAnnouncementsLimit = regularLimit;
             
@@ -765,17 +662,16 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
+    public async Task<FuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
     {
         try
         {
-            if (fuelTypeId == null || string.IsNullOrEmpty(newFuelType))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newFuelType);
 
-            var fuelType = await _dbContext.FindAsync<VehicleFuelType>(fuelTypeId);
-            fuelType.FuelType = newFuelType;
+            var fuelType = await _dbContext.FindAsync<FuelType>(fuelTypeId) ??
+            throw new InvalidOperationException($"Fuel type with ID {fuelTypeId} does not exist");
+
+            fuelType.Type = newFuelType;
             var response = _dbContext.Update(fuelType);
 
             if (response.State == EntityState.Modified)
@@ -793,17 +689,19 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
+    public async Task<Condition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription)
     {
         try
         {
-            if (vehicleConditionId == null || string.IsNullOrEmpty(newVehicleCondition) || string.IsNullOrEmpty(newDescription))
+            if (string.IsNullOrEmpty(newVehicleCondition) || string.IsNullOrEmpty(newDescription))
             {
                 throw new ArgumentException();
             }
 
-            var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
-            vehicleCondition.Condition = newVehicleCondition;
+            var vehicleCondition = await _dbContext.FindAsync<Condition>(vehicleConditionId) ??
+            throw new InvalidOperationException($"Condition with ID {vehicleConditionId} does not exist");
+
+            vehicleCondition.Title = newVehicleCondition;
             vehicleCondition.Description = newDescription;
             
             var response = _dbContext.Update(vehicleCondition);
@@ -823,17 +721,16 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
+    public async Task<Option> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption)
     {
         try
         {
-            if (vehicleOptionId == null || string.IsNullOrEmpty(newVehicleOption))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newVehicleOption);
 
-            var vehicleOption = await _dbContext.FindAsync<VehicleOption>(vehicleOptionId);
-            vehicleOption.Option = newVehicleOption;
+            var vehicleOption = await _dbContext.FindAsync<Option>(vehicleOptionId) ??
+            throw new InvalidOperationException($"Option with ID {vehicleOptionId} does not exist");
+
+            vehicleOption.Title = newVehicleOption;
             var response = _dbContext.Update(vehicleOption);
 
             if (response.State == EntityState.Modified)
@@ -851,17 +748,16 @@ public class AdminRepository : IAdminRepository
         }
     }
         
-    public async Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
+    public async Task<MarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion)
     {
         try
         {
-            if (marketVersionId == null || string.IsNullOrEmpty(newMarketVersion))
-            {
-                throw new ArgumentException();
-            }
+            ArgumentException.ThrowIfNullOrEmpty(newMarketVersion);
 
-            var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
-            marketVersion.MarketVersion = newMarketVersion;
+            var marketVersion = await _dbContext.FindAsync<MarketVersion>(marketVersionId) ?? 
+            throw new InvalidOperationException($"Market version with ID {marketVersionId} does not exist");
+
+            marketVersion.Version = newMarketVersion;
             var response = _dbContext.Update(marketVersion);
 
             if (response.State == EntityState.Modified)
@@ -879,16 +775,11 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleColor?> DeleteVehicleColorFromDbAsync(int colorId)
+    public async Task<Color?> DeleteVehicleColorFromDbAsync(int colorId)
     {
         try
         {
-            if (colorId == null)
-            {
-                throw new ArgumentException();
-            }
-
-            var color = await _dbContext.FindAsync<VehicleColor>(colorId);
+            var color = await _dbContext.FindAsync<Color>(colorId);
             
             if (color != null)
             {
@@ -912,14 +803,9 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<VehicleBodyType?> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId)
+    public async Task<BodyType?> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId)
     {
-        if (bodyTypeId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var bodyType = await _dbContext.FindAsync<VehicleBodyType>(bodyTypeId);
+        var bodyType = await _dbContext.FindAsync<BodyType>(bodyTypeId);
             
         if (bodyType != null)
         {
@@ -939,11 +825,6 @@ public class AdminRepository : IAdminRepository
 
     public async Task<Country?> DeleteCountryFromDbAsync(int countryId)
     {
-        if (countryId == null)
-        {
-            throw new ArgumentException();
-        }
-
         var country = await _dbContext.FindAsync<Country>(countryId);
             
         if (country != null)
@@ -966,40 +847,10 @@ public class AdminRepository : IAdminRepository
             
         return null;
     }
-        
-    public async Task<Currency?> DeleteCurrencyFromDbAsync(int currencyId)
+
+    public async Task<DrivetrainType?> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId)
     {
-        if (currencyId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var currency = await _dbContext.FindAsync<Currency>(currencyId);
-            
-        if (currency != null)
-        {
-            var response = _dbContext.Remove(currency);
-                
-            if (response.State == EntityState.Deleted)
-            {
-                await _dbContext.SaveChangesAsync();
-                return currency;
-            }
-                
-            throw new InvalidOperationException("Object wasn't deleted");
-        }
-            
-        return null;
-    }
-
-    public async Task<VehicleDrivetrainType?> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId)
-    {
-        if (driveTrainId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var drivetrain = await _dbContext.FindAsync<VehicleDrivetrainType>(driveTrainId);
+        var drivetrain = await _dbContext.FindAsync<DrivetrainType>(driveTrainId);
             
         if (drivetrain != null)
         {
@@ -1017,14 +868,9 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<VehicleGearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId)
+    public async Task<GearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId)
     {
-        if (gearboxId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var gearbox = await _dbContext.FindAsync<VehicleGearboxType>(gearboxId);
+        var gearbox = await _dbContext.FindAsync<GearboxType>(gearboxId);
             
         if (gearbox != null)
         {
@@ -1044,11 +890,6 @@ public class AdminRepository : IAdminRepository
 
     public async Task<Subscription?> DeleteSubscriptionFromDbAsync(int subscriptionId)
     {
-        if (subscriptionId == null)
-        {
-            throw new ArgumentException();
-        }
-
         var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
             
         if (subscription != null)
@@ -1069,11 +910,6 @@ public class AdminRepository : IAdminRepository
 
     public async Task<Make?> DeleteMakeFromDbAsync(int makeId)
     {
-        if (makeId == null)
-        {
-            throw new ArgumentException();
-        }
-
         var make = await _dbContext.FindAsync<Make>(makeId);
             
         if (make != null)
@@ -1094,11 +930,6 @@ public class AdminRepository : IAdminRepository
 
     public async Task<City?> DeleteCityFromDbAsync(int cityId)
     {
-        if (cityId == null)
-        {
-            throw new ArgumentException();
-        }
-
         var city = await _dbContext.FindAsync<City>(cityId);
             
         if (city != null)
@@ -1119,11 +950,6 @@ public class AdminRepository : IAdminRepository
         
     public async Task<Model?> DeleteModelFromDbAsync(int modelId)
     {
-        if (modelId == null)
-        {
-            throw new ArgumentException();
-        }
-
         var model = await _dbContext.FindAsync<Model>(modelId);
             
         if (model != null)
@@ -1142,14 +968,9 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<VehicleFuelType?> DeleteFuelTypeFromDbAsync(int fuelTypeId)
+    public async Task<FuelType?> DeleteFuelTypeFromDbAsync(int fuelTypeId)
     {
-        if (fuelTypeId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var fuelType = await _dbContext.FindAsync<VehicleFuelType>(fuelTypeId);
+        var fuelType = await _dbContext.FindAsync<FuelType>(fuelTypeId);
             
         if (fuelType != null)
         {
@@ -1167,14 +988,9 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<VehicleCondition?> DeleteVehicleConditionFromDbAsync(int vehicleConditionId)
+    public async Task<Condition?> DeleteVehicleConditionFromDbAsync(int vehicleConditionId)
     {
-        if (vehicleConditionId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var vehicleCondition = await _dbContext.FindAsync<VehicleCondition>(vehicleConditionId);
+        var vehicleCondition = await _dbContext.FindAsync<Condition>(vehicleConditionId);
             
         if (vehicleCondition != null)
         {
@@ -1192,14 +1008,9 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<VehicleOption?> DeleteVehicleOptionFromDbAsync(int vehicleOptionId)
+    public async Task<Option?> DeleteVehicleOptionFromDbAsync(int vehicleOptionId)
     {
-        if (vehicleOptionId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var vehicleOption = await _dbContext.FindAsync<VehicleOption>(vehicleOptionId);
+        var vehicleOption = await _dbContext.FindAsync<Option>(vehicleOptionId);
             
         if (vehicleOption != null)
         {
@@ -1217,14 +1028,9 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<VehicleMarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId)
+    public async Task<MarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId)
     {
-        if (marketVersionId == null)
-        {
-            throw new ArgumentException();
-        }
-
-        var marketVersion = await _dbContext.FindAsync<VehicleMarketVersion>(marketVersionId);
+        var marketVersion = await _dbContext.FindAsync<MarketVersion>(marketVersionId);
             
         if (marketVersion != null)
         {

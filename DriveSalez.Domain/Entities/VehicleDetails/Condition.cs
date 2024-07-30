@@ -2,14 +2,14 @@
 
 namespace DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
-public class VehicleCondition
+public class Condition
 {
     public int Id { get; set; }
         
-    public string Condition { get; set; }
+    public string Title { get; set; }
         
     public string Description { get; set; }
     
     [JsonIgnore]
-    public List<VehicleDetails> VehicleDetails { get; set; }
+    public List<VehicleDetail> VehicleDetails { get; } = [];
 }

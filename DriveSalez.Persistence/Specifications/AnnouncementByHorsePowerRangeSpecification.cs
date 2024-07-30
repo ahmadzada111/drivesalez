@@ -17,7 +17,7 @@ public class AnnouncementByHorsePowerRangeSpecification : ISpecification<Announc
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => (!_fromHorsePower.HasValue || a.Vehicle.VehicleDetails.HorsePower >= _fromHorsePower)
-                    && (!_toHorsePower.HasValue || a.Vehicle.VehicleDetails.HorsePower <= _toHorsePower);
+        return a => (!_fromHorsePower.HasValue || a.Vehicle.VehicleDetail.HorsePower >= _fromHorsePower)
+                    && (!_toHorsePower.HasValue || a.Vehicle.VehicleDetail.HorsePower <= _toHorsePower);
     }
 }

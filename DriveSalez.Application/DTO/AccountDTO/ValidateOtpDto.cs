@@ -10,5 +10,5 @@ public record ValidateOtpDto
     public string Email { get; init; }
     
     [Required(ErrorMessage = "OTP cannot be blank!")]
-    public string Otp { get; init; }
+    public int Otp { get; init; }
 }

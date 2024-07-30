@@ -5,52 +5,52 @@ namespace DriveSalez.Application.DTO.AnnoucementDTO;
 public record UpdateAnnouncementDto
 {
     [Required(ErrorMessage = "Year cannot be blank!")]
-        public int? YearId { get; init; }   
+        public int YearId { get; init; }   
 
         [Required(ErrorMessage = "Make cannot be blank!")]
-        public int? MakeId { get; init; }
+        public int MakeId { get; init; }
 
         [Required(ErrorMessage = "Model cannot be blank!")]
-        public int? ModelId { get; init; }
+        public int ModelId { get; init; }
 
         [Required(ErrorMessage = "Fuel type cannot be blank!")]
-        public int? FuelTypeId { get; set; }
+        public int FuelTypeId { get; set; }
 
         [Required(ErrorMessage = "Gearbox be blank!")]
-        public int? GearboxId { get; init; }
+        public int GearboxId { get; init; }
 
         [Required(ErrorMessage = "Drivetrain cannot be blank!")]
-        public int? DrivetrainTypeId { get; init; }
+        public int DrivetrainTypeId { get; init; }
 
         [Required(ErrorMessage = "Body type cannot be blank!")]
-        public int? BodyTypeId { get; init; }
+        public int BodyTypeId { get; init; }
         
         [Required(ErrorMessage = "Conditions cannot be blank!")]
-        public List<int>? ConditionsIds { get; init; }
+        public List<int> ConditionsIds { get; init; }
         
         [Required(ErrorMessage = "Options cannot be blank!")]
-        public List<int>? OptionsIds { get; init; }
+        public List<int> OptionsIds { get; init; }
 
         [Required(ErrorMessage = "Color cannot be blank!")]
-        public int? ColorId { get; init; }
+        public int ColorId { get; init; }
 
         [Required(ErrorMessage = "Market version cannot be blank!")]
-        public int? MarketVersionId { get; init; }
+        public int MarketVersionId { get; init; }
 
         [Required(ErrorMessage = "Horse power cannot be blank!")]
         public int HorsePower { get; init; }     
 
         [Required(ErrorMessage = "Is brand new cannot be blank!")]
-        public bool? IsBrandNew { get; init; }       
+        public bool IsBrandNew { get; init; }       
 
         [Required(ErrorMessage = "Owner quantity cannot be blank!")]
-        public int? OwnerQuantity { get; init; }
+        public int OwnerQuantity { get; init; }
 
         [Required(ErrorMessage = "Seat count cannot be blank!")]
-        public int? SeatCount { get; init; }
+        public int SeatCount { get; init; }
 
         [Required(ErrorMessage = "Vin code cannot be blank!")]
-        public string? VinCode { get; init; }
+        public string VinCode { get; init; }
 
         [Required(ErrorMessage = "Mileage cannot be blank!")]
         public int Mileage { get; init; }    
@@ -59,7 +59,7 @@ public record UpdateAnnouncementDto
         public string MileageType { get; init; }
 
         [Required(ErrorMessage = "Engine volume cannot be blank!")]
-        public int? EngineVolume { get; init; }
+        public int EngineVolume { get; init; }
 
         [Required(ErrorMessage = "Country cannot be blank!")]
         public int CountryId { get; init; }
@@ -68,13 +68,13 @@ public record UpdateAnnouncementDto
         public int CityId { get; init; }
 
         [Required(ErrorMessage = "Barter cannot be blank!")]
-        public bool? Barter { get; init; }
+        public bool Barter { get; init; }
 
         [Required(ErrorMessage = "On credit cannot be blank!")]
-        public bool? OnCredit { get; init; }
+        public bool OnCredit { get; init; }
 
         [Required(ErrorMessage = "Description cannot be blank!")]
-        public string? Description { get; init; }
+        public string Description { get; init; }
 
         [Required(ErrorMessage = "Price cannot be blank!")]
         public decimal Price { get; init; }   

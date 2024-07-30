@@ -16,6 +16,6 @@ public class AnnouncementByGearboxesSpecification : ISpecification<Announcement>
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _gearBoxesIds == null 
-                    || _gearBoxesIds.Contains(a.Vehicle.VehicleDetails.GearboxType.Id);
+                    || _gearBoxesIds.Contains(a.Vehicle.VehicleDetail.GearboxType.Id);
     }
 }

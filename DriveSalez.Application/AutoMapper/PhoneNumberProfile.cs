@@ -7,10 +7,10 @@ public class PhoneNumberProfile : Profile
 {
     public PhoneNumberProfile()
     {
-        CreateMap<AccountPhoneNumber, string>()
-            .ConvertUsing(phoneNumber => phoneNumber.PhoneNumber);;
+        CreateMap<PhoneNumber, string>()
+            .ConvertUsing(phoneNumber => phoneNumber.Number);;
 
-        CreateMap<string, AccountPhoneNumber>()
-            .ConvertUsing(phoneNumber => new AccountPhoneNumber {PhoneNumber = phoneNumber});
+        CreateMap<string, PhoneNumber>()
+            .ConvertUsing(phoneNumber => new PhoneNumber {Number = phoneNumber});
     }
 }

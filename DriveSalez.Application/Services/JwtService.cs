@@ -40,8 +40,8 @@ public class JwtService : IJwtService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, role.FirstOrDefault()?.ToString())
+            new Claim(ClaimTypes.Email, user.Email ?? throw new InvalidOperationException("User email not found")),
+            new Claim(ClaimTypes.Role, role.FirstOrDefault()?.ToString() ?? throw new InvalidOperationException("User role not found"))
         };
         
         var possibleClaims = await _userManager.GetClaimsAsync(user);
@@ -72,7 +72,7 @@ public class JwtService : IJwtService
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
             RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(_refreshTokenSettings.Expiration),
-            UserRole = role[0]
+            UserRole = role.FirstOrDefault()
         };
     }
     
@@ -104,9 +104,9 @@ public class JwtService : IJwtService
             
             return null;
         }
-        catch (Exception ex)
+        catch
         {
-            return null;
+            throw;
         }
     }
 

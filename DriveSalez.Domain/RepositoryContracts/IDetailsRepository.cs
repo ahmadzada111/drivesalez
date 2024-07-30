@@ -6,23 +6,23 @@ namespace DriveSalez.Domain.RepositoryContracts;
 
 public interface IDetailsRepository
 {
-    Task<IEnumerable<VehicleColor>> GetAllColorsFromDbAsync();
+    Task<IEnumerable<Color>> GetAllColorsFromDbAsync();
 
-    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesFromDbAsync();
+    Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesFromDbAsync();
         
-    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync();
+    Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsFromDbAsync();
         
-    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesFromDbAsync();
+    Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesFromDbAsync();
         
     Task<IEnumerable<Make>> GetAllMakesFromDbAsync();
         
-    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesFromDbAsync();
+    Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesFromDbAsync();
         
-    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsFromDbAsync();
+    Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsFromDbAsync();
         
-    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsFromDbAsync();
+    Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsFromDbAsync();
         
-    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsFromDbAsync();
+    Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsFromDbAsync();
 
     Task<IEnumerable<Model>> GetAllModelsFromDbAsync();
 
@@ -35,8 +35,6 @@ public interface IDetailsRepository
     Task<IEnumerable<Country>> GetAllCountriesFromDbAsync();
 
     Task<IEnumerable<City>> GetAllCitiesFromDbAsync();
-
-    Task<IEnumerable<Currency>> GetAllCurrenciesFromDbAsync();
 
     Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync();
 

@@ -17,7 +17,7 @@ public class AnnouncementByMileageRangeSpecification : ISpecification<Announceme
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => (!_fromMileage.HasValue || a.Vehicle.VehicleDetails.MileAge >= _fromMileage)
-                    && (!_toMileage.HasValue || a.Vehicle.VehicleDetails.MileAge <= _toMileage);
+        return a => (!_fromMileage.HasValue || a.Vehicle.VehicleDetail.Mileage >= _fromMileage)
+                    && (!_toMileage.HasValue || a.Vehicle.VehicleDetail.Mileage <= _toMileage);
     }
 }

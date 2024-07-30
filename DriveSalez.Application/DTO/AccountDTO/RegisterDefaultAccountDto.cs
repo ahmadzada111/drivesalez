@@ -17,7 +17,7 @@ public record RegisterDefaultAccountDto
 	    
 	[Required(ErrorMessage = "Phone number cannot be blank!")]
 	[DataType(DataType.PhoneNumber)]
-	public List<string> PhoneNumbers { get ; init; }
+	public string PhoneNumber { get ; init; }
 
 	[Required(ErrorMessage = "Password cannot be blank!")]
 	[DataType(DataType.Password)]

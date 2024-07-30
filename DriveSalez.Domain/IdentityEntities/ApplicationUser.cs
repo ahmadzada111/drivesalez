@@ -11,12 +11,12 @@ public class ApplicationUser : IdentityUser<Guid>
         
     public string? RefreshToken { get; set; }
         
-    public List<AccountPhoneNumber>? PhoneNumbers { get; set; }
-        
     public DateTime? RefreshTokenExpiration { get; set; }
         
     public List<Announcement>? Announcements { get; set; } = new List<Announcement>();
         
+    public List<PhoneNumber>? PhoneNumbers { get; set; }
+
     public DateTimeOffset SubscriptionExpirationDate { get; set; }
 
     public int PremiumUploadLimit { get; set; }

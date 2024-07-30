@@ -16,6 +16,6 @@ public class AnnouncementByDrivetrainsSpecification : ISpecification<Announcemen
     public Expression<Func<Announcement, bool>> ToExpression()
     {
         return a => _driveTrainsIds == null 
-                    || _driveTrainsIds.Contains(a.Vehicle.VehicleDetails.DrivetrainType.Id);
+                    || _driveTrainsIds.Contains(a.Vehicle.VehicleDetail.DrivetrainType.Id);
     }
 }

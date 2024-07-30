@@ -6,13 +6,13 @@ namespace DriveSalez.Application.ServiceContracts;
 
 public interface IDetailsService
 {
-    Task<IEnumerable<VehicleColor>> GetAllColorsAsync();
+    Task<IEnumerable<Color>> GetAllColorsAsync();
 
-    Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesAsync();
+    Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesAsync();
 
-    Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsAsync();
+    Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsAsync();
 
-    Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesAsync();
+    Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesAsync();
 
     Task<IEnumerable<Make>> GetAllMakesAsync();
 
@@ -20,23 +20,21 @@ public interface IDetailsService
 
     Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id);
 
-    Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesAsync();
+    Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesAsync();
 
-    Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsAsync();
+    Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsAsync();
 
-    Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsAsync();
+    Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsAsync();
 
     Task<IEnumerable<Model>> GetAllModelsAsync();
 
-    Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsAsync();
+    Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsAsync();
 
     Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsAsync();
 
     Task<IEnumerable<Country>> GetAllCountriesAsync();
 
     Task<IEnumerable<City>> GetAllCitiesAsync();
-    
-    Task<IEnumerable<Currency>> GetAllCurrenciesAsync();
 
     Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync();
     

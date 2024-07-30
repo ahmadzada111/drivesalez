@@ -35,7 +35,7 @@ public class OtpController : Controller
             _cache.Remove(email);    
         }
         
-        string otp = _otpService.GenerateOtp();
+        int otp = _otpService.GenerateOtp();
         string subject = "DriveSalez - One-Time Password (OTP)";
             
         string body = $"Thank you for choosing DriveSalez!\n\n" +

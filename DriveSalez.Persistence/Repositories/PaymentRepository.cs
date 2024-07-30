@@ -70,7 +70,7 @@ public class PaymentRepository : IPaymentRepository
                 return false;
             }
 
-            if (announcementSubscription.PricingName == "Premium Announcement")
+            if (announcementSubscription.Title == "Premium Announcement")
             {
                 if (user.AccountBalance - announcementSubscription.Price.Price > 0)
                 {
@@ -88,7 +88,7 @@ public class PaymentRepository : IPaymentRepository
                     throw new InvalidOperationException("Object wasn't modified");
                 }
             }
-            else if(announcementSubscription.PricingName == "Regular Announcement")
+            else if(announcementSubscription.Title == "Regular Announcement")
             {
                 if (user.AccountBalance - announcementSubscription.Price.Price > 0)
                 {

@@ -40,27 +40,27 @@ public class AnnouncementService : IAnnouncementService
         {
             Vehicle = new Vehicle
             {
-                Year = await _announcementRepository.GetManufactureYearById(request.YearId.Value),
-                Make = await _announcementRepository.GetMakeById(request.MakeId.Value),
-                Model = await _announcementRepository.GetModelById(request.ModelId.Value),
-                FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId.Value),
-                IsBrandNew = request.IsBrandNew,
+                Make = await _announcementRepository.GetMakeById(request.MakeId),
+                Model = await _announcementRepository.GetModelById(request.ModelId),
 
-                VehicleDetails = new VehicleDetails
+                VehicleDetail = new VehicleDetail
                 {
-                    BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId.Value),
-                    Color = await _announcementRepository.GetColorById(request.ColorId.Value),
+                    Year = await _announcementRepository.GetManufactureYearById(request.YearId),
+                    FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId),
+                    IsBrandNew = request.IsBrandNew,
+                    BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId),
+                    Color = await _announcementRepository.GetColorById(request.ColorId),
                     HorsePower = request.HorsePower,
-                    GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId.Value),
-                    DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId.Value),
-                    MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId.Value),
+                    GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId),
+                    DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId),
+                    MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId),
                     OwnerQuantity = request.OwnerQuantity,
                     Options = await _announcementRepository.GetOptionsByIds(request.OptionsIds),
                     Conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds),
                     SeatCount = request.SeatCount,
                     VinCode = request.VinCode,
                     EngineVolume = request.EngineVolume,
-                    MileAge = request.Mileage,
+                    Mileage = request.Mileage,
                     MileageType = Enum.Parse<DistanceUnit>(request.MileageType, true)
                 }
             },
@@ -68,7 +68,6 @@ public class AnnouncementService : IAnnouncementService
             OnCredit = request.OnCredit,
             Description = request.Description,
             Price = request.Price,
-            Currency = await _announcementRepository.GetCurrencyById(request.CurrencyId),
             Country = await _announcementRepository.GetCountryById(request.CountryId),
             City = await _announcementRepository.GetCityById(request.CityId),
             Owner = user
@@ -83,27 +82,27 @@ public class AnnouncementService : IAnnouncementService
                 {
                     Vehicle = new Vehicle()
                     {
-                        Year = await _announcementRepository.GetManufactureYearById(request.YearId.Value),
-                        Make = await _announcementRepository.GetMakeById(request.MakeId.Value),
-                        Model = await _announcementRepository.GetModelById(request.ModelId.Value),
-                        FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId.Value),
-                        IsBrandNew = request.IsBrandNew,
-
-                        VehicleDetails = new VehicleDetails()
+                        Make = await _announcementRepository.GetMakeById(request.MakeId),
+                        Model = await _announcementRepository.GetModelById(request.ModelId),
+                        
+                        VehicleDetail = new VehicleDetail()
                         {
-                            BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId.Value),
-                            Color = await _announcementRepository.GetColorById(request.ColorId.Value),
+                            Year = await _announcementRepository.GetManufactureYearById(request.YearId),
+                            FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId),
+                            IsBrandNew = request.IsBrandNew,
+                            BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId),
+                            Color = await _announcementRepository.GetColorById(request.ColorId),
                             HorsePower = request.HorsePower,
-                            GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId.Value),
-                            DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId.Value),
-                            MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId.Value),
+                            GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId),
+                            DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId),
+                            MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId),
                             OwnerQuantity = request.OwnerQuantity,
                             Options = await _announcementRepository.GetOptionsByIds(request.OptionsIds),
                             Conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds),
                             SeatCount = request.SeatCount,
                             VinCode = request.VinCode,
                             EngineVolume = request.EngineVolume,
-                            MileAge = request.Mileage,
+                            Mileage = request.Mileage,
                             MileageType = request.MileageType
                         }
                     },
@@ -113,7 +112,6 @@ public class AnnouncementService : IAnnouncementService
                     OnCredit = request.OnCredit,
                     Description = request.Description,
                     Price = request.Price,
-                    Currency = await _announcementRepository.GetCurrencyById(request.CurrencyId),
                     Country = await _announcementRepository.GetCountryById(request.CountryId),
                     City = await _announcementRepository.GetCityById(request.CityId),
                     IsPremium = request.IsPremium,
@@ -149,17 +147,13 @@ public class AnnouncementService : IAnnouncementService
     
     public async Task<AnnouncementResponseDto?> CreateAnnouncementAsync(CreateAnnouncementDto request)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
 
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
-        if (!UpdateUserUploadLimits(request.IsPremium, user))
-        {
-            return null;
-        }
+        // if (!UpdateUserUploadLimits(request.IsPremium, user))
+        // {
+        //     return null;
+        // }
 
         var announcement = await MapCreateAnnouncementDtoToModelAsync(request, user);
         
@@ -176,13 +170,8 @@ public class AnnouncementService : IAnnouncementService
     
     public async Task<AnnouncementResponseDto?> DeleteInactivateAnnouncementAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-        
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var response = await _announcementRepository.DeleteInactiveAnnouncementFromDbAsync(user, announcementId);
 
         await _fileService.DeleteAllFilesAsync(user.Id);
@@ -197,13 +186,9 @@ public class AnnouncementService : IAnnouncementService
 
     public async Task<LimitRequestDto> GetUserLimitsAsync()
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
+        
         return new LimitRequestDto()
         {
             PremiumLimit = user.PremiumUploadLimit,
@@ -233,20 +218,14 @@ public class AnnouncementService : IAnnouncementService
     public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAllAnnouncementsForAdminPanelAsync(
         PagingParameters parameters, AnnouncementState announcementState)
     {
-        var response =
-            await _announcementRepository.GetAllAnnouncementsForAdminPanelFromDbAsync(parameters, announcementState);
+        var response = await _announcementRepository.GetAllAnnouncementsForAdminPanelFromDbAsync(parameters, announcementState);
         return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
     }
     
     public async Task<AnnouncementResponseDto?> UpdateAnnouncementAsync(Guid announcementId, UpdateAnnouncementDto request)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var announcement = await MapUpdateAnnouncementDtoToModelAsync(request, user);
         
         if (!await _announcementRepository.CheckAllRelationsInAnnouncement(announcement))
@@ -261,13 +240,8 @@ public class AnnouncementService : IAnnouncementService
 
     public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-        
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var response = await _announcementRepository.MakeAnnouncementActiveInDbAsync(user, announcementId);
 
         return _mapper.Map<AnnouncementResponseDto>(response);
@@ -275,13 +249,8 @@ public class AnnouncementService : IAnnouncementService
     
     public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-        
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user, announcementId);
 
         return _mapper.Map<AnnouncementResponseDto>(response);
@@ -295,13 +264,8 @@ public class AnnouncementService : IAnnouncementService
 
     public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAnnouncementsByStatesAndByUserAsync(PagingParameters pagingParameters, AnnouncementState announcementState)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var response = await _announcementRepository.GetAnnouncementsByStatesAndByUserFromDbAsync(user, pagingParameters, announcementState);
 
         return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);
@@ -309,13 +273,8 @@ public class AnnouncementService : IAnnouncementService
     
     public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetAllAnnouncementsByUserAsync(PagingParameters pagingParameters)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
-
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         var response = await _announcementRepository.GetAllAnnouncementsByUserFromDbAsync(user, pagingParameters);
 
         return _mapper.Map<PaginatedList<AnnouncementResponseMiniDto>>(response);

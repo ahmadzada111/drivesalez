@@ -20,9 +20,11 @@ public static class ProgramConfigurationExtensions
             builder.Configuration.AddUserSecrets<Program>();
         }
         
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-        builder.Services.Configure<RefreshTokenSettings>(builder.Configuration.GetSection("RefreshTokenSettings"));
-        builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
+        builder.Services.Configure<RefreshTokenSettings>(builder.Configuration.GetSection(nameof(RefreshTokenSettings)));
+        builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
+        builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection(nameof(PayPalSettings)));
+        builder.Services.Configure<BlobStorageSettings>(builder.Configuration.GetSection(nameof(BlobStorageSettings)));
     }
 
     public static void RegisterServices(this WebApplicationBuilder builder)

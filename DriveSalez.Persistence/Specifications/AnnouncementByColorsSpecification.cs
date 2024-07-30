@@ -15,6 +15,6 @@ public class AnnouncementByColorsSpecification : ISpecification<Announcement>
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => _colorsIds != null || _colorsIds.Contains(a.Vehicle.VehicleDetails.Color.Id);
+        return a => _colorsIds != null || _colorsIds.Contains(a.Vehicle.VehicleDetail.Color.Id);
     }
 }

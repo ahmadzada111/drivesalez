@@ -1,6 +1,4 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AnnoucementDTO;
 using DriveSalez.Application.DTO.AnnouncementDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
@@ -29,12 +27,8 @@ public class ModeratorService : IModeratorService
     
     public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         
         var response = await _moderatorRepository.MakeAnnouncementActiveInDbAsync(user, announcementId);
 
@@ -43,12 +37,8 @@ public class ModeratorService : IModeratorService
 
     public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         
         var response = await _moderatorRepository.MakeAnnouncementInactiveInDbAsync(user, announcementId);
 
@@ -57,12 +47,8 @@ public class ModeratorService : IModeratorService
 
     public async Task<AnnouncementResponseDto?> MakeAnnouncementWaitingAsync(Guid announcementId)
     {
-        var user = await _userManager.GetUserAsync(_contextAccessor.HttpContext?.User);
-        
-        if (user == null)
-        {
-            throw new UserNotAuthorizedException("User is not authorized!");
-        }
+        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
         
         var response = await _moderatorRepository.MakeAnnouncementWaitingInDbAsync(user, announcementId);
 

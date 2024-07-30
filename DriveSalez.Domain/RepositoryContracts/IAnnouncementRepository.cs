@@ -44,27 +44,25 @@ public interface IAnnouncementRepository
 
     public Task<Model> GetModelById(int id);
 
-    public Task<VehicleFuelType> GetFuelTypeById(int id);
+    public Task<FuelType> GetFuelTypeById(int id);
 
-    public Task<VehicleGearboxType> GetGearboxById(int id);
+    public Task<GearboxType> GetGearboxById(int id);
 
-    public Task<VehicleDrivetrainType> GetDrivetrainTypeById(int id);
+    public Task<DrivetrainType> GetDrivetrainTypeById(int id);
 
-    public Task<VehicleBodyType> GetBodyTypeById(int id);
+    public Task<BodyType> GetBodyTypeById(int id);
 
-    public Task<List<VehicleCondition>> GetConditionsByIds(List<int> ids);
+    public Task<List<Condition>> GetConditionsByIds(List<int> ids);
 
-    public Task<List<VehicleOption>> GetOptionsByIds(List<int> ids);
+    public Task<List<Option>> GetOptionsByIds(List<int> ids);
 
-    public Task<VehicleColor> GetColorById(int id);
+    public Task<Color> GetColorById(int id);
 
-    public Task<VehicleMarketVersion> GetMarketVersionById(int id);
+    public Task<MarketVersion> GetMarketVersionById(int id);
 
     public Task<Country> GetCountryById(int id);
 
     public Task<City> GetCityById(int id);
-
-    public Task<Currency> GetCurrencyById(int id);
 
     public Task<bool> CheckAllRelationsInAnnouncement(Announcement request);
 }

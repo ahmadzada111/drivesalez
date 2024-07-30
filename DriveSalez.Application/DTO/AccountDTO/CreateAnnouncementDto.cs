@@ -7,37 +7,37 @@ namespace DriveSalez.Application.DTO.AccountDTO;
 public record CreateAnnouncementDto
 {
     [Required(ErrorMessage = "Year cannot be blank!")]
-    public int? YearId { get; init; }   
+    public int YearId { get; init; }   
 
     [Required(ErrorMessage = "Make cannot be blank!")]
-    public int? MakeId { get; init; }
+    public int MakeId { get; init; }
 
     [Required(ErrorMessage = "Model cannot be blank!")]
-    public int? ModelId { get; init; }
+    public int ModelId { get; init; }
 
     [Required(ErrorMessage = "Fuel type cannot be blank!")]
-    public int? FuelTypeId { get; init; }
+    public int FuelTypeId { get; init; }
 
     [Required(ErrorMessage = "Gearbox be blank!")]
-    public int? GearboxId { get; init; }
+    public int GearboxId { get; init; }
 
     [Required(ErrorMessage = "Drivetrain cannot be blank!")]
-    public int? DrivetrainTypeId { get; init; }
+    public int DrivetrainTypeId { get; init; }
 
     [Required(ErrorMessage = "Body type cannot be blank!")]
-    public int? BodyTypeId { get; init; }
+    public int BodyTypeId { get; init; }
         
     [Required(ErrorMessage = "Conditions cannot be blank!")]
-    public List<int>? ConditionsIds { get; init; }
+    public List<int> ConditionsIds { get; init; }
         
     [Required(ErrorMessage = "Options cannot be blank!")]
-    public List<int>? OptionsIds { get; init; }
+    public List<int> OptionsIds { get; init; }
 
     [Required(ErrorMessage = "Color cannot be blank!")]
-    public int? ColorId { get; init; }
+    public int ColorId { get; init; }
 
     [Required(ErrorMessage = "Market version cannot be blank!")]
-    public int? MarketVersionId { get; init; }
+    public int MarketVersionId { get; init; }
 
     [Required(ErrorMessage = "Horse power cannot be blank!")]
     public int HorsePower { get; init; }     
@@ -64,7 +64,7 @@ public record CreateAnnouncementDto
     public int? EngineVolume { get; init; }
 
     [Required(ErrorMessage = "Images cannot be blank!")]
-    public List<string>? ImageData { get; init; }
+    public List<string> ImageData { get; init; }
 
     [Required(ErrorMessage = "Country cannot be blank!")]
     public int CountryId { get; init; }
@@ -83,9 +83,6 @@ public record CreateAnnouncementDto
 
     [Required(ErrorMessage = "Price cannot be blank!")]
     public decimal Price { get; init; }   
-
-    [Required(ErrorMessage = "Currency cannot be blank!")]
-    public int CurrencyId { get; init; } 
         
     [Required(ErrorMessage = "Is Premium cannot be blank!")]
     public bool IsPremium { get; init; }

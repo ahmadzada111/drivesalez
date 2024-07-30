@@ -8,49 +8,45 @@ namespace DriveSalez.Domain.RepositoryContracts;
 
 public interface IAdminRepository
 {
-    Task<VehicleColor> SendNewColorToDbAsync(string color);
+    Task<Color> SendNewColorToDbAsync(string color);
 
-    Task<VehicleBodyType> SendNewBodyTypeToDbAsync(string bodyType);
+    Task<BodyType> SendNewBodyTypeToDbAsync(string bodyType);
 
     Task<City> SendNewCityToDbAsync(string city, int countryId);
         
     Task<Country> SendNewCountryToDbAsync(string country);
         
-    Task<VehicleDrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
+    Task<DrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
 
-    Task<VehicleGearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
+    Task<GearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
 
     Task<Make> SendNewMakeToDbAsync(string make);
 
     Task<Model> SendNewModelToDbAsync(int makeId, string model);
 
-    Task<VehicleFuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
+    Task<FuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
 
-    Task<VehicleCondition> SendNewVehicleConditionToDbAsync(string condition, string description);
+    Task<Condition> SendNewVehicleConditionToDbAsync(string condition, string description);
 
-    Task<VehicleMarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
+    Task<MarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
 
-    Task<VehicleOption> SendNewVehicleOptionToDbAsync(string option);
+    Task<Option> SendNewVehicleOptionToDbAsync(string option);
 
-    Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price, int currencyId);
+    Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price);
         
-    Task<Currency> SendNewCurrencyToDbAsync(string currencyName);
-        
-    Task<VehicleColor> UpdateVehicleColorInDbAsync(int colorId, string newColor);
+    Task<Color> UpdateVehicleColorInDbAsync(int colorId, string newColor);
 
-    Task<VehicleBodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
+    Task<BodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
 
     Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit);
 
     Task<City> UpdateCityInDbAsync(int cityId, string newCity);
-        
-    Task<Currency> UpdateCurrencyInDbAsync(int currencyId, string currencyName);
 
-    Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price, int currencyId);
+    Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price);
         
-    Task<VehicleDrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
+    Task<DrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
 
-    Task<VehicleGearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
+    Task<GearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
 
     Task<Make> UpdateMakeInDbAsync(int gearboxId, string newGearbox);
 
@@ -58,23 +54,21 @@ public interface IAdminRepository
         
     Task<Model> UpdateModelInDbAsync(int modelId, string newModel);
 
-    Task<VehicleFuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
+    Task<FuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
 
-    Task<VehicleCondition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
+    Task<Condition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
 
-    Task<VehicleOption> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption);
+    Task<Option> UpdateVehicleOptionInDbAsync(int vehicleOptionId, string newVehicleOption);
 
-    Task<VehicleMarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion);
+    Task<MarketVersion> UpdateVehicleMarketVersionInDbAsync(int marketVersionId, string newMarketVersion);
         
-    Task<VehicleColor?> DeleteVehicleColorFromDbAsync(int colorId);
+    Task<Color?> DeleteVehicleColorFromDbAsync(int colorId);
 
-    Task<VehicleBodyType?> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId);
-
-    Task<Currency?> DeleteCurrencyFromDbAsync(int currencyId);
+    Task<BodyType?> DeleteVehicleBodyTypeFromDbAsync(int bodyTypeId);
         
-    Task<VehicleDrivetrainType?> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId);
+    Task<DrivetrainType?> DeleteVehicleDrivetrainTypeFromDbAsync(int driveTrainId);
 
-    Task<VehicleGearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId);
+    Task<GearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId);
 
     Task<Subscription?> DeleteSubscriptionFromDbAsync(int subscriptionId);
 
@@ -86,13 +80,13 @@ public interface IAdminRepository
         
     Task<Country?> DeleteCountryFromDbAsync(int countryId);
         
-    Task<VehicleFuelType?> DeleteFuelTypeFromDbAsync(int fuelTypeId);
+    Task<FuelType?> DeleteFuelTypeFromDbAsync(int fuelTypeId);
 
-    Task<VehicleCondition?> DeleteVehicleConditionFromDbAsync(int vehicleConditionId);
+    Task<Condition?> DeleteVehicleConditionFromDbAsync(int vehicleConditionId);
 
-    Task<VehicleOption?> DeleteVehicleOptionFromDbAsync(int vehicleOptionId);
+    Task<Option?> DeleteVehicleOptionFromDbAsync(int vehicleOptionId);
 
-    Task<VehicleMarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
+    Task<MarketVersion?> DeleteVehicleMarketVersionFromDbAsync(int marketVersionId);
 
     Task<ApplicationUser?> DeleteModeratorFromDbAsync(Guid moderatorId);
 

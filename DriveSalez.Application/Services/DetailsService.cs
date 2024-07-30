@@ -15,25 +15,25 @@ public class DetailsService : IDetailsService
         _detailsRepository = detailsRepository;
     }
 
-    public async Task<IEnumerable<VehicleColor>> GetAllColorsAsync()
+    public async Task<IEnumerable<Color>> GetAllColorsAsync()
     {
         var response = await _detailsRepository.GetAllColorsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleBodyType>> GetAllVehicleBodyTypesAsync()
+    public async Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleDrivetrainType>> GetAllVehicleDrivetrainsAsync()
+    public async Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleGearboxType>> GetAllVehicleGearboxTypesAsync()
+    public async Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
         return response;
@@ -45,13 +45,13 @@ public class DetailsService : IDetailsService
         return response;
     }
 
-    public async Task<IEnumerable<VehicleFuelType>> GetAllVehicleFuelTypesAsync()
+    public async Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleCondition>> GetAllVehicleDetailsConditionsAsync()
+    public async Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
         return response;
@@ -75,13 +75,13 @@ public class DetailsService : IDetailsService
         return response;
     }
 
-    public async Task<IEnumerable<VehicleMarketVersion>> GetAllVehicleMarketVersionsAsync()
+    public async Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
         return response;
     }
 
-    public async Task<IEnumerable<VehicleOption>> GetAllVehicleDetailsOptionsAsync()
+    public async Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
         return response;
@@ -114,12 +114,6 @@ public class DetailsService : IDetailsService
     public async Task<IEnumerable<City>> GetAllCitiesAsync()
     {
         var response = await _detailsRepository.GetAllCitiesFromDbAsync();
-        return response;
-    }
-
-    public async Task<IEnumerable<Currency>> GetAllCurrenciesAsync()
-    {
-        var response = await _detailsRepository.GetAllCurrenciesFromDbAsync();
         return response;
     }
 }

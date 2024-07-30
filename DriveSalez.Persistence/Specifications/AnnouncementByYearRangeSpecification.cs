@@ -17,7 +17,7 @@ public class AnnouncementByYearRangeSpecification : ISpecification<Announcement>
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => (!_fromYearId.HasValue || a.Vehicle.Year.Id >= _fromYearId)
-                    && (!_toYearId.HasValue || a.Vehicle.Year.Id <= _toYearId);
+        return a => (!_fromYearId.HasValue || a.Vehicle.VehicleDetail.Year.Id >= _fromYearId)
+                    && (!_toYearId.HasValue || a.Vehicle.VehicleDetail.Year.Id <= _toYearId);
     }
 }

@@ -31,6 +31,12 @@ public class NotifyUsersWithExpiringSubscriptionsJob : IJob
 
         foreach (var user in users)
         {
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                _logger.LogWarning($"User {user.Id} does not have a valid email address.");
+                continue;
+            }
+
             string subject = "Subscription Expiry Reminder";
             string body = $"Dear {user.FirstName} {user.LastName}," +
                           $"\n\nWe wanted to remind you that your subscription to our service will expire in 7 days." +

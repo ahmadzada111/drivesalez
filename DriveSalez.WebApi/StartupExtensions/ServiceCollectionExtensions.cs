@@ -12,7 +12,6 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
 using DriveSalez.Application.AutoMapper;
-using DriveSalez.Application.Providers;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.SharedKernel.Settings;
@@ -24,10 +23,13 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
     {
+        services.AddHttpClient();
         services.AddSingleton<JwtSettings>();
         services.AddSingleton<EmailSettings>();
         services.AddSingleton<RefreshTokenSettings>();
-        services.AddScoped<IBlobContainerClientProvider, BlobContainerClientProvider>();
+        services.AddSingleton<PayPalSettings>();
+        services.AddSingleton<BlobStorageSettings>();
+        services.AddScoped<IPayPalService, PayPalService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IModeratorService, ModeratorService>();
         services.AddScoped<IModeratorRepository, ModeratorRepository>();

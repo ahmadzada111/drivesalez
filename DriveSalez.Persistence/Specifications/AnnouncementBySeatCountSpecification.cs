@@ -15,6 +15,6 @@ public class AnnouncementBySeatCountSpecification : ISpecification<Announcement>
 
     public Expression<Func<Announcement, bool>> ToExpression()
     {
-        return a => !_seatCount.HasValue || a.Vehicle.VehicleDetails.SeatCount == _seatCount;
+        return a => !_seatCount.HasValue || a.Vehicle.VehicleDetail.SeatCount == _seatCount;
     }
 }

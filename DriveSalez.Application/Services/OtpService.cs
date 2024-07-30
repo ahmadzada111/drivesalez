@@ -17,10 +17,10 @@ public class OtpService : IOtpService
         _userManager = userManager;
     }
 
-    public string GenerateOtp()
+    public int GenerateOtp()
     {
         Random random = new Random();
-        return random.Next(100000, 999999).ToString();
+        return random.Next(100000, 999999);
     }
 
     public async Task<bool> ValidateOtpAsync(IMemoryCache cache, ValidateOtpDto request)
@@ -32,7 +32,7 @@ public class OtpService : IOtpService
             throw new UserNotFoundException("User with provided email wasn't found!");
         }
         
-        if (cache.TryGetValue(request.Email, out string cachedOtp))
+        if (cache.TryGetValue(request.Email, out int cachedOtp))
         {
             if (request.Otp == cachedOtp)
             {
