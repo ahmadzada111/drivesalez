@@ -40,6 +40,20 @@ public class AccountService : IAccountService
         _mapper = mapper;
     }
 
+    private async Task<IdentityResult> RegisterUserAsync<TUser>(TUser user, string password, UserType userType) where TUser : ApplicationUser
+    {
+        IdentityResult result = await _userManager.CreateAsync(user, password);
+
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, userType.ToString());
+            await _userManager.UpdateAsync(user);
+            await _accountRepository.AddLimitsToAccountInDbAsync(user, userType);
+        }
+
+        return result;
+    }
+
     public async Task<IdentityResult> RegisterDefaultAccountAsync(RegisterDefaultAccountDto request)
     {
         DefaultAccount user = new DefaultAccount()
@@ -51,23 +65,11 @@ public class AccountService : IAccountService
             LastName = request.LastName,
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
-            LastUpdateDate = DateTimeOffset.Now,
             SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1),
             IsBanned = false
         };
-        
-        IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
-        if (result.Succeeded)
-        {
-            await _userManager.AddToRoleAsync(user, UserType.DefaultAccount.ToString());
-            await _userManager.UpdateAsync(user);
-            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.DefaultAccount);
-            
-            return result;
-        }
-
-        return result;
+        return await RegisterUserAsync(user, request.Password, UserType.DefaultAccount);
     }
 
     public async Task<IdentityResult> RegisterBusinessAccountAsync(RegisterBusinessAccountDto request)
@@ -82,44 +84,75 @@ public class AccountService : IAccountService
             Description = request.Description,
             EmailConfirmed = false,
             CreationDate = DateTimeOffset.Now,
-            LastUpdateDate = DateTimeOffset.Now,
             SubscriptionExpirationDate = DateTimeOffset.Now,
             IsBanned = false
         };
 
-        IdentityResult result = await _userManager.CreateAsync(user, request.Password);
+        return await RegisterUserAsync(user, request.Password, UserType.BusinessAccount);
+    }
 
-        if (result.Succeeded)
+    private async Task<TUser> SignInAndValidateUserAsync<TUser>(LoginDto request) where TUser : ApplicationUser
+    {
+        SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
+        
+        if (!result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, UserType.BusinessAccount.ToString());
-            await _userManager.UpdateAsync(user);
-            await _accountRepository.AddLimitsToAccountInDbAsync(user, UserType.BusinessAccount);
-            
-            return result;
+            throw new InvalidOperationException("Sign-in failed.");
         }
 
-        return result;
+        var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) as TUser
+            ?? throw new UserNotFoundException("User with provided login wasn't found!");
+
+        if (!user.EmailConfirmed)
+        {
+            throw new EmailNotConfirmedException("Email not confirmed!");
+        }
+
+        if (user.IsBanned)
+        {
+            throw new BannedUserException("User is banned!");
+        }
+
+        await _signInManager.SignInAsync(user, isPersistent: false);
+        
+        return user;
     }
-    
-    public async Task<AuthenticationResponseDto?> LoginAsync(LoginDto request)
+
+    public async Task<DefaultAccountAuthResponseDto?> LoginDefaultAccountAsync(LoginDto request)
+    {
+        var user = await SignInAndValidateUserAsync<DefaultAccount>(request);
+        var response = await _jwtService.GenerateDefaultAccountSecurityTokenAsync(user);
+        
+        user.RefreshToken = response.RefreshToken;
+        user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+        
+        await _userManager.UpdateAsync(user);
+        
+        return response;
+    }
+
+    public async Task<BusinessAccountAuthResponseDto?> LoginBusinessAccountAsync(LoginDto request)
+    {
+        var user = await SignInAndValidateUserAsync<BusinessAccount>(request);
+        var response = await _jwtService.GenerateBusinessAccountSecurityTokenAsync(user);
+        
+        user.RefreshToken = response.RefreshToken;
+        user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+        
+        await _userManager.UpdateAsync(user);
+        
+        return response;
+    }
+
+    public async Task<DefaultAccountAuthResponseDto?> LoginStaffAsync(LoginDto request)
     {
         SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
 
         if (result.Succeeded)
         {
             var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) ?? throw new UserNotFoundException("User with provided login wasn't found!");
-            if (!user.EmailConfirmed)
-            {
-                throw new EmailNotConfirmedException("Email not confirmed!");
-            }
-
-            if (user.IsBanned)
-            {
-                throw new BannedUserException("User is banned!");
-            }
-            
             await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityTokenAsync(user);
+            var response = await _jwtService.GenerateDefaultAccountSecurityTokenAsync((DefaultAccount)user);
             user.RefreshToken = response.RefreshToken;
             user.RefreshTokenExpiration = response.RefreshTokenExpiration;
             await _userManager.UpdateAsync(user);
@@ -130,29 +163,10 @@ public class AccountService : IAccountService
         return null;
     }
 
-    public async Task<AuthenticationResponseDto?> LoginStaffAsync(LoginDto request)
+    private async Task<TUser> ValidateAndRetrieveUserAsync<TUser>(RefreshJwtDto request) where TUser : ApplicationUser
     {
-        SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: false);
-
-        if (result.Succeeded)
-        {
-            var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) ?? throw new UserNotFoundException("User with provided login wasn't found!");
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            var response = await _jwtService.GenerateSecurityTokenAsync(user);
-            user.RefreshToken = response.RefreshToken;
-            user.RefreshTokenExpiration = response.RefreshTokenExpiration;
-            await _userManager.UpdateAsync(user);
-
-            return response;
-        }
-        
-        return null;
-    }
-    
-    public async Task<AuthenticationResponseDto> RefreshAsync(RefreshJwtDto request)
-    {
-        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token) ??
-        throw new SecurityTokenException("Invalid JWT token");
+        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token)
+            ?? throw new SecurityTokenException("Invalid JWT token");
 
         string? email = principal.FindFirstValue(ClaimTypes.Email);
 
@@ -161,22 +175,61 @@ public class AccountService : IAccountService
             throw new SecurityTokenException("Email claim not found in JWT token");
         }
 
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.Now)
+        var user = await _userManager.FindByEmailAsync(email) as TUser;
+        if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiration <= DateTime.UtcNow)
         {
-            throw new SecurityTokenException("Invalid refresh token");
+            throw new SecurityTokenException("Invalid or expired refresh token");
         }
 
-        var response = await _jwtService.GenerateSecurityTokenAsync(user);
+        return user;
+    }
+
+    public async Task<BusinessAccountAuthResponseDto> RefreshBusinessAccountAsync(RefreshJwtDto request)
+    {
+        var user = await ValidateAndRetrieveUserAsync<BusinessAccount>(request);
+
+        var response = await _jwtService.GenerateBusinessAccountSecurityTokenAsync(user);
         user.RefreshToken = response.RefreshToken;
         user.RefreshTokenExpiration = response.RefreshTokenExpiration;
 
         await _userManager.UpdateAsync(user);
 
-        return response;
+        return new BusinessAccountAuthResponseDto
+        {
+            Token = response.Token,
+            Email = user.Email,
+            PhoneNumbers = _mapper.Map<List<string>>(user.PhoneNumbers),
+            JwtExpiration = response.JwtExpiration,
+            RefreshToken = response.RefreshToken,
+            RefreshTokenExpiration = response.RefreshTokenExpiration,
+            UserRole = response.UserRole
+        };
+    }   
+
+    public async Task<DefaultAccountAuthResponseDto> RefreshDefaultAccountAsync(RefreshJwtDto request)
+    {
+        var user = await ValidateAndRetrieveUserAsync<DefaultAccount>(request);
+
+        var response = await _jwtService.GenerateDefaultAccountSecurityTokenAsync(user);
+        user.RefreshToken = response.RefreshToken;
+        user.RefreshTokenExpiration = response.RefreshTokenExpiration;
+
+        await _userManager.UpdateAsync(user);
+
+        return new DefaultAccountAuthResponseDto
+        {
+            Token = response.Token,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
+            JwtExpiration = response.JwtExpiration,
+            RefreshToken = response.RefreshToken,
+            RefreshTokenExpiration = response.RefreshTokenExpiration,
+            UserRole = response.UserRole
+        };
     }
-    
+
     public async Task<bool> ChangePasswordAsync(ChangePasswordDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new UserNotFoundException("User with provided email wasn't found!");

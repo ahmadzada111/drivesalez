@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class VehicleDetailConfiguration : IEntityTypeConfiguration<VehicleDetail>
+internal class VehicleDetailConfiguration : IEntityTypeConfiguration<VehicleDetail>
 {
     public void Configure(EntityTypeBuilder<VehicleDetail> builder)
     {

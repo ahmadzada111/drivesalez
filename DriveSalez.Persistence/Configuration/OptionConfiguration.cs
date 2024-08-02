@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class OptionConfiguration : IEntityTypeConfiguration<Option>
+internal class OptionConfiguration : IEntityTypeConfiguration<Option>
 {
     public void Configure(EntityTypeBuilder<Option> builder)
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class MarketVersionConfiguration : IEntityTypeConfiguration<MarketVersion>
+internal class MarketVersionConfiguration : IEntityTypeConfiguration<MarketVersion>
 {
     public void Configure(EntityTypeBuilder<MarketVersion> builder)
     {

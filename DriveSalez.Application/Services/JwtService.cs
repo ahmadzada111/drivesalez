@@ -4,12 +4,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
-using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using DriveSalez.Application.DTO.AccountDTO;
 
 namespace DriveSalez.Application.Services;
 
@@ -29,7 +29,7 @@ public class JwtService : IJwtService
         _refreshTokenSettings = refreshTokenSettings.Value;
     }
 
-    public async Task<AuthenticationResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
+    private async Task<JwtSecurityToken> GenerateSecurityTokenAsync(ApplicationUser user)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
         var role = await _userManager.GetRolesAsync(user);
@@ -59,15 +59,45 @@ public class JwtService : IJwtService
             signingCredentials: signingCredentials
         );
 
+        return token;
+    }
+    
+    public async Task<DefaultAccountAuthResponseDto> GenerateDefaultAccountSecurityTokenAsync(DefaultAccount user)
+    {
+        DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
+        JwtSecurityToken token = await GenerateSecurityTokenAsync(user);
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
         string response = tokenHandler.WriteToken(token);
 
-        return new AuthenticationResponseDto()
+        var role = await _userManager.GetRolesAsync(user);
+
+        return new DefaultAccountAuthResponseDto()
         {
             Token = response,
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
+            JwtExpiration = expiration,
+            RefreshToken = GenerateRefreshToken(),
+            RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(_refreshTokenSettings.Expiration),
+            UserRole = role.FirstOrDefault()
+        };
+    }
+
+    public async Task<BusinessAccountAuthResponseDto> GenerateBusinessAccountSecurityTokenAsync(BusinessAccount user)
+    {
+        DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
+        JwtSecurityToken token = await GenerateSecurityTokenAsync(user);
+        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        string response = tokenHandler.WriteToken(token);
+
+        var role = await _userManager.GetRolesAsync(user);
+
+        return new BusinessAccountAuthResponseDto()
+        {
+            Token = response,
+            Email = user.Email,
             PhoneNumbers = _mapper.Map<List<string>>(user.PhoneNumbers),
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
@@ -75,7 +105,8 @@ public class JwtService : IJwtService
             UserRole = role.FirstOrDefault()
         };
     }
-    
+
+
     public ClaimsPrincipal? GetPrincipalFromJwtToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters

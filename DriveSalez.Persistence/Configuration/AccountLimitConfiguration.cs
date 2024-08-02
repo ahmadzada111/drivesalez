@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class AccountLimitConfiguration : IEntityTypeConfiguration<AccountLimit>
+internal class AccountLimitConfiguration : IEntityTypeConfiguration<AccountLimit>
 {
     public void Configure(EntityTypeBuilder<AccountLimit> builder)
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class GearboxTypeConfiguration : IEntityTypeConfiguration<GearboxType>
+internal class GearboxTypeConfiguration : IEntityTypeConfiguration<GearboxType>
 {
     public void Configure(EntityTypeBuilder<GearboxType> builder)
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class DrivetrainTypeConfiguration : IEntityTypeConfiguration<DrivetrainType>
+internal class DrivetrainTypeConfiguration : IEntityTypeConfiguration<DrivetrainType>
 {
     public void Configure(EntityTypeBuilder<DrivetrainType> builder)
     {

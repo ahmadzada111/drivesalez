@@ -1,11 +1,10 @@
 using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
+internal class SubscriptionConfiguration : IEntityTypeConfiguration<Subscription>
 {
     public void Configure(EntityTypeBuilder<Subscription> builder)
     {

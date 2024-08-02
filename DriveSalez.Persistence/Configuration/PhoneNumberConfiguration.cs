@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
+internal class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
 {
     public void Configure(EntityTypeBuilder<PhoneNumber> builder)
     {
@@ -14,7 +14,7 @@ public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
             .HasMaxLength(20)
             .IsRequired();
 
-        builder.HasOne(e => e.ApplicationUser)
+        builder.HasOne(e => e.BusinessAccount)
             .WithMany(e => e.PhoneNumbers)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class AnnouncementTypePricingConfiguration : IEntityTypeConfiguration<AnnouncementTypePricing>
+internal class AnnouncementTypePricingConfiguration : IEntityTypeConfiguration<AnnouncementTypePricing>
 {
     public void Configure(EntityTypeBuilder<AnnouncementTypePricing> builder)
     {
@@ -17,6 +17,7 @@ public class AnnouncementTypePricingConfiguration : IEntityTypeConfiguration<Ann
         builder.HasOne(e => e.Price)
             .WithMany(e => e.AnnouncementTypePricings)
             .HasForeignKey(e => e.PriceId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired();
     }
 }

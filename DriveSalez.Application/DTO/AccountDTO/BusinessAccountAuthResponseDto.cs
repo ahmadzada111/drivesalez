@@ -1,13 +1,9 @@
-﻿using DateTime = System.DateTime;
+using DateTime = System.DateTime;
 
 namespace DriveSalez.Application.DTO.AccountDTO;
 
-public record AuthenticationResponseDto
-{
-    public string FirstName { get; init; }
-        
-    public string LastName { get; init; }
-        
+public record BusinessAccountAuthResponseDto
+{       
     public string Email { get; init; }
         
     public List<string> PhoneNumbers { get; init; }

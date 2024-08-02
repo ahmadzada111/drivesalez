@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class ConditionConfiguration : IEntityTypeConfiguration<Condition>
+internal class ConditionConfiguration : IEntityTypeConfiguration<Condition>
 {
     public void Configure(EntityTypeBuilder<Condition> builder)
     {

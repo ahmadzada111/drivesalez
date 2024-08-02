@@ -13,5 +13,5 @@ public class PhoneNumber
     public Guid UserId { get; set; }
 
     [JsonIgnore]
-    public ApplicationUser ApplicationUser{ get; set; }
+    public BusinessAccount BusinessAccount { get; set; }
 }

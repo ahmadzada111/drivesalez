@@ -106,7 +106,6 @@ public class AnnouncementService : IAnnouncementService
                             MileageType = request.MileageType
                         }
                     },
-                    ViewCount = 0,
                     ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                     Barter = request.Barter,
                     OnCredit = request.OnCredit,

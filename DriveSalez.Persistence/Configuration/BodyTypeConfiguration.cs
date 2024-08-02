@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class BodyTypeConfiguration : IEntityTypeConfiguration<BodyType>
+internal class BodyTypeConfiguration : IEntityTypeConfiguration<BodyType>
 {
     public void Configure(EntityTypeBuilder<BodyType> builder)
     {
@@ -17,6 +17,6 @@ public class BodyTypeConfiguration : IEntityTypeConfiguration<BodyType>
         builder.HasMany(e => e.VehicleDetails)
             .WithOne(e => e.BodyType)
             .HasForeignKey(e => e.BodyTypeId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

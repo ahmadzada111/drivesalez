@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class ManufactureYearConfiguration : IEntityTypeConfiguration<ManufactureYear>
+internal class ManufactureYearConfiguration : IEntityTypeConfiguration<ManufactureYear>
 {
     public void Configure(EntityTypeBuilder<ManufactureYear> builder)
     {

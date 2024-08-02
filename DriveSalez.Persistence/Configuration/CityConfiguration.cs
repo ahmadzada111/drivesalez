@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class CityConfiguration : IEntityTypeConfiguration<City>
+internal class CityConfiguration : IEntityTypeConfiguration<City>
 {
     public void Configure(EntityTypeBuilder<City> builder)
     {
@@ -17,9 +17,9 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
         builder.HasOne(e => e.Country)
             .WithMany(e => e.Cities)
             .HasForeignKey(e => e.CountryId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
-
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
+            
         builder.HasMany(e => e.Announcements)
             .WithOne(e => e.City)
             .HasForeignKey(e => e.CityId)

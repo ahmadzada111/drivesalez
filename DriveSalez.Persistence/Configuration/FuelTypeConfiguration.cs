@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class FuelTypeConfiguration : IEntityTypeConfiguration<FuelType>
+internal class FuelTypeConfiguration : IEntityTypeConfiguration<FuelType>
 {
     public void Configure(EntityTypeBuilder<FuelType> builder)
     {

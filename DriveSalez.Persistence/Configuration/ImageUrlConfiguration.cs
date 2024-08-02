@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class ImageUrlConfiguration : IEntityTypeConfiguration<ImageUrl>
+internal class ImageUrlConfiguration : IEntityTypeConfiguration<ImageUrl>
 {
     public void Configure(EntityTypeBuilder<ImageUrl> builder)
     {

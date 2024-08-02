@@ -70,8 +70,8 @@ public class AccountController : Controller
         return Ok();
     }
     
-    [HttpPost("login")]
-    public async Task<ActionResult<AuthenticationResponseDto>> Login([FromBody] LoginDto request)
+    [HttpPost("login-default-account")]
+    public async Task<ActionResult<DefaultAccountAuthResponseDto>> LoginDefaultAccount([FromBody] LoginDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -81,7 +81,7 @@ public class AccountController : Controller
             return Problem(errorMessage);
         }
         
-        var response = await _accountService.LoginAsync(request);
+        var response = await _accountService.LoginDefaultAccountAsync(request);
 
         if (response == null)
         {
@@ -91,8 +91,29 @@ public class AccountController : Controller
         return Ok(response);
     }
     
+    [HttpPost("login-business-account")]
+    public async Task<ActionResult<DefaultAccountAuthResponseDto>> LoginBusinessAccount([FromBody] LoginDto request)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        if (!ModelState.IsValid)
+        {
+            string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+            return Problem(errorMessage);
+        }
+        
+        var response = await _accountService.LoginBusinessAccountAsync(request);
+
+        if (response == null)
+        {
+            return Unauthorized("Email or password is invalid");
+        }
+
+        return Ok(response);
+    }
+
     [HttpPost("login-staff")]
-    public async Task<ActionResult<AuthenticationResponseDto>> LoginStaff([FromBody] LoginDto request)
+    public async Task<ActionResult<DefaultAccountAuthResponseDto>> LoginStaff([FromBody] LoginDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -122,8 +143,8 @@ public class AccountController : Controller
         return NoContent();
     }
     
-    [HttpPost("refresh")]
-    public async Task<ActionResult<AuthenticationResponseDto>> Refresh([FromBody] RefreshJwtDto request)
+    [HttpPost("refresh-business-account")]
+    public async Task<ActionResult<BusinessAccountAuthResponseDto>> RefreshBusinessAccount([FromBody] RefreshJwtDto request)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -134,10 +155,26 @@ public class AccountController : Controller
         }
 
         
-        var response = await _accountService.RefreshAsync(request);
+        var response = await _accountService.RefreshBusinessAccountAsync(request);
         return Ok(response);
     }
     
+    [HttpPost("refresh-default-account")]
+    public async Task<ActionResult<DefaultAccountAuthResponseDto>> RefreshDefaultAccount([FromBody] RefreshJwtDto request)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+
+        if (!ModelState.IsValid)
+        {
+            string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+            return Problem(errorMessage);
+        }
+
+        
+        var response = await _accountService.RefreshDefaultAccountAsync(request);
+        return Ok(response);
+    }
+
     [Authorize]
     [HttpPost("change-password")]
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto request)

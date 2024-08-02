@@ -72,9 +72,9 @@ public record AnnouncementResponseDto
     
     public string Email { get; init; }
     
-    public string FirstName { get; init; }
+    public string? FirstName { get; init; }
     
-    public string LastName { get; init; }
+    public string? LastName { get; init; }
     
     public List<string> PhoneNumbers { get; init; }
 }

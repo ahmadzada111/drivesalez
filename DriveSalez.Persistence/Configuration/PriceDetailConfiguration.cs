@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class PriceDetailConfiguration : IEntityTypeConfiguration<PriceDetail>
+internal class PriceDetailConfiguration : IEntityTypeConfiguration<PriceDetail>
 {
     public void Configure(EntityTypeBuilder<PriceDetail> builder)
     {
