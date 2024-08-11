@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DriveSalez.Domain.Entities;
+﻿using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.Enums;
@@ -17,13 +16,11 @@ public class AdminRepository : IAdminRepository
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
         
-    public AdminRepository(ApplicationDbContext dbContext, ILogger<AdminRepository> logger, IMapper mapper)
+    public AdminRepository(ApplicationDbContext dbContext, ILogger<AdminRepository> logger)
     {
         _dbContext = dbContext;
         _logger = logger;
-        _mapper = mapper;
     }
 
     public async Task<Color> SendNewColorToDbAsync(string color)
@@ -34,7 +31,7 @@ public class AdminRepository : IAdminRepository
 
             ArgumentException.ThrowIfNullOrEmpty(color);
 
-            var response = await _dbContext.VehicleColors.AddAsync(new Color() { Title = color });
+            var response = await _dbContext.Colors.AddAsync(new Color() { Title = color });
 
             if (response.State == EntityState.Added)
             {
@@ -51,216 +48,6 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<Country> SendNewCountryToDbAsync(string country)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new country to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(country);
-
-            var response = await _dbContext.Countries.AddAsync(new Country() { Name = country });
-
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new country to DB");
-            throw;
-        }
-    }
-        
-    public async Task<BodyType> SendNewBodyTypeToDbAsync(string bodyType)
-    {
-        try
-        {
-            _logger.LogInformation($"Sending new body type to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(bodyType);
-
-            var response = await _dbContext.VehicleBodyTypes.AddAsync(new BodyType() { Type = bodyType });
-
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error sending new body type to DB");
-            throw;
-        }
-    }
-
-    public async Task<DrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType)
-    {
-        try
-        {
-            _logger.LogInformation($"Sending new vehicle drivetrain type to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(driveTrainType);
-
-            var response = await _dbContext.VehicleDriveTrainTypes.AddAsync(new DrivetrainType() { Type = driveTrainType });
-           
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error sending new vehicle drivetrain type to DB");
-            throw;
-        }
-    }
-
-    public async Task<GearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new vehicle gearbox type to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(gearboxType);
-
-            var response = await _dbContext.VehicleGearboxTypes.AddAsync(new GearboxType() { Type = gearboxType });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new vehicle gearbox type to DB");
-            throw;
-        }
-    }
-
-    public async Task<City> SendNewCityToDbAsync(string city, int countryId)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new city to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(city);
-
-            var response = await _dbContext.Cities.AddAsync(new City()
-            {
-                Name = city,
-                Country = await _dbContext.FindAsync<Country>(countryId) ??
-                throw new InvalidOperationException($"Country with ID {countryId} does not exist")
-            });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new city to DB");
-            throw;
-        }
-    }
-        
-    public async Task<Make> SendNewMakeToDbAsync(string make)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new make to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(make);
-
-            var response = await _dbContext.Makes.AddAsync(new Make() { Title = make });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new make to DB");
-            throw;
-        }
-    }
-
-    public async Task<Model> SendNewModelToDbAsync(int makeId, string model)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new model to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(model);
-
-            var response = await _dbContext.Models.AddAsync(new Model() 
-            { 
-                Title = model, 
-                Make = await _dbContext.Makes.FindAsync(makeId) ??
-                throw new InvalidOperationException($"Make with ID {makeId} does not exist")
-            });
-
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new model to DB");
-            throw;
-        }
-    }
-
-    public async Task<FuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType)
-    {
-        try
-        {
-            _logger.LogInformation("Sending new vehicle fuel type to DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(fuelType);
-
-            var response = await _dbContext.VehicleFuelTypes.AddAsync(new FuelType() { Type = fuelType });
-            
-            if (response.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return response.Entity;
-            }
-
-            throw new InvalidOperationException("Object wasn't added");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error sending new vehicle fuel type to DB");
-            throw;
-        }
-    }
-
     public async Task<Condition> SendNewVehicleConditionToDbAsync(string condition, string description)
     {
         try
@@ -269,7 +56,7 @@ public class AdminRepository : IAdminRepository
 
             ArgumentException.ThrowIfNullOrEmpty(condition);
 
-            var response = await _dbContext.VehicleDetailsConditions.AddAsync(new Condition()
+            var response = await _dbContext.Conditions.AddAsync(new Condition()
             {
                 Title = condition, 
                 Description = description
@@ -298,7 +85,7 @@ public class AdminRepository : IAdminRepository
 
             ArgumentException.ThrowIfNullOrEmpty(marketVersion);
 
-            var response = await _dbContext.VehicleMarketVersions.AddAsync(new MarketVersion() { Version = marketVersion });
+            var response = await _dbContext.MarketVersions.AddAsync(new MarketVersion() { Version = marketVersion });
             
             if (response.State == EntityState.Added)
             {
@@ -323,7 +110,7 @@ public class AdminRepository : IAdminRepository
 
             ArgumentException.ThrowIfNullOrEmpty(option);
 
-            var response = await _dbContext.VehicleDetailsOptions.AddAsync(new Option() { Title = option });
+            var response = await _dbContext.Options.AddAsync(new Option() { Title = option });
             
             if (response.State == EntityState.Added)
             {
@@ -340,7 +127,8 @@ public class AdminRepository : IAdminRepository
         }
     }
 
-    public async Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price)
+    //CHECK
+    public async Task<PricingOption> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price)
     {
         try
         {
@@ -348,13 +136,10 @@ public class AdminRepository : IAdminRepository
 
             ArgumentException.ThrowIfNullOrEmpty(subscriptionName);
 
-            var response = await _dbContext.Subscriptions.AddAsync(new Subscription()
+            var response = await _dbContext.PricingOptions.AddAsync(new PricingOption()
             {
                 Title = subscriptionName,
-                Price = new PriceDetail()
-                {
-                    Price = price,
-                }
+                Price = price
             });
             
             if (response.State == EntityState.Added)
@@ -399,105 +184,18 @@ public class AdminRepository : IAdminRepository
             throw;
         }
     }
-        
-    public async Task<BodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType)
-    {
-        try
-        {
-            _logger.LogInformation($"Updating body type with ID {bodyTypeId} to new value {newBodyType} in DB");
 
-            ArgumentException.ThrowIfNullOrEmpty(newBodyType);
-
-            var bodyType = await _dbContext.FindAsync<BodyType>(bodyTypeId) ?? 
-            throw new InvalidOperationException($"Body type with ID {bodyTypeId} does not exist");
-            bodyType.Type = newBodyType;
-            var response = _dbContext.Update(bodyType);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return bodyType;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating body type with ID {bodyTypeId} to new value {newBodyType} in DB");
-            throw;
-        }
-    }
-
-    public async Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry)
-    {
-        try
-        {
-            _logger.LogInformation($"Updating country with ID {countryId} to new value {newCountry} in DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(newCountry);
-
-            var country = await _dbContext.FindAsync<Country>(countryId) ??
-            throw new InvalidOperationException($"Country with ID {countryId} does not exist");
-            
-            country.Name = newCountry;
-            
-            var response = _dbContext.Update(country);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return country;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating country with ID {countryId} to new value {newCountry} in DB");
-            throw;
-        }
-    }
-        
-    public async Task<City> UpdateCityInDbAsync(int cityId, string newCity)
-    {
-        try
-        {
-            _logger.LogInformation($"Updating city with ID {cityId} to new value {newCity} in DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(newCity);
-
-            var city = await _dbContext.FindAsync<City>(cityId) ??
-            throw new InvalidOperationException($"City with ID {cityId} does not exist");
-
-            city.Name = newCity;
-            
-            var response = _dbContext.Update(city);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return city;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating city with ID {cityId} to new value {newCity} in DB");
-            throw;
-        }
-    }
-
-    public async Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price)
+    //CHECK
+    public async Task<PricingOption> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price)
     {
         try
         {
             _logger.LogInformation($"Updating subscription with ID {subscriptionId} in DB");
                 
-            var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId) ??
+            var subscription = await _dbContext.FindAsync<PricingOption>(subscriptionId) ??
             throw new InvalidOperationException($"Subscription with ID {subscriptionId} does not exist");
 
-            subscription.Price.Price = price;
+            subscription.Price = price;
             
             var response = _dbContext.Update(subscription);
 
@@ -512,120 +210,6 @@ public class AdminRepository : IAdminRepository
         catch (Exception e)
         {
             _logger.LogError(e, $"Error updating subscription with ID {subscriptionId} in DB");
-            throw;
-        }
-    }
-
-    public async Task<DrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain)
-    {
-        try
-        {
-            _logger.LogInformation($"Updating drivetrain with ID {driveTrainId} to new value {newDrivetrain} in DB");
-
-            ArgumentException.ThrowIfNullOrEmpty(newDrivetrain);
-
-            var drivetrain = await _dbContext.FindAsync<DrivetrainType>(driveTrainId) ??
-            throw new InvalidOperationException($"Drivetrain with ID {driveTrainId} does not exist");
-            
-            drivetrain.Type = newDrivetrain;
-            var response = _dbContext.Update(drivetrain);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return drivetrain;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating drivetrain with ID {driveTrainId} to new value {newDrivetrain}");
-            throw;
-        }
-    }
-        
-    public async Task<GearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox)
-    {
-        try
-        {
-            ArgumentException.ThrowIfNullOrEmpty(newGearbox);
-
-            var gearbox = await _dbContext.FindAsync<GearboxType>(gearboxId) ?? 
-            throw new InvalidOperationException($"Gearbox with ID {gearboxId} does not exist");
-
-            gearbox.Type = newGearbox;
-            var response = _dbContext.Update(gearbox);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return gearbox;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating gearbox with ID {gearboxId} to new value {newGearbox}");
-            throw;
-        }
-    }
-        
-    public async Task<Make> UpdateMakeInDbAsync(int makeId, string newMake)
-    {
-        try
-        {
-            ArgumentException.ThrowIfNullOrEmpty(newMake);
-
-            var make = await _dbContext.FindAsync<Make>(makeId) ??
-            throw new InvalidOperationException($"Make with ID {makeId} does not exist");
-
-            make.Title = newMake;
-            var response = _dbContext.Update(make);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return make;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating make with ID {makeId} to new value {newMake}");
-            throw;
-        }
-    }
-        
-    public async Task<Model> UpdateModelInDbAsync(int modelId, string newModel)
-    {
-        try
-        {
-            ArgumentException.ThrowIfNullOrEmpty(newModel);
-
-            var model = await _dbContext.FindAsync<Model>(modelId);
-
-            if (model == null)
-            {
-                throw new ArgumentException();
-            }
-            
-            model.Title = newModel;
-            var response = _dbContext.Update(model);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return model;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating model with ID {modelId} to new value {newModel}");
             throw;
         }
     }
@@ -658,33 +242,6 @@ public class AdminRepository : IAdminRepository
         catch (Exception e)
         {
             _logger.LogError(e, $"Error updating account limit with ID {limitId}");
-            throw;
-        }
-    }
-        
-    public async Task<FuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType)
-    {
-        try
-        {
-            ArgumentException.ThrowIfNullOrEmpty(newFuelType);
-
-            var fuelType = await _dbContext.FindAsync<FuelType>(fuelTypeId) ??
-            throw new InvalidOperationException($"Fuel type with ID {fuelTypeId} does not exist");
-
-            fuelType.Type = newFuelType;
-            var response = _dbContext.Update(fuelType);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return fuelType;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error updating fuel type with ID {fuelTypeId} to new value {newFuelType}");
             throw;
         }
     }
@@ -888,9 +445,10 @@ public class AdminRepository : IAdminRepository
         return null;
     }
 
-    public async Task<Subscription?> DeleteSubscriptionFromDbAsync(int subscriptionId)
+    //CHECK
+    public async Task<PricingOption?> DeleteSubscriptionFromDbAsync(int subscriptionId)
     {
-        var subscription = await _dbContext.FindAsync<Subscription>(subscriptionId);
+        var subscription = await _dbContext.FindAsync<PricingOption>(subscriptionId);
             
         if (subscription != null)
         {
@@ -1086,8 +644,7 @@ public class AdminRepository : IAdminRepository
                         User = user, UserRole = userRole
                     })
                 .Where(joined => !_dbContext.Roles
-                    .Any(r => r.Id == joined.UserRole.RoleId &&
-                              (r.Name == UserType.Admin.ToString() || r.Name == UserType.Moderator.ToString())))
+                    .Any(r => r.Name == UserType.Admin.ToString() || r.Name == UserType.Moderator.ToString()))
                 .Select(joined => joined.User)
                 .Include(u => u.PhoneNumbers);
             

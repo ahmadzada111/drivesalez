@@ -1,5 +1,4 @@
-using DriveSalez.Application.DTO.AccountDTO;
-using Microsoft.Extensions.Caching.Memory;
+using DriveSalez.Application.DTO;
 
 namespace DriveSalez.Application.ServiceContracts;
 
@@ -7,5 +6,9 @@ public interface IOtpService
 {
     int GenerateOtp();
 
-    Task<bool> ValidateOtpAsync(IMemoryCache cache, ValidateOtpDto request);
+    Task<bool> ValidateOtpAsync(ValidateOtpDto request);
+
+    void RemoveOtpIfExists(string key);
+
+    void WriteOtpToMemoryCache(string key, int value);
 }

@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
-using DriveSalez.Persistence.Abstractions;
+using DriveSalez.Application.Abstractions;
 using DriveSalez.Persistence.DbContext;
-using DriveSalez.Persistence.Specifications;
+using DriveSalez.Application.Specifications;
 using DriveSalez.SharedKernel.Pagination;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -19,14 +18,11 @@ namespace DriveSalez.Persistence.Repositories;
 public class AnnouncementRepository : IAnnouncementRepository
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly IMapper _mapper;
     private readonly ILogger _logger;
 
-    public AnnouncementRepository(ApplicationDbContext dbContext, IMapper mapper,
-        ILogger<AnnouncementRepository> logger)
+    public AnnouncementRepository(ApplicationDbContext dbContext, ILogger<AnnouncementRepository> logger)
     {
         _dbContext = dbContext;
-        _mapper = mapper;
         _logger = logger;
     }
 
@@ -50,47 +46,47 @@ public class AnnouncementRepository : IAnnouncementRepository
 
     public async Task<FuelType> GetFuelTypeById(int id)
     {
-        return await _dbContext.VehicleFuelTypes.FindAsync(id) ??
+        return await _dbContext.FuelTypes.FindAsync(id) ??
         throw new KeyNotFoundException($"Fuel type with id {id} not found");
     }
 
     public async Task<GearboxType> GetGearboxById(int id)
     {
-        return await _dbContext.VehicleGearboxTypes.FindAsync(id) ??
+        return await _dbContext.GearboxTypes.FindAsync(id) ??
         throw new KeyNotFoundException($"Gearbox with id {id} not found");
     }
 
     public async Task<DrivetrainType> GetDrivetrainTypeById(int id)
     {
-        return await _dbContext.VehicleDriveTrainTypes.FindAsync(id) ??
+        return await _dbContext.DrivetrainTypes.FindAsync(id) ??
         throw new KeyNotFoundException($"Drivetrain with id {id} not found");
     }
 
     public async Task<BodyType> GetBodyTypeById(int id)
     {
-        return await _dbContext.VehicleBodyTypes.FindAsync(id) ??
+        return await _dbContext.BodyTypes.FindAsync(id) ??
         throw new KeyNotFoundException($"Body type with id {id} not found");
     }
 
     public async Task<List<Condition>> GetConditionsByIds(List<int> ids)
     {
-        return await _dbContext.VehicleDetailsConditions.Where(c => ids.Contains(c.Id)).ToListAsync();
+        return await _dbContext.Conditions.Where(c => ids.Contains(c.Id)).ToListAsync();
     }
 
     public async Task<List<Option>> GetOptionsByIds(List<int> ids)
     {
-        return await _dbContext.VehicleDetailsOptions.Where(o => ids.Contains(o.Id)).ToListAsync();
+        return await _dbContext.Options.Where(o => ids.Contains(o.Id)).ToListAsync();
     }
 
     public async Task<Color> GetColorById(int id)
     {
-        return await _dbContext.VehicleColors.FindAsync(id) ??
+        return await _dbContext.Colors.FindAsync(id) ??
         throw new KeyNotFoundException($"Color with id {id} not found");
     }
 
     public async Task<MarketVersion> GetMarketVersionById(int id)
     {
-        return await _dbContext.VehicleMarketVersions.FindAsync(id) ??
+        return await _dbContext.MarketVersions.FindAsync(id) ??
         throw new KeyNotFoundException($"Market version with id {id} not found");
     }
 
@@ -159,7 +155,7 @@ public class AnnouncementRepository : IAnnouncementRepository
     }
 
     private IQueryable<Announcement> BuildAnnouncementQuery(AnnouncementState? announcementState = null, 
-    Guid? announcementId = null, Guid? userId = null, bool isPremium = false, bool asNoTracking = false)
+    Guid? announcementId = null, Guid? userId = null, bool? isPremium = null, bool asNoTracking = false)
     {
         var query = _dbContext.Announcements.AsQueryable();
 
@@ -183,9 +179,9 @@ public class AnnouncementRepository : IAnnouncementRepository
             query = query.Where(on => on.AnnouncementState == announcementState.Value);
         }
 
-        if (isPremium)
+        if (isPremium.HasValue)
         {
-            query = query.Where(on => on.IsPremium);
+            query = query.Where(on => on.IsPremium == isPremium.Value);
         }
 
         query = query
@@ -219,13 +215,10 @@ public class AnnouncementRepository : IAnnouncementRepository
             var response = await BuildAnnouncementQuery(announcementId: id)
                 .FirstOrDefaultAsync();
 
-            if (response == null)
-            {
-                _logger.LogWarning($"Announcement with ID {id} not found");
-                return null;
-            }
-
-            return response;
+            if (response != null) return response;
+            
+            _logger.LogWarning($"Announcement with ID {id} not found");
+            return null;
         }
         catch (Exception e)
         {
@@ -250,7 +243,7 @@ public class AnnouncementRepository : IAnnouncementRepository
 
             response.ViewCount++;
 
-            var result = _dbContext.Update(response);
+            _dbContext.Update(response);
 
             return response;
         }
@@ -330,9 +323,9 @@ public class AnnouncementRepository : IAnnouncementRepository
             var allPremiumAnnouncements = await BuildAnnouncementQuery(asNoTracking: true, isPremium: true).ToListAsync();
             
             var random = new Random();
-            var premiumAnnouncements = allPremiumAnnouncements.OrderBy(x => random.Next()).Take(8).ToList();
+            var premiumAnnouncements = allPremiumAnnouncements.OrderBy(_ => random.Next()).Take(8).ToList();
             
-            var nonPremiumQuery = BuildAnnouncementQuery(asNoTracking: true);
+            var nonPremiumQuery = BuildAnnouncementQuery(asNoTracking: true, isPremium: false);
             var totalNonPremiumCount = await nonPremiumQuery.CountAsync();
             var nonPremiumAnnouncements = await nonPremiumQuery
                 .Skip((parameter.PageIndex - 1) * parameter.PageSize)
@@ -393,8 +386,10 @@ public class AnnouncementRepository : IAnnouncementRepository
         }
     }
 
-    public async Task<Announcement?> MakeAnnouncementActiveInDbAsync(ApplicationUser user, Guid announcementId)
+    public async Task<Announcement?> ChangeAnnouncementStateInDbAsync(ApplicationUser user, Guid announcementId, AnnouncementState announcementState)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             _logger.LogInformation($"Making announcement with ID {announcementId} active in DB for user with ID {user.Id}");
@@ -403,53 +398,30 @@ public class AnnouncementRepository : IAnnouncementRepository
                 await _dbContext.Announcements
                     .FirstOrDefaultAsync(x => x.Id == announcementId &&
                                               x.Owner == user &&
-                                              x.AnnouncementState != AnnouncementState.Active);
+                                              x.AnnouncementState != announcementState);
 
             if (announcement == null)
             {
                 return null;
             }
 
-            announcement.AnnouncementState = AnnouncementState.Active;
-            announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
+            announcement.AnnouncementState = announcementState;
 
-            var result = _dbContext.Announcements.Update(announcement);
+            if(announcement.ExpirationDate < DateTime.UtcNow)
+            {
+                announcement.ExpirationDate = DateTimeOffset.Now.AddMonths(1);
+            }
+
+            _dbContext.Announcements.Update(announcement);
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             return announcement;
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error making announcement active with ID {announcementId} for user with ID {user.Id}");
-            throw;
-        }
-    }
-
-    public async Task<Announcement?> MakeAnnouncementInactiveInDbAsync(ApplicationUser user, Guid announcementId)
-    {
-        try
-        {
-            _logger.LogInformation($"Making announcement with ID {announcementId} inactive in DB for user with ID {user.Id}");
-
-            var announcement =
-                await _dbContext.Announcements
-                    .FirstOrDefaultAsync(x => x.Id == announcementId &&
-                                              x.Owner == user &&
-                                              x.AnnouncementState != AnnouncementState.Inactive);
-
-            if (announcement == null)
-            {
-                return null;
-            }
-
-            announcement.AnnouncementState = AnnouncementState.Inactive;
-
-            var result = _dbContext.Announcements.Update(announcement);
-
-            return announcement;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Error making announcement inactive with ID {announcementId} for user with ID {user.Id}");
             throw;
         }
     }
@@ -476,15 +448,14 @@ public class AnnouncementRepository : IAnnouncementRepository
                 return null;
             }
 
-            _dbContext.ImageUrls.RemoveRange(announcement.ImageUrls);
-            var response = _dbContext.Announcements.Remove(announcement);
+            _dbContext.Announcements.Remove(announcement);
 
             return announcement;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Error deleting announcement with ID {announcementId} for user with ID {user.Id}");
             await transaction.RollbackAsync();
+            _logger.LogError(e, $"Error deleting announcement with ID {announcementId} for user with ID {user.Id}");
             throw;
         }
     }

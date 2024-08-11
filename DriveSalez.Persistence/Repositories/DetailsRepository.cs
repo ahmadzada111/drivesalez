@@ -1,6 +1,7 @@
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
+using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleColors from DB");
             
-            return await _dbContext.VehicleColors.ToListAsync();
+            return await _dbContext.Colors.ToListAsync();
         }
         catch (Exception e)
         {
@@ -40,7 +41,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleBodyTypes from DB");
         
-            return await _dbContext.VehicleBodyTypes.ToListAsync();
+            return await _dbContext.BodyTypes.ToListAsync();
         }
         catch (Exception e)
         {
@@ -55,7 +56,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleDrivetrainTypes from DB");
         
-            return await _dbContext.VehicleDriveTrainTypes.ToListAsync();
+            return await _dbContext.DrivetrainTypes.ToListAsync();
         }
         catch (Exception e)
         {
@@ -70,7 +71,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleGearboxTypes from DB");
         
-            return await _dbContext.VehicleGearboxTypes.ToListAsync();
+            return await _dbContext.GearboxTypes.ToListAsync();
         }
         catch (Exception e)
         {
@@ -115,7 +116,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleFuelTypes from DB");
         
-            return await _dbContext.VehicleFuelTypes.ToListAsync();
+            return await _dbContext.FuelTypes.ToListAsync();
         }
         catch (Exception e)
         {
@@ -130,7 +131,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleConditions from DB");
         
-            return await _dbContext.VehicleDetailsConditions.ToListAsync();
+            return await _dbContext.Conditions.ToListAsync();
         }
         catch (Exception e)
         {
@@ -139,13 +140,14 @@ public class DetailsRepository : IDetailsRepository
         }
     }
 
-    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync()
+    public async Task<IEnumerable<PricingOption>> GetAllSubscriptionsFromDbAsync()
     {
         try
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting Subscriptions from DB");
         
-            return await _dbContext.Subscriptions
+            return await _dbContext.PricingOptions
+                .Where(x => x.PricingOptionType == PricingOptionType.Subscription)
                 .Include(x => x.Price)
                 .ToListAsync();
         }
@@ -157,13 +159,14 @@ public class DetailsRepository : IDetailsRepository
        
     }
 
-    public async Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementTypePricingsFromDbAsync()
+    public async Task<IEnumerable<PricingOption>> GetAllAnnouncementTypePricingsFromDbAsync()
     {
         try
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting AnnouncementTypePricings from DB");
 
-            return await _dbContext.AnnouncementPricing
+            return await _dbContext.PricingOptions
+                .Where(x => x.PricingOptionType == PricingOptionType.AnnouncementType)
                 .Include(x => x.Price)
                 .ToListAsync();
         }
@@ -198,7 +201,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleMarketVersions from DB");
 
-            return await _dbContext.VehicleMarketVersions.ToListAsync();
+            return await _dbContext.MarketVersions.ToListAsync();
         }
         catch (Exception e)
         {
@@ -228,7 +231,7 @@ public class DetailsRepository : IDetailsRepository
         {
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getting VehicleOptions from DB");
 
-            return await _dbContext.VehicleDetailsOptions.ToListAsync();
+            return await _dbContext.Options.ToListAsync();
         }
         catch (Exception e)
         {

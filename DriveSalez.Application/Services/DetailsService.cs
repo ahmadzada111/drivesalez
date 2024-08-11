@@ -1,7 +1,6 @@
+using AutoMapper;
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
-using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
-using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.RepositoryContracts;
 
 namespace DriveSalez.Application.Services;
@@ -9,111 +8,113 @@ namespace DriveSalez.Application.Services;
 public class DetailsService : IDetailsService
 {
     private readonly IDetailsRepository _detailsRepository;
-    
-    public DetailsService(IDetailsRepository detailsRepository)
+    private readonly IMapper _mapper;
+
+    public DetailsService(IDetailsRepository detailsRepository, IMapper mapper) 
     {
         _detailsRepository = detailsRepository;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Color>> GetAllColorsAsync()
+    public async Task<IEnumerable<ColorDto>> GetAllColorsAsync()
     {
         var response = await _detailsRepository.GetAllColorsFromDbAsync();
-        return response;
+        return _mapper.Map<List<ColorDto>>(response);
     }
 
-    public async Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesAsync()
+    public async Task<IEnumerable<BodyTypeDto>> GetAllVehicleBodyTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
-        return response;
+        return _mapper.Map<List<BodyTypeDto>>(response);
     }
 
-    public async Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsAsync()
+    public async Task<IEnumerable<DrivetrainTypeDto>> GetAllVehicleDrivetrainsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
-        return response;
+        return _mapper.Map<List<DrivetrainTypeDto>>(response);
     }
 
-    public async Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesAsync()
+    public async Task<IEnumerable<GearboxTypeDto>> GetAllVehicleGearboxTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
-        return response;
+        return _mapper.Map<List<GearboxTypeDto>>(response);
     }
 
-    public async Task<IEnumerable<Make>> GetAllMakesAsync()
+    public async Task<IEnumerable<MakeDto>> GetAllMakesAsync()
     {
         var response = await _detailsRepository.GetAllMakesFromDbAsync();
-        return response;
+        return _mapper.Map<List<MakeDto>>(response);
     }
 
-    public async Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesAsync()
+    public async Task<IEnumerable<FuelTypeDto>> GetAllVehicleFuelTypesAsync()
     {
         var response = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
-        return response;
+        return _mapper.Map<List<FuelTypeDto>>(response);
     }
 
-    public async Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsAsync()
+    public async Task<IEnumerable<ConditionDto>> GetAllVehicleDetailsConditionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDetailsConditionsFromDbAsync();
-        return response;
+        return _mapper.Map<List<ConditionDto>>(response);
     }
 
-    public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
+    public async Task<IEnumerable<AnnouncementTypePricingDto>> GetAllSubscriptionsAsync()
     {
         var response = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
-        return response;
+        return _mapper.Map<List<AnnouncementTypePricingDto>>(response);
     }
 
-    public async Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementPricingsAsync()
+    public async Task<IEnumerable<AnnouncementTypePricingDto>> GetAllAnnouncementPricingsAsync()
     {
         var response = await _detailsRepository.GetAllAnnouncementTypePricingsFromDbAsync();
-        return response;
+        return _mapper.Map<List<AnnouncementTypePricingDto>>(response);
     }
     
-    public async Task<IEnumerable<City>> GetAllCitiesByCountryIdAsync(int countryId)
+    public async Task<IEnumerable<CityDto>> GetAllCitiesByCountryIdAsync(int countryId)
     {
         var response = await _detailsRepository.GetAllCitiesByCountryIdFromDbAsync(countryId);
-        return response;
+        return _mapper.Map<List<CityDto>>(response);
     }
 
-    public async Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsAsync()
+    public async Task<IEnumerable<MarketVersionDto>> GetAllVehicleMarketVersionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleMarketVersionsFromDbAsync();
-        return response;
+        return _mapper.Map<List<MarketVersionDto>>(response);
     }
 
-    public async Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsAsync()
+    public async Task<IEnumerable<OptionDto>> GetAllVehicleDetailsOptionsAsync()
     {
         var response = await _detailsRepository.GetAllVehicleDetailsOptionsFromDbAsync();
-        return response;
+        return _mapper.Map<List<OptionDto>>(response);
     }
 
-    public async Task<IEnumerable<Model>> GetAllModelsAsync()
+    public async Task<IEnumerable<ModelDto>> GetAllModelsAsync()
     {
         var response = await _detailsRepository.GetAllModelsFromDbAsync();
-        return response;
+        return _mapper.Map<List<ModelDto>>(response);
     }
     
-    public async Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id)
+    public async Task<IEnumerable<ModelDto>> GetAllModelsByMakeIdAsync(int id)
     {
         var response = await _detailsRepository.GetAllModelsByMakeIdFromDbAsync(id);
-        return response;
+        return _mapper.Map<List<ModelDto>>(response);
     }
     
-    public async Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsAsync()
+    public async Task<IEnumerable<ManufactureYearDto>> GetAllManufactureYearsAsync()
     {
         var response = await _detailsRepository.GetAllManufactureYearsFromDbAsync();
-        return response;
+        return _mapper.Map<List<ManufactureYearDto>>(response);
     }
     
-    public async Task<IEnumerable<Country>> GetAllCountriesAsync()
+    public async Task<IEnumerable<CountryDto>> GetAllCountriesAsync()
     {
         var response = await _detailsRepository.GetAllCountriesFromDbAsync();
-        return response;
+        return _mapper.Map<List<CountryDto>>(response);
     }
     
-    public async Task<IEnumerable<City>> GetAllCitiesAsync()
+    public async Task<IEnumerable<CityDto>> GetAllCitiesAsync()
     {
         var response = await _detailsRepository.GetAllCitiesFromDbAsync();
-        return response;
+        return _mapper.Map<List<CityDto>>(response);
     }
 }

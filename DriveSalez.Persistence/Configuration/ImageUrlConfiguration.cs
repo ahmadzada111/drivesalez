@@ -18,11 +18,11 @@ internal class ImageUrlConfiguration : IEntityTypeConfiguration<ImageUrl>
         builder.HasOne(e => e.ProfilePhotoBusinessAccount)
             .WithOne(e => e.ProfilePhotoUrl)
             .HasForeignKey<ImageUrl>(e => e.ProfilePhotoUserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
          builder.HasOne(e => e.BackgroundPhotoBusinessAccount)
             .WithOne(e => e.BackgroundPhotoUrl)
             .HasForeignKey<ImageUrl>(e => e.BackgroundPhotoUserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

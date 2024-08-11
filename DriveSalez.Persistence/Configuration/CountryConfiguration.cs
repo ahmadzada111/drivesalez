@@ -18,7 +18,7 @@ internal class CountryConfiguration : IEntityTypeConfiguration<Country>
             .WithOne(e => e.Country)
             .HasForeignKey(e => e.CountryId)
             .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired(false);
+            .IsRequired();
 
         builder.HasMany(e => e.Announcements)
             .WithOne(e => e.Country)

@@ -4,12 +4,12 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using DriveSalez.Application.DTO.AccountDTO;
 
 namespace DriveSalez.Application.Services;
 

@@ -1,6 +1,4 @@
-using DriveSalez.Application.DTO.AccountDTO;
-using DriveSalez.Application.DTO.AnnoucementDTO;
-using DriveSalez.Application.DTO.AnnouncementDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Enums;
 using DriveSalez.SharedKernel.Pagination;
 
@@ -14,9 +12,7 @@ public interface IAnnouncementService
 
     Task<AnnouncementResponseDto?> DeleteInactivateAnnouncementAsync(Guid announcementId);
 
-    Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId);
-    
-    Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId);
+    Task<AnnouncementResponseDto?> ChangeAnnouncementState(Guid announcementId, AnnouncementState announcementState);
     
     Task<AnnouncementResponseDto?> GetAnnouncementByIdAsync(Guid id);
 

@@ -1,4 +1,4 @@
-﻿using DriveSalez.Application.DTO.AccountDTO;
+﻿using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +14,6 @@ public class AccountController : Controller
 {
     private readonly IAccountService _accountService;
     private readonly IOtpService _otpService;
-    private readonly IMemoryCache _cache;
     private readonly ILogger _logger;
     
     public AccountController(IAccountService accountService, IOtpService otpService, IMemoryCache cache, 
@@ -22,7 +21,6 @@ public class AccountController : Controller
     {
         _accountService = accountService;
         _otpService = otpService;
-        _cache = cache;
         _logger = logger;
     }
 
@@ -205,7 +203,7 @@ public class AccountController : Controller
             return Problem(errorMessage);
         }
         
-        var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
+        var response =  await _otpService.ValidateOtpAsync(request.ValidateRequest);
 
         if (!response) return BadRequest("Cannot validate OTP");
         var result = await _accountService.ResetPasswordAsync(request.ValidateRequest.Email, request.NewPassword);
@@ -231,7 +229,7 @@ public class AccountController : Controller
             return Problem(errorMessage);
         }
         
-        var response =  await _otpService.ValidateOtpAsync(_cache, request.ValidateRequest);
+        var response =  await _otpService.ValidateOtpAsync(request.ValidateRequest);
 
         if (!response) return BadRequest("Cannot validate OTP");
         var result = await _accountService.ChangeEmailAsync(request.ValidateRequest.Email, request.NewMail);
@@ -257,21 +255,6 @@ public class AccountController : Controller
         
         var response = await _accountService.DeleteUserAsync(password);
         return Ok(response);
-    }
-    
-    [HttpPost("create-admin")]
-    public async Task<ActionResult> CreateAdmin()
-    {
-        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-        
-        var result = await _accountService.CreateAdminAsync();
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(string.Join(" | ", result.Errors.Select(e => e.Description)));
-        }
-
-        return Ok();
     }
 }
 

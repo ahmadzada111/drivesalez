@@ -4,13 +4,13 @@ namespace DriveSalez.Domain.IdentityEntities;
 
 public class BusinessAccount : ApplicationUser
 {
-    public ImageUrl? ProfilePhotoUrl { get; set; } 
+    public override ImageUrl? ProfilePhotoUrl { get; set; } 
 
-    public ImageUrl? BackgroundPhotoUrl { get; set; }
+    public override ImageUrl? BackgroundPhotoUrl { get; set; }
     
-    public string? Address { get; set; }
+    public override string? Address { get; set; }
 
-    public string Description { get; set; }
+    public override string Description { get; set; }
     
-    public string WorkHours { get; set; }
+    public override string WorkHours { get; set; }
 }

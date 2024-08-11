@@ -121,7 +121,7 @@ public class PaymentService : IPaymentService
         var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
         var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId); 
         
-        if (user.AccountBalance - subscription?.Price.Price > 0)
+        if (user.AccountBalance - subscription?.Price > 0)
         {
             await _accountService.ChangeUserTypeToBusinessAccountAsync(user);
 

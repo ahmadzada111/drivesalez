@@ -17,7 +17,7 @@ internal class CityConfiguration : IEntityTypeConfiguration<City>
         builder.HasOne(e => e.Country)
             .WithMany(e => e.Cities)
             .HasForeignKey(e => e.CountryId)
-            .OnDelete(DeleteBehavior.Restrict)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
             
         builder.HasMany(e => e.Announcements)

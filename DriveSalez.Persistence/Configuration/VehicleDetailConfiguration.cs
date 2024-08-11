@@ -10,6 +10,12 @@ internal class VehicleDetailConfiguration : IEntityTypeConfiguration<VehicleDeta
     {
         builder.HasKey(e => e.Id);
 
+        builder.HasOne(e => e.Vehicle)
+            .WithOne(e => e.VehicleDetail)
+            .HasForeignKey<VehicleDetail>(e => e.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+
         builder.HasOne(e => e.FuelType)
             .WithMany(e => e.VehicleDetails)
             .HasForeignKey(e => e.FuelTypeId)

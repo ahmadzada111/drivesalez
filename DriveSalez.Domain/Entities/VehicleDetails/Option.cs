@@ -8,6 +8,5 @@ public class Option
 
     public required string Title { get; set; }
     
-    [JsonIgnore]
     public List<VehicleDetail> VehicleDetails { get; } = [];
 }

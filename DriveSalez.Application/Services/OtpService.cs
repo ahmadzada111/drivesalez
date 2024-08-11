@@ -1,5 +1,4 @@
 using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
@@ -11,10 +10,12 @@ namespace DriveSalez.Application.Services;
 public class OtpService : IOtpService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IMemoryCache _memoryCache;
 
-    public OtpService(UserManager<ApplicationUser> userManager)
+    public OtpService(UserManager<ApplicationUser> userManager, IMemoryCache memoryCache)
     {
         _userManager = userManager;
+        _memoryCache = memoryCache;
     }
 
     public int GenerateOtp()
@@ -23,20 +24,33 @@ public class OtpService : IOtpService
         return random.Next(100000, 999999);
     }
 
-    public async Task<bool> ValidateOtpAsync(IMemoryCache cache, ValidateOtpDto request)
+    public void RemoveOtpIfExists(string key)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        
-        if (user == null)
+        if (_memoryCache.TryGetValue(key, out int? cachedOtp))
         {
-            throw new UserNotFoundException("User with provided email wasn't found!");
+            _memoryCache.Remove(key);    
         }
-        
-        if (cache.TryGetValue(request.Email, out int cachedOtp))
+    }
+
+    public void WriteOtpToMemoryCache(string key, int value)
+    {
+        _memoryCache.Set(key, value, new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(3),
+            Size = 1
+        });
+    }
+
+    public async Task<bool> ValidateOtpAsync(ValidateOtpDto request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email) ??
+        throw new UserNotFoundException("User with provided email wasn't found!");
+
+        if (_memoryCache.TryGetValue(request.Email, out int cachedOtp))
         {
             if (request.Otp == cachedOtp)
             {
-                cache.Remove(request.Email);
+                _memoryCache.Remove(request.Email);
                 return true;
             }
 

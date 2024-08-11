@@ -5,18 +5,28 @@ namespace DriveSalez.Domain.IdentityEntities;
 
 public class ApplicationUser : IdentityUser<Guid>
 {       
-    public string FirstName { get; set; }
+    public virtual string FirstName { get; set; }
         
-    public string LastName { get; set; }
+    public virtual string LastName { get; set; }
     
+    public virtual List<PhoneNumber> PhoneNumbers { get; set; }
+    
+    public virtual ImageUrl? ProfilePhotoUrl { get; set; } 
+
+    public virtual ImageUrl? BackgroundPhotoUrl { get; set; }
+    
+    public virtual string? Address { get; set; }
+
+    public virtual string Description { get; set; }
+    
+    public virtual string WorkHours { get; set; }
+
     public string? RefreshToken { get; set; }
         
     public DateTime? RefreshTokenExpiration { get; set; }
         
     public List<Announcement>? Announcements { get; set; } = new List<Announcement>();
         
-    public List<PhoneNumber> PhoneNumbers { get; set; }
-
     public DateTimeOffset SubscriptionExpirationDate { get; set; }
 
     public int PremiumUploadLimit { get; set; }

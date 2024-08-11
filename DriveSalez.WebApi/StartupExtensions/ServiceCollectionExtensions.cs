@@ -11,11 +11,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AutoMapper;
-using DriveSalez.Application.AutoMapper;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.SharedKernel.Settings;
 using Quartz;
+using DriveSalez.Persistence.Services;
+using FluentValidation;
+using DriveSalez.Application;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 
@@ -29,10 +31,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<RefreshTokenSettings>();
         services.AddSingleton<PayPalSettings>();
         services.AddSingleton<BlobStorageSettings>();
+        services.AddSingleton<IMapper>();
+        services.AddScoped<ICarQueryService, CarQueryService>();
         services.AddScoped<IPayPalService, PayPalService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IModeratorService, ModeratorService>();
-        services.AddScoped<IModeratorRepository, ModeratorRepository>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
@@ -46,25 +48,33 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDetailsService, DetailsService>();
         services.AddScoped<IDetailsRepository, DetailsRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
-
+        
         return services;
     }
     
     public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
     {
-        var mappingConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<AnnouncementProfile>();
-            cfg.AddProfile<PhoneNumberProfile>();
-            cfg.AddProfile<UserProfile>();
-        });
-
-        IMapper mapper = mappingConfig.CreateMapper();
-        services.AddSingleton(mapper);
-
+        services.AddAutoMapper(AssemblyReference.Assembly);
         return services;
     }
     
+    public static IServiceCollection ConfigureFluentEmail(this IServiceCollection services, IConfiguration configuration)
+    {
+        var emailSettings = configuration.GetSection(nameof(EmailSettings)).Get<EmailSettings>() ??
+        throw new InvalidOperationException($"{nameof(EmailSettings)} cannot be null");
+
+        services.AddFluentEmail(emailSettings.CompanyEmail)
+            .AddSmtpSender(emailSettings.SmtpServer, emailSettings.Port, emailSettings.CompanyEmail, emailSettings.EmailKey);
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureFluentValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly);
+        return services;
+    }
+
     public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(setup =>
@@ -131,6 +141,7 @@ public static class ServiceCollectionExtensions
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
             options.Password.RequireDigit = true;
+            options.SignIn.RequireConfirmedEmail = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
@@ -142,7 +153,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+        var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ??
+        throw new InvalidOperationException($"{nameof(JwtSettings)} cannot be null");
 
         services.AddAuthentication(options =>
         {

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-namespace DriveSalez.Domain.Entities;
+﻿namespace DriveSalez.Domain.Entities;
 
 public class Model
 {
@@ -9,9 +6,9 @@ public class Model
         
     public string Title { get; set; }
 
-    [JsonIgnore]
+    public int MakeId { get; set; }
+
     public Make Make { get; set; }
     
-    [JsonIgnore]
     public List<Vehicle> Vehicles { get; } = [];
 }

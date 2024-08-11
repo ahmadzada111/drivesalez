@@ -1,42 +1,40 @@
-using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
-using DriveSalez.Domain.Entities.VehicleParts;
+using DriveSalez.Application.DTO;
 
 namespace DriveSalez.Application.ServiceContracts;
 
 public interface IDetailsService
 {
-    Task<IEnumerable<Color>> GetAllColorsAsync();
+    Task<IEnumerable<ColorDto>> GetAllColorsAsync();
 
-    Task<IEnumerable<BodyType>> GetAllVehicleBodyTypesAsync();
+    Task<IEnumerable<BodyTypeDto>> GetAllVehicleBodyTypesAsync();
 
-    Task<IEnumerable<DrivetrainType>> GetAllVehicleDrivetrainsAsync();
+    Task<IEnumerable<DrivetrainTypeDto>> GetAllVehicleDrivetrainsAsync();
 
-    Task<IEnumerable<GearboxType>> GetAllVehicleGearboxTypesAsync();
+    Task<IEnumerable<GearboxTypeDto>> GetAllVehicleGearboxTypesAsync();
 
-    Task<IEnumerable<Make>> GetAllMakesAsync();
+    Task<IEnumerable<MakeDto>> GetAllMakesAsync();
 
-    Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementPricingsAsync();
+    Task<IEnumerable<AnnouncementTypePricingDto>> GetAllAnnouncementPricingsAsync();
 
-    Task<IEnumerable<Model>> GetAllModelsByMakeIdAsync(int id);
+    Task<IEnumerable<ModelDto>> GetAllModelsByMakeIdAsync(int id);
 
-    Task<IEnumerable<FuelType>> GetAllVehicleFuelTypesAsync();
+    Task<IEnumerable<FuelTypeDto>> GetAllVehicleFuelTypesAsync();
 
-    Task<IEnumerable<Condition>> GetAllVehicleDetailsConditionsAsync();
+    Task<IEnumerable<ConditionDto>> GetAllVehicleDetailsConditionsAsync();
 
-    Task<IEnumerable<MarketVersion>> GetAllVehicleMarketVersionsAsync();
+    Task<IEnumerable<MarketVersionDto>> GetAllVehicleMarketVersionsAsync();
 
-    Task<IEnumerable<Model>> GetAllModelsAsync();
+    Task<IEnumerable<ModelDto>> GetAllModelsAsync();
 
-    Task<IEnumerable<Option>> GetAllVehicleDetailsOptionsAsync();
+    Task<IEnumerable<OptionDto>> GetAllVehicleDetailsOptionsAsync();
 
-    Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsAsync();
+    Task<IEnumerable<ManufactureYearDto>> GetAllManufactureYearsAsync();
 
-    Task<IEnumerable<Country>> GetAllCountriesAsync();
+    Task<IEnumerable<CountryDto>> GetAllCountriesAsync();
 
-    Task<IEnumerable<City>> GetAllCitiesAsync();
+    Task<IEnumerable<CityDto>> GetAllCitiesAsync();
 
-    Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync();
+    Task<IEnumerable<AnnouncementTypePricingDto>> GetAllSubscriptionsAsync();
     
-    Task<IEnumerable<City>> GetAllCitiesByCountryIdAsync(int countryId);
+    Task<IEnumerable<CityDto>> GetAllCitiesByCountryIdAsync(int countryId);
 }

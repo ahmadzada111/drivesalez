@@ -1,3 +1,4 @@
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Persistence.DbContext;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +56,8 @@ public class LookForExpiredPremiumAnnouncementsJob : IJob
                           "\n\nBest regards," +
                           "\n\nDriveSalez Team";
 
-            await _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
+            var emailMetadata = new EmailMetadata(toAddress: announcement.Owner.Email, subject: subject, body: body);
+            await _emailService.SendEmailAsync(emailMetadata);
         }
         
         _dbContext.UpdateRange(announcements);

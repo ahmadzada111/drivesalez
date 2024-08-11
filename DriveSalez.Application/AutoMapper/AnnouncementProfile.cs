@@ -1,5 +1,5 @@
 using AutoMapper;
-using DriveSalez.Application.DTO.AnnouncementDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.SharedKernel.Pagination;
 
@@ -10,7 +10,7 @@ public class AnnouncementProfile : Profile
     public AnnouncementProfile()
     {
         CreateMap<Announcement, AnnouncementResponseMiniDto>()
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls.FirstOrDefault().Url))
+            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls.Take(3).Select(x => x.Url)))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model))
@@ -27,7 +27,7 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make.Title))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model.Title))
             .ForMember(dest => dest.FuelType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.FuelType.Type))
-            .ForMember(dest => dest.IsBrandNew, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.IsBrandNew.Value))
+            .ForMember(dest => dest.IsBrandNew, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.IsBrandNew))
             .ForMember(dest => dest.BodyType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.BodyType.Type))
             .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Color.Title))
             .ForMember(dest => dest.HorsePower, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.HorsePower))
@@ -35,11 +35,11 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.DrivetrainType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.DrivetrainType.Type))
             .ForMember(dest => dest.Conditions, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Conditions.Select(cond => cond.Title).ToList()))
             .ForMember(dest => dest.MarketVersion, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.MarketVersion.Version))
-            .ForMember(dest => dest.OwnerQuantity, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.OwnerQuantity.Value))
-            .ForMember(dest => dest.SeatCount, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.SeatCount.Value))
+            .ForMember(dest => dest.OwnerQuantity, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.OwnerQuantity))
+            .ForMember(dest => dest.SeatCount, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.SeatCount))
             .ForMember(dest => dest.VinCode, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.VinCode))
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Options.Select(opt => opt.Title).ToList()))
-            .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.EngineVolume.Value))
+            .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.EngineVolume))
             .ForMember(dest => dest.Mileage, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Mileage))
             .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.MileageType.ToString()))
             .ForMember(dest => dest.AnnouncementState, opt => opt.MapFrom(src => src.AnnouncementState.ToString()))
@@ -49,9 +49,15 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
             .ForMember(dest => dest.PhoneNumbers, opt => opt.MapFrom(src => src.Owner.PhoneNumbers.Select(num => num.Number).ToList()))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Owner.PhoneNumber))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Owner.Address))
+            .ForMember(dest => dest.WorkHours, opt => opt.MapFrom(src => src.Owner.WorkHours))
+            .ForMember(dest => dest.ProfilePhotoUrl, opt => opt.MapFrom(src => src.Owner.ProfilePhotoUrl))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Owner.Description))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
-
        
        CreateMap(typeof(PaginatedList<>), typeof(PaginatedList<>))
            .ConvertUsing(typeof(PaginatedListConverter<,>));
@@ -64,7 +70,7 @@ public class AnnouncementProfile : Profile
     {
         public PaginatedList<TDestination> Convert(PaginatedList<TSource> source, PaginatedList<TDestination> destination, ResolutionContext context)
         {
-            var items = context.Mapper.Map<List<TDestination>>(source.Items);
+            var items = context.Mapper.Map<List<TDestination>>(source);
             return new PaginatedList<TDestination>(items, source.PageIndex, source.TotalPages, source.TotalCount);
         }
     }

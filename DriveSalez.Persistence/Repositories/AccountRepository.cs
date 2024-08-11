@@ -21,6 +21,8 @@ public class AccountRepository : IAccountRepository
     
     public async Task AddLimitsToAccountInDbAsync(ApplicationUser user, UserType userType)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             _logger.LogInformation($"Adding limits to user ID {user.Id} in DB");
@@ -33,19 +35,14 @@ public class AccountRepository : IAccountRepository
             user.PremiumUploadLimit = limit.PremiumAnnouncementsLimit;
             user.RegularUploadLimit = limit.RegularAnnouncementsLimit;
             
-            var response = _dbContext.Update(user);
-
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                throw new InvalidOperationException("Object wasn't modified");
-            }
+            _dbContext.Update(user);
+            
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error adding limits to account with ID {user.Id}");
             throw;
         }
@@ -73,6 +70,8 @@ public class AccountRepository : IAccountRepository
     
     public async Task<ApplicationUser> ChangeUserTypeToDefaultAccountInDbAsync(ApplicationUser user)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             _logger.LogInformation($"Updating user with ID {user.Id} to DefaultAccount in DB");
@@ -93,19 +92,16 @@ public class AccountRepository : IAccountRepository
                 SubscriptionExpirationDate = DateTimeOffset.Now.AddMonths(1)
             };
 
-            var removeResponse = _dbContext.Users.Remove(user);
-            var addResponse = await _dbContext.AddAsync(defaultAccount);
+            _dbContext.Users.Remove(user);
+            await _dbContext.AddAsync(defaultAccount);
 
-            if (removeResponse.State == EntityState.Deleted && addResponse.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return defaultAccount;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return defaultAccount;
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error updating user with ID {user.Id} to DefaultAccount in DB");
             throw;
         }
@@ -119,17 +115,11 @@ public class AccountRepository : IAccountRepository
         {
             _logger.LogInformation($"Deleting user with ID {user} from DB");
             
-            var result = _dbContext.Users.Remove(user);
-
-            if (result.State == EntityState.Deleted)
-            {
-                await transaction.CommitAsync();
-                await _dbContext.SaveChangesAsync();
-            
-                return user;
-            }
-
-            throw new InvalidOperationException("Object wasn't deleted");
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();    
+           
+            return user;
         }
         catch (Exception e)
         {
@@ -141,6 +131,8 @@ public class AccountRepository : IAccountRepository
     
     public async Task<ApplicationUser> ChangeUserTypeToBusinessInDbAsync(ApplicationUser user)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             _logger.LogInformation($"Updating user with ID {user.Id} to Premium in DB");
@@ -176,16 +168,11 @@ public class AccountRepository : IAccountRepository
             var removeResponse = _dbContext.Users.Remove(user);
             var addResponse = await _dbContext.AddAsync(premiumAccount);
 
-            if (removeResponse.State == EntityState.Deleted && addResponse.State == EntityState.Added)
-            {
-                await _dbContext.SaveChangesAsync();
-                return premiumAccount;
-            }
-
-            throw new InvalidOperationException("Object wasn't modified");
+            return premiumAccount;
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error updating user with ID {user.Id} to Premium in DB");
             throw;
         }

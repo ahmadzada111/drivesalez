@@ -35,7 +35,7 @@ public static class ProgramConfigurationExtensions
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             })
-            .AddApplicationPart(typeof(AssemblyReference).Assembly);
+            .AddApplicationPart(AssemblyReference.Assembly);
 
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddEndpointsApiExplorer();
@@ -47,7 +47,11 @@ public static class ProgramConfigurationExtensions
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddLogging();
         builder.Services.ConfigureAutoMapper();
-        builder.Services.AddMemoryCache();
+        builder.Services.ConfigureFluentEmail(builder.Configuration);
+        builder.Services.ConfigureFluentValidation();
+        builder.Services.AddMemoryCache(options => {
+            options.SizeLimit = 1024;
+        });
     }
 
     public static void ConfigureMiddleware(this WebApplication app)

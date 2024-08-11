@@ -10,9 +10,7 @@ public class City
 
     public int CountryId { get; set; }    
 
-    [JsonIgnore]
     public Country Country { get; set; }    
 
-    [JsonIgnore]
     public List<Announcement> Announcements { get; } = [];
 }

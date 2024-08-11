@@ -1,5 +1,5 @@
 using AutoMapper;
-using DriveSalez.Application.DTO.AccountDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Domain.IdentityEntities;
 
 namespace DriveSalez.Application.AutoMapper;

@@ -10,8 +10,6 @@ internal class DefaultAccountConfiguration : IEntityTypeConfiguration<DefaultAcc
     {
         builder.HasBaseType<ApplicationUser>();
 
-        builder.HasKey(e => e.Id);
-
         builder.Property(e => e.Email)
             .IsRequired()
             .HasMaxLength(30);

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace DriveSalez.Domain.Entities;
+﻿namespace DriveSalez.Domain.Entities;
 
 public class Make
 {
@@ -8,6 +6,7 @@ public class Make
 
     public string Title { get; set; }
     
-    [JsonIgnore]
+    public List<Model> Models { get; } = [];
+
     public List<Vehicle> Vehicles { get; } = [];
 }

@@ -1,3 +1,4 @@
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Persistence.DbContext;
@@ -51,7 +52,8 @@ public class NotifyUserAboutSubscriptionCancellationJob : IJob
                           $"\n\nContact Us:\nIf you have any questions or concerns, please feel free to contact our support team." +
                           $"\n\nWe appreciate your understanding and prompt attention to this matter.\n\nBest regards,\n\nDriveSalez Team";
 
-            await _emailService.SendEmailAsync(user.Email, subject, body);
+            var emailMetadata = new EmailMetadata(toAddress: user.Email, subject: subject, body: body);
+            await _emailService.SendEmailAsync(emailMetadata);
         }
         
         _logger.LogInformation($"{typeof(NotifyUserAboutSubscriptionCancellationJob)} job finished");

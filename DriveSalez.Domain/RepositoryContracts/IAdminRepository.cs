@@ -10,51 +10,19 @@ public interface IAdminRepository
 {
     Task<Color> SendNewColorToDbAsync(string color);
 
-    Task<BodyType> SendNewBodyTypeToDbAsync(string bodyType);
-
-    Task<City> SendNewCityToDbAsync(string city, int countryId);
-        
-    Task<Country> SendNewCountryToDbAsync(string country);
-        
-    Task<DrivetrainType> SendNewVehicleDrivetrainTypeToDbAsync(string driveTrainType);
-
-    Task<GearboxType> SendNewVehicleGearboxTypeToDbAsync(string gearboxType);
-
-    Task<Make> SendNewMakeToDbAsync(string make);
-
-    Task<Model> SendNewModelToDbAsync(int makeId, string model);
-
-    Task<FuelType> SendNewVehicleFuelTypeToDbAsync(string fuelType);
-
     Task<Condition> SendNewVehicleConditionToDbAsync(string condition, string description);
 
     Task<MarketVersion> SendNewVehicleMarketVersionToDbAsync(string marketVersion);
 
     Task<Option> SendNewVehicleOptionToDbAsync(string option);
 
-    Task<Subscription> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price);
+    Task<PricingOption> SendNewSubscriptionToDbAsync(string subscriptionName, decimal price);
         
     Task<Color> UpdateVehicleColorInDbAsync(int colorId, string newColor);
 
-    Task<BodyType> UpdateVehicleBodyTypeInDbAsync(int bodyTypeId, string newBodyType);
-
     Task<AccountLimit> UpdateAccountLimitInDbAsync(int limitId, int premiumLimit, int regularLimit);
 
-    Task<City> UpdateCityInDbAsync(int cityId, string newCity);
-
-    Task<Subscription> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price);
-        
-    Task<DrivetrainType> UpdateVehicleDrivetrainTypeInDbAsync(int driveTrainId, string newDrivetrain);
-
-    Task<GearboxType> UpdateVehicleGearboxTypeInDbAsync(int gearboxId, string newGearbox);
-
-    Task<Make> UpdateMakeInDbAsync(int gearboxId, string newGearbox);
-
-    Task<Country> UpdateCountryInDbAsync(int countryId, string newCountry);
-        
-    Task<Model> UpdateModelInDbAsync(int modelId, string newModel);
-
-    Task<FuelType> UpdateFuelTypeInDbAsync(int fuelTypeId, string newFuelType);
+    Task<PricingOption> UpdateSubscriptionInDbAsync(int subscriptionId, decimal price);
 
     Task<Condition> UpdateVehicleConditionInDbAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
 
@@ -70,7 +38,7 @@ public interface IAdminRepository
 
     Task<GearboxType?> DeleteVehicleGearboxTypeFromDbAsync(int gearboxId);
 
-    Task<Subscription?> DeleteSubscriptionFromDbAsync(int subscriptionId);
+    Task<PricingOption?> DeleteSubscriptionFromDbAsync(int subscriptionId);
 
     Task<Make?> DeleteMakeFromDbAsync(int makeId);
 

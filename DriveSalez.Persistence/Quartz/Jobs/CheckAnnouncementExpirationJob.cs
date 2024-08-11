@@ -1,3 +1,4 @@
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.Persistence.DbContext;
@@ -58,7 +59,8 @@ public class CheckAnnouncementExpirationJob : IJob
                           $"\n\nThank you for choosing DriveSalez. We appreciate your continued use of our platform." +
                           $"\n\nBest regards,\n\nDriveSalez Team";
 
-            await _emailService.SendEmailAsync(announcement.Owner.Email, subject, body);
+            var emailMetadata = new EmailMetadata(toAddress: announcement.Owner.Email, subject: subject, body: body);
+            await _emailService.SendEmailAsync(emailMetadata);
         }
         
         _dbContext.UpdateRange(expiredAnnouncements);

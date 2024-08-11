@@ -32,11 +32,13 @@ internal class BusinessAccountConfiguration : IEntityTypeConfiguration<BusinessA
          builder.HasOne(e => e.ProfilePhotoUrl)
             .WithOne(e => e.ProfilePhotoBusinessAccount)
             .HasForeignKey<ImageUrl>(e => e.ProfilePhotoUserId)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
 
         builder.HasOne(e => e.BackgroundPhotoUrl)
             .WithOne(e => e.BackgroundPhotoBusinessAccount)
             .HasForeignKey<ImageUrl>(e => e.BackgroundPhotoUserId)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
     }
 }

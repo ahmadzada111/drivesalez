@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
-using DriveSalez.Application.DTO.AccountDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Enums;
@@ -9,7 +9,6 @@ using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BusinessAccount = DriveSalez.Domain.IdentityEntities.BusinessAccount;
 
@@ -19,7 +18,6 @@ public class AccountService : IAccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IJwtService _jwtService;
     private readonly IAccountRepository _accountRepository;
@@ -27,12 +25,11 @@ public class AccountService : IAccountService
     private readonly IMapper _mapper;
     
     public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-        RoleManager<ApplicationRole> roleManager, IJwtService jwtService, IHttpContextAccessor contextAccessor,
-        IAccountRepository accountRepository, IFileService fileService, IMapper mapper)
+        IJwtService jwtService, IHttpContextAccessor contextAccessor, IAccountRepository accountRepository, 
+        IFileService fileService, IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _roleManager = roleManager;
         _contextAccessor = contextAccessor;
         _jwtService = jwtService;
         _accountRepository = accountRepository;
@@ -102,11 +99,6 @@ public class AccountService : IAccountService
 
         var user = await _accountRepository.FindUserByLoginInDbAsync(request.UserName) as TUser
             ?? throw new UserNotFoundException("User with provided login wasn't found!");
-
-        if (!user.EmailConfirmed)
-        {
-            throw new EmailNotConfirmedException("Email not confirmed!");
-        }
 
         if (user.IsBanned)
         {
@@ -197,7 +189,7 @@ public class AccountService : IAccountService
         return new BusinessAccountAuthResponseDto
         {
             Token = response.Token,
-            Email = user.Email,
+            Email = user.Email ?? throw new InvalidOperationException("Email cannot be null"),
             PhoneNumbers = _mapper.Map<List<string>>(user.PhoneNumbers),
             JwtExpiration = response.JwtExpiration,
             RefreshToken = response.RefreshToken,
@@ -219,10 +211,10 @@ public class AccountService : IAccountService
         return new DefaultAccountAuthResponseDto
         {
             Token = response.Token,
-            Email = user.Email,
+            Email = user.Email ?? throw new InvalidOperationException("Email cannot be null"),
             FirstName = user.FirstName,
             LastName = user.LastName,
-            PhoneNumber = user.PhoneNumber,
+            PhoneNumber = user.PhoneNumber ?? throw new InvalidOperationException("Phone number cannot be null"),
             JwtExpiration = response.JwtExpiration,
             RefreshToken = response.RefreshToken,
             RefreshTokenExpiration = response.RefreshTokenExpiration,
@@ -303,15 +295,12 @@ public class AccountService : IAccountService
     {
         var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
         var currentUser = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
-        
-        var user = await _userManager.Users
-            .FirstOrDefaultAsync(u => u.Id.ToString() == currentUser.Id.ToString());
 
-        if (user != null && await _userManager.CheckPasswordAsync(user, password))
+        if (currentUser != null && await _userManager.CheckPasswordAsync(currentUser, password))
         {
-            var result = await _accountRepository.DeleteUserFromDbAsync(user);
+            var result = await _accountRepository.DeleteUserFromDbAsync(currentUser);
             
-            await _fileService.DeleteAllFilesAsync(user.Id);
+            await _fileService.DeleteAllFilesAsync(currentUser.Id);
             return result;
         }
 
@@ -343,27 +332,21 @@ public class AccountService : IAccountService
         
         return businessAccount;
     }
-    
-    public async Task<IdentityResult> CreateAdminAsync()
-    {
-        DefaultAccount user = new DefaultAccount()
-        {
-            Email = "admin",
-            UserName = "admin",
-            FirstName = "admin" ,
-            LastName = "admin",
-            EmailConfirmed = true
-        };
 
-        IdentityResult result = await _userManager.CreateAsync(user, "Admin1234!");
+    public async Task<bool> VerifyEmailAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email) ??
+        throw new UserNotFoundException("User with provided email wasn't found!");
+
+        user.EmailConfirmed = true;
+
+        var result = await _userManager.UpdateAsync(user);
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(user, UserType.Admin.ToString());
-            
-            return result;
+            return true;
         }
 
-        return result;
+        return false;
     }
 }

@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
-using DriveSalez.Application.DTO.AccountDTO;
-using DriveSalez.Application.DTO.AnnoucementDTO;
-using DriveSalez.Application.DTO.AnnouncementDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
@@ -36,33 +34,32 @@ public class AnnouncementService : IAnnouncementService
     
     private async Task<Announcement> MapUpdateAnnouncementDtoToModelAsync(UpdateAnnouncementDto request, ApplicationUser user)
     {
+        var year = await _announcementRepository.GetManufactureYearById(request.YearId);
+        var fuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId);
+        var isBrandNew = request.IsBrandNew;
+        var bodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId);
+        var color = await _announcementRepository.GetColorById(request.ColorId);
+        var horsePower = request.HorsePower;
+        var gearboxType = await _announcementRepository.GetGearboxById(request.GearboxId);
+        var drivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId);
+        var marketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId);
+        var ownerQuantity = request.OwnerQuantity;
+        var options = await _announcementRepository.GetOptionsByIds(request.OptionsIds);
+        var conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds);
+        var seatCount = request.SeatCount;
+        var vinCode = request.VinCode;
+        var engineVolume = request.EngineVolume;
+        var mileage = request.Mileage;
+        var mileageType = request.MileageType;
+
         var announcement = new Announcement
         {
             Vehicle = new Vehicle
             {
                 Make = await _announcementRepository.GetMakeById(request.MakeId),
                 Model = await _announcementRepository.GetModelById(request.ModelId),
-
-                VehicleDetail = new VehicleDetail
-                {
-                    Year = await _announcementRepository.GetManufactureYearById(request.YearId),
-                    FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId),
-                    IsBrandNew = request.IsBrandNew,
-                    BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId),
-                    Color = await _announcementRepository.GetColorById(request.ColorId),
-                    HorsePower = request.HorsePower,
-                    GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId),
-                    DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId),
-                    MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId),
-                    OwnerQuantity = request.OwnerQuantity,
-                    Options = await _announcementRepository.GetOptionsByIds(request.OptionsIds),
-                    Conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds),
-                    SeatCount = request.SeatCount,
-                    VinCode = request.VinCode,
-                    EngineVolume = request.EngineVolume,
-                    Mileage = request.Mileage,
-                    MileageType = Enum.Parse<DistanceUnit>(request.MileageType, true)
-                }
+                VehicleDetail = new VehicleDetail(year, fuelType, isBrandNew, bodyType, color, horsePower, gearboxType, drivetrainType,
+                marketVersion, ownerQuantity, options, conditions, seatCount, vinCode, engineVolume, mileage, Enum.Parse<DistanceUnit>(mileageType))
             },
             Barter = request.Barter,
             OnCredit = request.OnCredit,
@@ -78,33 +75,33 @@ public class AnnouncementService : IAnnouncementService
 
     private async Task<Announcement> MapCreateAnnouncementDtoToModelAsync(CreateAnnouncementDto request, ApplicationUser user)
     {
+        var year = await _announcementRepository.GetManufactureYearById(request.YearId);
+        var fuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId);
+        var isBrandNew = request.IsBrandNew;
+        var bodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId);
+        var color = await _announcementRepository.GetColorById(request.ColorId);
+        var horsePower = request.HorsePower;
+        var gearboxType = await _announcementRepository.GetGearboxById(request.GearboxId);
+        var drivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId);
+        var marketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId);
+        var ownerQuantity = request.OwnerQuantity;
+        var options = await _announcementRepository.GetOptionsByIds(request.OptionsIds);
+        var conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds);
+        var seatCount = request.SeatCount;
+        var vinCode = request.VinCode;
+        var engineVolume = request.EngineVolume;
+        var mileage = request.Mileage;
+        var mileageType = request.MileageType;
+
         var announcement = new Announcement()
                 {
                     Vehicle = new Vehicle()
                     {
                         Make = await _announcementRepository.GetMakeById(request.MakeId),
                         Model = await _announcementRepository.GetModelById(request.ModelId),
-                        
-                        VehicleDetail = new VehicleDetail()
-                        {
-                            Year = await _announcementRepository.GetManufactureYearById(request.YearId),
-                            FuelType = await _announcementRepository.GetFuelTypeById(request.FuelTypeId),
-                            IsBrandNew = request.IsBrandNew,
-                            BodyType = await _announcementRepository.GetBodyTypeById(request.BodyTypeId),
-                            Color = await _announcementRepository.GetColorById(request.ColorId),
-                            HorsePower = request.HorsePower,
-                            GearboxType = await _announcementRepository.GetGearboxById(request.GearboxId),
-                            DrivetrainType = await _announcementRepository.GetDrivetrainTypeById(request.DrivetrainTypeId),
-                            MarketVersion = await _announcementRepository.GetMarketVersionById(request.MarketVersionId),
-                            OwnerQuantity = request.OwnerQuantity,
-                            Options = await _announcementRepository.GetOptionsByIds(request.OptionsIds),
-                            Conditions = await _announcementRepository.GetConditionsByIds(request.ConditionsIds),
-                            SeatCount = request.SeatCount,
-                            VinCode = request.VinCode,
-                            EngineVolume = request.EngineVolume,
-                            Mileage = request.Mileage,
-                            MileageType = request.MileageType
-                        }
+                        VehicleDetail = new VehicleDetail(year, fuelType, isBrandNew.GetValueOrDefault(), bodyType, color, horsePower, gearboxType, drivetrainType,
+                        marketVersion, ownerQuantity.GetValueOrDefault(), options, conditions, seatCount.GetValueOrDefault(), 
+                        vinCode, engineVolume.GetValueOrDefault(), mileage, Enum.Parse<DistanceUnit>(mileageType))
                     },
                     ExpirationDate = DateTimeOffset.Now.AddMonths(1),
                     Barter = request.Barter,
@@ -161,7 +158,9 @@ public class AnnouncementService : IAnnouncementService
             throw new ValidationException("Invalid relationships in the announcement.");
         }
         
-        // announcement.ImageUrls = await _fileService.UploadFilesAsync(request.ImageData);
+        var urls = await _fileService.UploadFilesAsync(request.ImageData, user);
+        announcement.ImageUrls.AddRange(urls); 
+
         var response = await _announcementRepository.CreateAnnouncementInDbAsync(user, announcement);
         
         return _mapper.Map<AnnouncementResponseDto>(response);
@@ -237,24 +236,15 @@ public class AnnouncementService : IAnnouncementService
         return _mapper.Map<AnnouncementResponseDto>(updatedAnnouncement);
     }
 
-    public async Task<AnnouncementResponseDto?> MakeAnnouncementActiveAsync(Guid announcementId)
+    public async Task<AnnouncementResponseDto?> ChangeAnnouncementState(Guid announcementId, AnnouncementState announcementState)
     {
         var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
         var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
-        var response = await _announcementRepository.MakeAnnouncementActiveInDbAsync(user, announcementId);
+        var response = await _announcementRepository.ChangeAnnouncementStateInDbAsync(user, announcementId, announcementState);
 
         return _mapper.Map<AnnouncementResponseDto>(response);
     }
-    
-    public async Task<AnnouncementResponseDto?> MakeAnnouncementInactiveAsync(Guid announcementId)
-    {
-        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
-        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
-        var response = await _announcementRepository.MakeAnnouncementInactiveInDbAsync(user, announcementId);
 
-        return _mapper.Map<AnnouncementResponseDto>(response);
-    }
-    
     public async Task<PaginatedList<AnnouncementResponseMiniDto>> GetFilteredAnnouncementsAsync(FilterParameters filterParameters, PagingParameters pagingParameters)
     {
         var response = await _announcementRepository.GetFilteredAnnouncementsFromDbAsync(filterParameters, pagingParameters);

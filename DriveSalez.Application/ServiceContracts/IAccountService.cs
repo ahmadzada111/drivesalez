@@ -1,4 +1,4 @@
-using DriveSalez.Application.DTO.AccountDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 
@@ -33,6 +33,6 @@ public interface IAccountService
     Task<ApplicationUser> ChangeUserTypeToBusinessAccountAsync(ApplicationUser user);
 
     Task<bool> ChangeEmailAsync(string email, string newMail);
-    
-    Task<IdentityResult>  CreateAdminAsync();
+
+    Task<bool> VerifyEmailAsync(string email);
 }

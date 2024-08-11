@@ -13,7 +13,8 @@ internal class AnnouncementConfiguration : IEntityTypeConfiguration<Announcement
         builder.HasOne(e => e.Vehicle)
             .WithMany(e => e.Announcements)
             .HasForeignKey(e => e.VehicleId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
 
         builder.Property(e => e.Barter)
             .IsRequired(false);
@@ -38,12 +39,12 @@ internal class AnnouncementConfiguration : IEntityTypeConfiguration<Announcement
 
         builder.HasOne(e => e.Country)
             .WithMany(e => e.Announcements)
-            .OnDelete(DeleteBehavior.SetNull)
+            .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 
         builder.HasOne(e => e.City)
             .WithMany(e => e.Announcements)
-            .OnDelete(DeleteBehavior.SetNull)
+            .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
 
         builder.Property(e => e.ExpirationDate)
@@ -59,7 +60,7 @@ internal class AnnouncementConfiguration : IEntityTypeConfiguration<Announcement
         builder.HasOne(e => e.Owner)
             .WithMany(u => u.Announcements)
             .HasForeignKey(e => e.UserId)
-            .OnDelete(DeleteBehavior.SetNull)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
     }
 }

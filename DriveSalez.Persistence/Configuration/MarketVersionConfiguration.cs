@@ -17,6 +17,7 @@ internal class MarketVersionConfiguration : IEntityTypeConfiguration<MarketVersi
         builder.HasMany(e => e.VehicleDetails)
             .WithOne(e => e.MarketVersion)
             .HasForeignKey(e => e.MarketVersionId)
+            .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
     }
 }

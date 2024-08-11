@@ -8,16 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
         <PackageReference Include="Quartz.AspNetCore" Version="3.11.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DriveSalez.Application\DriveSalez.Application.csproj" />
       <ProjectReference Include="..\DriveSalez.Persistence\DriveSalez.Persistence.csproj" />
       <ProjectReference Include="..\DriveSalez.Presentation\DriveSalez.Presentation.csproj" />
-      <ProjectReference Include="..\DriveSalez.SharedKernel\DriveSalez.SharedKernel.csproj" />
     </ItemGroup>
-    
 </Project>

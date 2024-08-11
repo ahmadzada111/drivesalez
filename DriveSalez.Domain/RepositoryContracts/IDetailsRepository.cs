@@ -28,7 +28,7 @@ public interface IDetailsRepository
 
     Task<IEnumerable<Model>> GetAllModelsByMakeIdFromDbAsync(int id);
 
-    Task<IEnumerable<AnnouncementTypePricing>> GetAllAnnouncementTypePricingsFromDbAsync();
+    Task<IEnumerable<PricingOption>> GetAllAnnouncementTypePricingsFromDbAsync();
 
     Task<IEnumerable<ManufactureYear>> GetAllManufactureYearsFromDbAsync();
 
@@ -36,7 +36,7 @@ public interface IDetailsRepository
 
     Task<IEnumerable<City>> GetAllCitiesFromDbAsync();
 
-    Task<IEnumerable<Subscription>> GetAllSubscriptionsFromDbAsync();
+    Task<IEnumerable<PricingOption>> GetAllSubscriptionsFromDbAsync();
 
     Task<IEnumerable<City>> GetAllCitiesByCountryIdFromDbAsync(int countryId);
 }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using DriveSalez.Domain.Enums;
+﻿using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 
 namespace DriveSalez.Domain.Entities;
@@ -8,10 +7,9 @@ public class Announcement
 {
     public Guid Id { get; set; }
 
-    [JsonIgnore]
-    public int VehicleId { get; set; }
+    public int? VehicleId { get; set; }
 
-    public Vehicle Vehicle { get; set; }
+    public required Vehicle Vehicle { get; set; }
 
     public bool? Barter { get; set; }
 
@@ -23,22 +21,19 @@ public class Announcement
 
     public AnnouncementState AnnouncementState { get; set; } = AnnouncementState.Pending;
 
-    public List<ImageUrl> ImageUrls { get; set; }
+    public List<ImageUrl> ImageUrls { get; } = [];
         
-    [JsonIgnore]
-    public int CountryId { get; set; }
+    public int? CountryId { get; set; }
     
-    [JsonIgnore]
-    public int CityId { get; set; }
+    public int? CityId { get; set; }
     
-    public Country Country { get; set; }
+    public required Country Country { get; set; }
 
-    public City City { get; set; }
+    public required City City { get; set; }
 
-    [JsonIgnore]
     public Guid UserId {get; set;}
 
-    public ApplicationUser Owner { get; set; }
+    public required ApplicationUser Owner { get; set; }
         
     public DateTimeOffset ExpirationDate { get; set; }
         

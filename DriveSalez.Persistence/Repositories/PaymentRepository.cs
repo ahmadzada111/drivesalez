@@ -1,5 +1,4 @@
 using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
@@ -23,6 +22,8 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<bool> RecordBalanceTopUpInDbAsync(ApplicationUser user, PaymentRequestDto request)
     {
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             _logger.LogInformation($"Recording balance top up for user with ID {user.Id} in DB");
@@ -30,16 +31,14 @@ public class PaymentRepository : IPaymentRepository
             user.AccountBalance += request.Sum;
             var response = _dbContext.Update(user);
 
-            if (response.State == EntityState.Modified)
-            {
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             throw new InvalidOperationException("Object wasn't modified");
         }
         catch (Exception e)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(e, $"Error recording balance top up for user with ID {user.Id} in DB");
             throw;
         }
@@ -55,7 +54,7 @@ public class PaymentRepository : IPaymentRepository
                 .Where(x => x.Id == userId)
                 .FirstOrDefaultAsync();
             
-            var announcementSubscription = await _dbContext.AnnouncementPricing
+            var announcementSubscription = await _dbContext.PricingOptions
                 .Include(x => x.Price)
                 .Where(x => x.Id == subscriptionId)
                 .FirstOrDefaultAsync();
@@ -72,9 +71,9 @@ public class PaymentRepository : IPaymentRepository
 
             if (announcementSubscription.Title == "Premium Announcement")
             {
-                if (user.AccountBalance - announcementSubscription.Price.Price > 0)
+                if (user.AccountBalance - announcementSubscription.Price > 0)
                 {
-                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price;
                     user.PremiumUploadLimit += announcementQuantity;
 
                     var response = _dbContext.Update(user);
@@ -90,9 +89,9 @@ public class PaymentRepository : IPaymentRepository
             }
             else if(announcementSubscription.Title == "Regular Announcement")
             {
-                if (user.AccountBalance - announcementSubscription.Price.Price > 0)
+                if (user.AccountBalance - announcementSubscription.Price > 0)
                 {
-                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price.Price;
+                    user.AccountBalance -= announcementQuantity * announcementSubscription.Price;
                     user.RegularUploadLimit += announcementQuantity;
 
                     var response = _dbContext.Update(user);
@@ -214,13 +213,13 @@ public class PaymentRepository : IPaymentRepository
     //     }
     // }
     
-    public async Task<Subscription?> GetSubscriptionFromDbAsync(int subscriptionId)
+    public async Task<PricingOption?> GetSubscriptionFromDbAsync(int subscriptionId)
     {
         try
         {
             _logger.LogInformation($"Getting subscription with ID {subscriptionId} from DB");
             
-            var subscription = await _dbContext.Subscriptions
+            var subscription = await _dbContext.PricingOptions
                 .Include(x => x.Price)
                 .Where(x => x.Id == subscriptionId)
                 .FirstOrDefaultAsync();

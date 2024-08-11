@@ -17,6 +17,6 @@ internal class BodyTypeConfiguration : IEntityTypeConfiguration<BodyType>
         builder.HasMany(e => e.VehicleDetails)
             .WithOne(e => e.BodyType)
             .HasForeignKey(e => e.BodyTypeId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

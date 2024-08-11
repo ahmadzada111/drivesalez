@@ -1,4 +1,5 @@
 using DriveSalez.Domain.Entities;
+using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,6 +10,12 @@ internal class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
     public void Configure(EntityTypeBuilder<Vehicle> builder)
     {
         builder.HasKey(e => e.Id);
+
+        builder.HasOne(e => e.VehicleDetail)
+            .WithOne(e => e.Vehicle)
+            .HasForeignKey<VehicleDetail>(e => e.VehicleId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
         builder.HasOne(e => e.Make)
             .WithMany(e => e.Vehicles)

@@ -1,9 +1,7 @@
 namespace DriveSalez.SharedKernel.Pagination;
 
-public class PaginatedList<T>
+public class PaginatedList<T> : List<T>
 {
-    public List<T> Items { get; }
-        
     public int PageIndex { get; }
         
     public int TotalPages { get; }
@@ -21,7 +19,7 @@ public class PaginatedList<T>
     
     public PaginatedList(List<T> items, int pageIndex, int totalPages, int totalCount)
     {
-        Items = items;
+        AddRange(items);
         PageIndex = pageIndex;
         TotalPages = totalPages;
         TotalCount = totalCount;

@@ -9,9 +9,7 @@ public class PhoneNumber
 
     public string Number { get; set; }
 
-    [JsonIgnore]
     public Guid UserId { get; set; }
 
-    [JsonIgnore]
     public BusinessAccount BusinessAccount { get; set; }
 }

@@ -12,5 +12,5 @@ public interface IPaymentRepository
 
     Task<bool> AddAnnouncementLimitInDbAsync(Guid userId, int announcementQuantity, int subscriptionId);
     
-    Task<Subscription?> GetSubscriptionFromDbAsync(int subscriptionId);
+    Task<PricingOption?> GetSubscriptionFromDbAsync(int subscriptionId);
 }

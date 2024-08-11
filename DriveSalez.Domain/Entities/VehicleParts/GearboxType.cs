@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
+﻿using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 
 namespace DriveSalez.Domain.Entities.VehicleParts;
 
@@ -9,6 +8,5 @@ public class GearboxType
 
     public string Type { get; set; }
     
-    [JsonIgnore]
     public List<VehicleDetail> VehicleDetails { get; } = [];
 }

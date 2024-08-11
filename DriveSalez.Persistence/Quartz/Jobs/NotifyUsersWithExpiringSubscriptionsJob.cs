@@ -1,3 +1,4 @@
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Persistence.DbContext;
@@ -44,7 +45,8 @@ public class NotifyUsersWithExpiringSubscriptionsJob : IJob
                           $"\n\nThank you for being a valued member of our community." +
                           $"\n\nBest regards,\nDriveSalez Team";
 
-            await _emailService.SendEmailAsync(user.Email, subject, body);
+            var emailMetadata = new EmailMetadata(toAddress: user.Email, subject: subject, body: body);
+            await _emailService.SendEmailAsync(emailMetadata);
         }
         
         _logger.LogInformation($"{typeof(NotifyUsersWithExpiringSubscriptionsJob)} job finished");

@@ -1,5 +1,4 @@
 ﻿using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
@@ -11,23 +10,7 @@ public interface IAdminService
 {
     Task<Color?> AddColorAsync(string color);
 
-    Task<BodyType?> AddBodyTypeAsync(string bodyType);
-
-    Task<Subscription?> AddSubscriptionAsync(string subscriptionName, decimal price);
-
-    Task<Country?> AddCountryAsync(string country);
-
-    Task<City?> AddCityAsync(string city, int countryId);
-        
-    Task<DrivetrainType?> AddVehicleDrivetrainTypeAsync(string driveTrainType);
-
-    Task<GearboxType?> AddVehicleGearboxTypeAsync(string gearboxType);
-
-    Task<Make?> AddMakeAsync(string make);
-
-    Task<Model?> AddModelAsync(int makeId, string model);
-
-    Task<FuelType?> AddVehicleFuelTypeAsync(string fuelType);
+    Task<PricingOption?> AddSubscriptionAsync(string subscriptionName, decimal price);
 
     Task<Condition?> AddVehicleConditionAsync(string condition, string description);
 
@@ -37,27 +20,11 @@ public interface IAdminService
 
     Task<Color?> UpdateVehicleColorAsync(int colorId, string newColor);
 
-    Task<BodyType?> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType);
-
-    Task<DrivetrainType?> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain);
-
-    Task<GearboxType?> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox);
-
     Task<AccountLimit?> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit);
 
-    Task<Subscription?> UpdateSubscriptionAsync(int subscriptionId, decimal price);
-        
-    Task<Make?> UpdateMakeAsync(int makeId, string newMake);
-
-    Task<Model?> UpdateModelAsync(int modelId, string newModel);
-
-    Task<FuelType?> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType);
+    Task<PricingOption?> UpdateSubscriptionAsync(int subscriptionId, decimal price);
 
     Task<Condition?> UpdateVehicleConditionAsync(int vehicleConditionId, string newVehicleCondition, string newDescription);
-
-    Task<Country?> UpdateCountryAsync(int countryId, string newCountry);
-
-    Task<City?> UpdateCityAsync(int cityId, string newCity);
         
     Task<Option?> UpdateVehicleOptionAsync(int vehicleOptionId, string newVehicleOption);
 
@@ -95,7 +62,7 @@ public interface IAdminService
 
     Task<PaginatedList<GetUserDto>> GetAllUsers(PagingParameters pagingParameters);
 
-    Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body);
+    Task<bool> SendEmailFromStaffAsync(EmailMetadata emailMetadata);
 
     Task<bool> BanUserAsync(Guid userId);
         

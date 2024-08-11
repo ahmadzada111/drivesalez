@@ -1,6 +1,4 @@
 ﻿using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
-using DriveSalez.Application.DTO.AdminDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.SharedKernel.Pagination;
 using Microsoft.AspNetCore.Authorization;
@@ -32,63 +30,7 @@ public class AdminController : Controller
         var response = await _adminService.AddColorAsync(color);
         return response != null ? Ok(response) : BadRequest(response);
     }
-
-    [HttpPost("add-new-body")]
-    public async Task<ActionResult> AddNewBodyType([FromBody] string bodyType)
-    {
-        var response = await _adminService.AddBodyTypeAsync(bodyType);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
     
-    [HttpPost("add-new-drivetrain")]
-    public async Task<ActionResult> AddNewDrivetrainType([FromBody] string driveTrainType)
-    {
-        var response = await _adminService.AddVehicleDrivetrainTypeAsync(driveTrainType);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-country")]
-    public async Task<ActionResult> AddNewCountryType([FromBody] string country)
-    {
-        var response = await _adminService.AddCountryAsync(country);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPost("add-new-city")]
-    public async Task<ActionResult> AddNewCityType([FromBody] AddNewCityDto request)
-    {
-        var response = await _adminService.AddCityAsync(request.City, request.CountryId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPost("add-new-gearbox")]
-    public async Task<ActionResult> AddNewGearboxType([FromBody] string gearboxType)
-    {
-        var response = await _adminService.AddVehicleGearboxTypeAsync(gearboxType);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-make")]
-    public async Task<ActionResult> AddNewMake([FromBody] string make)
-    {
-        var response = await _adminService.AddMakeAsync(make);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-model")]
-    public async Task<ActionResult> AddNewModel([FromBody] AddNewModelDto request)
-    {
-        var response = await _adminService.AddModelAsync(request.MakeId, request.ModelName);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-fuel")]
-    public async Task<ActionResult> AddNewFuelType([FromBody] string fuelType)
-    {
-        var response = await _adminService.AddVehicleFuelTypeAsync(fuelType);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
     [HttpPost("add-new-condition")]
     public async Task<ActionResult> AddNewVehicleCondition([FromBody] AddNewConditionDto request)
     {
@@ -117,66 +59,10 @@ public class AdminController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
     
-    [HttpPut("update-body")]
-    public async Task<ActionResult> UpdateVehicleBodyType([FromBody] UpdateBodyTypeDto request)
-    {
-        var response = await _adminService.UpdateVehicleBodyTypeAsync(request.BodyTypeId, request.NewBodyType);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
     [HttpPut("update-account-limit")]
     public async Task<ActionResult> UpdateUserLimit([FromBody] UpdateAccountLimitDto request)
     {
         var response = await _adminService.UpdateAccountLimitAsync(request.LimitId, request.PremiumLimit, request.RegularLimit);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-city")]
-    public async Task<ActionResult> UpdateCity([FromBody] UpdateCityDto request)
-    {
-        var response = await _adminService.UpdateCityAsync(request.CityId, request.NewCity);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-country")]
-    public async Task<ActionResult> UpdateCountry([FromBody] UpdateCountryDto request)
-    {
-        var response = await _adminService.UpdateCountryAsync(request.CountryId, request.NewCountry);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-drivetrain")]
-    public async Task<ActionResult> UpdateVehicleDriveTrainType([FromBody] UpdateDrivetrainDto request)
-    {
-        var response = await _adminService.UpdateVehicleDrivetrainTypeAsync(request.DrivetrainId, request.NewDrivetrain);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-gearbox")]
-    public async Task<ActionResult> UpdateVehicleGearboxType([FromBody] UpdateGearboxDto request)
-    {
-        var response = await _adminService.UpdateVehicleGearboxTypeAsync(request.GearboxId, request.NewGearbox);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-make")]
-    public async Task<ActionResult> UpdateMake([FromBody] UpdateMakeDto request)
-    {
-        var response = await _adminService.UpdateMakeAsync(request.MakeId, request.NewMake);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-model")]
-    public async Task<ActionResult> UpdateModel([FromBody] UpdateModelDto request)
-    {
-        var response = await _adminService.UpdateModelAsync(request.ModelId, request.NewModel);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-fuel")]
-    public async Task<ActionResult> UpdateFuelType([FromBody] UpdateFuelTypeDto request)
-    {
-        var response = await _adminService.UpdateFuelTypeAsync(request.FuelTypeId, request.NewFuelType);
         return response != null ? Ok(response) : BadRequest(response);
     }
     
@@ -309,20 +195,20 @@ public class AdminController : Controller
     public async Task<ActionResult> GetAllModerators(PagingParameters pagingParameters)
     {
         var result = await _adminService.GetAllModeratorsAsync(pagingParameters);
-        return !result.Items.IsNullOrEmpty() ? Ok(result) : BadRequest();
+        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
     }
 
     [HttpGet("get-all-users")]
     public async Task<ActionResult> GetAllUsers(PagingParameters pagingParameters)
     {
         var result = await _adminService.GetAllUsers(pagingParameters);
-        return !result.Items.IsNullOrEmpty() ? Ok(result) : BadRequest();
+        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
     }
 
     [HttpPost("send-mail-to-user")]
-    public async Task<ActionResult> SendEmail([FromBody] SendEmailFromStaffDto request)
+    public async Task<ActionResult> SendEmail([FromBody] EmailMetadata request)
     {
-        var result = await _adminService.SendEmailFromStaffAsync(request.ToEmail, request.Subject, request.Body);
+        var result = await _adminService.SendEmailFromStaffAsync(request);
 
         if (result)
         {

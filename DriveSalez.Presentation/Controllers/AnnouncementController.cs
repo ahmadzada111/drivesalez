@@ -1,6 +1,4 @@
-using DriveSalez.Application.DTO.AccountDTO;
-using DriveSalez.Application.DTO.AnnoucementDTO;
-using DriveSalez.Application.DTO.AnnouncementDTO;
+using DriveSalez.Application.DTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Enums;
 using DriveSalez.SharedKernel.Pagination;
@@ -116,12 +114,12 @@ public class AnnouncementController : Controller
         return Ok(response);
     }
     
-    [HttpPost("reactivate-announcement/{announcementId}")]
-    public async Task<ActionResult> ReactivateAnnouncement([FromRoute] Guid announcementId)
+    [HttpPost("make-announcement-active/{announcementId}")]
+    public async Task<ActionResult> MakeAnnouncementActive([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.MakeAnnouncementActiveAsync(announcementId);
+        var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
         return response != null ? Ok(response) : BadRequest(response);
     }
 
@@ -130,10 +128,20 @@ public class AnnouncementController : Controller
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.MakeAnnouncementInactiveAsync(announcementId);
+        var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest(response);
     }
     
+    [HttpPatch("make-announcement-pending/{announcementId}")]
+    [Authorize(Roles = "Moderator, Admin")]
+    public async Task<ActionResult> MakeAnnouncementPending([FromRoute] Guid announcementId)
+    {
+        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+        
+        var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Pending);
+        return response != null ? Ok(response) : BadRequest(response);
+    }
+
     [HttpGet("get-all-active-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {
@@ -142,7 +150,7 @@ public class AnnouncementController : Controller
         var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Active);
         return Ok(response);
     }
-    
+
     [HttpGet("get-all-inactive-announcements-by-user-id")]
     public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>?> GetAllInactiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
     {

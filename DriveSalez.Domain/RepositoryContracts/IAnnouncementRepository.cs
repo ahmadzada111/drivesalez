@@ -5,7 +5,6 @@ using DriveSalez.Domain.Enums;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.SharedKernel.Pagination;
 
-
 namespace DriveSalez.Domain.RepositoryContracts;
 
 public interface IAnnouncementRepository
@@ -16,9 +15,7 @@ public interface IAnnouncementRepository
 
     Task<Announcement?> DeleteInactiveAnnouncementFromDbAsync(ApplicationUser user, Guid announcementId);
 
-    Task<Announcement?> MakeAnnouncementActiveInDbAsync(ApplicationUser user, Guid announcementId);
-
-    Task<Announcement?> MakeAnnouncementInactiveInDbAsync(ApplicationUser user, Guid announcementId);
+    Task<Announcement?> ChangeAnnouncementStateInDbAsync(ApplicationUser user, Guid announcementId, AnnouncementState announcementState);
         
     Task<Announcement?> GetAnnouncementByIdFromDbAsync(Guid id);
 
@@ -38,31 +35,31 @@ public interface IAnnouncementRepository
         
     Task<PaginatedList<Announcement>> GetAllAnnouncementsForAdminPanelFromDbAsync(PagingParameters parameter, AnnouncementState announcementState);
 
-    public Task<ManufactureYear> GetManufactureYearById(int id);
+    Task<ManufactureYear> GetManufactureYearById(int id);
 
-    public Task<Make> GetMakeById(int id);
+    Task<Make> GetMakeById(int id);
 
-    public Task<Model> GetModelById(int id);
+    Task<Model> GetModelById(int id);
 
-    public Task<FuelType> GetFuelTypeById(int id);
+    Task<FuelType> GetFuelTypeById(int id);
 
-    public Task<GearboxType> GetGearboxById(int id);
+    Task<GearboxType> GetGearboxById(int id);
 
-    public Task<DrivetrainType> GetDrivetrainTypeById(int id);
+    Task<DrivetrainType> GetDrivetrainTypeById(int id);
 
-    public Task<BodyType> GetBodyTypeById(int id);
+    Task<BodyType> GetBodyTypeById(int id);
 
-    public Task<List<Condition>> GetConditionsByIds(List<int> ids);
+    Task<List<Condition>> GetConditionsByIds(List<int> ids);
 
-    public Task<List<Option>> GetOptionsByIds(List<int> ids);
+    Task<List<Option>> GetOptionsByIds(List<int> ids);
 
-    public Task<Color> GetColorById(int id);
+    Task<Color> GetColorById(int id);
 
-    public Task<MarketVersion> GetMarketVersionById(int id);
+    Task<MarketVersion> GetMarketVersionById(int id);
 
-    public Task<Country> GetCountryById(int id);
+    Task<Country> GetCountryById(int id);
 
-    public Task<City> GetCityById(int id);
+    Task<City> GetCityById(int id);
 
-    public Task<bool> CheckAllRelationsInAnnouncement(Announcement request);
+    Task<bool> CheckAllRelationsInAnnouncement(Announcement request);
 }

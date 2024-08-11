@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using DriveSalez.Application.DTO;
-using DriveSalez.Application.DTO.AccountDTO;
 using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.Entities.VehicleDetailsFiles;
 using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.Enums;
-using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.SharedKernel.Pagination;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Application.Services;
@@ -18,40 +15,19 @@ namespace DriveSalez.Application.Services;
 public class AdminService : IAdminService
 {
     private readonly IAdminRepository _adminRepository;
-    private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IDetailsRepository _detailsRepository;
     private readonly IEmailService _emailService;
     private readonly IMapper _mapper;
         
-    public AdminService(IAdminRepository adminRepository, IHttpContextAccessor contextAccessor, 
-        UserManager<ApplicationUser> userManager, IDetailsRepository detailsRepository, 
-        IEmailService emailService, IMapper mapper)
+    public AdminService(IAdminRepository adminRepository, UserManager<ApplicationUser> userManager, 
+        IDetailsRepository detailsRepository, IEmailService emailService, IMapper mapper)
     {
         _adminRepository = adminRepository;
-        _contextAccessor = contextAccessor;
         _userManager = userManager;
         _detailsRepository = detailsRepository;
         _emailService = emailService;
         _mapper = mapper;
-    }
-
-    public async Task<BodyType?> AddBodyTypeAsync(string bodyType)
-    {
-        if (string.IsNullOrEmpty(bodyType))
-        {
-            return null;
-        }
-            
-        var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
-
-        if (bodyTypes.Any(x => x.Type == bodyType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewBodyTypeToDbAsync(bodyType);
-        return response;
     }
 
     public async Task<Color?> AddColorAsync(string color)
@@ -67,7 +43,7 @@ public class AdminService : IAdminService
         return response;
     }
 
-    public async Task<Subscription?> AddSubscriptionAsync(string subscriptionName, decimal price)
+    public async Task<PricingOption?> AddSubscriptionAsync(string subscriptionName, decimal price)
     {
         var subscription = await _detailsRepository.GetAllSubscriptionsFromDbAsync();
 
@@ -77,32 +53,6 @@ public class AdminService : IAdminService
         }
             
         var response = await _adminRepository.SendNewSubscriptionToDbAsync(subscriptionName, price);
-        return response;
-    }
-        
-    public async Task<Make?> AddMakeAsync(string make)
-    {
-        var makes = await _detailsRepository.GetAllMakesFromDbAsync();
-
-        if (makes.Any(x => x.Title == make))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewMakeToDbAsync(make);
-        return response;
-    }
-
-    public async Task<Model?> AddModelAsync(int makeId, string model)
-    {
-        var models = await _detailsRepository.GetAllModelsFromDbAsync();
-
-        if (models.Any(x => x.Title == model))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewModelToDbAsync(makeId, model);
         return response;
     }
 
@@ -129,71 +79,6 @@ public class AdminService : IAdminService
         }
             
         var response = await _adminRepository.SendNewVehicleOptionToDbAsync(option);
-        return response;
-    }
-
-    public async Task<DrivetrainType?> AddVehicleDrivetrainTypeAsync(string driveTrainType)
-    {
-        var drivetrains = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
-
-        if (drivetrains.Any(x => x.Type == driveTrainType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewVehicleDrivetrainTypeToDbAsync(driveTrainType);
-        return response;
-    }
-
-    public async Task<FuelType?> AddVehicleFuelTypeAsync(string fuelType)
-    {
-        var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
-
-        if (fuelTypes.Any(x => x.Type == fuelType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewVehicleFuelTypeToDbAsync(fuelType);
-        return response;
-    }
-
-    public async Task<GearboxType?> AddVehicleGearboxTypeAsync(string gearboxType)
-    {
-        var gearboxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
-
-        if (gearboxes.Any(x => x.Type == gearboxType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewVehicleGearboxTypeToDbAsync(gearboxType);
-        return response;
-    }
-
-    public async Task<Country?> AddCountryAsync(string country)
-    {
-        var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
-
-        if (countries.Any(x => x.Name == country))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewCountryToDbAsync(country);
-        return response;
-    }
-        
-    public async Task<City?> AddCityAsync(string city, int countryId)
-    {
-        var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
-
-        if (cities.Any(x => x.Name == city))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.SendNewCityToDbAsync(city, countryId);
         return response;
     }
         
@@ -223,119 +108,15 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<BodyType?> UpdateVehicleBodyTypeAsync(int bodyTypeId, string newBodyType)
-    {
-        var bodyTypes = await _detailsRepository.GetAllVehicleBodyTypesFromDbAsync();
-
-        if (bodyTypes.Any(x => x.Type == newBodyType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateVehicleBodyTypeInDbAsync(bodyTypeId, newBodyType);
-        return response;
-    }
-        
-    public async Task<Country?> UpdateCountryAsync(int countryId, string newCountry)
-    {
-        var countries = await _detailsRepository.GetAllCountriesFromDbAsync();
-
-        if (countries.Any(x => x.Name == newCountry))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateCountryInDbAsync(countryId, newCountry);
-        return response;
-    }
-        
-    public async Task<City?> UpdateCityAsync(int cityId, string newCity)
-    {
-        var cities = await _detailsRepository.GetAllCitiesFromDbAsync();
-
-        if (cities.Any(x => x.Name == newCity))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateCityInDbAsync(cityId, newCity);
-        return response;
-    }
-        
     public async Task<AccountLimit?> UpdateAccountLimitAsync(int limitId, int premiumLimit, int regularLimit)
     {
         var response = await _adminRepository.UpdateAccountLimitInDbAsync(limitId, premiumLimit, regularLimit);
         return response;
     }
         
-    public async Task<Subscription?> UpdateSubscriptionAsync(int subscriptionId, decimal price)
+    public async Task<PricingOption?> UpdateSubscriptionAsync(int subscriptionId, decimal price)
     {
         var response = await _adminRepository.UpdateSubscriptionInDbAsync(subscriptionId, price);
-        return response;
-    }
-        
-    public async Task<DrivetrainType?> UpdateVehicleDrivetrainTypeAsync(int drivetrainId, string newDrivetrain)
-    {
-        var drivetrainTypes = await _detailsRepository.GetAllVehicleDrivetrainsFromDbAsync();
-
-        if (drivetrainTypes.Any(x => x.Type == newDrivetrain))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateVehicleDrivetrainTypeInDbAsync(drivetrainId, newDrivetrain);
-        return response;
-    }
-        
-    public async Task<GearboxType?> UpdateVehicleGearboxTypeAsync(int gearboxId, string newGearbox)
-    {
-        var gearBoxes = await _detailsRepository.GetAllVehicleGearboxTypesFromDbAsync();
-
-        if (gearBoxes.Any(x => x.Type == newGearbox))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateVehicleGearboxTypeInDbAsync(gearboxId, newGearbox);
-        return response;
-    }
-
-    public async Task<Make?> UpdateMakeAsync(int makeId, string newMake)
-    {
-        var makes = await _detailsRepository.GetAllMakesFromDbAsync();
-
-        if (makes.Any(x => x.Title == newMake))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateMakeInDbAsync(makeId, newMake);
-        return response;
-    }
-        
-    public async Task<Model?> UpdateModelAsync(int modelId, string newModel)
-    {
-        var models = await _detailsRepository.GetAllModelsFromDbAsync();
-
-        if (models.Any(x => x.Title == newModel))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateModelInDbAsync(modelId, newModel);
-        return response;
-    }
-        
-    public async Task<FuelType?> UpdateFuelTypeAsync(int fuelTypeId, string newFuelType)
-    {
-        var fuelTypes = await _detailsRepository.GetAllVehicleFuelTypesFromDbAsync();
-
-        if (fuelTypes.Any(x => x.Type == newFuelType))
-        {
-            return null;
-        }
-            
-        var response = await _adminRepository.UpdateFuelTypeInDbAsync(fuelTypeId, newFuelType);
         return response;
     }
         
@@ -396,7 +177,7 @@ public class AdminService : IAdminService
         return response;
     }
         
-    public async Task<Subscription?> DeleteSubscriptionAsync(int subscriptionId)
+    public async Task<PricingOption?> DeleteSubscriptionAsync(int subscriptionId)
     {
         var response = await _adminRepository.DeleteSubscriptionFromDbAsync(subscriptionId);
         return response;
@@ -512,9 +293,9 @@ public class AdminService : IAdminService
         return _mapper.Map<PaginatedList<GetUserDto>>(response);
     }
 
-    public async Task<bool> SendEmailFromStaffAsync(string mail, string subject, string body)
+    public async Task<bool> SendEmailFromStaffAsync(EmailMetadata emailMetadata)
     {
-        var result = await _emailService.SendEmailAsync(mail, subject, body);
+        var result = await _emailService.SendEmailAsync(emailMetadata);
         return result;
     }
 

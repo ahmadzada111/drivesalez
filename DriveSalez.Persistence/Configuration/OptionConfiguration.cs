@@ -11,7 +11,7 @@ internal class OptionConfiguration : IEntityTypeConfiguration<Option>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Title)
-            .HasMaxLength(20)
+            .HasMaxLength(30)
             .IsRequired();
 
         builder.HasMany(e => e.VehicleDetails)
