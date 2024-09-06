@@ -11,7 +11,7 @@ internal class CityConfiguration : IEntityTypeConfiguration<City>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Name)
-            .HasMaxLength(20)
+            .HasMaxLength(30)
             .IsRequired();
 
         builder.HasOne(e => e.Country)

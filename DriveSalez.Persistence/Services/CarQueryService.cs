@@ -1,11 +1,10 @@
-using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Entities.VehicleParts;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
 using Newtonsoft.Json.Linq;
 
 namespace DriveSalez.Persistence.Services;
 
-public class CarQueryService : ICarQueryService
+internal sealed class CarQueryService : ICarQueryService
 {
     private readonly HttpClient _httpClient;
 
@@ -25,8 +24,10 @@ public class CarQueryService : ICarQueryService
             var jsonData = JObject.Parse(json);
             var trims = jsonData["Trims"];
 
+            if (trims == null) return Enumerable.Empty<Make>();
+            
             var makes = trims
-                .Select(t => t["model_make_id"].ToString())
+                .Select(t => t["model_make_id"]?.ToString())
                 .Distinct()
                 .Select(m => new Make
                 {
@@ -47,10 +48,10 @@ public class CarQueryService : ICarQueryService
         {
             var content = await response.Content.ReadAsStringAsync();
             var jsonData = JObject.Parse(content);
-            var models = jsonData["Models"]
+            var models = jsonData["Models"]?
             .Select(m => new Model
             {
-                Title = m["model_name"].ToString()
+                Title = m["model_name"]?.ToString()
             }).ToList();
 
             return models;
@@ -70,7 +71,7 @@ public class CarQueryService : ICarQueryService
             var trims = jsonData["Trims"];
             
             var bodyTypes = trims
-                .Select(t => t["model_body"].ToString())
+                .Select(t => t["model_body"]?.ToString())
                 .Distinct()
                 .Select(bt => new BodyType
                 {

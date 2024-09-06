@@ -1,4 +1,4 @@
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

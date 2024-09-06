@@ -1,6 +1,7 @@
 using System.Drawing;
 using AutoMapper;
-using DriveSalez.Application.DTO;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.ColorDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 

@@ -1,4 +1,6 @@
-using DriveSalez.Application.ServiceContracts;
+using Asp.Versioning;
+using DriveSalez.Application.Contracts.ServiceContracts;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,7 +8,8 @@ using Microsoft.Extensions.Logging;
 namespace DriveSalez.Presentation.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/payments")]
 public class PaymentController : Controller
 {
     private readonly IPaymentService _paymentService;
@@ -53,11 +56,11 @@ public class PaymentController : Controller
     
     // [Authorize]
     // [HttpPost("add-announcement-limit")]
-    // public async Task<ActionResult> AddAnnouncementLimit([FromBody] int announcementQuantity, int subscriptionId)
+    // public async Task<ActionResult> AddAnnouncementLimitAsync([FromBody] int announcementQuantity, int subscriptionId)
     // {
     //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-    //     var result = await _paymentService.AddAnnouncementLimit(announcementQuantity, subscriptionId);
+    //     var result = await _paymentService.AddAnnouncementLimitAsync(announcementQuantity, subscriptionId);
     //     return result ? Ok() : BadRequest();
     // }
     
@@ -71,11 +74,11 @@ public class PaymentController : Controller
     // }
     
     // [HttpPost("buy-business-account")]
-    // public async Task<ActionResult> BuyBusinessAccount(int subscriptionId)
+    // public async Task<ActionResult> BuyBusinessAccountAsync(int subscriptionId)
     // {
     //     _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-    //     var result = await _paymentService.BuyBusinessAccount(subscriptionId);
+    //     var result = await _paymentService.BuyBusinessAccountAsync(subscriptionId);
     //     return result ? Ok() : BadRequest();
     // }
 

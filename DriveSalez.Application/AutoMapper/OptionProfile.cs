@@ -1,6 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Domain.Entities;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.OptionDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 

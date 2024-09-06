@@ -1,4 +1,4 @@
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
+using DriveSalez.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -85,7 +85,7 @@ internal class VehicleDetailConfiguration : IEntityTypeConfiguration<VehicleDeta
         builder.Property(e => e.Mileage)
             .IsRequired();
 
-        builder.Property(e => e.MileageType)
+        builder.Property(e => e.DistanceUnit)
             .IsRequired();
     }
 }

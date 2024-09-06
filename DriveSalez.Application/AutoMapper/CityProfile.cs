@@ -1,6 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.CityDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 
@@ -8,8 +9,8 @@ public class CityProfile : Profile
 {
     public CityProfile()
     {
-        CreateMap<City, CityDto>();
+        CreateMap<City, GetCityDto>();
 
-        CreateMap<CityDto, City>();
+        CreateMap<GetCityDto, City>();
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.MakeDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 
@@ -8,8 +9,8 @@ public class MakeProfile : Profile
 {
     public MakeProfile()
     {
-        CreateMap<Make, MakeDto>();
+        CreateMap<Make, GetMakeDto>();
 
-        CreateMap<MakeDto, Make>();
+        CreateMap<GetMakeDto, Make>();
     }
 }

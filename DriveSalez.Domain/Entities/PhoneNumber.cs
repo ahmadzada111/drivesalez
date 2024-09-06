@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using DriveSalez.Domain.IdentityEntities;
+﻿using DriveSalez.Domain.IdentityEntities;
 
 namespace DriveSalez.Domain.Entities;
 
@@ -11,5 +10,5 @@ public class PhoneNumber
 
     public Guid UserId { get; set; }
 
-    public BusinessAccount BusinessAccount { get; set; }
+    public UserProfile UserProfile { get; set; }
 }

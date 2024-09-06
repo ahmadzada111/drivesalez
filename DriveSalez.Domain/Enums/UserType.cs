@@ -2,8 +2,8 @@ namespace DriveSalez.Domain.Enums;
 
 public enum UserType
 {
-    DefaultAccount, 
-    BusinessAccount, 
+    DefaultUser, 
+    BusinessUser, 
     Admin, 
     Moderator
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.UserDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 

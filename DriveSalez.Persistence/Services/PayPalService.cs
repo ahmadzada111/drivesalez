@@ -2,14 +2,14 @@ using PayPal.Api;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using DriveSalez.Application.ServiceContracts;
 using System.Text;
 using System.Text.Json.Serialization;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
 using DriveSalez.SharedKernel.Settings;
 
 namespace DriveSalez.Persistence.Services;
 
-public class PayPalService : IPayPalService
+internal sealed class PayPalService : IPayPalService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly PayPalSettings _payPalSettings;

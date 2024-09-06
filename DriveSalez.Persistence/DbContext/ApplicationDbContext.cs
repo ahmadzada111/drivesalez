@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using DriveSalez.Domain.Entities;
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
-using DriveSalez.Domain.Entities.VehicleParts;
 using DriveSalez.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +19,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
+    public virtual DbSet<BaseUser> BaseUsers { get; set; }
+    
     public virtual DbSet<ImageUrl> ImageUrls { get; set; }
         
     public virtual DbSet<PhoneNumber> PhoneNumbers { get; set; }
 
-    public virtual DbSet<AccountLimit> AccountLimits { get; set; }
+    public virtual DbSet<UserLimit> UserLimits { get; set; }
 
-    public virtual DbSet<PricingOption> PricingOptions { get; set; }
-                
+    public virtual DbSet<Subscription> Subscriptions { get; set; }
+
+    public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
+    
+    public virtual DbSet<OneTimePurchase> OneTimePurchases { get; set; }
+    
+    public virtual DbSet<UserPurchase> UserPurchases { get; set; }
+    
     public virtual DbSet<Announcement> Announcements { get; set; }
 
     public virtual DbSet<Make> Makes { get; set; }

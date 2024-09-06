@@ -11,7 +11,7 @@ internal class MakeConfiguration : IEntityTypeConfiguration<Make>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Title)
-            .HasMaxLength(30)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.HasMany(e => e.Models)

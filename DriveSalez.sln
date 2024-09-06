@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
+#
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.WebApi", "DriveSalez.WebApi\DriveSalez.WebApi.csproj", "{C42D8478-4896-4A0A-8BE3-135F9E476CEE}"
@@ -22,6 +22,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.SharedKernel", "DriveSalez.SharedKernel\DriveSalez.SharedKernel.csproj", "{D8AEE946-1CE3-4286-A71F-A4972CAFE441}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.Application", "DriveSalez.Application\DriveSalez.Application.csproj", "{0E507604-C29F-439C-907C-1CFE439E5757}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.Application.Contracts", "DriveSalez.Application.Contracts\DriveSalez.Application.Contracts.csproj", "{F37D9BBD-1689-4E70-840C-ABC3584FB6E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveSalez.Persistence.Contracts", "DriveSalez.Persistence.Contracts\DriveSalez.Persistence.Contracts.csproj", "{5E9052CE-E6CB-4349-A28B-7A550BCD0B29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +57,14 @@ Global
 		{0E507604-C29F-439C-907C-1CFE439E5757}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E507604-C29F-439C-907C-1CFE439E5757}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E507604-C29F-439C-907C-1CFE439E5757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F37D9BBD-1689-4E70-840C-ABC3584FB6E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37D9BBD-1689-4E70-840C-ABC3584FB6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F37D9BBD-1689-4E70-840C-ABC3584FB6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F37D9BBD-1689-4E70-840C-ABC3584FB6E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9052CE-E6CB-4349-A28B-7A550BCD0B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9052CE-E6CB-4349-A28B-7A550BCD0B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9052CE-E6CB-4349-A28B-7A550BCD0B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9052CE-E6CB-4349-A28B-7A550BCD0B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,5 +78,7 @@ Global
 		{44650CC7-5E99-4258-A55D-55D3E18702DF} = {8075E67B-E56C-4938-A107-F282B028193F}
 		{D8AEE946-1CE3-4286-A71F-A4972CAFE441} = {82711767-AD15-477C-862C-6EB0146ACBBF}
 		{0E507604-C29F-439C-907C-1CFE439E5757} = {5138C39A-B7FA-46F0-8D62-45C20613F8DC}
+		{F37D9BBD-1689-4E70-840C-ABC3584FB6E2} = {5138C39A-B7FA-46F0-8D62-45C20613F8DC}
+		{5E9052CE-E6CB-4349-A28B-7A550BCD0B29} = {8075E67B-E56C-4938-A107-F282B028193F}
 	EndGlobalSection
 EndGlobal

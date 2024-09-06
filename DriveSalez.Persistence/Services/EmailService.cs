@@ -1,13 +1,14 @@
-using DriveSalez.Application.DTO;
-using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.Utilities;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Persistence.Services;
 
-public class EmailService : IEmailService
+internal sealed class EmailService : IEmailService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IFluentEmail _fluentEmail;
@@ -18,7 +19,7 @@ public class EmailService : IEmailService
         _fluentEmail = fluentEmail;
     }
 
-    public async Task<bool> SendEmailAsync(EmailMetadata emailMetadata)
+    public async Task SendEmailAsync(EmailMetadata emailMetadata)
     {
         var user = await _userManager.FindByEmailAsync(emailMetadata.ToAddress) ??
         throw new UserNotFoundException("User with provided email wasn't found!");
@@ -27,7 +28,5 @@ public class EmailService : IEmailService
             .Subject(emailMetadata.Subject)
             .Body(emailMetadata.Body, isHtml: emailMetadata.IsHtml)
             .SendAsync();
-
-        return true;
     }
 }

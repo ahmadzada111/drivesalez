@@ -28,10 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configuration\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\DriveSalez.Application\DriveSalez.Application.csproj" />
     </ItemGroup>
 

@@ -1,7 +1,7 @@
-using DriveSalez.Application.DTO;
-using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Enums;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
 using DriveSalez.Persistence.DbContext;
+using DriveSalez.SharedKernel.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
@@ -28,7 +28,7 @@ public class CheckAnnouncementExpirationJob : IJob
         
         var expiredAnnouncements = await _dbContext.Announcements
             .Where(a => a.AnnouncementState == AnnouncementState.Active && a.ExpirationDate <= DateTimeOffset.Now)
-            .Include(a => a.Owner)
+            .Include(a => a.Owner.ApplicationUser)
             .Include(a => a.Vehicle)
             .Include(a => a.Vehicle.Make)
             .Include(a => a.Vehicle.Model)
@@ -36,7 +36,7 @@ public class CheckAnnouncementExpirationJob : IJob
         
         foreach (var announcement in expiredAnnouncements)
         {
-            if (string.IsNullOrWhiteSpace(announcement.Owner.Email))
+            if (string.IsNullOrWhiteSpace(announcement.Owner.ApplicationUser.Email))
             {
                 _logger.LogWarning($"User {announcement.Owner.Id} does not have a valid email address.");
                 continue;
@@ -51,7 +51,7 @@ public class CheckAnnouncementExpirationJob : IJob
                           $"\n\nAs a reminder, our service keeps announcements active for a month from the initial posting date. " +
                           $"Once this period expires, announcements become inactive. " +
                           $"To continue benefiting from the exposure your announcement provides, we encourage you to manually reactivate it." +
-                          $"\n\nHere's how to reactivate your announcement:\n\nLog in to your {announcement.Owner.UserName} account." +
+                          $"\n\nHere's how to reactivate your announcement:\n\nLog in to your {announcement.Owner.ApplicationUser.UserName} account." +
                           $"\nNavigate to your dashboard or announcements section." +
                           $"\nLocate the expired announcement and follow the prompts to reactivate." +
                           $"\nAct now to ensure your announcement continues to reach our community and attract potential buyers. " +
@@ -59,7 +59,7 @@ public class CheckAnnouncementExpirationJob : IJob
                           $"\n\nThank you for choosing DriveSalez. We appreciate your continued use of our platform." +
                           $"\n\nBest regards,\n\nDriveSalez Team";
 
-            var emailMetadata = new EmailMetadata(toAddress: announcement.Owner.Email, subject: subject, body: body);
+            var emailMetadata = new EmailMetadata(toAddress: announcement.Owner.ApplicationUser.Email, subject: subject, body: body);
             await _emailService.SendEmailAsync(emailMetadata);
         }
         

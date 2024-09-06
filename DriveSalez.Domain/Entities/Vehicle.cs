@@ -1,6 +1,4 @@
-﻿using DriveSalez.Domain.Entities.VehicleDetailsFiles;
-
-namespace DriveSalez.Domain.Entities;
+﻿namespace DriveSalez.Domain.Entities;
 
 public class Vehicle
 {
@@ -16,5 +14,5 @@ public class Vehicle
 
     public VehicleDetail VehicleDetail { get; set; }
 
-    public List<Announcement> Announcements { get; } = [];
+    public ICollection<Announcement> Announcements { get; set; } = [];
 }

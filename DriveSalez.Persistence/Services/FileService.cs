@@ -1,9 +1,9 @@
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using DriveSalez.Application.ServiceContracts;
 using DriveSalez.Domain.Entities;
 using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.Persistence.Contracts.ServiceContracts;
 using DriveSalez.SharedKernel.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace DriveSalez.Persistence.Services;
 
-public class FileService : IFileService
+internal sealed class FileService : IFileService
 {
     private readonly BlobStorageSettings _blobStorageSettings;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -25,7 +25,7 @@ public class FileService : IFileService
         _contextAccessor = contextAccessor;
     }
 
-    public async Task<List<ImageUrl>> UploadFilesAsync(List<string> base64Images, ApplicationUser user)
+    public async Task<List<ImageUrl>> UploadFilesAsync(List<string> base64Images, UserProfile user)
     {
         List<ImageUrl> uploadedUris = new List<ImageUrl>();
         
@@ -54,7 +54,7 @@ public class FileService : IFileService
         return uploadedUris;
     }
 
-    public async Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images, ApplicationUser user)
+    public async Task<List<ImageUrl>> UpdateFilesAsync(List<string> base64Images, UserProfile user)
     {
         BlobContainerClient blobContainerClient = new BlobContainerClient(_blobStorageSettings.ConnectionString, _blobStorageSettings.ContainerName);
         

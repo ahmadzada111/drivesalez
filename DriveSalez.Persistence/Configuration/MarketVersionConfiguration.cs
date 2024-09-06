@@ -1,4 +1,4 @@
-using DriveSalez.Domain.Entities.VehicleParts;
+using DriveSalez.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +11,7 @@ internal class MarketVersionConfiguration : IEntityTypeConfiguration<MarketVersi
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Version)
-            .HasMaxLength(20)
+            .HasMaxLength(30)
             .IsRequired();
 
         builder.HasMany(e => e.VehicleDetails)

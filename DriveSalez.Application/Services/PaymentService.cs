@@ -1,4 +1,4 @@
-using DriveSalez.Application.ServiceContracts;
+using DriveSalez.Application.Contracts.ServiceContracts;
 using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DriveSalez.Application.Services;
 
-public class PaymentService : IPaymentService
+internal sealed class PaymentService : IPaymentService
 {
-    private readonly IAccountService _accountService;
+    private readonly IUserService _userService;
     private readonly IPaymentRepository _paymentRepository;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
-
+    
     public PaymentService(IPaymentRepository paymentRepository,
-        IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager, IAccountService accountService)
+        IHttpContextAccessor contextAccessor, UserManager<ApplicationUser> userManager, IUserService userService)
     {
         _paymentRepository = paymentRepository;
         _contextAccessor = contextAccessor;
         _userManager = userManager;
-        _accountService = accountService;
+        _userService = userService;
     }
 
     // public async Task<bool> TopUpBalance(PaymentRequestDto request)
@@ -47,7 +47,7 @@ public class PaymentService : IPaymentService
     //     return true;
     // }
 
-    public async Task<bool> AddAnnouncementLimit(int announcementQuantity, int subscriptionId)
+    public async Task<bool> AddAnnouncementLimitAsync(int announcementQuantity, int subscriptionId)
     {
         var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
         var user = await _userManager.GetUserAsync(httpContext.User);
@@ -59,12 +59,7 @@ public class PaymentService : IPaymentService
 
         var result = await _paymentRepository.AddAnnouncementLimitInDbAsync(user.Id, announcementQuantity, subscriptionId);
 
-        if (!result)
-        {
-            return false;
-        }
-        
-        return true;
+        return result;
     }
     
     // public async Task<bool> AddPremiumAnnouncementLimit(int announcementQuantity, int subscriptionId)
@@ -115,19 +110,18 @@ public class PaymentService : IPaymentService
     //     return true;
     // }
     
-    public async Task<bool> BuyBusinessAccount(int subscriptionId)
-    {
-        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
-        var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
-        var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId); 
-        
-        if (user.AccountBalance - subscription?.Price > 0)
-        {
-            await _accountService.ChangeUserTypeToBusinessAccountAsync(user);
-
-            return true;
-        }
-        
-        return false;
-    }
+    // public async Task<bool> BuyBusinessAccountAsync(int subscriptionId)
+    // {
+    //     var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+    //     var identityUser = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not Authorized");
+    //     var baseUser = _
+    //     var subscription = await _paymentRepository.GetSubscriptionFromDbAsync(subscriptionId);
+    //
+    //     if (!(identityUser.AccountBalance - subscription?.Price > 0)) return false;
+    //     
+    //     await _userService.ChangeUserTypeToBusinessAccount(identityUser);
+    //
+    //     return true;
+    //
+    // }
 }

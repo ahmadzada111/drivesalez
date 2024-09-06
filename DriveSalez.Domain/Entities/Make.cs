@@ -6,7 +6,7 @@ public class Make
 
     public string Title { get; set; }
     
-    public List<Model> Models { get; } = [];
+    public ICollection<Model> Models { get; set; } = [];
 
-    public List<Vehicle> Vehicles { get; } = [];
+    public ICollection<Vehicle> Vehicles { get; set; } = [];
 }

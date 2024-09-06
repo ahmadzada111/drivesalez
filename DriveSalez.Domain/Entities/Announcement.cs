@@ -9,7 +9,7 @@ public class Announcement
 
     public int? VehicleId { get; set; }
 
-    public required Vehicle Vehicle { get; set; }
+    public Vehicle Vehicle { get; set; }
 
     public bool? Barter { get; set; }
 
@@ -19,21 +19,21 @@ public class Announcement
       
     public decimal Price { get; set; }  
 
-    public AnnouncementState AnnouncementState { get; set; } = AnnouncementState.Pending;
+    public AnnouncementState AnnouncementState { get; set; }
 
-    public List<ImageUrl> ImageUrls { get; } = [];
+    public ICollection<ImageUrl> ImageUrls { get; set; } = [];
         
     public int? CountryId { get; set; }
     
     public int? CityId { get; set; }
     
-    public required Country Country { get; set; }
+    public Country Country { get; set; }
 
-    public required City City { get; set; }
+    public City City { get; set; }
 
     public Guid UserId {get; set;}
 
-    public required ApplicationUser Owner { get; set; }
+    public UserProfile Owner { get; set; }
         
     public DateTimeOffset ExpirationDate { get; set; }
         

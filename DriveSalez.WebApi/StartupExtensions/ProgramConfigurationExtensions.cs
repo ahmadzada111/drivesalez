@@ -49,11 +49,12 @@ public static class ProgramConfigurationExtensions
         builder.Services.ConfigureAutoMapper();
         builder.Services.ConfigureFluentEmail(builder.Configuration);
         builder.Services.ConfigureFluentValidation();
+        builder.Services.ConfigureApiVersioning();
         builder.Services.AddMemoryCache(options => {
             options.SizeLimit = 1024;
         });
     }
-
+    
     public static void ConfigureMiddleware(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())

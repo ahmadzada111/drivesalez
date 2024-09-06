@@ -1,4 +1,4 @@
-namespace DriveSalez.Application.DTO;
+namespace DriveSalez.SharedKernel.DTO;
 
 public record AddNewSubscriptionDto
 {

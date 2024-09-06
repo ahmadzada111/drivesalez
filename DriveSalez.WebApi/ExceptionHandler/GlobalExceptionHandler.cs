@@ -39,7 +39,6 @@ public class GlobalExceptionHandler : IExceptionHandler
             UserNotFoundException => (HttpStatusCode.NotFound, exception.Message),
             UserNotAuthorizedException => (HttpStatusCode.Forbidden, exception.Message),
             PaymentFailedException => (HttpStatusCode.PaymentRequired, exception.Message),
-            BannedUserException => (HttpStatusCode.Forbidden, exception.Message),
             ArgumentException => (HttpStatusCode.BadRequest, exception.Message),
             InvalidOperationException => (HttpStatusCode.BadRequest, exception.Message),
             ValidationException => (HttpStatusCode.BadRequest, exception.Message),

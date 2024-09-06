@@ -1,6 +1,7 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.CountryDTO;
 
 namespace DriveSalez.Application.AutoMapper;
 
@@ -8,8 +9,8 @@ public class CountryProfile : Profile
 {
     public CountryProfile()
     {
-        CreateMap<Country, CountryDto>();
+        CreateMap<Country, GetCountryDto>();
 
-        CreateMap<CountryDto, Country>();
+        CreateMap<GetCountryDto, Country>();
     }
 }

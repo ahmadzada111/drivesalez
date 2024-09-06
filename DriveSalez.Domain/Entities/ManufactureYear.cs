@@ -1,5 +1,3 @@
-using DriveSalez.Domain.Entities.VehicleDetailsFiles;
-
 namespace DriveSalez.Domain.Entities;
 
 public class ManufactureYear
@@ -8,5 +6,5 @@ public class ManufactureYear
     
     public int Year { get; set; }
 
-    public List<VehicleDetail> VehicleDetails { get; } = [];
+    public ICollection<VehicleDetail> VehicleDetails { get; set; } = [];
 }

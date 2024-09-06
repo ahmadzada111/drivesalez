@@ -23,7 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DriveSalez.Application.Contracts\DriveSalez.Application.Contracts.csproj" />
       <ProjectReference Include="..\DriveSalez.Domain\DriveSalez.Domain.csproj" />
+      <ProjectReference Include="..\DriveSalez.Persistence.Contracts\DriveSalez.Persistence.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

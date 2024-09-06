@@ -1,247 +1,191 @@
-﻿using DriveSalez.Application.DTO;
-using DriveSalez.Application.ServiceContracts;
-using DriveSalez.SharedKernel.Pagination;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-
-namespace DriveSalez.Presentation.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-[Authorize(Roles = "Admin")]
-public class AdminController : Controller
-{
-    private readonly IAdminService _adminService;
-    private readonly ILogger _logger;
-    
-    public AdminController(IAdminService adminService, ILogger<AdminController> logger)
-    {
-        _adminService = adminService;
-        _logger = logger;
-    }
-
-    [HttpPost("add-new-color")]
-    public async Task<ActionResult> AddNewColor([FromBody] string color)
-    {
-        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-        
-        var response = await _adminService.AddColorAsync(color);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPost("add-new-condition")]
-    public async Task<ActionResult> AddNewVehicleCondition([FromBody] AddNewConditionDto request)
-    {
-        var response = await _adminService.AddVehicleConditionAsync(request.Condition, request.Description);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-market-version")]
-    public async Task<ActionResult> AddNewVehicleMarketVersion([FromBody] string marketVersion)
-    {
-        var response = await _adminService.AddVehicleMarketVersionAsync(marketVersion);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("add-new-option")]
-    public async Task<ActionResult> AddNewVehicleOption([FromBody] string option)
-    {
-        var response = await _adminService.AddVehicleOptionAsync(option);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPut("update-color")]
-    public async Task<ActionResult> UpdateVehicleColor([FromBody] UpdateColorDto request)
-    {
-        var response = await _adminService.UpdateVehicleColorAsync(request.ColorId, request.NewColor);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-account-limit")]
-    public async Task<ActionResult> UpdateUserLimit([FromBody] UpdateAccountLimitDto request)
-    {
-        var response = await _adminService.UpdateAccountLimitAsync(request.LimitId, request.PremiumLimit, request.RegularLimit);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-condition")]
-    public async Task<ActionResult> UpdateVehicleCondition([FromBody] UpdateConditionDto request)
-    {
-        var response = await _adminService.UpdateVehicleConditionAsync(request.ConditionId, request.NewCondition, request.NewDescription);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-option")]
-    public async Task<ActionResult> UpdateVehicleOption([FromBody] UpdateOptionDto request)
-    {
-        var response = await _adminService.UpdateVehicleOptionAsync(request.OptionId, request.NewVehicleOption);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpPut("update-market-version")]
-    public async Task<ActionResult> UpdateVehicleMarketVersion([FromBody] UpdateMarketVersionDto request)
-    {
-        var response = await _adminService.UpdateVehicleMarketVersionAsync(request.MarketVersionId, request.NewMarketVersion);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-color")]
-    public async Task<ActionResult> DeleteVehicleColor([FromBody] int colorId)
-    {
-        var response = await _adminService.DeleteVehicleColorAsync(colorId); 
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-body")]
-    public async Task<ActionResult> DeleteVehicleBodyType([FromBody] int bodyTypeId)
-    {
-        var response = await _adminService.DeleteVehicleBodyTypeAsync(bodyTypeId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-country")]
-    public async Task<ActionResult> DeleteCountry([FromBody] int countryId)
-    {
-        var response = await _adminService.DeleteCountryAsync(countryId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-city")]
-    public async Task<ActionResult> DeleteCity([FromBody] int cityId)
-    {
-        var response = await _adminService.DeleteCityAsync(cityId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-drivetrain")]
-    public async Task<ActionResult> DeleteVehicleDrivetrainType([FromBody] int drivetrainId)
-    {
-        var response = await _adminService.DeleteVehicleDrivetrainTypeAsync(drivetrainId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-gearbox")]
-    public async Task<ActionResult> DeleteVehicleGearboxType([FromBody] int gearboxId)
-    {
-        var response = await _adminService.DeleteVehicleGearboxTypeAsync(gearboxId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-make")]
-    public async Task<ActionResult> DeleteMake([FromBody] int makeId)
-    {
-        var response = await _adminService.DeleteMakeAsync(makeId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-model")]
-    public async Task<ActionResult> DeleteModel([FromBody] int modelId)
-    {
-        var response = await _adminService.DeleteModelAsync(modelId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-fuel")]
-    public async Task<ActionResult> DeleteFuelType([FromBody] int fuelTypeId)
-    {
-        var response = await _adminService.DeleteFuelTypeAsync(fuelTypeId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-condition")]
-    public async Task<ActionResult> DeleteVehicleCondition([FromBody] int vehicleConditionId)
-    {
-        var response = await _adminService.DeleteVehicleConditionAsync(vehicleConditionId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-option")]
-    public async Task<ActionResult> DeleteVehicleOption([FromBody] int vehicleConditionId)
-    {
-        var response = await _adminService.DeleteVehicleOptionAsync(vehicleConditionId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-    
-    [HttpDelete("delete-market-version")]
-    public async Task<ActionResult> DeleteVehicleMarketVersion([FromBody] int marketVersionId)
-    {
-        var response = await _adminService.DeleteVehicleMarketVersionAsync(marketVersionId);
-        return response != null ? Ok(response) : BadRequest(response);
-    }
-
-    [HttpPost("create-moderator")]
-    public async Task<ActionResult> CreateModerator([FromBody] RegisterModeratorDto request)
-    {
-        if (!ModelState.IsValid)
-        {
-            string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
-            return Problem(errorMessage);
-        }
-        
-        var result = await _adminService.AddModeratorAsync(request);
-        return result != null ? Ok() : BadRequest();
-    }
-
-    [HttpDelete("delete-moderator")]
-    public async Task<ActionResult> DeleteModerator([FromBody] Guid moderatorId)
-    {
-        var result = await _adminService.DeleteModeratorAsync(moderatorId);
-        return result != null ? Ok(result) : BadRequest(result);
-    }
-    
-    [HttpGet("get-all-moderators")]
-    public async Task<ActionResult> GetAllModerators(PagingParameters pagingParameters)
-    {
-        var result = await _adminService.GetAllModeratorsAsync(pagingParameters);
-        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
-    }
-
-    [HttpGet("get-all-users")]
-    public async Task<ActionResult> GetAllUsers(PagingParameters pagingParameters)
-    {
-        var result = await _adminService.GetAllUsers(pagingParameters);
-        return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
-    }
-
-    [HttpPost("send-mail-to-user")]
-    public async Task<ActionResult> SendEmail([FromBody] EmailMetadata request)
-    {
-        var result = await _adminService.SendEmailFromStaffAsync(request);
-
-        if (result)
-        {
-            return Ok();
-        }
-
-        return BadRequest();
-    }
-
-    [HttpPost("ban-user")]
-    public async Task<ActionResult> BanUser([FromBody] Guid userId)
-    {
-        var result = await _adminService.BanUserAsync(userId);
-
-        if (result)
-        {
-            return Ok();
-        }
-
-        return BadRequest();
-    }
-    
-    [HttpPost("unban-user")]
-    public async Task<ActionResult> UnbanUser([FromBody] Guid userId)
-    {
-        var result = await _adminService.UnbanUserAsync(userId);
-
-        if (result)
-        {
-            return Ok();
-        }
-
-        return BadRequest();
-    }
-}
-
+﻿// using Asp.Versioning;
+// using DriveSalez.Application.Contracts.ServiceContracts;
+// using DriveSalez.Persistence.Contracts.ServiceContracts;
+// using DriveSalez.SharedKernel.DTO;
+// using DriveSalez.SharedKernel.Utilities;
+// using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Mvc;
+// using Microsoft.Extensions.Logging;
+// using Microsoft.IdentityModel.Tokens;
+//
+// namespace DriveSalez.Presentation.Controllers;
+//
+// [ApiController]
+// [ApiVersion(1)]
+// [Route("api/v{v:apiVersion}/admins")]
+// [Authorize(Roles = "Admin")]
+// public class AdminController : Controller
+// {
+//     private readonly IAdminService _adminService;
+//     private readonly ILogger _logger;
+//     private readonly IEmailService _emailService;
+//     
+//     public AdminController(IAdminService adminService, ILogger<AdminController> logger,
+//         IEmailService emailService)
+//     {
+//         _adminService = adminService;
+//         _logger = logger;
+//         _emailService = emailService;
+//     }
+//
+//     [HttpPost("colors")]
+//     public async Task<ActionResult> AddColor([FromBody] string color)
+//     {
+//         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
+//         
+//         var response = await _adminService.AddColorAsync(color);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpPost("conditions")]
+//     public async Task<ActionResult> AddCondition([FromBody] AddConditionDto request)
+//     {
+//         var response = await _adminService.AddConditionAsync(request.Condition, request.Description);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//
+//     [HttpPost("market-versions")]
+//     public async Task<ActionResult> AddMarketVersion([FromBody] string marketVersion)
+//     {
+//         var response = await _adminService.AddMarketVersionAsync(marketVersion);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//
+//     [HttpPost("options")]
+//     public async Task<ActionResult> AddOption([FromBody] string option)
+//     {
+//         var response = await _adminService.AddOptionAsync(option);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//
+//     [HttpPut("colors/{colorId}")]
+//     public async Task<ActionResult> UpdateColor([FromRoute] int colorId, [FromBody] string newColor)
+//     {
+//         var response = await _adminService.UpdateColorAsync(colorId, newColor);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpPut("limits/{limitId}")]
+//     public async Task<ActionResult> UpdateAccountLimit([FromRoute] int limitId, [FromBody] UpdateAccountLimitDto request)
+//     {
+//         var response = await _adminService.UpdateAccountLimitAsync(limitId, request.PremiumLimit, request.RegularLimit);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpPut("conditions/{conditionId}")]
+//     public async Task<ActionResult> UpdateCondition([FromRoute] int conditionId, [FromBody] UpdateConditionDto request)
+//     {
+//         var response = await _adminService.UpdateConditionAsync(conditionId, request.NewCondition, request.NewDescription);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpPut("options/{optionId}")]
+//     public async Task<ActionResult> UpdateOption([FromRoute] int optionId, [FromBody] string newOptions)
+//     {
+//         var response = await _adminService.UpdateOptionAsync(optionId, newOptions);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpPut("market-version/{versionId}")]
+//     public async Task<ActionResult> UpdateMarketVersion([FromRoute] int versionId, [FromBody] string newVersion)
+//     {
+//         var response = await _adminService.UpdateMarketVersionAsync(versionId, newVersion);
+//         return response != null ? Ok(response) : BadRequest(response);
+//     }
+//     
+//     [HttpDelete("colors/{colorId}")]
+//     public async Task<ActionResult> DeleteColor([FromBody] int colorId)
+//     {
+//         var response = await _adminService.DeleteColorAsync(colorId); 
+//         return response != null ? NoContent() : BadRequest(response);
+//     }
+//     
+//     [HttpDelete("conditions/{conditionId}")]
+//     public async Task<ActionResult> DeleteCondition([FromBody] int conditionId)
+//     {
+//         var response = await _adminService.DeleteConditionAsync(conditionId);
+//         return response != null ? NoContent() : BadRequest(response);
+//     }
+//     
+//     [HttpDelete("options/{optionId}")]
+//     public async Task<ActionResult> DeleteOption([FromBody] int optionId)
+//     {
+//         var response = await _adminService.DeleteOptionAsync(optionId);
+//         return response != null ? NoContent() : BadRequest(response);
+//     }
+//     
+//     [HttpDelete("market-version/{versionId}")]
+//     public async Task<ActionResult> DeleteMarketVersion([FromBody] int versionId)
+//     {
+//         var response = await _adminService.DeleteMarketVersionAsync(versionId);
+//         return response != null ? NoContent() : BadRequest(response);
+//     }
+//
+//     [HttpPost("moderator")]
+//     public async Task<ActionResult> CreateModerator([FromBody] RegisterModeratorDto request)
+//     {
+//         if (!ModelState.IsValid)
+//         {
+//             string errorMessage = string.Join(" | ", ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
+//             return Problem(errorMessage);
+//         }
+//         
+//         var result = await _adminService.AddModeratorAsync(request);
+//         return result != null ? Ok() : BadRequest();
+//     }
+//
+//     [HttpDelete("moderator/{moderatorId}")]
+//     public async Task<ActionResult> DeleteModerator([FromBody] Guid moderatorId)
+//     {
+//         var result = await _adminService.DeleteModeratorAsync(moderatorId);
+//         return result != null ? NoContent() : BadRequest(result);
+//     }
+//     
+//     [HttpGet("moderators")]
+//     public async Task<ActionResult> GetAllModerators(PagingParameters pagingParameters)
+//     {
+//         var result = await _adminService.GetAllModeratorsAsync(pagingParameters);
+//         return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
+//     }
+//
+//     [HttpGet("get-all-users")]
+//     public async Task<ActionResult> GetAllUsers(PagingParameters pagingParameters)
+//     {
+//         var result = await _adminService.GetAllUsers(pagingParameters);
+//         return !result.IsNullOrEmpty() ? Ok(result) : BadRequest();
+//     }
+//
+//     [HttpPost("send-mail-to-user")]
+//     public async Task<ActionResult> SendEmail([FromBody] EmailMetadata request)
+//     {
+//         await _emailService.SendEmailAsync(request);
+//         return Ok();
+//     }
+//
+//     [HttpPost("ban-user")]
+//     public async Task<ActionResult> BanUser([FromBody] Guid userId)
+//     {
+//         var result = await _adminService.BanUserAsync(userId);
+//
+//         if (result)
+//         {
+//             return Ok();
+//         }
+//
+//         return BadRequest();
+//     }
+//     
+//     [HttpPost("unban-user")]
+//     public async Task<ActionResult> UnbanUser([FromBody] Guid userId)
+//     {
+//         var result = await _adminService.UnbanUserAsync(userId);
+//
+//         if (result)
+//         {
+//             return Ok();
+//         }
+//
+//         return BadRequest();
+//     }
+// }
+//

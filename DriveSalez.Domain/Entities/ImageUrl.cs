@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using DriveSalez.Domain.IdentityEntities;
+﻿using DriveSalez.Domain.IdentityEntities;
 
 namespace DriveSalez.Domain.Entities;
 
@@ -17,7 +16,7 @@ public class ImageUrl
 
     public Announcement? Announcement{ get; set; }
 
-    public BusinessAccount? ProfilePhotoBusinessAccount { get; set; }
+    public UserProfile? ProfilePhotoBusinessAccount { get; set; }
     
-    public BusinessAccount? BackgroundPhotoBusinessAccount { get; set; }
+    public UserProfile? BackgroundPhotoBusinessAccount { get; set; }
 }

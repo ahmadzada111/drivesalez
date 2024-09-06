@@ -11,10 +11,10 @@ internal class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Number)
-            .HasMaxLength(20)
+            .HasMaxLength(30)
             .IsRequired();
 
-        builder.HasOne(e => e.BusinessAccount)
+        builder.HasOne(e => e.UserProfile)
             .WithMany(e => e.PhoneNumbers)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);

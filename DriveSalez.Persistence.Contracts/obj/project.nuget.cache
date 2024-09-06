@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "dgSpecHash": "i9pUVakSBcM=",
+  "success": true,
+  "projectFilePath": "/Users/ahmad/Desktop/drivesalez/DriveSalez.Persistence.Contracts/DriveSalez.Persistence.Contracts.csproj",
+  "expectedPackageFiles": [
+    "/Users/ahmad/.nuget/packages/microsoft.aspnetcore.cryptography.internal/8.0.7/microsoft.aspnetcore.cryptography.internal.8.0.7.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.aspnetcore.cryptography.keyderivation/8.0.7/microsoft.aspnetcore.cryptography.keyderivation.8.0.7.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.dependencyinjection/8.0.0/microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.identity.core/8.0.7/microsoft.extensions.identity.core.8.0.7.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.identity.stores/8.0.7/microsoft.extensions.identity.stores.8.0.7.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.logging/8.0.0/microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.options/8.0.2/microsoft.extensions.options.8.0.2.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/microsoft.extensions.primitives/8.0.0/microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/newtonsoft.json/7.0.1/newtonsoft.json.7.0.1.nupkg.sha512",
+    "/Users/ahmad/.nuget/packages/paypal/1.9.1/paypal.1.9.1.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Newtonsoft.Json 7.0.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Newtonsoft.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'PayPal 1.9.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "PayPal",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

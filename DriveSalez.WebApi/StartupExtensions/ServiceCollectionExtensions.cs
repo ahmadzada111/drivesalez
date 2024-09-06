@@ -1,7 +1,4 @@
-﻿using DriveSalez.Application.ServiceContracts;
-using DriveSalez.Application.Services;
-using DriveSalez.Persistence.DbContext;
-using DriveSalez.Persistence.Repositories;
+﻿using DriveSalez.Persistence.DbContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using AutoMapper;
+using Asp.Versioning;
 using DriveSalez.Domain.IdentityEntities;
-using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.SharedKernel.Settings;
 using Quartz;
-using DriveSalez.Persistence.Services;
 using FluentValidation;
 using DriveSalez.Application;
+using DriveSalez.Persistence;
+using AssemblyReference = DriveSalez.Presentation.AssemblyReference;
 
 namespace DriveSalez.WebApi.StartupExtensions;
 
@@ -31,37 +28,42 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<RefreshTokenSettings>();
         services.AddSingleton<PayPalSettings>();
         services.AddSingleton<BlobStorageSettings>();
-        services.AddSingleton<IMapper>();
-        services.AddScoped<ICarQueryService, CarQueryService>();
-        services.AddScoped<IPayPalService, PayPalService>();
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IPaymentService, PaymentService>();
-        services.AddScoped<IFileService, FileService>();
-        services.AddScoped<IAnnouncementService, AnnouncementService>();
-        services.AddScoped<IJwtService, JwtService>();
-        services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
-        services.AddScoped<IAdminService, AdminService>();
-        services.AddScoped<IAdminRepository, AdminRepository>();
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IOtpService, OtpService>();
-        services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IDetailsService, DetailsService>();
-        services.AddScoped<IDetailsRepository, DetailsRepository>();
-        services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+        services.InjectApplicationLayer();
+        services.InjectPersistenceLayer();
         
         return services;
     }
     
     public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper(AssemblyReference.Assembly);
+        services.AddAutoMapper(Application.AssemblyReference.Assembly);
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureApiVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(e =>
+        {
+            e.AssumeDefaultVersionWhenUnspecified = true;
+            e.DefaultApiVersion = new ApiVersion(1);
+            e.ReportApiVersions = true;
+            e.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new HeaderApiVersionReader("X-Api-Version"));
+        }).AddApiExplorer(e =>
+        {
+            e.GroupNameFormat = "'v'V";
+            e.SubstituteApiVersionInUrl = true;
+        });
+
         return services;
     }
     
     public static IServiceCollection ConfigureFluentEmail(this IServiceCollection services, IConfiguration configuration)
     {
-        var emailSettings = configuration.GetSection(nameof(EmailSettings)).Get<EmailSettings>() ??
-        throw new InvalidOperationException($"{nameof(EmailSettings)} cannot be null");
+        var emailSettings = configuration.GetSection(nameof(EmailSettings)).Get<EmailSettings>() 
+                            ?? throw new InvalidOperationException($"{nameof(EmailSettings)} cannot be null");
 
         services.AddFluentEmail(emailSettings.CompanyEmail)
             .AddSmtpSender(emailSettings.SmtpServer, emailSettings.Port, emailSettings.CompanyEmail, emailSettings.EmailKey);
@@ -71,7 +73,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection ConfigureFluentValidation(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssembly(AssemblyReference.Assembly);
+        services.AddValidatorsFromAssembly(Application.AssemblyReference.Assembly);
         return services;
     }
 
@@ -109,8 +111,12 @@ public static class ServiceCollectionExtensions
                     Array.Empty<string>()
                 }
             });
+            
+            var xmlFile = $"{AssemblyReference.Assembly.GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            setup.IncludeXmlComments(xmlPath);
         });
-
+        
         return services;
     }
     
@@ -142,6 +148,10 @@ public static class ServiceCollectionExtensions
             options.Password.RequireLowercase = true;
             options.Password.RequireDigit = true;
             options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);   
+            options.Lockout.AllowedForNewUsers = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
@@ -153,8 +163,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ??
-        throw new InvalidOperationException($"{nameof(JwtSettings)} cannot be null");
+        var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() 
+                          ?? throw new InvalidOperationException($"{nameof(JwtSettings)} cannot be null");
 
         services.AddAuthentication(options =>
         {

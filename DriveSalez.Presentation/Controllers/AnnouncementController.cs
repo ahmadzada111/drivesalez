@@ -1,28 +1,57 @@
-using DriveSalez.Application.DTO;
-using DriveSalez.Application.ServiceContracts;
+using Asp.Versioning;
+using DriveSalez.Application.Contracts.ServiceContracts;
 using DriveSalez.Domain.Enums;
-using DriveSalez.SharedKernel.Pagination;
+using DriveSalez.Domain.Exceptions;
+using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.DTO.AnnouncementDTO;
+using DriveSalez.SharedKernel.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DriveSalez.Presentation.Controllers;
 
+/// <summary>
+/// Handles operations related to announcements, including creation, updates, retrieval, and deletion.
+/// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/announcements")]
 [Authorize]
 public class AnnouncementController : Controller
 {
     private readonly IAnnouncementService _announcementService;
+    private readonly UserManager<BaseUser> _userManager;
     private readonly ILogger _logger;
-    
-    public AnnouncementController(IAnnouncementService announcementService, ILogger<AnnouncementController> logger)
+    private readonly IHttpContextAccessor _contextAccessor;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AnnouncementController"/> class.
+    /// </summary>
+    /// <param name="announcementService">Service to handle announcements.</param>
+    /// <param name="logger">Logger for the controller.</param>
+    /// <param name="userManager">UserManager class to handle users.</param>
+    /// <param name="contextAccessor">To get logged user credentials</param>
+    public AnnouncementController(IAnnouncementService announcementService, ILogger<AnnouncementController> logger, 
+        UserManager<BaseUser> userManager, IHttpContextAccessor contextAccessor)
     {
         _announcementService = announcementService;
         _logger = logger;
+        _userManager = userManager;
+        _contextAccessor = contextAccessor;
     }
 
-    [HttpPost("create-announcement")]
+    /// <summary>
+    /// Creates a new announcement.
+    /// </summary>
+    /// <param name="createAnnouncement">The details of the announcement to create.</param>
+    /// <returns>
+    /// Returns 200 with the created announcement if successful.<br/>
+    /// Returns 400 if the request is invalid.
+    /// </returns>
+    [HttpPost]
     public async Task<IActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
@@ -34,88 +63,141 @@ public class AnnouncementController : Controller
             return Problem(errorMessage);
         }
         
-        var response = await _announcementService.CreateAnnouncementAsync(createAnnouncement);
+        var response = await _announcementService.CreateAnnouncement(createAnnouncement);
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [HttpGet("get-user-limit")]
-    public async Task<ActionResult> GetUserLimits()
+    /// <summary>
+    /// Updates an existing announcement.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to update.</param>
+    /// <param name="updateAnnouncement">The updated details of the announcement.</param>
+    /// <returns>
+    /// Returns 200 with the updated announcement if successful.<br/>
+    /// Returns 400 if the request is invalid or the announcement does not exist.
+    /// </returns>
+    [HttpPatch("{announcementId}")]
+    public async Task<ActionResult> UpdateAnnouncement([FromBody] UpdateAnnouncementDto updateAnnouncement, [FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetUserLimitsAsync();
-        return Ok(response);
-    }
-    
-    [HttpPatch("update-announcement/{announcementId}")]
-    public async Task<ActionResult<AnnouncementResponseDto>> UpdateAnnouncement([FromBody] UpdateAnnouncementDto createAnnouncement, [FromRoute] Guid announcementId)
-    {
-        _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
-        
-        var response = await _announcementService.UpdateAnnouncementAsync(announcementId, createAnnouncement);
+        var response = await _announcementService.UpdateAnnouncement(updateAnnouncement, announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [HttpGet("get-announcement-by-id/{announcementId}")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetAnnouncementById([FromRoute] Guid announcementId)
+    /// <summary>
+    /// Retrieves an announcement by its ID.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to retrieve.</param>
+    /// <returns>
+    /// Returns 200 with the announcement if found.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
+    [HttpGet("{announcementId}")]
+    public async Task<ActionResult> GetAnnouncementById([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAnnouncementByIdAsync(announcementId);
+        var response = await _announcementService.FindAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
     
+    /// <summary>
+    /// Retrieves an active announcement by its ID.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to retrieve.</param>
+    /// <returns>
+    /// Returns 200 with the active announcement if found.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
     [AllowAnonymous]
-    [HttpGet("get-active-announcement-by-id/{announcementId}")]
-    public async Task<ActionResult<AnnouncementResponseDto>> GetActiveAnnouncementById([FromRoute] Guid announcementId)
+    [HttpGet("active/{announcementId}")]
+    public async Task<ActionResult> GetActiveAnnouncementById([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetActiveAnnouncementByIdAsync(announcementId);
+        var response = await _announcementService.FindAnnouncementById(announcementId);
         return response != null ? Ok(response) : BadRequest();
     }
     
-    [HttpDelete("delete-announcement/{announcementId}")]
+    /// <summary>
+    /// Deletes an announcement (inactivate) by its ID.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to delete.</param>
+    /// <returns>
+    /// Returns 204 if the announcement was successfully deleted.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
+    [HttpDelete("{announcementId}")]
     public async Task<IActionResult> DeleteAnnouncement([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.DeleteInactivateAnnouncementAsync(announcementId);
-        return response != null ? Ok(response) : BadRequest();
+        var response = await _announcementService.DeleteAnnouncement(announcementId);
+        return response ? NoContent() : BadRequest();
     }
     
+    /// <summary>
+    /// Retrieves all inactive announcements for the admin panel.
+    /// </summary>
+    /// <param name="parameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of inactive announcements.
+    /// </returns>
     [Authorize(Roles = "Admin, Moderator")]
-    [HttpGet("get-all-inactive-announcements")]
-    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
+    [HttpGet("active")]
+    public async Task<ActionResult> GetAllInactiveAnnouncements([FromQuery] PagingParameters parameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Inactive);
+        var response = await _announcementService.GetAllAnnouncements(x => x.AnnouncementState == AnnouncementState.Inactive, parameters);
         return Ok(response);   
     }
 
+    /// <summary>
+    /// Retrieves all pending announcements for the admin panel.
+    /// </summary>
+    /// <param name="parameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of pending announcements.
+    /// </returns>
     [Authorize(Roles = "Admin, Moderator")]
-    [HttpGet("get-all-waiting-announcements")]
-    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllWaitingAnnouncements([FromQuery] PagingParameters parameters)
+    [HttpGet("pending")]
+    public async Task<ActionResult> GetAllPendingAnnouncements([FromQuery] PagingParameters parameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAllAnnouncementsForAdminPanelAsync(parameters, AnnouncementState.Pending);
+        var response = await _announcementService.GetAllAnnouncements(x => x.AnnouncementState == AnnouncementState.Pending, parameters);
         return Ok(response);
     }
     
+    /// <summary>
+    /// Retrieves all active announcements.
+    /// </summary>
+    /// <param name="parameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of active announcements.
+    /// </returns>
     [AllowAnonymous]
-    [HttpGet("get-all-active-announcements")]
-    public async Task<ActionResult<AnnouncementResponseMiniDto>> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
+    [HttpGet("")]
+    public async Task<ActionResult> GetAllActiveAnnouncements([FromQuery] PagingParameters parameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
-        var response = await _announcementService.GetAllActiveAnnouncements(parameters);
+        var response = await _announcementService.GetAllAnnouncements(x => x.AnnouncementState == AnnouncementState.Active, parameters);
         return Ok(response);
     }
     
-    [HttpPost("make-announcement-active/{announcementId}")]
-    public async Task<ActionResult> MakeAnnouncementActive([FromRoute] Guid announcementId)
+    /// <summary>
+    /// Activates an announcement by its ID.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to activate.</param>
+    /// <returns>
+    /// Returns 200 if the announcement was successfully activated.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
+    [HttpPatch("{announcementId}/activate")]
+    public async Task<ActionResult> MakeAnnouncementActiveById([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
@@ -123,18 +205,34 @@ public class AnnouncementController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
 
-    [HttpPost("make-announcement-inactive/{announcementId}")]
-    public async Task<ActionResult> MakeAnnouncementInactiveByUserId([FromRoute] Guid announcementId)
+    /// <summary>
+    /// Deactivates an announcement by its ID.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to deactivate.</param>
+    /// <returns>
+    /// Returns 200 if the announcement was successfully deactivated.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
+    [HttpPatch("{announcementId}/deactivate")]
+    public async Task<ActionResult> MakeAnnouncementInactiveById([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Inactive);
         return response != null ? Ok(response) : BadRequest(response);
     }
-    
-    [HttpPatch("make-announcement-pending/{announcementId}")]
+
+    /// <summary>
+    /// Marks an announcement as pending.
+    /// </summary>
+    /// <param name="announcementId">The ID of the announcement to mark as pending.</param>
+    /// <returns>
+    /// Returns 200 if the announcement was successfully marked as pending.<br/>
+    /// Returns 400 if the announcement does not exist.
+    /// </returns>
     [Authorize(Roles = "Moderator, Admin")]
-    public async Task<ActionResult> MakeAnnouncementPending([FromRoute] Guid announcementId)
+    [HttpPatch("{announcementId}/pending")]
+    public async Task<ActionResult> MakeAnnouncementPendingById([FromRoute] Guid announcementId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
@@ -142,59 +240,102 @@ public class AnnouncementController : Controller
         return response != null ? Ok(response) : BadRequest(response);
     }
 
-    [HttpGet("get-all-active-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllActiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
+    /// <summary>
+    /// Retrieves all active announcements created by the current user.
+    /// </summary>
+    /// <param name="pagingParameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of active announcements created by the user.
+    /// </returns>
+    [HttpGet("users/{userId}/active")]
+    public async Task<ActionResult> GetAllActiveAnnouncementsByUser([FromQuery] PagingParameters pagingParameters, [FromRoute] Guid userId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Active);
+        var response = await _announcementService.GetAllAnnouncements(x => x.Owner.Id == userId && x.AnnouncementState == AnnouncementState.Active, pagingParameters);
         return Ok(response);
     }
 
-    [HttpGet("get-all-inactive-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>?> GetAllInactiveAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
+    /// <summary>
+    /// Retrieves all inactive announcements created by the current user.
+    /// </summary>
+    /// <param name="pagingParameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of inactive announcements created by the user.
+    /// </returns>
+    [HttpGet("users/{userId}/inactive")]
+    public async Task<ActionResult> GetAllInactiveAnnouncementsByUser([FromQuery] PagingParameters pagingParameters, [FromRoute] Guid userId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Inactive);
+        var response = await _announcementService.GetAllAnnouncements(x => x.Owner.Id == userId && x.AnnouncementState == AnnouncementState.Inactive, pagingParameters);
         return Ok(response);
     }
     
-    [HttpGet("get-all-waiting-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllWaitingAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
+    /// <summary>
+    /// Retrieves all pending announcements created by the current user.
+    /// </summary>
+    /// <param name="pagingParameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of pending announcements created by the user.
+    /// </returns>
+    [HttpGet("users/{userId}/pending")]
+    public async Task<ActionResult> GetAllWaitingAnnouncementsByUser([FromQuery] PagingParameters pagingParameters, [FromRoute] Guid userId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAnnouncementsByStatesAndByUserAsync(pagingParameters, AnnouncementState.Pending);
+        var response = await _announcementService.GetAllAnnouncements(x => x.Owner.Id == userId && x.AnnouncementState == AnnouncementState.Pending, pagingParameters);
         return Ok(response);
     }
     
-    [HttpGet("get-all-announcements-by-user-id")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllAnnouncementsByUserId([FromQuery] PagingParameters pagingParameters)
+    /// <summary>
+    /// Retrieves all announcements created by the current user.
+    /// </summary>
+    /// <param name="pagingParameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of all announcements created by the user.
+    /// </returns>
+    [HttpGet("users/{userId}/announcements")]
+    public async Task<ActionResult> GetAllAnnouncementsByUser([FromQuery] PagingParameters pagingParameters, [FromRoute] Guid userId)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAllAnnouncementsByUserAsync(pagingParameters);
+        var response = await _announcementService.GetAllAnnouncements(x => x.Owner.Id == userId, pagingParameters);
         return Ok(response);
     }
     
+    /// <summary>
+    /// Filters announcements based on the provided criteria.
+    /// </summary>
+    /// <param name="filterAnnouncementParameters">The filter paging parameters for the announcements.</param>
+    /// <param name="pagingParameters">The paging parameters for the announcements.</param>
+    /// <returns>
+    /// Returns 200 with a list of announcements that match the filter criteria.
+    /// </returns>
     [AllowAnonymous]
-    [HttpGet("filter-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> FilterAnnouncements([FromQuery] FilterAnnouncementsRequestDto request)
+    [HttpGet("filter")]
+    public async Task<ActionResult> FilterAnnouncements([FromQuery] FilterAnnouncementParameters filterAnnouncementParameters, [FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetFilteredAnnouncementsAsync(request.FilterParameters, request.PagingParameters);
+        var response = await _announcementService.GetFilteredAnnouncementsAsync(filterAnnouncementParameters, pagingParameters);
         return Ok(response);
     }
     
+    /// <summary>
+    /// Retrieves all premium announcements.
+    /// </summary>
+    /// <param name="pagingParameters">Utilities parameters for the query.</param>
+    /// <returns>
+    /// Returns 200 with a list of premium announcements.
+    /// </returns>
     [AllowAnonymous]
-    [HttpGet("get-all-premium-announcements")]
-    public async Task<ActionResult<IEnumerable<AnnouncementResponseMiniDto>>> GetAllPremiumAnnouncements([FromQuery] PagingParameters pagingParameters)
+    [HttpGet("premium")]
+    public async Task<ActionResult> GetAllPremiumAnnouncements([FromQuery] PagingParameters pagingParameters)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
-        var response = await _announcementService.GetAllPremiumAnnouncementsAsync(pagingParameters);
+        var response = await _announcementService.GetAllAnnouncements(x => x.IsPremium, pagingParameters);
         return Ok(response);
     }
 }

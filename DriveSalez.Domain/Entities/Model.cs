@@ -10,5 +10,5 @@ public class Model
 
     public Make Make { get; set; }
     
-    public List<Vehicle> Vehicles { get; } = [];
+    public ICollection<Vehicle> Vehicles { get; set; } = [];
 }

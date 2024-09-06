@@ -1,7 +1,8 @@
 using AutoMapper;
-using DriveSalez.Application.DTO;
 using DriveSalez.Domain.Entities;
-using DriveSalez.SharedKernel.Pagination;
+using DriveSalez.SharedKernel.DTO;
+using DriveSalez.SharedKernel.DTO.AnnouncementDTO;
+using DriveSalez.SharedKernel.Utilities;
 
 namespace DriveSalez.Application.AutoMapper;
 
@@ -9,8 +10,8 @@ public class AnnouncementProfile : Profile
 {
     public AnnouncementProfile()
     {
-        CreateMap<Announcement, AnnouncementResponseMiniDto>()
-            .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.ImageUrls.Take(3).Select(x => x.Url)))
+        CreateMap<Announcement, GetAnnouncementMiniDto>()
+            .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.ImageUrls.Take(3).Select(x => x.Url)))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model))
@@ -20,9 +21,9 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.OnCredit, opt => opt.MapFrom(src => src.OnCredit))
             .ForMember(dest => dest.Barter, opt => opt.MapFrom(src => src.Barter))
             .ForMember(dest => dest.VinCode, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.VinCode))
-            .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.MileageType.ToString()));
+            .ForMember(dest => dest.DistanceUnit, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.DistanceUnit.ToString()));
         
-       CreateMap<Announcement, AnnouncementResponseDto>()
+       CreateMap<Announcement, GetAnnouncementDto>()
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Year.Year))
             .ForMember(dest => dest.Make, opt => opt.MapFrom(src => src.Vehicle.Make.Title))
             .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.Vehicle.Model.Title))
@@ -41,21 +42,21 @@ public class AnnouncementProfile : Profile
             .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Options.Select(opt => opt.Title).ToList()))
             .ForMember(dest => dest.EngineVolume, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.EngineVolume))
             .ForMember(dest => dest.Mileage, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.Mileage))
-            .ForMember(dest => dest.MileageType, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.MileageType.ToString()))
+            .ForMember(dest => dest.DistanceUnit, opt => opt.MapFrom(src => src.Vehicle.VehicleDetail.DistanceUnit.ToString()))
             .ForMember(dest => dest.AnnouncementState, opt => opt.MapFrom(src => src.AnnouncementState.ToString()))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Owner.Id))
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Owner.UserName))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Owner.Email))
-            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
-            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
-            .ForMember(dest => dest.PhoneNumbers, opt => opt.MapFrom(src => src.Owner.PhoneNumbers.Select(num => num.Number).ToList()))
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Owner.PhoneNumber))
-            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
-            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
-            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Owner.Address))
-            .ForMember(dest => dest.WorkHours, opt => opt.MapFrom(src => src.Owner.WorkHours))
-            .ForMember(dest => dest.ProfilePhotoUrl, opt => opt.MapFrom(src => src.Owner.ProfilePhotoUrl))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Owner.Description))
+            // .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Owner.UserName))
+            // .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Owner.Email))
+            // .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
+            // .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
+            // .ForMember(dest => dest.PhoneNumbers, opt => opt.MapFrom(src => src.Owner.PhoneNumbers.Select(num => num.Number).ToList()))
+            // .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Owner.PhoneNumber))
+            // .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Owner.FirstName))
+            // .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Owner.LastName))
+            // .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Owner.Address))
+            // .ForMember(dest => dest.WorkHours, opt => opt.MapFrom(src => src.Owner.WorkHours))
+            // .ForMember(dest => dest.ProfilePhotoUrl, opt => opt.MapFrom(src => src.Owner.ProfilePhotoUrl))
+            // .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Owner.Description))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
        
@@ -63,7 +64,7 @@ public class AnnouncementProfile : Profile
            .ConvertUsing(typeof(PaginatedListConverter<,>));
 
        CreateMap<Tuple<IEnumerable<Announcement>, PaginatedList<Announcement>>, 
-           Tuple<IEnumerable<AnnouncementResponseMiniDto>, PaginatedList<AnnouncementResponseMiniDto>>>();
+           Tuple<IEnumerable<GetAnnouncementMiniDto>, PaginatedList<GetAnnouncementMiniDto>>>();
     }
     
     private class PaginatedListConverter<TSource, TDestination> : ITypeConverter<PaginatedList<TSource>, PaginatedList<TDestination>>

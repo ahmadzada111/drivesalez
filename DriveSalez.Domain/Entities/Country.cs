@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace DriveSalez.Domain.Entities;
+﻿namespace DriveSalez.Domain.Entities;
 
 public class Country
 {
@@ -8,7 +6,7 @@ public class Country
 
     public string Name { get; set; }
 
-    public List<City> Cities { get; } = [];
+    public ICollection<City> Cities { get; set; } = [];
 
-    public List<Announcement> Announcements { get; } = [];
+    public ICollection<Announcement> Announcements { get; set; } = [];
 }
