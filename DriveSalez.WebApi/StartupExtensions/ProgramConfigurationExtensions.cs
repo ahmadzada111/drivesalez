@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
-using DriveSalez.Presentation;
+using DriveSalez.Application;
+using DriveSalez.Persistence;
 using DriveSalez.SharedKernel.Settings;
 using DriveSalez.WebApi.ExceptionHandler;
 

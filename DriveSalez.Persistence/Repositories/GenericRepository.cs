@@ -19,7 +19,7 @@ internal abstract class GenericRepository<T> : IGenericRepository<T> where T : c
         return await DbContext.Set<T>().FindAsync(id);
     }
 
-    public async Task<T?> Find(Expression<Func<T, bool>>? where = null, params Expression<Func<T, object>>[] includes)
+    public async Task<T?> Find(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = DbContext.Set<T>();
         
@@ -27,10 +27,8 @@ internal abstract class GenericRepository<T> : IGenericRepository<T> where T : c
         {
             query = query.Include(include);
         }
-
-        if(where != null) return await query.FirstOrDefaultAsync(where);
         
-        return await query.FirstOrDefaultAsync();
+        return await query.FirstOrDefaultAsync(where);
     }
 
     public async Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>>? where = null, params Expression<Func<T, object>>[] includes)

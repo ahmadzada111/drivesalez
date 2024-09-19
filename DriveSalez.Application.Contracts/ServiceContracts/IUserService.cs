@@ -8,35 +8,42 @@ namespace DriveSalez.Application.Contracts.ServiceContracts;
 
 public interface IUserService
 {
-    Task<IdentityResult> RegisterAccount(RegisterAccountDto request, UserType userType);
+    Task<IdentityResult> RegisterAccount(RegisterAccountDto request, FileUploadData? profilePhotoData, 
+        FileUploadData? backgroundPhotoData, UserType userType);
 
     Task<ApplicationUser> FindByEmail(string email);
-    
-    Task<string> GenerateEmailConfirmationToken(ApplicationUser user);
 
-    Task<string> GeneratePasswordResetToken(ApplicationUser user);
+    Task<ApplicationUser> FindAuthorizedUser();
     
-    Task<string> GenerateChangeEmailToken(ApplicationUser user, string newEmail);
+    Task<ApplicationUser> FindById(Guid userId);
     
-    Task<IdentityResult> ConfirmEmail(Guid userId, string token);
-    
-    Task<IdentityResult> ResetPassword(ApplicationUser user, string token, string newPassword);
+    Task<string> GenerateEmailConfirmationToken(ApplicationUser identityUser);
 
-    Task<IdentityResult> ChangeEmail(Guid userId, string newEmail, string token);
+    Task<string> GeneratePasswordResetToken(ApplicationUser identityUser);
+    
+    Task<string> GenerateChangeEmailToken(ApplicationUser identityUser, string newEmail);
+    
+    Task<IdentityResult> ConfirmEmail(ApplicationUser identityUser, string token);
+    
+    Task<IdentityResult> ResetPassword(ApplicationUser identityUser, string token, string newPassword);
+
+    Task<IdentityResult> ChangeEmail(ApplicationUser identityUser, string newEmail, string token);
     
     Task<AuthResponseDto> LoginAccount(LoginDto request);
     
-    Task<AuthResponseDto> LoginStaff(LoginDto request);
+    Task<UserProfileDto> FindUserProfile(Guid userId, ApplicationUser identityUser);
     
     Task<AuthResponseDto> RefreshToken(RefreshJwtDto request);
 
-    Task<bool> DeleteUser(string password);
+    Task<IdentityResult> DeleteUser(ApplicationUser identityUser, string password);
     
     Task<bool> ChangePassword(ChangePasswordDto request);
     
     Task LogOut();
 
-    Task<ApplicationUser> ChangeUserTypeToDefaultAccount(ApplicationUser user);
+    Task ChangeProfilePhoto(FileUploadData fileUploadData, ApplicationUser identityUser);
 
-    Task<ApplicationUser> ChangeUserTypeToBusinessAccount(ApplicationUser user);
+    Task ChangeBackgroundPhoto(FileUploadData fileUploadData, ApplicationUser identityUser);
+    
+    Task<ApplicationUser> ChangeUserRole(ApplicationUser identityUser, UserType userType);
 }

@@ -10,5 +10,5 @@ public class PhoneNumber
 
     public Guid UserId { get; set; }
 
-    public UserProfile UserProfile { get; set; }
+    public User User { get; set; }
 }

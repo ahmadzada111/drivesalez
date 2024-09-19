@@ -1,8 +1,13 @@
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.Persistence.Contracts.ServiceContracts;
+using DriveSalez.Persistence.DbContext;
 using DriveSalez.Persistence.Repositories;
 using DriveSalez.Persistence.Services;
+using DriveSalez.SharedKernel.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 
 namespace DriveSalez.Persistence;
 
@@ -44,6 +49,46 @@ public static class DependencyInjection
         services.AddScoped<IUserSubscriptionRepository, UserSubscriptionRepository>();
         services.AddScoped<IVehicleRepository, VehicleRepository>();
         services.AddScoped<IVehicleDetailRepository, VehicleDetailRepository>();
+        services.AddScoped<IUserRoleLimitRepository, UserRoleLimitRepository>();
+        services.AddScoped<IWorkHourRepository, WorkHourRepository>();
+        
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
+
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureFluentEmail(this IServiceCollection services, IConfiguration configuration)
+    {
+        var emailSettings = configuration.GetSection(nameof(EmailSettings)).Get<EmailSettings>() 
+                            ?? throw new InvalidOperationException($"{nameof(EmailSettings)} cannot be null");
+
+        services.AddFluentEmail(emailSettings.CompanyEmail)
+            .AddSmtpSender(emailSettings.SmtpServer, emailSettings.Port, emailSettings.CompanyEmail, emailSettings.EmailKey);
+
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureQuartz(this IServiceCollection services)
+    {
+        services.AddQuartz();
+        
+        services.AddQuartzHostedService(options =>
+        {
+            options.WaitForJobsToComplete = true;
+        });
+
+        // services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
+        // services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
+        // services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
+        // services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
+        // services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
+        // services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
         
         return services;
     }

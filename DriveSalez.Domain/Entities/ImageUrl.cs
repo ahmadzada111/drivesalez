@@ -16,7 +16,7 @@ public class ImageUrl
 
     public Announcement? Announcement{ get; set; }
 
-    public UserProfile? ProfilePhotoBusinessAccount { get; set; }
+    public User? ProfilePhotoBusinessAccount { get; set; }
     
-    public UserProfile? BackgroundPhotoBusinessAccount { get; set; }
+    public User? BackgroundPhotoBusinessAccount { get; set; }
 }

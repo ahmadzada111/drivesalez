@@ -6,7 +6,7 @@ public interface IGenericRepository<T> where T : class
 {
     Task<T?> FindById<TKey>(TKey id);
     
-    Task<T?> Find(Expression<Func<T, bool>>? where = null, params Expression<Func<T, object>>[] includes);
+    Task<T?> Find(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includes);
     
     Task<IEnumerable<T>> FindAll(Expression<Func<T, bool>>? where = null, params Expression<Func<T, object>>[] includes);
     

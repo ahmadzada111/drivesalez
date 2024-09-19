@@ -30,7 +30,9 @@ internal class UnitOfWork : IUnitOfWork
     public IUserSubscriptionRepository UserSubscriptions { get; }
     public IVehicleRepository Vehicles { get; }
     public IVehicleDetailRepository VehicleDetails { get; }
-
+    public IUserRoleLimitRepository UserRoleLimits { get; }
+    public IWorkHourRepository WorkHours { get; }
+    
     public UnitOfWork(ApplicationDbContext dbContext, 
         IColorRepository colors, IConditionRepository conditions,
         IMarketVersionRepository marketVersions, ICityRepository cities, 
@@ -43,7 +45,7 @@ internal class UnitOfWork : IUnitOfWork
         IPhoneNumberRepository phoneNumbers, ISubscriptionRepository subscriptions, 
         IUserLimitRepository userLimits, IUserPurchaseRepository userPurchases, 
         IUserSubscriptionRepository userSubscriptions, IVehicleRepository vehicles, 
-        IVehicleDetailRepository vehicleDetails)
+        IVehicleDetailRepository vehicleDetails, IUserRoleLimitRepository userRoleLimits, IWorkHourRepository workHours)
     {
         _dbContext = dbContext;
         Colors = colors;
@@ -70,6 +72,8 @@ internal class UnitOfWork : IUnitOfWork
         UserSubscriptions = userSubscriptions;
         Vehicles = vehicles;
         VehicleDetails = vehicleDetails;
+        UserRoleLimits = userRoleLimits;
+        WorkHours = workHours;
     }
     
     public void Dispose()

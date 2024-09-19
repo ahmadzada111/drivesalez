@@ -2,7 +2,7 @@ using DriveSalez.Domain.Entities;
 
 namespace DriveSalez.Domain.IdentityEntities;
 
-public class UserProfile : BaseUser
+public class User : BaseUser
 {
     public ICollection<Announcement> Announcements { get; set; } = [];
     
@@ -10,9 +10,11 @@ public class UserProfile : BaseUser
 
     public ICollection<UserPurchase> UserPurchases { get; set; } = [];
     
-    public ICollection<PhoneNumber>? PhoneNumbers { get; set; } = [];
+    public ICollection<PhoneNumber> PhoneNumbers { get; set; } = [];
     
     public UserSubscription Subscription { get; }
+    
+    public string? BusinessName { get; set; }
     
     public decimal AccountBalance { get; set; }
     
@@ -24,5 +26,5 @@ public class UserProfile : BaseUser
 
     public string? Description { get; set; }
     
-    public string? WorkHours { get; set; }
+    public ICollection<WorkHour> WorkHours { get; set; } = [];
 }

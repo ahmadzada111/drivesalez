@@ -35,12 +35,6 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
-    public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
-    {
-        services.AddAutoMapper(Application.AssemblyReference.Assembly);
-        return services;
-    }
-    
     public static IServiceCollection ConfigureApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(e =>
@@ -57,23 +51,6 @@ public static class ServiceCollectionExtensions
             e.SubstituteApiVersionInUrl = true;
         });
 
-        return services;
-    }
-    
-    public static IServiceCollection ConfigureFluentEmail(this IServiceCollection services, IConfiguration configuration)
-    {
-        var emailSettings = configuration.GetSection(nameof(EmailSettings)).Get<EmailSettings>() 
-                            ?? throw new InvalidOperationException($"{nameof(EmailSettings)} cannot be null");
-
-        services.AddFluentEmail(emailSettings.CompanyEmail)
-            .AddSmtpSender(emailSettings.SmtpServer, emailSettings.Port, emailSettings.CompanyEmail, emailSettings.EmailKey);
-
-        return services;
-    }
-
-    public static IServiceCollection ConfigureFluentValidation(this IServiceCollection services)
-    {
-        services.AddValidatorsFromAssembly(Application.AssemblyReference.Assembly);
         return services;
     }
 
@@ -126,14 +103,6 @@ public static class ServiceCollectionExtensions
         services.ConfigureIdentity();
         services.ConfigureJwtAuthentication(configuration);
         services.ConfigureAuthorizationPolicies();
-
-        return services;
-    }
-
-    private static IServiceCollection ConfigureDatabaseContext(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DbConnection")));
 
         return services;
     }
@@ -214,25 +183,6 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        return services;
-    }
-    
-    public static IServiceCollection ConfigureQuartz(this IServiceCollection services)
-    {
-        services.AddQuartz();
-        
-        services.AddQuartzHostedService(options =>
-        {
-            options.WaitForJobsToComplete = true;
-        });
-
-        // services.ConfigureOptions<CheckAnnouncementExpirationJobSetup>();
-        // services.ConfigureOptions<DeleteInactiveAccountsJobSetup>();
-        // services.ConfigureOptions<LookForExpiredPremiumAnnouncementJobSetup>();
-        // services.ConfigureOptions<NotifyUserAboutSubscriptionCancellationJobSetup>();
-        // services.ConfigureOptions<NotifyUsersWithExpiringSubscriptionsJobSetup>();
-        // services.ConfigureOptions<RenewLimitsForDefaultUserJobSetup>();
-        
         return services;
     }
 }

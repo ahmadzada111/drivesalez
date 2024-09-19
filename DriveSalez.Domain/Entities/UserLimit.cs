@@ -9,7 +9,7 @@ public class UserLimit
     
     public Guid UserId { get; set; }
     
-    public UserProfile User { get; set; }
+    public User User { get; set; }
     
     public LimitType LimitType { get; set; }
     

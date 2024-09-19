@@ -31,6 +31,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
     
+    public virtual DbSet<UserRoleLimit> UserRoleLimits { get; set; }
+    
     public virtual DbSet<OneTimePurchase> OneTimePurchases { get; set; }
     
     public virtual DbSet<UserPurchase> UserPurchases { get; set; }

@@ -8,7 +8,7 @@ public class UserSubscription
 
     public Guid UserId { get; set; }
 
-    public UserProfile User { get; set; }
+    public User User { get; set; }
 
     public int SubscriptionId { get; set; }
 

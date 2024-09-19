@@ -50,5 +50,9 @@ public interface IUnitOfWork : IDisposable
     
     IVehicleDetailRepository VehicleDetails { get; }
     
+    IUserRoleLimitRepository UserRoleLimits { get; }
+    
+    IWorkHourRepository WorkHours { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

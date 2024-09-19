@@ -33,7 +33,7 @@ public class Announcement
 
     public Guid UserId {get; set;}
 
-    public UserProfile Owner { get; set; }
+    public User Owner { get; set; }
         
     public DateTimeOffset ExpirationDate { get; set; }
         

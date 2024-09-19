@@ -39,9 +39,7 @@ public record CreateAnnouncementDto
     public string DistanceUnit { get; init; }
 
     public int? EngineVolume { get; init; }
-
-    public List<string> ImageData { get; init; }
-
+    
     public int CountryId { get; init; }
 
     public int CityId { get; init; }

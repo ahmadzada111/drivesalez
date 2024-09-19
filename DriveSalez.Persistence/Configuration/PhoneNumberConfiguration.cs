@@ -14,7 +14,7 @@ internal class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
             .HasMaxLength(30)
             .IsRequired();
 
-        builder.HasOne(e => e.UserProfile)
+        builder.HasOne(e => e.User)
             .WithMany(e => e.PhoneNumbers)
             .HasForeignKey(e => e.UserId)
             .OnDelete(DeleteBehavior.Cascade);

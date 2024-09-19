@@ -3,8 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using AutoMapper;
 using DriveSalez.Application.Contracts.ServiceContracts;
+using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.SharedKernel.DTO.UserDTO;
@@ -19,37 +19,35 @@ internal sealed class JwtService : IJwtService
     private readonly JwtSettings _jwtSettings;
     private readonly RefreshTokenSettings _refreshTokenSettings;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     
     public JwtService(IOptions<JwtSettings> jwtSettings, IOptions<RefreshTokenSettings> refreshTokenSettings, 
-        UserManager<ApplicationUser> userManager, IMapper mapper, IUnitOfWork unitOfWork)
+        UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
     {
         _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
         _refreshTokenSettings = refreshTokenSettings.Value;
     }
 
-    private async Task<JwtSecurityToken> CreateJwtTokenAsync(ApplicationUser user)
+    private async Task<JwtSecurityToken> CreateJwtTokenAsync(ApplicationUser identityUser)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
-        var role = await _userManager.GetRolesAsync(user);
+        var role = await _userManager.GetRolesAsync(identityUser);
         
         Claim[] claims = new Claim[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.BaseUser.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, identityUser.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
-            new Claim(ClaimTypes.NameIdentifier, user.BaseUser.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email ?? throw new InvalidOperationException("User email not found")),
-            new Claim(ClaimTypes.Role, role.FirstOrDefault() ?? throw new InvalidOperationException("User role not found"))
+            new Claim(ClaimTypes.NameIdentifier, identityUser.Id.ToString()),
+            new Claim(ClaimTypes.Email, identityUser.Email!), 
+            new Claim(ClaimTypes.Role, role.FirstOrDefault()!)
         };
         
-        var possibleClaims = await _userManager.GetClaimsAsync(user);
-        await _userManager.RemoveClaimsAsync(user, possibleClaims);
-        await _userManager.AddClaimsAsync(user, claims);
+        var possibleClaims = await _userManager.GetClaimsAsync(identityUser);
+        await _userManager.RemoveClaimsAsync(identityUser, possibleClaims);
+        await _userManager.AddClaimsAsync(identityUser, claims);
         
         SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -65,31 +63,26 @@ internal sealed class JwtService : IJwtService
         return token;
     }
     
-    public async Task<AuthResponseDto> GenerateSecurityTokenAsync(ApplicationUser user)
+    public async Task<AuthResponseDto> GenerateSecurityTokenAsync(ApplicationUser identityUser)
     {
         DateTime expiration = DateTime.UtcNow.AddMinutes(_jwtSettings.Expiration);
-        JwtSecurityToken token = await CreateJwtTokenAsync(user);
+        JwtSecurityToken token = await CreateJwtTokenAsync(identityUser);
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
         string response = tokenHandler.WriteToken(token);
-        var userProfile = await _unitOfWork.Users.Find(x => x.IdentityId == user.Id);
-        var role = await _userManager.GetRolesAsync(user);
+        var user = await _unitOfWork.Users.Find(x => x.IdentityId == identityUser.Id)
+            ?? throw new UserNotFoundException("User not found");
         
         return new AuthResponseDto()
         {
+            Id = user.Id,
             Token = response,
-            Email = user.Email!,
-            ProfilePhotoImageUrl = (userProfile as UserProfile)?.ProfilePhotoUrl?.Url.ToString(),
-            FirstName = userProfile?.FirstName,
-            LastName = userProfile?.LastName,
-            PhoneNumber = user.PhoneNumber,
             JwtExpiration = expiration,
             RefreshToken = GenerateRefreshToken(),
             RefreshTokenExpiration = DateTime.UtcNow.AddMinutes(_refreshTokenSettings.Expiration),
-            UserRole = role.FirstOrDefault()!
         };
     }
 
-    public ClaimsPrincipal? GetPrincipalFromJwtToken(string token)
+    public ClaimsPrincipal GetPrincipalFromJwtToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
@@ -112,8 +105,8 @@ internal sealed class JwtService : IJwtService
         {
             return principal;
         }
-            
-        return null;
+
+        throw new SecurityTokenException("Invalid JWT token");
     }
 
     private static string GenerateRefreshToken()

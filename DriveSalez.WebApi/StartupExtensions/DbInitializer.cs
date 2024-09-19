@@ -41,14 +41,14 @@ public static class DbInitializer
             await context.Roles.AddRangeAsync(new ApplicationRole
                 {
                     Id = Guid.Parse("8c36e548-f0cc-4ef5-b3b0-33b67b92d8ce"),
-                    Name = UserType.DefaultUser.ToString(),
-                    NormalizedName = UserType.DefaultUser.ToString().ToUpperInvariant()
+                    Name = UserType.Default.ToString(),
+                    NormalizedName = UserType.Default.ToString().ToUpperInvariant()
                 },
                 new ApplicationRole
                 {
                     Id = Guid.Parse("20da09a9-5f13-4df0-a44d-8f5b9a137332"),
-                    Name = UserType.BusinessUser.ToString(),
-                    NormalizedName = UserType.BusinessUser.ToString().ToUpperInvariant()
+                    Name = UserType.Business.ToString(),
+                    NormalizedName = UserType.Business.ToString().ToUpperInvariant()
                 },
                 new ApplicationRole
                 {
@@ -61,6 +61,12 @@ public static class DbInitializer
                     Id = Guid.Parse("7e1727bb-c257-45b4-a723-4f759bcb0866"),
                     Name = UserType.Moderator.ToString(),
                     NormalizedName = UserType.Moderator.ToString().ToUpperInvariant(),
+                },
+                new ApplicationRole()
+                {
+                    Id = Guid.Parse("74b904c0-2672-41b4-8884-42ca8fec91e5"),
+                    Name = UserType.SuperAdmin.ToString(),
+                    NormalizedName = UserType.SuperAdmin.ToString().ToUpperInvariant(),
                 });
             
             // await context.Users.AddAsync(new ApplicationUser()

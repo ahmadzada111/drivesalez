@@ -8,10 +8,12 @@ using DriveSalez.Domain.Exceptions;
 using DriveSalez.Domain.IdentityEntities;
 using DriveSalez.Domain.RepositoryContracts;
 using DriveSalez.Persistence.Contracts.ServiceContracts;
+using DriveSalez.SharedKernel.DTO;
 using DriveSalez.SharedKernel.DTO.AnnouncementDTO;
 using DriveSalez.SharedKernel.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using NullReferenceException = System.NullReferenceException;
 
 namespace DriveSalez.Application.Services;
 
@@ -22,18 +24,20 @@ internal sealed class AnnouncementService : IAnnouncementService
     private readonly IFileService _fileService;
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILimitService _limitService;
     
     public AnnouncementService(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, 
-        IFileService fileService, IMapper mapper, IUnitOfWork unitOfWork)
+        IFileService fileService, IMapper mapper, IUnitOfWork unitOfWork, ILimitService limitService)
     {
         _contextAccessor = accessor;
         _userManager = userManager;
         _fileService = fileService;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _limitService = limitService;
     }
     
-    private async Task<Announcement> MapUpdateAnnouncementDtoToModelAsync(UpdateAnnouncementDto request, UserProfile user)
+    private async Task<Announcement> MapUpdateAnnouncementDtoToModelAsync(UpdateAnnouncementDto request, User user)
     {
         var year = await _unitOfWork.ManufactureYears.FindById(request.YearId);
         var fuelType = await _unitOfWork.FuelTypes.FindById(request.FuelTypeId);
@@ -74,7 +78,7 @@ internal sealed class AnnouncementService : IAnnouncementService
         return announcement;
     }
 
-    private async Task<Announcement> MapCreateAnnouncementDtoToModelAsync(CreateAnnouncementDto request, UserProfile user)
+    private async Task<Announcement> MapCreateAnnouncementDtoToModelAsync(CreateAnnouncementDto request, User user)
     {
         var year = await _unitOfWork.ManufactureYears.FindById(request.YearId);
         var fuelType = await _unitOfWork.FuelTypes.FindById(request.FuelTypeId);
@@ -132,49 +136,29 @@ internal sealed class AnnouncementService : IAnnouncementService
         return model?.Make.Id == request.Vehicle.Make.Id && city?.Country.Id == request.Country.Id;
     }
     
-    // private bool UpdateUserUploadLimits(bool isPremium, ApplicationUser user)
-    // {
-    //     if (isPremium)
-    //     {
-    //         if (user.PremiumUploadLimit <= 0)
-    //         {
-    //             return false;
-    //         }
-    //
-    //         user.PremiumUploadLimit--;
-    //     }
-    //     else if (user.RegularUploadLimit > 0)
-    //     {
-    //         user.RegularUploadLimit--;
-    //     }
-    //     else
-    //     {
-    //         return false;
-    //     }
-    //
-    //     return true;
-    // }
-    
-    public async Task<GetAnnouncementDto> CreateAnnouncement(CreateAnnouncementDto request)
+    public async Task<GetAnnouncementDto> CreateAnnouncement(CreateAnnouncementDto request, List<FileUploadData> photos)
     {
-        var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
+        var httpContext = _contextAccessor.HttpContext 
+                          ?? throw new NullReferenceException("HttpContext is null");
         var identityUser = await _userManager.GetUserAsync(httpContext.User) 
                    ?? throw new UserNotAuthorizedException("User is not authorized!");
-        var baseUser = await _unitOfWork.Users.FindUserOfType<UserProfile>(identityUser.BaseUser.Id) 
+        var user = await _unitOfWork.Users.FindUserOfType<User>(x => x.Id == identityUser.BaseUser.Id) 
                        ?? throw new UserNotFoundException("User not found!");
-        // if (!UpdateUserUploadLimits(request.IsPremium, user))
-        // {
-        //     throw new InvalidOperationException("User has insufficient limit to perform this action!");
-        // }
+        var limitType = request.IsPremium ? LimitType.Premium : LimitType.Regular;
+        
+        if (!await _limitService.UpdateUserUploadLimits(limitType, user, 1))
+        {
+            throw new InvalidOperationException("User has insufficient limit to perform this action!");
+        }
 
-        var announcement = await MapCreateAnnouncementDtoToModelAsync(request, baseUser);
+        var announcement = await MapCreateAnnouncementDtoToModelAsync(request, user);
         
         if (!await CheckAllRelationsInAnnouncementAsync(announcement))
         {
             throw new ValidationException("Invalid relationships in the announcement.");
         }
         
-        var urls = await _fileService.UploadFilesAsync(request.ImageData, baseUser);
+        var urls = await _fileService.UploadFilesAsync(photos, user);
         announcement.ImageUrls.ToList().AddRange(urls); 
         var response = _unitOfWork.Announcements.Add(announcement);
         await _unitOfWork.SaveChangesAsync();
@@ -259,7 +243,7 @@ internal sealed class AnnouncementService : IAnnouncementService
         return true;
     }
 
-    public async Task<GetAnnouncementDto?> ChangeAnnouncementState(Guid announcementId, AnnouncementState announcementState)
+    public async Task<GetAnnouncementDto> ChangeAnnouncementState(Guid announcementId, AnnouncementState announcementState)
     {
         var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
         var user = await _userManager.GetUserAsync(httpContext.User) ?? throw new UserNotAuthorizedException("User is not authorized!");
@@ -291,9 +275,9 @@ internal sealed class AnnouncementService : IAnnouncementService
     public async Task<GetAnnouncementDto> UpdateAnnouncement(UpdateAnnouncementDto announcementDto, Guid announcementId)
     {
         var httpContext = _contextAccessor.HttpContext ?? throw new InvalidOperationException("HttpContext is null");
-        var identityUser = await _userManager.GetUserAsync(httpContext.User) 
+        var identityUser = await _userManager.GetUserAsync(httpContext.User)
                            ?? throw new UserNotAuthorizedException("User is not authorized!");
-        var baseUser = await _unitOfWork.Users.FindUserOfType<UserProfile>(identityUser.BaseUser.Id) 
+        var baseUser = await _unitOfWork.Users.FindUserOfType<User>(x => x.Id == identityUser.BaseUser.Id) 
                        ?? throw new UserNotFoundException("User not found!");
         var updateData = await MapUpdateAnnouncementDtoToModelAsync(announcementDto, baseUser);
         var announcementToUpdate = await _unitOfWork.Announcements.Find(x => x.Id == announcementId,

@@ -1,5 +1,6 @@
 using DriveSalez.Application.Contracts.ServiceContracts;
 using DriveSalez.Application.Services;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DriveSalez.Application;
@@ -26,7 +27,21 @@ public static class DependencyInjection
         services.AddScoped<IMarketVersionService, MarketVersionService>();
         services.AddScoped<IModelService, ModelService>();
         services.AddScoped<IOptionService, OptionService>();
-
+        services.AddScoped<ILimitService, LimitService>();
+        services.AddScoped<IWorkHourService, WorkHourService>();
+        
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(AssemblyReference.Assembly);
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureFluentValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssembly(AssemblyReference.Assembly);
         return services;
     }
 }

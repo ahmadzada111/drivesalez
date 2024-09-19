@@ -24,10 +24,13 @@ internal sealed class UserService : IUserService
     private readonly IFileService _fileService;
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILimitService _limitService;
+    private readonly IWorkHourService _workHourService;
     
     public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
         IJwtService jwtService, IHttpContextAccessor contextAccessor, 
-        IFileService fileService, IMapper mapper, IUnitOfWork unitOfWork)
+        IFileService fileService, IMapper mapper, IUnitOfWork unitOfWork, 
+        ILimitService limitService, IWorkHourService workHourService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -36,6 +39,8 @@ internal sealed class UserService : IUserService
         _fileService = fileService;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _limitService = limitService;
+        _workHourService = workHourService;
     }
 
     public async Task<ApplicationUser> FindByEmail(string email)
@@ -46,99 +51,123 @@ internal sealed class UserService : IUserService
         return user;
     }
 
-    public async Task<IdentityResult> ChangeEmail(Guid userId, string newEmail, string token)
+    public async Task<ApplicationUser> FindByUserName(string userName)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null)
-        {
-            throw new UserNotFoundException("User not found.");
-        }
-
-        var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+        var user = await _userManager.FindByNameAsync(userName)
+                   ?? throw new UserNotFoundException("User not found");
+        
+        return user;
+    }
+    
+    public async Task<IdentityResult> ChangeEmail(ApplicationUser identityUser, string newEmail, string token)
+    {
+        var result = await _userManager.ChangeEmailAsync(identityUser, newEmail, token);
 
         if (result.Succeeded)
         {
-            user.UserName = newEmail;
-            await _userManager.UpdateAsync(user);
+            identityUser.UserName = newEmail;
+            await _userManager.UpdateAsync(identityUser);
         }
 
         return result;
     }
     
-    public Task<string> GenerateEmailConfirmationToken(ApplicationUser user)
+    public Task<string> GenerateEmailConfirmationToken(ApplicationUser identityUser)
     {
-        return _userManager.GenerateEmailConfirmationTokenAsync(user);
+        return _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
     }
 
-    public Task<string> GeneratePasswordResetToken(ApplicationUser user)
+    public Task<string> GeneratePasswordResetToken(ApplicationUser identityUser)
     {
-        return _userManager.GeneratePasswordResetTokenAsync(user);
+        return _userManager.GeneratePasswordResetTokenAsync(identityUser);
     }
 
-    public Task<string> GenerateChangeEmailToken(ApplicationUser user, string newEmail)
+    public Task<string> GenerateChangeEmailToken(ApplicationUser identityUser, string newEmail)
     {
-        return _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+        return _userManager.GenerateChangeEmailTokenAsync(identityUser, newEmail);
     }
 
-    public async Task<IdentityResult> ConfirmEmail(Guid userId, string token)
+    public async Task<ApplicationUser> FindById(Guid userId)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString())
+        return await _userManager.FindByIdAsync(userId.ToString())
                    ?? throw new UserNotFoundException("User not found.");
-
-        return await _userManager.ConfirmEmailAsync(user, token);
+    }
+    
+    public async Task<IdentityResult> ConfirmEmail(ApplicationUser identityUser, string token)
+    {
+        return await _userManager.ConfirmEmailAsync(identityUser, token);
     }
 
-    public async Task<IdentityResult> ResetPassword(ApplicationUser user, string token, string newPassword)
+    public async Task<IdentityResult> ResetPassword(ApplicationUser identityUser, string token, string newPassword)
     {
-        return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        return await _userManager.ResetPasswordAsync(identityUser, token, newPassword);
     }
 
-    private async Task<IdentityResult> RegisterUser(ApplicationUser identityUser, string password, UserType userType)
+    public async Task<IdentityResult> RegisterAccount(RegisterAccountDto request, FileUploadData? profilePhotoData, 
+        FileUploadData? backgroundPhotoData, UserType userType)
     {
-        IdentityResult result = await _userManager.CreateAsync(identityUser, password);
+        var user = new User()
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            AccountBalance = 0,
+            CreationDate = DateTimeOffset.UtcNow,
+            PhoneNumbers = _mapper.Map<List<PhoneNumber>>(request.PhoneNumbers),
+            Address = request.Address,
+            Description = request.Description,
+            BusinessName = request.BusinessName
+        };
+
+        if (profilePhotoData is not null) await HandleProfilePhotoUpload(profilePhotoData, user);
+        if (backgroundPhotoData is not null) await HandleBackgroundPhotoUpload(backgroundPhotoData, user);
+        if (request.WorkHours is not null) _workHourService.AddWorkHoursToUser(user, request.WorkHours);
         
+        var identityUser =  new ApplicationUser()
+        {
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            UserName = request.Email,
+            EmailConfirmed = false,
+            BaseUser = user
+        };
+
+        IdentityResult result = await _userManager.CreateAsync(identityUser, request.Password);
+
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(identityUser, userType.ToString());
             await _userManager.UpdateAsync(identityUser);
-            // await _userRepository.AddLimitsToAccountInDbAsync(identityUser, userType);
+            await _limitService.AddLimitToUser(user, userType);
+            await _unitOfWork.SaveChangesAsync();
         }
-
+        
         return result;
     }
-
-    public async Task<IdentityResult> RegisterAccount(RegisterAccountDto request, UserType userType)
+    
+    private async Task HandleBackgroundPhotoUpload(FileUploadData fileUploadData, User user)
     {
-        var userProfile = new UserProfile()
-        {
-            AccountBalance = 0,
-            CreationDate = DateTimeOffset.UtcNow,
-            PhoneNumbers = _mapper.Map<List<PhoneNumber>>(request.PhoneNumbers)
-            
-        };
-        
-        var identityUser = new ApplicationUser()
-        {
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            UserName = request.UserName ?? request.Email,
-            EmailConfirmed = false,
-            BaseUser = userProfile
-        };
-
-        return await RegisterUser(identityUser, request.Password, userType);
+        var backgroundPhotoUrl = await _fileService.UploadFilesAsync(new List<FileUploadData> { fileUploadData }, user);
+        user.BackgroundPhotoUrl = backgroundPhotoUrl.FirstOrDefault();
+        _unitOfWork.Users.Update(user);
     }
 
+    private async Task HandleProfilePhotoUpload(FileUploadData fileUploadData, User user)
+    {
+        var profilePhotoUrl = await _fileService.UploadFilesAsync(new List<FileUploadData> { fileUploadData }, user);
+        user.ProfilePhotoUrl = profilePhotoUrl.FirstOrDefault();
+        _unitOfWork.Users.Update(user);
+    }
+    
     private async Task<ApplicationUser> SignInAndValidateUser(LoginDto request)
     {
-        SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: true);
+        SignInResult result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, isPersistent: false, lockoutOnFailure: true);
         
         if (!result.Succeeded)
         {
             throw new InvalidOperationException("Sign-in failed.");
         }
 
-        var identityUser = await _userManager.FindByNameAsync(request.Email)
+        var identityUser = await _userManager.FindByNameAsync(request.UserName)
             ?? throw new UserNotFoundException("User with provided username wasn't found!");
 
         await _signInManager.SignInAsync(identityUser, isPersistent: false);
@@ -161,34 +190,45 @@ internal sealed class UserService : IUserService
         
         return response;
     }
-    
-    public async Task<AuthResponseDto> LoginStaff(LoginDto request)
+
+    public async Task<ApplicationUser> FindAuthorizedUser()
     {
-        SignInResult result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: false, lockoutOnFailure: true);
-
-        if (!result.Succeeded) throw new InvalidOperationException("Sign-in failed.");
-        
-        var identityUser = await _userManager.FindByEmailAsync(request.Email) 
-                   ?? throw new UserNotFoundException("User with provided email wasn't found!");
-        var baseUser = await _unitOfWork.Users.Find(x => x.IdentityId == identityUser.Id) 
-                          ?? throw new UserNotFoundException("User with provided id wasn't found!");
-            
-        await _signInManager.SignInAsync(identityUser, isPersistent: false);
-        var response = await _jwtService.GenerateSecurityTokenAsync(identityUser);
-            
-        baseUser.RefreshToken = response.RefreshToken;
-        baseUser.RefreshTokenExpiration = response.RefreshTokenExpiration;
-        
-        _unitOfWork.Users.Update(baseUser);
-        await _unitOfWork.SaveChangesAsync();
-        
-        return response;
+        var httpContext = _contextAccessor.HttpContext
+                          ?? throw new NullReferenceException("HttpContext is null");
+                          
+        return await _userManager.GetUserAsync(httpContext.User) 
+                           ?? throw new UserNotAuthorizedException("User is not authorized!");
     }
-
+    
+    public async Task<UserProfileDto> FindUserProfile(Guid userId, ApplicationUser identityUser)
+    {
+        var user = await _unitOfWork.Users.FindUserOfType<User>(x => x.Id == userId, 
+                       x => x.PhoneNumbers,
+                       x => x.WorkHours)
+            ?? throw new UserNotFoundException("User with provided id wasn't found!");
+        
+        var userRole = await _userManager.GetRolesAsync(identityUser);
+        var profilePhotoUrl = await _unitOfWork.ImageUrls.Find(x => x.ProfilePhotoUserId == user.Id);
+        var backgroundPhotoUrl = await _unitOfWork.ImageUrls.Find(x => x.BackgroundPhotoUserId == user.Id);
+        
+        return new UserProfileDto()
+        {
+            Id = user.Id,
+            Email = identityUser.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            PhoneNumber = identityUser.PhoneNumber,
+            PhoneNumbers = _mapper.Map<List<string>>(user.PhoneNumbers),
+            ProfilePhotoImageUrl = profilePhotoUrl?.Url.ToString(),
+            BackgroundPhotoImageUrl = backgroundPhotoUrl?.Url.ToString(),
+            UserRole = userRole.FirstOrDefault()!,
+            WorkHours = _mapper.Map<List<WorkHourDto>>(user.WorkHours)
+        };
+    }
+    
     private async Task<ApplicationUser> ValidateAndRetrieveUser(RefreshJwtDto request)
     {
-        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token)
-            ?? throw new SecurityTokenException("Invalid JWT token");
+        ClaimsPrincipal principal = _jwtService.GetPrincipalFromJwtToken(request.Token);
 
         string? email = principal.FindFirstValue(ClaimTypes.Email);
 
@@ -202,8 +242,8 @@ internal sealed class UserService : IUserService
         var baseUser = await _unitOfWork.Users.Find(x => x.Id == identityUser.Id)
                        ?? throw new UserNotFoundException("User with provided id wasn't found!");
         
-        if (baseUser == null || baseUser.RefreshToken != request.RefreshToken 
-                             || baseUser.RefreshTokenExpiration <= DateTime.UtcNow)
+        if (baseUser.RefreshToken != request.RefreshToken 
+            || baseUser.RefreshTokenExpiration <= DateTime.UtcNow)
         {
             throw new SecurityTokenException("Invalid or expired refresh token");
         }
@@ -224,24 +264,12 @@ internal sealed class UserService : IUserService
         _unitOfWork.Users.Update(baseUser);
         await _unitOfWork.SaveChangesAsync();
         
-        return new AuthResponseDto
-        {
-            Token = response.Token,
-            Email = identityUser.Email ?? throw new InvalidOperationException("Email cannot be null"),
-            FirstName = (baseUser as UserProfile)?.FirstName,
-            LastName = (baseUser as UserProfile)?.LastName,
-            PhoneNumber = identityUser.PhoneNumber ?? throw new InvalidOperationException("Phone number cannot be null"),
-            JwtExpiration = response.JwtExpiration,
-            RefreshToken = response.RefreshToken,
-            RefreshTokenExpiration = response.RefreshTokenExpiration,
-            UserRole = response.UserRole
-        };
+        return response;
     }
 
     public async Task<bool> ChangePassword(ChangePasswordDto request)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email) 
-                   ?? throw new UserNotFoundException("User with provided email wasn't found!");
+        var user = await FindByEmail(request.Email);
         var passwordValidator = new PasswordValidator<ApplicationUser>();
         var validationResult = await passwordValidator.ValidateAsync(_userManager, user, request.NewPassword);
 
@@ -263,41 +291,91 @@ internal sealed class UserService : IUserService
         await _signInManager.SignOutAsync();
     }
     
-    public async Task<bool> DeleteUser(string password)
+    public async Task<IdentityResult> DeleteUser(ApplicationUser identityUser, string password)
     {
-        var httpContext = _contextAccessor.HttpContext 
-                          ?? throw new InvalidOperationException("HttpContext is null");
-        var identityUser = await _userManager.GetUserAsync(httpContext.User) 
-                           ?? throw new UserNotAuthorizedException("User is not Authorized");
-        
         if (!await _userManager.CheckPasswordAsync(identityUser, password))
             throw new UserNotAuthorizedException("User not authorized!");
         
-        await _userManager.DeleteAsync(identityUser);
+        var result = await _userManager.DeleteAsync(identityUser);
         await _fileService.DeleteAllFilesAsync(identityUser.Id);
         
-        return true;
+        return result;
     }
 
-    public async Task<ApplicationUser> ChangeUserTypeToDefaultAccount(ApplicationUser user)
+    public async Task<ApplicationUser> ChangeUserRole(ApplicationUser identityUser, UserType userType)
     {
-        var roles = await _userManager.GetRolesAsync(user);
-        await _userManager.RemoveFromRolesAsync(user, roles);
+        var roles = await _userManager.GetRolesAsync(identityUser);
+        await _userManager.RemoveFromRolesAsync(identityUser, roles);
         
-        await _userManager.AddToRoleAsync(user, UserType.DefaultUser.ToString());
-        await _userManager.UpdateAsync(user);
+        await _userManager.AddToRoleAsync(identityUser, userType.ToString());
+        await _userManager.UpdateAsync(identityUser);
 
-        return user;
+        return identityUser;
     }
-    
-    public async Task<ApplicationUser> ChangeUserTypeToBusinessAccount(ApplicationUser user)
+
+   public async Task ChangeProfilePhoto(FileUploadData fileUploadData, ApplicationUser identityUser)
     {
-        var roles = await _userManager.GetRolesAsync(user);
-        await _userManager.RemoveFromRolesAsync(user, roles);
-        
-        await _userManager.AddToRoleAsync(user, UserType.BusinessUser.ToString());
-        await _userManager.UpdateAsync(user);
-        
-        return user;
+        var user = await _unitOfWork.Users.FindUserOfType<User>(x => x.Id == identityUser.Id) 
+                   ?? throw new UserNotFoundException("User with the provided id wasn't found!");
+
+        var existingProfilePhoto = await _unitOfWork.ImageUrls.Find(x => x.ProfilePhotoUserId == user.Id);
+        var uploadedUrls = await _fileService.UploadFilesAsync(new List<FileUploadData> { fileUploadData }, user);
+
+        if (!uploadedUrls.Any())
+        {
+            throw new InvalidOperationException("Failed to upload the profile photo.");
+        }
+
+        var newProfilePhotoUrl = uploadedUrls.First().Url;
+
+        if (existingProfilePhoto == null)
+        {
+            var newProfilePhoto = new ImageUrl
+            {
+                ProfilePhotoUserId = user.Id,
+                Url = newProfilePhotoUrl
+            };
+            _unitOfWork.ImageUrls.Add(newProfilePhoto);
+        }
+        else
+        {
+            existingProfilePhoto.Url = newProfilePhotoUrl;
+            _unitOfWork.ImageUrls.Update(existingProfilePhoto);
+        }
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+   
+    public async Task ChangeBackgroundPhoto(FileUploadData fileUploadData, ApplicationUser identityUser)
+    {
+        var user = await _unitOfWork.Users.FindUserOfType<User>(x => x.Id == identityUser.Id) 
+                   ?? throw new UserNotFoundException("User with the provided id wasn't found!");
+
+        var existingBackgroundPhoto = await _unitOfWork.ImageUrls.Find(x => x.BackgroundPhotoUserId == user.Id);
+        var uploadedUrls = await _fileService.UploadFilesAsync(new List<FileUploadData> { fileUploadData }, user);
+
+        if (!uploadedUrls.Any())
+        {
+            throw new InvalidOperationException("Failed to upload the background photo.");
+        }
+
+        var newBackgroundPhotoUrl = uploadedUrls.First().Url;
+
+        if (existingBackgroundPhoto == null)
+        {
+            var newBackgroundPhoto = new ImageUrl
+            {
+                ProfilePhotoUserId = user.Id,
+                Url = newBackgroundPhotoUrl
+            };
+            _unitOfWork.ImageUrls.Add(newBackgroundPhoto);
+        }
+        else
+        {
+            existingBackgroundPhoto.Url = newBackgroundPhotoUrl;
+            _unitOfWork.ImageUrls.Update(existingBackgroundPhoto);
+        }
+
+        await _unitOfWork.SaveChangesAsync();
     }
 }

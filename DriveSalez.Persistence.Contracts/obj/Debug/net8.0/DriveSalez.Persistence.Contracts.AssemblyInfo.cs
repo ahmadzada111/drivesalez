@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DriveSalez.Persistence.Contracts")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3ca13e715d94011c911826444c94a766a34d0f8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55dc4d57e191bfa96b8bba1199f8547596b01172")]
 [assembly: System.Reflection.AssemblyProductAttribute("DriveSalez.Persistence.Contracts")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DriveSalez.Persistence.Contracts")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

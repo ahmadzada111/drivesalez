@@ -1,13 +1,11 @@
 using Asp.Versioning;
 using DriveSalez.Application.Contracts.ServiceContracts;
 using DriveSalez.Domain.Enums;
-using DriveSalez.Domain.Exceptions;
-using DriveSalez.Domain.IdentityEntities;
+using DriveSalez.SharedKernel.DTO;
 using DriveSalez.SharedKernel.DTO.AnnouncementDTO;
 using DriveSalez.SharedKernel.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,24 +21,17 @@ namespace DriveSalez.Presentation.Controllers;
 public class AnnouncementController : Controller
 {
     private readonly IAnnouncementService _announcementService;
-    private readonly UserManager<BaseUser> _userManager;
     private readonly ILogger _logger;
-    private readonly IHttpContextAccessor _contextAccessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AnnouncementController"/> class.
     /// </summary>
     /// <param name="announcementService">Service to handle announcements.</param>
     /// <param name="logger">Logger for the controller.</param>
-    /// <param name="userManager">UserManager class to handle users.</param>
-    /// <param name="contextAccessor">To get logged user credentials</param>
-    public AnnouncementController(IAnnouncementService announcementService, ILogger<AnnouncementController> logger, 
-        UserManager<BaseUser> userManager, IHttpContextAccessor contextAccessor)
+    public AnnouncementController(IAnnouncementService announcementService, ILogger<AnnouncementController> logger)
     {
         _announcementService = announcementService;
         _logger = logger;
-        _userManager = userManager;
-        _contextAccessor = contextAccessor;
     }
 
     /// <summary>
@@ -49,10 +40,9 @@ public class AnnouncementController : Controller
     /// <param name="createAnnouncement">The details of the announcement to create.</param>
     /// <returns>
     /// Returns 200 with the created announcement if successful.<br/>
-    /// Returns 400 if the request is invalid.
     /// </returns>
     [HttpPost]
-    public async Task<IActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement)
+    public async Task<IActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto createAnnouncement, List<IFormFile> photos)
     {
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
 
@@ -62,9 +52,15 @@ public class AnnouncementController : Controller
                 ModelState.Values.SelectMany(e => e.Errors).Select(e => e.ErrorMessage));
             return Problem(errorMessage);
         }
+
+        var filesData = photos.Select(x => new FileUploadData()
+        {
+            Stream = x.OpenReadStream(),
+            FileType = x.ContentType
+        }).ToList();
         
-        var response = await _announcementService.CreateAnnouncement(createAnnouncement);
-        return response != null ? Ok(response) : BadRequest();
+        var response = await _announcementService.CreateAnnouncement(createAnnouncement, filesData);
+        return CreatedAtAction(nameof(CreateAnnouncement), new { announcementId = response.Id }, "Announcement created successfully.");
     }
     
     /// <summary>
@@ -82,7 +78,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.UpdateAnnouncement(updateAnnouncement, announcementId);
-        return response != null ? Ok(response) : BadRequest();
+        return Ok(response);
     }
     
     /// <summary>
@@ -99,7 +95,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.FindAnnouncementById(announcementId);
-        return response != null ? Ok(response) : BadRequest();
+        return Ok(response);
     }
     
     /// <summary>
@@ -117,7 +113,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.FindAnnouncementById(announcementId);
-        return response != null ? Ok(response) : BadRequest();
+        return Ok(response);
     }
     
     /// <summary>
@@ -202,7 +198,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Active);
-        return response != null ? Ok(response) : BadRequest(response);
+        return Ok(response);
     }
 
     /// <summary>
@@ -219,7 +215,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Inactive);
-        return response != null ? Ok(response) : BadRequest(response);
+        return Ok(response);
     }
 
     /// <summary>
@@ -237,7 +233,7 @@ public class AnnouncementController : Controller
         _logger.LogInformation($"[{DateTime.Now.ToLongTimeString()}] Path: {HttpContext.Request.Path}");
         
         var response = await _announcementService.ChangeAnnouncementState(announcementId, AnnouncementState.Pending);
-        return response != null ? Ok(response) : BadRequest(response);
+        return Ok(response);
     }
 
     /// <summary>

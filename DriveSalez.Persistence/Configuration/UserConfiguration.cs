@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DriveSalez.Persistence.Configuration;
 
-public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<UserProfile> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasBaseType<BaseUser>();
         
@@ -27,8 +27,9 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasMaxLength(1000)
             .IsRequired(false);
 
-        builder.Property(e => e.WorkHours)
-            .HasMaxLength(100)
+        builder.HasMany(e => e.WorkHours)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
             .IsRequired(false);
 
         builder.HasOne(e => e.Subscription)
@@ -36,7 +37,7 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasForeignKey<UserSubscription>(e => e.UserId);
         
         builder.HasMany(e => e.PhoneNumbers)
-            .WithOne(p => p.UserProfile)
+            .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
